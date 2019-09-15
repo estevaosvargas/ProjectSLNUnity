@@ -379,9 +379,6 @@
     <Reference Include="darckcomsoft">
       <HintPath>C:/Users/estev/Documents/2d-sem-nome/Assets/Plugins/Darckcomsoft/darckcomsoft.dll</HintPath>
     </Reference>
-    <Reference Include="Facepunch.Steamworks">
-      <HintPath>C:/Users/estev/Documents/2d-sem-nome/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
-    </Reference>
     <Reference Include="NSubstitute">
       <HintPath>C:/Users/estev/Documents/2d-sem-nome/Library/PackageCache/com.unity.2d.common@1.2.0-preview.1/Tests/Editor/Lib/NSubstitute/NSubstitute.dll</HintPath>
     </Reference>

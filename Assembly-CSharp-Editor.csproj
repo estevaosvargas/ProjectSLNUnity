@@ -61,7 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Editor\BuildingGame.cs" />
-    <Compile Include="Assets\Unity3D-Top-Down-2D-Procedural-Terrain-master\Editor\TileMapInspector.cs" />
     <Reference Include="UnityEditor.TestRunner">
       <HintPath>C:/Users/estev/Documents/2d-sem-nome/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
     </Reference>
@@ -379,9 +378,6 @@
     </Reference>
     <Reference Include="darckcomsoft">
       <HintPath>C:/Users/estev/Documents/2d-sem-nome/Assets/Plugins/Darckcomsoft/darckcomsoft.dll</HintPath>
-    </Reference>
-    <Reference Include="Facepunch.Steamworks">
-      <HintPath>C:/Users/estev/Documents/2d-sem-nome/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
     </Reference>
     <Reference Include="NSubstitute">
       <HintPath>C:/Users/estev/Documents/2d-sem-nome/Library/PackageCache/com.unity.2d.common@1.2.0-preview.1/Tests/Editor/Lib/NSubstitute/NSubstitute.dll</HintPath>

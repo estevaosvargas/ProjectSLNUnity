@@ -143,8 +143,6 @@
     <Compile Include="Assets\Plugins\Darckcomsoft\Itch\DcsItchExemple.cs" />
     <Compile Include="Assets\Plugins\Darckcomsoft\Itch\ItchAPi.cs" />
     <Compile Include="Assets\Plugins\Darckcomsoft\Misc\TriggerAction.cs" />
-    <Compile Include="Assets\Plugins\Facepunch.Steamworks\Utility\SteamAvatar.cs" />
-    <Compile Include="Assets\Plugins\Facepunch.Steamworks\Utility\SteamClient.cs" />
     <Compile Include="Assets\Plugins\SimpleJSON.cs" />
     <Compile Include="Assets\Standard Assets\2D\Scripts\Camera2DFollow.cs" />
     <Compile Include="Assets\Standard Assets\2D\Scripts\CameraFollow.cs" />
@@ -225,11 +223,8 @@
     <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\WaterInclude.cginc" />
     <None Include="Assets\Standard Assets\Vehicles\Car\CarGuidelines.txt" />
     <None Include="Assets\Standard Assets\Vehicles\Aircraft\AircraftGuidelines.txt" />
-    <None Include="Assets\Plugins\Facepunch.Steamworks\Native\steam_appid.txt" />
-    <None Include="Assets\Plugins\Facepunch.Steamworks\Facepunch.Steamworks.xml" />
     <None Include="Assets\Standard Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpecTransp.shader" />
     <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Advanced.shader" />
-    <None Include="Assets\Plugins\Facepunch.Steamworks\readme.txt" />
     <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Simple.shader" />
     <None Include="Assets\Standard Assets\Characters\RollerBall\RollerBallGuidelines.txt" />
     <None Include="Assets\Standard Assets\Environment\Water\Water\Shaders\FXWaterPro.shader" />
@@ -538,9 +533,6 @@
     </Reference>
     <Reference Include="darckcomsoft">
       <HintPath>C:/Users/estev/Documents/2d-sem-nome/Assets/Plugins/Darckcomsoft/darckcomsoft.dll</HintPath>
-    </Reference>
-    <Reference Include="Facepunch.Steamworks">
-      <HintPath>C:/Users/estev/Documents/2d-sem-nome/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Editor">
       <HintPath>C:/Users/estev/Documents/2d-sem-nome/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Editor.dll</HintPath>

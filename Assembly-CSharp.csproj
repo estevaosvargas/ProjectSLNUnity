@@ -161,12 +161,6 @@
     <Compile Include="Assets\Scripts\World\TileMesh.cs" />
     <Compile Include="Assets\Scripts\World\TileObj.cs" />
     <Compile Include="Assets\Scripts\World\WorldGenerator.cs" />
-    <Compile Include="Assets\Unity3D-Top-Down-2D-Procedural-Terrain-master\Resources\Scripts\Camera\ClickDrag.cs" />
-    <Compile Include="Assets\Unity3D-Top-Down-2D-Procedural-Terrain-master\Resources\Scripts\Lighting\Rotate.cs" />
-    <Compile Include="Assets\Unity3D-Top-Down-2D-Procedural-Terrain-master\Resources\Scripts\Tile Data\TDMap.cs" />
-    <Compile Include="Assets\Unity3D-Top-Down-2D-Procedural-Terrain-master\Resources\Scripts\Tile Data\TDSelect.cs" />
-    <Compile Include="Assets\Unity3D-Top-Down-2D-Procedural-Terrain-master\Resources\Scripts\Tile Data\TDTile.cs" />
-    <Compile Include="Assets\Unity3D-Top-Down-2D-Procedural-Terrain-master\Resources\Scripts\Tile Graphics\TGMap.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\StreamingAssets\License\Fonts\license.txt" />
@@ -178,7 +172,6 @@
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
-    <None Include="Assets\StandarVertex.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\StreamingAssets\License\Lidgren.Network.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
@@ -487,9 +480,6 @@
     </Reference>
     <Reference Include="darckcomsoft">
       <HintPath>C:/Users/estev/Documents/2d-sem-nome/Assets/Plugins/Darckcomsoft/darckcomsoft.dll</HintPath>
-    </Reference>
-    <Reference Include="Facepunch.Steamworks">
-      <HintPath>C:/Users/estev/Documents/2d-sem-nome/Assets/Plugins/Facepunch.Steamworks/Facepunch.Steamworks.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Editor">
       <HintPath>C:/Users/estev/Documents/2d-sem-nome/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Editor.dll</HintPath>
