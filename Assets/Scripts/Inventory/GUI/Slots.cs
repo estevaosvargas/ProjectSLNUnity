@@ -57,7 +57,7 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
             {
                 MoveCont(InveGUI.Inve, InveGUI.InveCont, DragSlot.Index, DropSlot.Index);
             }
-            else if (DragSlot.IsContainer == true && DropSlot.IsContainer == false)//Player To Container
+            else if (DragSlot.IsContainer == true && DropSlot.IsContainer == false)//Container To Player
             {
                 ContMove(InveGUI.Inve, InveGUI.InveCont, DragSlot.Index, DropSlot.Index);
             }
@@ -70,6 +70,9 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
                 InveGUI.InveCont.Move(DragSlot.Index, DropSlot.Index);
             }
         }
+
+        DragSlot = null;
+        DropSlot = null;
     }
 
 
@@ -84,10 +87,13 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
 
                 player.ItemList[on].Index = -1;
                 player.ItemList[on].Amount = -1;
+
+                InveGUI.Player_RefreshSlot(on);
+                InveGUI.Container_RefreshSlot(to);
             }
             else
             {
-                cont.Additem(player.ItemList[on].Index, player.ItemList[on].Amount);
+                cont.Additem(player.ItemList[to].Index, player.ItemList[on].Amount);
             }
         }
         else
@@ -97,10 +103,14 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
 
             player.ItemList[on].Index = -1;
             player.ItemList[on].Amount = -1;
+
+            InveGUI.Player_RefreshSlot(on);
+            InveGUI.Container_RefreshSlot(to);
         }
 
         cont.Save();
         player.Save();
+
 
         if (HandManager.MyHand)
         {
@@ -119,10 +129,13 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
 
                 cont.ItemList[on].Index = -1;
                 cont.ItemList[on].Amount = -1;
+
+                InveGUI.Player_RefreshSlot(to);
+                InveGUI.Container_RefreshSlot(on);
             }
             else
             {
-                player.Additem(cont.ItemList[on].Index, cont.ItemList[on].Amount);
+                player.Additem(cont.ItemList[to].Index, cont.ItemList[on].Amount);
             }
         }
         else
@@ -132,6 +145,9 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
 
             cont.ItemList[on].Index = -1;
             cont.ItemList[on].Amount = -1;
+
+            InveGUI.Player_RefreshSlot(to);
+            InveGUI.Container_RefreshSlot(on);
         }
 
         if (HandManager.MyHand)

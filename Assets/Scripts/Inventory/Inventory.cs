@@ -75,7 +75,7 @@ public class Inventory : MonoBehaviour
 
     }
 
-    private void _RemoveQuanty(int slot, int quanty)
+    void _RemoveQuanty(int slot, int quanty)
     {
         ItemList[slot].Amount -= quanty;
 
@@ -88,7 +88,7 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    private void _Additem(int index, int amount, int slot)
+    void _Additem(int index, int amount, int slot)
     {
         int Index = ItemList[slot].Index;
         int Amount = ItemList[slot].Amount;
@@ -97,7 +97,7 @@ public class Inventory : MonoBehaviour
         {
             if (Amount >= ItemManager.Instance.GetItem(index).MaxAmount)
             {
-                Additem(index, amount);
+                _Additem(index, amount);
             }
             else
             {
@@ -106,7 +106,7 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            Additem(index, amount);
+            _Additem(index, amount);
         }
 
         ItemList[slot].Index = Index;
@@ -115,7 +115,7 @@ public class Inventory : MonoBehaviour
         UpdateUi(slot);
     }
 
-    private void _Additem(int index, int amount)
+    void _Additem(int index, int amount)
     {
         for (int i = 0; i < ItemList.Count; i++)
         {
@@ -125,6 +125,7 @@ public class Inventory : MonoBehaviour
                 {
                     ItemList[i].Amount += amount;
                     UpdateUi(i);
+                    Save();
                     return;
                 }
                 else if (ItemList[i].Index == -1)
@@ -147,7 +148,7 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    private void _Move(int on, int to)
+    void _Move(int on, int to)
     {
         if (on != to)
         {
@@ -167,11 +168,12 @@ public class Inventory : MonoBehaviour
 
                         UpdateUi(to);
                         UpdateUi(on);
+                        Save();
                         return;
                     }
                     else
                     {
-                        Additem(ItemList[to].Index, ItemList[on].Amount);
+                        _Additem(ItemList[to].Index, ItemList[on].Amount);
 
                         ItemList[on].Index = -1;
                         ItemList[on].Amount = -1;
@@ -179,12 +181,22 @@ public class Inventory : MonoBehaviour
                         OnMove(on);
                         UpdateUi(to);
                         UpdateUi(on);
+                        Save();
                         return;
                     }
                 }
                 else
                 {
-                    Additem(ItemList[to].Index, ItemList[on].Amount);
+                    _Additem(ItemList[to].Index, ItemList[on].Amount);
+
+                    ItemList[on].Index = -1;
+                    ItemList[on].Amount = -1;
+                    UnityEngine.Debug.Log("Log3");
+                    OnMove(on);
+                    UpdateUi(to);
+                    UpdateUi(on);
+                    Save();
+                    return;
                 }
             }
             else
@@ -195,19 +207,22 @@ public class Inventory : MonoBehaviour
                 ItemList[on].Index = -1;
                 ItemList[on].Amount = -1;
 
+                UnityEngine.Debug.Log("Log4");
+
                 OnMove(on);
                 UpdateUi(to);
                 UpdateUi(on);
+                Save();
+                return;
             }
         }
         else
         {
 
         }
-        Save();
     }
 
-    private void _DropItem(int slot)
+    void _DropItem(int slot)
     {
         ItemData item = ItemManager.Instance.GetItem(ItemList[slot].Index);
 
@@ -224,9 +239,12 @@ public class Inventory : MonoBehaviour
 
     void OnMove(int index)
     {
-        if (HandManager.MyHand)
+        if (IsPlayer)
         {
-            HandManager.MyHand.RemoveItem(index);
+            if (HandManager.MyHand)
+            {
+                HandManager.MyHand.RemoveItem(index);
+            }
         }
     }
 

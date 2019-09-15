@@ -5547,10 +5547,6 @@ MonoBehaviour:
     MaxAmount: 100
     Stack: 0
     About:
-      IsBlock: 0
-      IsHarvestTool: 0
-      IsWeapond: 0
-      IsPlacer: 0
       BlockType: 0
       placer: 0
       BlockDamage: -1

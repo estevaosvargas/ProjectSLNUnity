@@ -76,6 +76,8 @@ public class InventoryGUI : MonoBehaviour {
         NumSlot = Inve.ItemList.Count;
 
         ContainerInve.SetActive(true);
+
+        ClearCanvasPlayer();
         ClearCanvasContainer();
         for (int i = 0; i < Inve.ItemList.Count; i++)
         {
@@ -203,7 +205,7 @@ public class InventoryGUI : MonoBehaviour {
         }
         else
         {
-            Container_Slots[index].SetSlot(index, 0, null, false);
+            Container_Slots[index].SetSlot(index, 0, null, true);
         }
     }
 

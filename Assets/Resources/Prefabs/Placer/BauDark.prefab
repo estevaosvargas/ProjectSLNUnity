@@ -152,159 +152,96 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c84665c05e0e2b74eadf45c4ebaaba5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ItemIndex: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-  AmountIndex: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-  AtelnateDataIndex:
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  ItemList:
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
+  - Index: -1
+    Amount: -1
   Drop: {fileID: 1982240538145316, guid: 2045fdc92c4eeaf4c8f37b44ba29e320, type: 3}
   IsPlayer: 0
