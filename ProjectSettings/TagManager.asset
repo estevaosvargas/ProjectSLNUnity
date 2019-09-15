@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Tree
+  - TreeObs
+  - TreeTrigger
+  - ItemDrop
+  - Water
+  - City
+  - Bau
+  - Entity
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Tree
+  - Player
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Player
+    uniqueID: 660810391
+    locked: 0
+  - name: Houses
+    uniqueID: 2122705851
+    locked: 0
+  - name: Trees
+    uniqueID: 4005141279
+    locked: 0
+  - name: Light
+    uniqueID: 2170301085
+    locked: 0

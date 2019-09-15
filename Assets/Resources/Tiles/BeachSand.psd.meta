@@ -1,0 +1,748 @@
+fileFormatVersion: 2
+guid: ffa2c21597fe599439276b5ac97a3d69
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: Grass_TL
+  - first:
+      213: 21300002
+    second: Grass_L
+  - first:
+      213: 21300004
+    second: Grass_R
+  - first:
+      213: 21300006
+    second: Grass_TR
+  - first:
+      213: 21300008
+    second: Grass_DL
+  - first:
+      213: 21300010
+    second: Grass_DR
+  - first:
+      213: 21300012
+    second: BeachSand_
+  - first:
+      213: 21300014
+    second: Grass_D
+  - first:
+      213: 21300016
+    second: Grass_T
+  - first:
+      213: 21300018
+    second: BeachSand_0
+  - first:
+      213: 21300020
+    second: BeachSand_1
+  - first:
+      213: 21300022
+    second: BeachSand_2
+  - first:
+      213: 21300024
+    second: BeachSand_3
+  - first:
+      213: 21300026
+    second: BeachSand_4
+  - first:
+      213: 21300028
+    second: BeachSand_5
+  - first:
+      213: 21300030
+    second: BeachSand_6
+  - first:
+      213: 21300032
+    second: BeachSand_7
+  - first:
+      213: 21300034
+    second: BeachSand_8
+  - first:
+      213: 21300036
+    second: BeachSand_9
+  - first:
+      213: 21300038
+    second: BeachSand_10
+  - first:
+      213: 21300040
+    second: BeachSand_11
+  - first:
+      213: 21300042
+    second: BeachSand_12
+  - first:
+      213: 21300044
+    second: BeachSand_13
+  - first:
+      213: 21300046
+    second: BeachSand_14
+  - first:
+      213: 21300048
+    second: BeachSand_15
+  - first:
+      213: 21300050
+    second: GrassFW_
+  - first:
+      213: 21300052
+    second: GrassRO_
+  - first:
+      213: 21300054
+    second: GrassFB_
+  - first:
+      213: 4617713297349300241
+    second: BeachSand_16
+  - first:
+      213: 2322712195503288127
+    second: BeachSand_17
+  - first:
+      213: -6490970973527843682
+    second: BeachSand_18
+  - first:
+      213: -430359387017326399
+    second: BeachSand_19
+  - first:
+      213: 7703495579919428905
+    second: BeachSand_20
+  - first:
+      213: -4050624969962645087
+    second: BeachSand_21
+  - first:
+      213: -6887888275824167892
+    second: BeachSand_22
+  - first:
+      213: 4217300399617077797
+    second: BeachSand_23
+  externalObjects: {}
+  serializedVersion: 10
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 1
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: -1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 65.4
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BeachSand_
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 406
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 902c852e890aedf41ad6ae6bd691e9cd
+      internalID: 21300012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_0
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 220
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c42970852b87dd4f9cfd7d84bd4ffca
+      internalID: 21300018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_1
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 220
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 162fd6a75d1d5a647ab7ddb218895b7c
+      internalID: 21300020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_2
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 220
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b2c72957b5ae18244b24abce7751da9f
+      internalID: 21300022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_3
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 220
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 28497a3800f5c024ca4999b3c1e8c0cd
+      internalID: 21300024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_4
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 151
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 11d5c42ca93ba5246a3a76a4ff8c444f
+      internalID: 21300026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_5
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 151
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 42a4beb0a1d858e458d83d9a96bd40ce
+      internalID: 21300028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_6
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 151
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d82da99b8bd44841bfc26a7a27cf80e
+      internalID: 21300030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_7
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 151
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 45851b440c644154b9d4c92f1469854b
+      internalID: 21300032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_8
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 82
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 58b4ecfe8860ae54c8e2e9425a0dd84b
+      internalID: 21300034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_9
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 82
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 43c1affd743567e4e8d6c901a98bbb7f
+      internalID: 21300036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_10
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 82
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ff3cec9a252d61439ccf112ed697fa5
+      internalID: 21300038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_11
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 82
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af1cce820705a1248818d3b6fde79326
+      internalID: 21300040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_12
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 13
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2b9f3aba32f12fc4ab6601a01e27340d
+      internalID: 21300042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_13
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 13
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eb9f1c32bf691cc4f83812c4282900bf
+      internalID: 21300044
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_14
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 13
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd9578bbc7a833e4485182ed400dc2e9
+      internalID: 21300046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_15
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 13
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 16d1e4dcb5ffd124089f0cf2e6cbc2f7
+      internalID: 21300048
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_16
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 11
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 17ad9c438d41b47499b87e02d03aa1ef
+      internalID: 4617713297349300241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_17
+      rect:
+        serializedVersion: 2
+        x: 377
+        y: 11
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 186564950542f9e468df412ebaebb79c
+      internalID: 2322712195503288127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_18
+      rect:
+        serializedVersion: 2
+        x: 377
+        y: 80
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc5a2fecad968fe449b90168e26226bc
+      internalID: -6490970973527843682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_19
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 80
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3a25ae384f66a1e4faab38039a180437
+      internalID: -430359387017326399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_20
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 11
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e057610817c8f9419128f84f57a2ac6
+      internalID: 7703495579919428905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_21
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 80
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 21ee11d7102247f468a856681e5e1a18
+      internalID: -4050624969962645087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_22
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 151
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dfa12d314fc946741b1eaff796eae9d7
+      internalID: -6887888275824167892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BeachSand_23
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 220
+        width: 66
+        height: 66
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 67e5911cc602249458d4a59248bd0d93
+      internalID: 4217300399617077797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 05483996e085bf44c81cbf7b16151bc3
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
