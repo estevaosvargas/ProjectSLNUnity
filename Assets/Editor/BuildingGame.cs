@@ -72,6 +72,24 @@ public class BuildingGame : MonoBehaviour {
     {
         Debug.Log("Client Version For Linux is not Ready");
     }
+
+    [MenuItem("BuildClient/ClientAndroid", false, 3)]
+    private static void AndroidBuild()
+    {
+        chanageClient();
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown.apk", BuildTarget.Android, BuildOptions.None);
+        BuildSummary summary = report.summary;
+
+        if (summary.result == BuildResult.Succeeded)
+        {
+            Debug.Log("Build succeeded: " + summary.totalSize + " bytes" + " | Type: Android");
+        }
+
+        if (summary.result == BuildResult.Failed)
+        {
+            Debug.Log("Build failed");
+        }
+    }
     #endregion
 
     #region ClientBuild-Demo

@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClickHandler, IDropHandler,ICancelHandler, IPointerEnterHandler, IPointerExitHandler
+public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClickHandler, IDropHandler, ICancelHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public int Index;
     public ItemData Item;
@@ -35,10 +35,15 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Slots DragSlot = eventData.pointerDrag.GetComponent<Slots>();
-        Slots DropSlot = eventData.pointerEnter.GetComponent<Slots>();
-
         Game.GameManager.IconHold.SetActive(false);
+
+        Slots DragSlot = null;
+        Slots DropSlot = null;
+
+        if (eventData.pointerEnter != null) { DropSlot = eventData.pointerEnter.GetComponent<Slots>(); }//Add DropSlot, if is not null
+        if (eventData.pointerDrag.GetComponent<Slots>() != null) { DragSlot = eventData.pointerDrag.GetComponent<Slots>(); }//Add DragSlot, if is not null
+
+        if (DragSlot.Empty) { return; }//if Drag slot is empty, return, prevent error's
 
         if (eventData.pointerEnter == null)//Drop Handller
         {
@@ -70,13 +75,12 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
                 InveGUI.InveCont.Move(DragSlot.Index, DropSlot.Index);
             }
         }
-
         DragSlot = null;
         DropSlot = null;
     }
 
 
-    public void MoveCont(Inventory player, Inventory cont,int on, int to)
+    public void MoveCont(Inventory player, Inventory cont, int on, int to)
     {
         if (cont.ItemList[to].Index >= 0)
         {
@@ -163,7 +167,7 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
     {
         if (eventData.button == PointerEventData.InputButton.Right)
         {
-            
+
         }
     }
 

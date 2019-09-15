@@ -175,6 +175,11 @@ public class ConsoleInGame : MonoBehaviour
 
     public void AddInRoolGUI(string text, bool command)
     {
+        if (Application.isLoadingLevel)
+        {
+            return;
+        }
+
         if (List.Count >= 500)
         {
             List.Clear();

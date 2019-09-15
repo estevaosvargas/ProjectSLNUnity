@@ -320,6 +320,8 @@ public class Chunk : MonoBehaviour
         {
             GameObject trees = null;
             trees = Instantiate(SpriteManager.Instance.GetPrefabbyname(tile.typego.ToString()), new Vector3(tile.x + 0.5f, tile.y, 0.5f), Quaternion.identity);
+            trees.transform.SetParent(this.transform, true);
+            tile.ObjThis = trees;
 
             if (trees.transform.position.y > 0)
             {
@@ -329,10 +331,6 @@ public class Chunk : MonoBehaviour
             {
                 trees.transform.position = new Vector3(tile.x + 0.5f, tile.y, 0.05f);
             }
-
-            trees.transform.SetParent(this.transform, true);
-
-            tile.ObjThis = trees;
 
             if (trees.GetComponent<Trees>())
             {
