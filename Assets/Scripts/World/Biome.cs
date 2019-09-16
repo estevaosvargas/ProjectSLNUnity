@@ -161,15 +161,18 @@ public static class Biome
                     }
                     else if (UnityEngine.Random.Range(1, 128) > 125)
                     {
-                        return TypeBlock.GrassFW;
+                        tile.typeVariante = TypeVariante.GrassFL1;
+                        return TypeBlock.Grass;
                     }
                     else if (UnityEngine.Random.Range(1, 128) > 125)
                     {
-                        return TypeBlock.GrassFB;
+                        tile.typeVariante = TypeVariante.GrassFL2;
+                        return TypeBlock.Grass;
                     }
                     else if (UnityEngine.Random.Range(1, 128) > 125)
                     {
-                        return TypeBlock.GrassRO;
+                        tile.typeVariante = TypeVariante.GrassRC;
+                        return TypeBlock.Grass;
                     }
                     else
                     {
@@ -587,15 +590,18 @@ public static class Biome
                     }
                     else if (UnityEngine.Random.Range(1, 128) > 125)
                     {
-                        return TypeBlock.GrassFW;
+                        tile.typeVariante = TypeVariante.GrassFL1;
+                        return TypeBlock.Grass;
                     }
                     else if (UnityEngine.Random.Range(1, 128) > 125)
                     {
-                        return TypeBlock.GrassFB;
+                        tile.typeVariante = TypeVariante.GrassFL2;
+                        return TypeBlock.Grass;
                     }
                     else if (UnityEngine.Random.Range(1, 128) > 125)
                     {
-                        return TypeBlock.GrassRO;
+                        tile.typeVariante = TypeVariante.GrassRC;
+                        return TypeBlock.Grass;
                     }
                     else
                     {
@@ -826,15 +832,18 @@ public static class Biome
                 }
                 else if (UnityEngine.Random.Range(1, 128) > 125)
                 {
-                    return TypeBlock.GrassFW;
+                    tile.typeVariante = TypeVariante.GrassFL1;
+                    return TypeBlock.Grass;
                 }
                 else if (UnityEngine.Random.Range(1, 128) > 125)
                 {
-                    return TypeBlock.GrassFB;
+                    tile.typeVariante = TypeVariante.GrassFL2;
+                    return TypeBlock.Grass;
                 }
                 else if (UnityEngine.Random.Range(1, 128) > 125)
                 {
-                    return TypeBlock.GrassRO;
+                    tile.typeVariante = TypeVariante.GrassRC;
+                    return TypeBlock.Grass;
                 }
                 else
                 {

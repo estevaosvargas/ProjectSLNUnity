@@ -87,15 +87,6 @@ public static class GetPresets
             case TypeBlock.Rock:
                 value = false;
                 break;
-            case TypeBlock.GrassFB:
-                value = false;
-                break;
-            case TypeBlock.GrassFW:
-                value = false;
-                break;
-            case TypeBlock.GrassRO:
-                value = false;
-                break;
             default:
                 value = true;
                 break;
@@ -177,8 +168,13 @@ public enum TypeBlock : byte
     Grass, Water, GoldStone, IronStone,
     Rock, DirtGrass, Sand,
     Bloco, Dirt, RockHoleUp, RockHoleDown,
-    DirtRoad, Lava, IceWater, Snow, LightBlockON, GrassFW, GrassFB, GrassRO,
+    DirtRoad, Lava, IceWater, Snow, LightBlockON,
     BeachSand
+}
+
+public enum TypeVariante : byte
+{
+    none, GrassFL1, GrassFL2, GrassRC
 }
 
 public enum TakeGO : byte

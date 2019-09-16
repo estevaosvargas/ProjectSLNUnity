@@ -512,20 +512,15 @@ namespace DarckNet
                             default:
                                 if (inc.SenderConnection.Status == NetConnectionStatus.Connected)
                                 {
-                                    Debug.Log("Debu01");
                                     for (int i = 0; i < Events.Count; i++)
                                     {
                                         Events[i].OnPlayerConnect(inc.SenderConnection);
                                     }
-                                    Debug.Log("Debu02");
                                     List<NetViewSerializer> netvi = new List<NetViewSerializer>();
-                                    Debug.Log("Debu03");
                                     var om = MyPeer.CreateMessage();
-                                    Debug.Log("This Player : " + NetUtility.ToHexString(inc.SenderConnection.RemoteUniqueIdentifier) + " Sended");
                                     om.Write((byte)DataType.Instantiate_Pool);
                                     om.Write(ViwesIDs);
                                     om.WriteVariableInt64(inc.SenderConnection.RemoteUniqueIdentifier);
-                                    Debug.Log("Debu04");
                                     foreach (var kvp in GetAutomaticView(0))
                                     {
                                         NetViewSerializer neww = new NetViewSerializer();
@@ -614,7 +609,7 @@ namespace DarckNet
                                 }
                                 else if (inc.SenderConnection.Status == NetConnectionStatus.Disconnecting)
                                 {
-                                    //last paket sande to client, and after this is dosconnect
+                                    //last paket sande to client, and after this is disconnect
                                 }
                                 break;
                         }
@@ -697,8 +692,8 @@ namespace DarckNet
             }
         }
 
-    static void ProceMenssagServer(NetIncomingMessage inc)
-    {
+        static void ProceMenssagServer(NetIncomingMessage inc)
+        {
             DataType type = (DataType)inc.ReadByte();
 
             if (type == DataType.RPC)//RPC Normal
@@ -925,8 +920,8 @@ namespace DarckNet
             }
         }
 
-    static void ProceMenssagClient(NetIncomingMessage inc)
-    {
+        static void ProceMenssagClient(NetIncomingMessage inc)
+        {
             DataType type = (DataType)inc.ReadByte();
 
             if (type == DataType.RPC)

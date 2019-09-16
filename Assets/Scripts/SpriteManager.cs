@@ -324,10 +324,15 @@ public class SpriteManager : MonoBehaviour
 
     public Sprite GetSprite(Tile tile)
     {
+        string name = tile.type.ToString() + "_";
+
+        if (tile.typeVariante != TypeVariante.none)
+        {
+            name = tile.typeVariante.ToString();
+        }
+
         if (tile.ConnecyToNightboors)
         {
-            string name = tile.type.ToString() + "_";
-
             Tile[] neighbors = tile.GetNeighboors(true);
 
             //nameredy = GetName(neighbors, tile, name);
@@ -402,29 +407,46 @@ public class SpriteManager : MonoBehaviour
                     {
                         name = tile.type.ToString() + "_" + "14";
                     }
-                    else if (neighbors[0].type != tile.type && neighbors[1].type != tile.type && neighbors[2].type != tile.type && neighbors[3].type != tile.type)//Tile Do Meio
+                    else if (neighbors[4].type != tile.type && neighbors[5].type == tile.type && neighbors[6].type == tile.type && neighbors[7].type == tile.type)//corn baixo direita
                     {
-                        name = "15";
+                        name = tile.type.ToString() + "_" + "16";
                     }
-                }
-
-                /*if (neighbors[2] != null && neighbors[2].type != tile.type)
-                {
-                    name = tile.type.ToString() + "_" + "RockWall";
-                }*/
-
-                if (tileSprites.ContainsKey(name))
-                {
-                    return tileSprites[name];
+                    else if (neighbors[4].type == tile.type && neighbors[5].type == tile.type && neighbors[6].type == tile.type && neighbors[7].type != tile.type)//corn baixo esuqerda
+                    {
+                        name = tile.type.ToString() + "_" + "17";
+                    }
+                    else if (neighbors[4].type == tile.type && neighbors[5].type == tile.type && neighbors[6].type != tile.type && neighbors[7].type == tile.type)//corn cima direita
+                    {
+                        name = tile.type.ToString() + "_" + "18";
+                    }
+                    else if (neighbors[4].type == tile.type && neighbors[5].type != tile.type && neighbors[6].type == tile.type && neighbors[7].type == tile.type)//corn cima esquerda
+                    {
+                        name = tile.type.ToString() + "_" + "19";
+                    }
+                    else if (neighbors[4].type != tile.type && neighbors[5].type == tile.type && neighbors[6].type == tile.type && neighbors[7].type != tile.type)//corn baixo 2
+                    {
+                        name = tile.type.ToString() + "_" + "20";
+                    }
+                    else if (neighbors[4].type == tile.type && neighbors[5].type != tile.type && neighbors[6].type != tile.type && neighbors[7].type == tile.type)//corn cima 2
+                    {
+                        name = tile.type.ToString() + "_" + "21";
+                    }
+                    else if (neighbors[4].type == tile.type && neighbors[5].type != tile.type && neighbors[6].type == tile.type && neighbors[7].type != tile.type)//corn Esquerda Esquerda(Cima Baixo)
+                    {
+                        name = tile.type.ToString() + "_" + "22";
+                    }
+                    else if (neighbors[4].type != tile.type && neighbors[5].type == tile.type && neighbors[6].type != tile.type && neighbors[7].type == tile.type)//corn Direita Esquerda(Cima Baixo)
+                    {
+                        name = tile.type.ToString() + "_" + "23";
+                    }
                 }
             }
         }
 
-        if (tileSprites.ContainsKey(tile.type.ToString() + "_"))
+        if (tileSprites.ContainsKey(name))
         {
-            return tileSprites[tile.type.ToString() + "_"];
+            return tileSprites[name];
         }
-
         return null;
     }
 

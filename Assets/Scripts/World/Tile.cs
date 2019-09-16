@@ -7,6 +7,7 @@ using System;
 public class Tile
 {
     public TypeBlock type { get; private set; }
+    public TypeVariante typeVariante;
     public Placer placerObj { get; set; }
     public TakeGO typego { get; set; }
 

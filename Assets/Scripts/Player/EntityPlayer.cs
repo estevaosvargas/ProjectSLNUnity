@@ -189,29 +189,6 @@ public class EntityPlayer : EntityLife
         }
     }
 
-    bool Canwalk(Tile tilee)
-    {
-        Tile tile = tilee;
-
-        switch (tile.type)
-        {
-            case TypeBlock.Grass:
-                return true;
-            case TypeBlock.GrassFB:
-                return true;
-            case TypeBlock.GrassFW:
-                return true;
-            case TypeBlock.GrassRO:
-                return true;
-            case TypeBlock.Rock:
-                return false;
-            case TypeBlock.Water:
-                return false;
-            default:
-                return false;
-        }
-    }
-
     public void Direita()
     {
         //Anim.SetFloat("X", 0);
