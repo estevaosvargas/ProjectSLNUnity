@@ -353,91 +353,91 @@ public class SpriteManager : MonoBehaviour
                 {
                     if (neighbors[0].type == tile.type && neighbors[1].type != tile.type && neighbors[2].type != tile.type && neighbors[3].type != tile.type)//123
                     {
-                        name = tile.type.ToString() + "_" + "1";
+                        name = tile.type.ToString() + "_tile_" + "1";
                     }
                     else if (neighbors[0].type != tile.type && neighbors[1].type != tile.type && neighbors[2].type != tile.type && neighbors[3].type == tile.type)//012
                     {
-                        name = tile.type.ToString() + "_" + "2";
+                        name = tile.type.ToString() + "_tile_" + "2";
                     }
                     else if (neighbors[0].type == tile.type && neighbors[1].type != tile.type && neighbors[2].type != tile.type && neighbors[3].type == tile.type)//12
                     {
-                        name = tile.type.ToString() + "_" + "3";
+                        name = tile.type.ToString() + "_tile_" + "3";
                     }
                     else if (neighbors[0].type != tile.type && neighbors[1].type == tile.type && neighbors[2].type != tile.type && neighbors[3].type != tile.type)//023
                     {
-                        name = tile.type.ToString() + "_" + "4";
+                        name = tile.type.ToString() + "_tile_" + "4";
                     }
                     else if (neighbors[0].type == tile.type && neighbors[1].type == tile.type && neighbors[2].type != tile.type && neighbors[3].type != tile.type)//23
                     {
-                        name = tile.type.ToString() + "_" + "5";
+                        name = tile.type.ToString() + "_tile_" + "5";
                     }
                     else if (neighbors[0].type != tile.type && neighbors[1].type == tile.type && neighbors[2].type != tile.type && neighbors[3].type == tile.type)//02
                     {
-                        name = tile.type.ToString() + "_" + "6";
+                        name = tile.type.ToString() + "_tile_" + "6";
                     }
                     else if (neighbors[0].type == tile.type && neighbors[1].type == tile.type && neighbors[2].type != tile.type && neighbors[3].type == tile.type)//2
                     {
-                        name = tile.type.ToString() + "_" + "7";
+                        name = tile.type.ToString() + "_tile_" + "7";
                     }
                     else if (neighbors[0].type != tile.type && neighbors[1].type != tile.type && neighbors[2].type == tile.type && neighbors[3].type != tile.type)//013
                     {
-                        name = tile.type.ToString() + "_" + "8";
+                        name = tile.type.ToString() + "_tile_" + "8";
                     }
                     else if (neighbors[0].type == tile.type && neighbors[1].type != tile.type && neighbors[2].type == tile.type && neighbors[3].type != tile.type)//13
                     {
-                        name = tile.type.ToString() + "_" + "9";
+                        name = tile.type.ToString() + "_tile_" + "9";
                     }
                     else if (neighbors[0].type != tile.type && neighbors[1].type != tile.type && neighbors[2].type == tile.type && neighbors[3].type == tile.type)//012
                     {
-                        name = tile.type.ToString() + "_" + "10";
+                        name = tile.type.ToString() + "_tile_" + "10";
                     }
                     else if (neighbors[0].type == tile.type && neighbors[1].type != tile.type && neighbors[2].type == tile.type && neighbors[3].type == tile.type)//1
                     {
-                        name = tile.type.ToString() + "_" + "11";
+                        name = tile.type.ToString() + "_tile_" + "11";
                     }
                     else if (neighbors[0].type != tile.type && neighbors[1].type == tile.type && neighbors[2].type == tile.type && neighbors[3].type != tile.type)//03
                     {
-                        name = tile.type.ToString() + "_" + "12";
+                        name = tile.type.ToString() + "_tile_" + "12";
                     }
                     else if (neighbors[0].type == tile.type && neighbors[1].type == tile.type && neighbors[2].type == tile.type && neighbors[3].type != tile.type)//3
                     {
-                        name = tile.type.ToString() + "_" + "13";
+                        name = tile.type.ToString() + "_tile_" + "13";
                     }
                     else if (neighbors[0].type != tile.type && neighbors[1].type == tile.type && neighbors[2].type == tile.type && neighbors[3].type == tile.type)//0
                     {
-                        name = tile.type.ToString() + "_" + "14";
+                        name = tile.type.ToString() + "_tile_" + "14";
                     }
                     else if (neighbors[4].type != tile.type && neighbors[5].type == tile.type && neighbors[6].type == tile.type && neighbors[7].type == tile.type)//corn baixo direita
                     {
-                        name = tile.type.ToString() + "_" + "16";
+                        name = tile.type.ToString() + "_tile_" + "16";
                     }
                     else if (neighbors[4].type == tile.type && neighbors[5].type == tile.type && neighbors[6].type == tile.type && neighbors[7].type != tile.type)//corn baixo esuqerda
                     {
-                        name = tile.type.ToString() + "_" + "17";
+                        name = tile.type.ToString() + "_tile_" + "17";
                     }
                     else if (neighbors[4].type == tile.type && neighbors[5].type == tile.type && neighbors[6].type != tile.type && neighbors[7].type == tile.type)//corn cima direita
                     {
-                        name = tile.type.ToString() + "_" + "18";
+                        name = tile.type.ToString() + "_tile_" + "18";
                     }
                     else if (neighbors[4].type == tile.type && neighbors[5].type != tile.type && neighbors[6].type == tile.type && neighbors[7].type == tile.type)//corn cima esquerda
                     {
-                        name = tile.type.ToString() + "_" + "19";
+                        name = tile.type.ToString() + "_tile_" + "19";
                     }
                     else if (neighbors[4].type != tile.type && neighbors[5].type == tile.type && neighbors[6].type == tile.type && neighbors[7].type != tile.type)//corn baixo 2
                     {
-                        name = tile.type.ToString() + "_" + "20";
+                        name = tile.type.ToString() + "_tile_" + "20";
                     }
                     else if (neighbors[4].type == tile.type && neighbors[5].type != tile.type && neighbors[6].type != tile.type && neighbors[7].type == tile.type)//corn cima 2
                     {
-                        name = tile.type.ToString() + "_" + "21";
+                        name = tile.type.ToString() + "_tile_" + "21";
                     }
                     else if (neighbors[4].type == tile.type && neighbors[5].type != tile.type && neighbors[6].type == tile.type && neighbors[7].type != tile.type)//corn Esquerda Esquerda(Cima Baixo)
                     {
-                        name = tile.type.ToString() + "_" + "22";
+                        name = tile.type.ToString() + "_tile_" + "22";
                     }
                     else if (neighbors[4].type != tile.type && neighbors[5].type == tile.type && neighbors[6].type != tile.type && neighbors[7].type == tile.type)//corn Direita Esquerda(Cima Baixo)
                     {
-                        name = tile.type.ToString() + "_" + "23";
+                        name = tile.type.ToString() + "_tile_" + "23";
                     }
                 }
             }

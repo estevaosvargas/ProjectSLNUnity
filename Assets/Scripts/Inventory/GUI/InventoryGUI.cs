@@ -215,7 +215,7 @@ public class InventoryGUI : MonoBehaviour {
         ClearCanvasPlayer();
         for (int i = 0; i < Inve.ItemList.Count; i++)
         {
-            if (Inve.ItemList[i].Amount > 0)
+            if (Inve.ItemList[i].Index >= 0)
             {
                 LoadInventory(i, Inve.ItemList[i].Amount, ItemManager.Instance.GetItem(Inve.ItemList[i].Index));
             }
@@ -229,7 +229,7 @@ public class InventoryGUI : MonoBehaviour {
         {
             for (int i = 0; i < InveCont.ItemList.Count; i++)
             {
-                if (InveCont.ItemList[i].Amount > 0)
+                if (Inve.ItemList[i].Index >= 0)
                 {
                     LoadContainer(i, InveCont.ItemList[i].Amount, ItemManager.Instance.GetItem(InveCont.ItemList[i].Index));
                 }

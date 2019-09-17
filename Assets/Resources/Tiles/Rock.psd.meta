@@ -34,49 +34,49 @@ TextureImporter:
     second: Rock_0
   - first:
       213: 21300020
-    second: Rock_1
+    second: Rock_tile_1
   - first:
       213: 21300022
-    second: Rock_2
+    second: Rock_tile_2
   - first:
       213: 21300024
-    second: Rock_3
+    second: Rock_tile_3
   - first:
       213: 21300026
-    second: Rock_4
+    second: Rock_tile_4
   - first:
       213: 21300028
-    second: Rock_5
+    second: Rock_tile_5
   - first:
       213: 21300030
-    second: Rock_6
+    second: Rock_tile_6
   - first:
       213: 21300032
-    second: Rock_7
+    second: Rock_tile_7
   - first:
       213: 21300034
-    second: Rock_8
+    second: Rock_tile_8
   - first:
       213: 21300036
-    second: Rock_9
+    second: Rock_tile_9
   - first:
       213: 21300038
-    second: Rock_10
+    second: Rock_tile_10
   - first:
       213: 21300040
-    second: Rock_11
+    second: Rock_tile_11
   - first:
       213: 21300042
-    second: Rock_12
+    second: Rock_tile_12
   - first:
       213: 21300044
-    second: Rock_13
+    second: Rock_tile_13
   - first:
       213: 21300046
-    second: Rock_14
+    second: Rock_tile_14
   - first:
       213: 21300048
-    second: Rock_15
+    second: Rock_tile_15
   - first:
       213: 21300050
     second: Rock_
@@ -85,28 +85,28 @@ TextureImporter:
     second: Rock_RockWall
   - first:
       213: -6770223400588028623
-    second: Rock_16
+    second: Rock_tile_16
   - first:
       213: 782178149287877576
-    second: Rock_17
+    second: Rock_tile_17
   - first:
       213: 3825686064796405229
-    second: Rock_18
+    second: Rock_tile_18
   - first:
       213: 3039383389240142966
-    second: Rock_19
+    second: Rock_tile_19
   - first:
       213: -1907231346209955107
-    second: Rock_20
+    second: Rock_tile_20
   - first:
       213: 3960146190663221933
-    second: Rock_21
+    second: Rock_tile_21
   - first:
       213: -7474100291440499343
-    second: Rock_22
+    second: Rock_tile_22
   - first:
       213: 2614034167984939514
-    second: Rock_23
+    second: Rock_tile_23
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -224,7 +224,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_1
+      name: Rock_tile_1
       rect:
         serializedVersion: 2
         x: 486
@@ -245,7 +245,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_2
+      name: Rock_tile_2
       rect:
         serializedVersion: 2
         x: 552
@@ -266,7 +266,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_3
+      name: Rock_tile_3
       rect:
         serializedVersion: 2
         x: 248
@@ -287,7 +287,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_4
+      name: Rock_tile_4
       rect:
         serializedVersion: 2
         x: 354
@@ -308,7 +308,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_5
+      name: Rock_tile_5
       rect:
         serializedVersion: 2
         x: 116
@@ -329,7 +329,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_6
+      name: Rock_tile_6
       rect:
         serializedVersion: 2
         x: 420
@@ -350,7 +350,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_7
+      name: Rock_tile_7
       rect:
         serializedVersion: 2
         x: 182
@@ -371,7 +371,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_8
+      name: Rock_tile_8
       rect:
         serializedVersion: 2
         x: 486
@@ -392,7 +392,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_9
+      name: Rock_tile_9
       rect:
         serializedVersion: 2
         x: 486
@@ -413,7 +413,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_10
+      name: Rock_tile_10
       rect:
         serializedVersion: 2
         x: 248
@@ -434,7 +434,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_11
+      name: Rock_tile_11
       rect:
         serializedVersion: 2
         x: 248
@@ -455,7 +455,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_12
+      name: Rock_tile_12
       rect:
         serializedVersion: 2
         x: 116
@@ -476,7 +476,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_13
+      name: Rock_tile_13
       rect:
         serializedVersion: 2
         x: 116
@@ -497,7 +497,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_14
+      name: Rock_tile_14
       rect:
         serializedVersion: 2
         x: 182
@@ -518,7 +518,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_15
+      name: Rock_tile_15
       rect:
         serializedVersion: 2
         x: 486
@@ -581,7 +581,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_16
+      name: Rock_tile_16
       rect:
         serializedVersion: 2
         x: 116
@@ -602,7 +602,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_17
+      name: Rock_tile_17
       rect:
         serializedVersion: 2
         x: 187
@@ -623,7 +623,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_18
+      name: Rock_tile_18
       rect:
         serializedVersion: 2
         x: 187
@@ -644,7 +644,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_19
+      name: Rock_tile_19
       rect:
         serializedVersion: 2
         x: 116
@@ -665,7 +665,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_20
+      name: Rock_tile_20
       rect:
         serializedVersion: 2
         x: 258
@@ -686,7 +686,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_21
+      name: Rock_tile_21
       rect:
         serializedVersion: 2
         x: 258
@@ -707,7 +707,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_22
+      name: Rock_tile_22
       rect:
         serializedVersion: 2
         x: 116
@@ -728,7 +728,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rock_23
+      name: Rock_tile_23
       rect:
         serializedVersion: 2
         x: 187
