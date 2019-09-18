@@ -63,7 +63,7 @@ public static class GetPresets
                 value = true;
                 break;
             case TypeBlock.Rock:
-                value = false;
+                value = true;
                 break;
             default:
                 value = false;
