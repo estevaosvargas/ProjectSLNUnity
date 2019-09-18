@@ -114,6 +114,16 @@ public class Vilanger : Pathfindingentity
         }
     }
 
+    public void FootPrintRight()
+    {
+        
+    }
+
+    public void FootPrintLeft()
+    {
+        
+    }
+
     void FixedUpdate()
     {
         velocity = (transform.position - prevPos) * 5 / Time.deltaTime;

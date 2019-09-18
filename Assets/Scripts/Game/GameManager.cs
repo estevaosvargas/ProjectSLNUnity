@@ -73,6 +73,7 @@ public class GameManager : UIElements
     void Start()
     {
         Application.targetFrameRate = 60;
+        Game.AudioManager.LoadAudio();
         /*if (Application.isEditor)
         {
 #if UNITY_EDITOR
@@ -1210,6 +1211,31 @@ public class GameInput
     }
 }
 
+public class AudioManager
+{
+    public AudioClip NONETILE;
+    public AudioClip[] GRASS_FOOT;
+
+    public void LoadAudio()
+    {
+        Debug.Log("Loading Audio...");
+        NONETILE = Resources.Load<AudioClip>("Audio/nonetile");
+        GRASS_FOOT = Resources.LoadAll<AudioClip>("Audio/Grass/");
+        Debug.Log("Loading Audio Finished!");
+    }
+
+    public AudioClip GetFootSound(TypeBlock tile)
+    {
+        switch (tile)
+        {
+            case TypeBlock.Grass:
+                return GRASS_FOOT[UnityEngine.Random.Range(0, GRASS_FOOT.Length - 1)];
+            default:
+                return NONETILE;
+        }
+    }
+}
+
 /// <summary>
 /// Use to get instance, of the scripts
 /// </summary>
@@ -1220,6 +1246,7 @@ public static class Game
     public static DebugGUI DebugGUI;
     public static TileAnimations TileAnimations;
     public static MenuManager MenuManager;
+    public static AudioManager AudioManager = new AudioManager();
 
     #region StaticMethods
 

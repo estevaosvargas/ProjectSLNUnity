@@ -12,12 +12,14 @@ public class PlayerNetStats
     public bool swiming = false;
     public float angle = 0;
     public int HandLayer = 5;
+    public TypeBlock CurrentTile;
 
     public int Side = -1;
 }
 
 public class EntityPlayer : EntityLife
 {
+    public AudioSource AUDIOSOURCE;
     public Transform World;
     public Rigidbody2D body;
     public Animator Anim;
@@ -143,6 +145,8 @@ public class EntityPlayer : EntityLife
             WorldGenerator.Instance.UpdateFindChunk();
 
             Tile tile = WorldGenerator.Instance.GetTileAt(transform.position.x, transform.position.y);
+
+            NetStats.CurrentTile = tile.type;
 
             if (tile.type == TypeBlock.Water)
             {
@@ -302,28 +306,24 @@ public class EntityPlayer : EntityLife
                 Direita();
                 Anim.SetInteger("Walk", 1);
                 Anim.SetFloat("X", 0);
-                FootPArticle.Emit(1);
             }
             else if (Input.GetAxis("Horizontal") <= -0.1f)
             {
                 Esquerda();
                 Anim.SetInteger("Walk", 1);
                 Anim.SetFloat("X", 180);
-                FootPArticle.Emit(1);
             }
             else if (Input.GetAxis("Vertical") >= 0.1f)
             {
                 Cima();
                 Anim.SetInteger("Walk", 1);
                 Anim.SetFloat("X", 90);
-                FootPArticle.Emit(1);
             }
             else if (Input.GetAxis("Vertical") <= -0.1f)
             {
                 Baixo();
                 Anim.SetInteger("Walk", 1);
                 Anim.SetFloat("X", -90);
-                FootPArticle.Emit(1);
             }
             else
             {
@@ -335,6 +335,18 @@ public class EntityPlayer : EntityLife
 
         #region Server
         #endregion
+    }
+
+    public void FootPrintRight()
+    {
+        AUDIOSOURCE.PlayOneShot(Game.AudioManager.GetFootSound(NetStats.CurrentTile));
+        FootPArticle.Emit(1);
+    }
+
+    public void FootPrintLeft()
+    {
+        AUDIOSOURCE.PlayOneShot(Game.AudioManager.GetFootSound(NetStats.CurrentTile));
+        FootPArticle.Emit(1);
     }
 
     public override void OnDead()
