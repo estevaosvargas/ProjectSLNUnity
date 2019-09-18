@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 68c1c3c552b3f2240bae515982a8206d
+guid: bc50716c1b8c23849b2d5be9fd7c80fc
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -151,7 +151,7 @@ TextureImporter:
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
-    sRGBTexture: 1
+    sRGBTexture: 0
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
@@ -206,7 +206,7 @@ TextureImporter:
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 1024
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 4
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
@@ -218,7 +218,7 @@ TextureImporter:
     buildTarget: Standalone
     maxTextureSize: 1024
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 4
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
@@ -230,7 +230,7 @@ TextureImporter:
     buildTarget: Android
     maxTextureSize: 1024
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 4
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
