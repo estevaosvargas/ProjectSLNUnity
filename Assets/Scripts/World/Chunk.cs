@@ -72,26 +72,18 @@ public class Chunk : MonoBehaviour
         {
             for (int j = 0; j < Size * TileObj.transform.localScale.y; j++)
             {
-                if (havesave == false)
-                {
-                    tiles[i, j] = new Tile(i + (int)transform.position.x, j + (int)transform.position.y, 0, typebiom);
-                }
+                if (!havesave) { tiles[i, j] = new Tile(i + (int)transform.position.x, j + (int)transform.position.y, 0, typebiom); }
+
                 tiles[i, j].SetUpTile(tiles[i, j]);
                 tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
 
-                GameObject TileGo = null;
-
-                TileGo = GameObject.Instantiate(TileObj, new Vector3(tiles[i, j].x, tiles[i, j].y, 0), Quaternion.identity);
-
+                GameObject TileGo = GameObject.Instantiate(TileObj, new Vector3(tiles[i, j].x, tiles[i, j].y, 0.05f), Quaternion.identity);
                 TileGo.name = "Tile_" + tiles[i, j].x + "_" + tiles[i, j].y;
-
                 TileGo.transform.position = new Vector3(tiles[i, j].x, tiles[i, j].y, 0);
                 TileGo.transform.SetParent(this.transform, true);
 
                 tiles[i, j].TileObj = TileGo.GetComponent<TileObj>();
-
                 tiles[i, j].TileChunk = new ChunkInfo((int)transform.position.x, (int)transform.position.y, this);
-
 
                 //Set Up Tree OBject
                 SetUpTileTree(tiles[i, j]);
@@ -150,15 +142,33 @@ public class Chunk : MonoBehaviour
     public void OnTileTypeChange(Tile tile)
     {
         SpriteRenderer spritee = tileGOmap[tile].GetComponent<SpriteRenderer>();
-        spritee.sprite = SpriteManager.Instance.GetSprite(tile);
-        tile.spritetile = spritee;
-
-        spritee.color = spritee.color * GetPresets.ColorBiome(tile.TileBiome, tile.type);
-
         PolygonCollider2D boxcol = tileGOmap[tile].GetComponent<PolygonCollider2D>();
         LightToD light = tileGOmap[tile].GetComponentInChildren<LightToD>();
         TileObj tilescript = tileGOmap[tile].GetComponentInChildren<TileObj>();
 
+        spritee.color = spritee.color * GetPresets.ColorBiome(tile.TileBiome, tile.type);
+        spritee.sprite = SpriteManager.Instance.GetSprite(tile);
+        tile.spritetile = spritee;
+
+        if (GetPresets.TileOrder(tile))
+        {
+            spritee.transform.position = new Vector3(tile.x, tile.y, 0);
+            spritee.transform.SetParent(this.transform, true);
+
+            if (spritee.transform.position.y > 0)
+            {
+                spritee.transform.position = new Vector3(tile.x, tile.y, -0.05f);
+            }
+            else if (tileGOmap[tile].transform.position.y < 0)
+            {
+                spritee.transform.position = new Vector3(tile.x, tile.y, 0.05f);
+            }
+
+            spritee.GetComponent<SpriteRenderer>().sortingOrder = -(int)spritee.transform.position.y;
+            spritee.sortingLayerName = "Player";
+        }
+
+        #region SetUpPathGrid
         if (!Game.PathGrid.tiles.ContainsKey(new Vector2(tile.x, tile.y)))
         {
             if (tile.CanWalk)
@@ -190,34 +200,7 @@ public class Chunk : MonoBehaviour
                 Game.PathGrid.tiles[new Vector2(tile.x, tile.y)] = new Node(false, new Vector3(tile.x, tile.y, 0), 1);
             }
         }
-
-        if (tile.type == TypeBlock.Rock)
-        {
-            //tilescript.SetTiles();
-        }
-
-        if (tile.type == TypeBlock.LightBlockON)
-        {
-            if (light != null)
-            {
-
-            }
-            else
-            {
-                GameObject TileGo = Instantiate(lightobj, new Vector3(tile.x, tile.y, 0), Quaternion.identity);
-                TileGo.transform.position = new Vector3(tile.x, tile.y, 0);
-                TileGo.transform.SetParent(tileGOmap[tile].transform, true);
-
-                TileGo.GetComponent<LightToD>().LightColor = Color.clear;
-            }
-        }
-        else
-        {
-            if (light != null)
-            {
-                Destroy(light.gameObject);
-            }
-        }
+        #endregion
 
         if (tile.IsColider)
         {
@@ -236,7 +219,7 @@ public class Chunk : MonoBehaviour
         }
         else
         {
-            if (boxcol != null)
+            if (!boxcol)
             {
                 Destroy(boxcol);
             }

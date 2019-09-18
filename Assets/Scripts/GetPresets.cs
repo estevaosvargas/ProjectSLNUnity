@@ -160,6 +160,17 @@ public static class GetPresets
         }
         return Color.white;
     }
+
+    public static bool TileOrder(Tile tile)
+    {
+        switch (tile.type)
+        {
+            case TypeBlock.Rock:
+                return true;
+            default:
+                return false;
+        }
+    }
 }
 
 public enum TypeBlock : byte

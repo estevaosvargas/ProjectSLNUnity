@@ -439,6 +439,10 @@ public class SpriteManager : MonoBehaviour
                     {
                         name = tile.type.ToString() + "_tile_" + "23";
                     }
+                    else if (neighbors[0].type != tile.type && neighbors[1].type != tile.type && neighbors[2].type != tile.type && neighbors[3].type != tile.type)//Check if tile is solo
+                    {
+                        name = tile.type.ToString() + "_S";
+                    }
                 }
             }
         }
