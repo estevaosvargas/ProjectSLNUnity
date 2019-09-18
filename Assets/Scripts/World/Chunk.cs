@@ -167,6 +167,12 @@ public class Chunk : MonoBehaviour
             spritee.GetComponent<SpriteRenderer>().sortingOrder = -(int)spritee.transform.position.y;
             spritee.sortingLayerName = "Player";
         }
+        else
+        {
+            spritee.transform.position = new Vector3(tile.x, tile.y, 0);
+            spritee.GetComponent<SpriteRenderer>().sortingOrder = 0;
+            spritee.sortingLayerName = "Default";
+        }
 
         #region SetUpPathGrid
         if (!Game.PathGrid.tiles.ContainsKey(new Vector2(tile.x, tile.y)))
@@ -219,7 +225,7 @@ public class Chunk : MonoBehaviour
         }
         else
         {
-            if (!boxcol)
+            if (boxcol != null)
             {
                 Destroy(boxcol);
             }

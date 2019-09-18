@@ -31,7 +31,7 @@ public class Inventory : MonoBehaviour
                 GetComponent<EntityPlayer>().HP = inve.Life;
             }
             Game.MenuManager.InveGui.Inve = this;
-            Game.MenuManager.InveGui.RefreshAll();
+            Game.MenuManager.InveGui.OpenInev(this);
         }
         else
         {
@@ -84,8 +84,9 @@ public class Inventory : MonoBehaviour
             ItemList[slot].Index = -1;
             ItemList[slot].Amount = -1;
             OnMove(slot);
-            UpdateUi(slot);
         }
+
+        UpdateUi(slot);
     }
 
     void _Additem(int index, int amount, int slot)
@@ -191,7 +192,7 @@ public class Inventory : MonoBehaviour
 
                     ItemList[on].Index = -1;
                     ItemList[on].Amount = -1;
-                    UnityEngine.Debug.Log("Log3");
+
                     OnMove(on);
                     UpdateUi(to);
                     UpdateUi(on);
@@ -206,8 +207,6 @@ public class Inventory : MonoBehaviour
 
                 ItemList[on].Index = -1;
                 ItemList[on].Amount = -1;
-
-                UnityEngine.Debug.Log("Log4");
 
                 OnMove(on);
                 UpdateUi(to);

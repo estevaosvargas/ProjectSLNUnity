@@ -34,17 +34,7 @@ public class InventoryGUI : MonoBehaviour {
 
     void Start()
     {
-        if (Game.GameManager.MyPlayer.MyInventory)
-        {
-            Inve = Game.GameManager.MyPlayer.MyInventory;
-        }
 
-        ContainerInve.SetActive(false);
-        ClearCanvasPlayer();
-        for (int i = 0; i < 30; i++)
-        {
-            LoadInventory(i, 0, null);
-        }
     }
 
     public void OpenInev(Inventory inventory)
@@ -187,19 +177,19 @@ public class InventoryGUI : MonoBehaviour {
 
     public void Player_RefreshSlot(int index)
     {
-        if (Inve.ItemList[index].Amount > 0)
+        if (Inve.ItemList[index].Index >= 0)
         {
             Player_Slots[index].SetSlot(index, Inve.ItemList[index].Amount, ItemManager.Instance.GetItem(Inve.ItemList[index].Index), false);
         }
         else
         {
-            Player_Slots[index].SetSlot(index, 0, null, false);
+            Player_Slots[index].SetSlot(index, -1, null, false);
         }
     }
 
     public void Container_RefreshSlot(int index)
     {
-        if (InveCont.ItemList[index].Amount > 0)
+        if (InveCont.ItemList[index].Index >= 0)
         {
             Container_Slots[index].SetSlot(index, InveCont.ItemList[index].Amount, ItemManager.Instance.GetItem(InveCont.ItemList[index].Index), true);
         }
@@ -215,7 +205,7 @@ public class InventoryGUI : MonoBehaviour {
         ClearCanvasPlayer();
         for (int i = 0; i < Inve.ItemList.Count; i++)
         {
-            if (Inve.ItemList[i].Index >= 0)
+            if (Inve.ItemList[i].Amount > 0)
             {
                 LoadInventory(i, Inve.ItemList[i].Amount, ItemManager.Instance.GetItem(Inve.ItemList[i].Index));
             }
@@ -229,7 +219,7 @@ public class InventoryGUI : MonoBehaviour {
         {
             for (int i = 0; i < InveCont.ItemList.Count; i++)
             {
-                if (Inve.ItemList[i].Index >= 0)
+                if (Inve.ItemList[i].Amount > 0)
                 {
                     LoadContainer(i, InveCont.ItemList[i].Amount, ItemManager.Instance.GetItem(InveCont.ItemList[i].Index));
                 }
