@@ -74,8 +74,8 @@ SpriteRenderer:
   m_SortingLayerID: 660810391
   m_SortingLayer: 1
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 8c69f3cd16f534bec8236a6484f500d4, type: 3}
-  m_Color: {r: 0.31480896, g: 0.990566, b: 0.22895159, a: 1}
+  m_Sprite: {fileID: 21300002, guid: cbbf1231d39e40a4b9e342e3624a3920, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -101,8 +101,8 @@ BoxCollider2D:
   m_Offset: {x: 0.007915981, y: 0.16765869}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 2.2333333, y: 2.6666667}
+    pivot: {x: 0.45289427, y: 0.1505874}
+    oldSize: {x: 2.7666667, y: 3.2}
     newSize: {x: 0.6333333, y: 0.73333335}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -127,10 +127,11 @@ MonoBehaviour:
   Destroying: {fileID: 212452001205999878}
   FX: {fileID: 1836075418772876, guid: c5d28b2a147fed64186e44abb61799fd, type: 3}
   ThisTreeTile:
+    typeVariante: 0
     ConnecyToNightboors: 0
     IsColider: 0
     RenderLevel: 0
-    Biomeofthis: 0
+    TileBiome: 0
     Emessive: 0
     Hora: 0
     Dia: 0

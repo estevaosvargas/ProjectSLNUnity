@@ -818,7 +818,6 @@ public static class DataTime
     public static void SetTimeData(int h)
     {
         Hora = h;
-
         if (Hora >= 24)
         {
             Hora = 0;
@@ -830,7 +829,6 @@ public static class DataTime
             Dia = 1;
             Mes += 1;
         }
-
         if (Mes >= 12)
         {
             Mes = 1;
