@@ -321,6 +321,8 @@ public class Chunk : MonoBehaviour
                 trees.transform.position = new Vector3(tile.x + 0.5f, tile.y, 0.05f);
             }
 
+            trees.transform.Rotate(new Vector3(-90, 0,0), Space.Self);
+
             if (trees.GetComponent<Trees>())
             {
                 trees.GetComponent<Trees>().ThisTreeTile = tile;

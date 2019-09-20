@@ -50,7 +50,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: c1a62247fd18dc84fb80a1fa0056e1d5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,3 +98,5 @@ MonoBehaviour:
   obj: []
   TileObject: {fileID: 1635427906649808, guid: f18551ba185d0a84aae2ca6d16a91137, type: 3}
   ISVISIBLE: 0
+  TILEANIMATED: 0
+  TILEANIMATOR: {fileID: 0}
