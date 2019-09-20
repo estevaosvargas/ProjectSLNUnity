@@ -28,6 +28,7 @@ public class TileObj : MonoBehaviour
             TileGo.name = "Tile_Transition_" + Tiles[i].sprite.name;
 
             TileGo.transform.localPosition = new Vector3(0, 0, 0);
+			TileGo.transform.Rotate(new Vector3(-0.1f, 0,0), Space.Self);
 
             Render.sprite = Tiles[i].sprite;
 

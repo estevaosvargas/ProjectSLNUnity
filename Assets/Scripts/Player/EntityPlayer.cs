@@ -56,6 +56,8 @@ public class EntityPlayer : EntityLife
 
         Game.TileAnimations.StartTileAnimation();
 
+		transform.Rotate(new Vector3(-87.839f, 0,0), Space.Self);
+
         if (Net.isMine)
         {
             if (WorldGenerator.Instance != null)

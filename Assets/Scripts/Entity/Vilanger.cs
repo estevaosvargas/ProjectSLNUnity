@@ -28,6 +28,7 @@ public class Vilanger : Pathfindingentity
         transform.position = new Vector3(transform.position.x, transform.position.y, 0.05f);
         Name = name;
         Type = VilagerVocation.none;
+		transform.Rotate(new Vector3(-87.839f, 0,0), Space.Self);
     }
 
     public void GetVocation()
