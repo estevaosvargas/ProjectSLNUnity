@@ -1,93 +1,255 @@
 fileFormatVersion: 2
 guid: 25ae8b41230384143bef6668a732cf8c
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: Water_ES
-    21300002: Water_EW
-    21300004: Water_SW
-    21300006: Water_W
-    21300008: Water_NE
-    21300010: Water_NS
-    21300012: Water_NW
-    21300014: Water_S
-    21300016: Water_Cbd
-    21300018: Water_Ccd
-    21300020: Water_Cbe
-    21300022: Water_Cce
-    21300024: Rock_T
-    21300026: Water_ESW
-    21300028: Water_N
-    21300030: Rock_E_SandT
-    21300032: Water_NESW
-    21300034: Water_E
-    21300036: Water_NEW
-    21300038: Water_NSW
-    21300040: Water_NES
-    21300042: Rock_FullT
-    21300044: Rock_N_SandT
-    21300046: Rock_Cbe_RockGroundT
-    21300048: Rock_W_SandT
-    21300050: Rock_S_SandT
-    21300052: Rock_ESW_SandT
-    21300054: Rock_SW_RockGroundT
-    21300056: Rock_NSW_SandT
-    21300058: Rock_NES_SandT
-    21300060: Rock_NEW_SandT
-    21300062: Rock_EW_SandT
-    21300064: Rock_S_RockGroundT
-    21300066: Rock_NS_SandT
-    21300068: Rock_SW_SandT
-    21300070: Rock_ES_SandT
-    21300072: Rock_NE_SandT
-    21300074: Rock_NW_SandT
-    21300076: Rock_Cbd_SandT
-    21300078: Rock_Cbe_SandT
-    21300080: Rock_Ccd_SandT
-    21300082: Rock_Cce_SandT
-    21300084: Rock__SandT
-    21300086: Rock_Cbd_RockGroundT
-    21300088: Rock_Cce_RockGroundT
-    21300090: Rock_Ccd_RockGroundT
-    21300092: Rock_EW_RockGroundT
-    21300094: Rock_ES_RockGroundT
-    21300096: Rock_NE_RockGroundT
-    21300098: Rock_NS_RockGroundT
-    21300100: Rock_NW_RockGroundT
-    21300102: Rock_ESW_RockGroundT
-    21300104: Rock_NSW_RockGroundT
-    21300106: Rock_NES_RockGroundT
-    21300108: Rock_NEW_RockGroundT
-    21300110: Rocks_15
-    21300112: Rock_E_RockGroundT
-    21300114: Rock_W_RockGroundT
-    21300116: Rock_N_RockGroundT
-    21300118: Rock_Cbd_JungleGrassT
-    21300120: Rock_Cbe_JungleGrassT
-    21300122: Rock__JungleGrassT
-    21300124: Rock__RockGroundT
-    21300126: Rock_Ccd_JungleGrassT
-    21300128: Rock_Cce_JungleGrassT
-    21300130: Rock_EW_JungleGrassT
-    21300132: Rock_SW_JungleGrassT
-    21300134: Rock_NS_JungleGrassT
-    21300136: Rock_NW_JungleGrassT
-    21300138: Rock_NE_JungleGrassT
-    21300140: Rock_ES_JungleGrassT
-    21300142: Rock_ESW_JungleGrassT
-    21300144: Rocks_32
-    21300146: Rock_NSW_JungleGrassT
-    21300148: Rock_NEW_JungleGrassT
-    21300150: Rock_NES_JungleGrassT
-    21300152: Rock_S_JungleGrassT
-    21300154: Rocks_37
-    21300156: Rock_N_JungleGrassT
-    21300158: Rock_E_JungleGrassT
-    21300160: Rock_W_JungleGrassT
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: Water_ES
+  - first:
+      213: 21300002
+    second: Water_EW
+  - first:
+      213: 21300004
+    second: Water_SW
+  - first:
+      213: 21300006
+    second: Water_W
+  - first:
+      213: 21300008
+    second: Water_NE
+  - first:
+      213: 21300010
+    second: Water_NS
+  - first:
+      213: 21300012
+    second: Water_NW
+  - first:
+      213: 21300014
+    second: Water_S
+  - first:
+      213: 21300016
+    second: Water_Cbd
+  - first:
+      213: 21300018
+    second: Water_Ccd
+  - first:
+      213: 21300020
+    second: Water_Cbe
+  - first:
+      213: 21300022
+    second: Water_Cce
+  - first:
+      213: 21300024
+    second: Rock_T
+  - first:
+      213: 21300026
+    second: Water_ESW
+  - first:
+      213: 21300028
+    second: Water_N
+  - first:
+      213: 21300030
+    second: Rock_E_SandT
+  - first:
+      213: 21300032
+    second: Water_NESW
+  - first:
+      213: 21300034
+    second: Water_E
+  - first:
+      213: 21300036
+    second: Water_NEW
+  - first:
+      213: 21300038
+    second: Water_NSW
+  - first:
+      213: 21300040
+    second: Water_NES
+  - first:
+      213: 21300042
+    second: Rock_FullT
+  - first:
+      213: 21300044
+    second: Rock_N_SandT
+  - first:
+      213: 21300046
+    second: Rock_Cbe_RockGroundT
+  - first:
+      213: 21300048
+    second: Rock_W_SandT
+  - first:
+      213: 21300050
+    second: Rock_S_SandT
+  - first:
+      213: 21300052
+    second: Rock_ESW_SandT
+  - first:
+      213: 21300054
+    second: Rock_SW_RockGroundT
+  - first:
+      213: 21300056
+    second: Rock_NSW_SandT
+  - first:
+      213: 21300058
+    second: Rock_NES_SandT
+  - first:
+      213: 21300060
+    second: Rock_NEW_SandT
+  - first:
+      213: 21300062
+    second: Rock_EW_SandT
+  - first:
+      213: 21300064
+    second: Rock_S_RockGroundT
+  - first:
+      213: 21300066
+    second: Rock_NS_SandT
+  - first:
+      213: 21300068
+    second: Rock_SW_SandT
+  - first:
+      213: 21300070
+    second: Rock_ES_SandT
+  - first:
+      213: 21300072
+    second: Rock_NE_SandT
+  - first:
+      213: 21300074
+    second: Rock_NW_SandT
+  - first:
+      213: 21300076
+    second: Rock_Cbd_SandT
+  - first:
+      213: 21300078
+    second: Rock_Cbe_SandT
+  - first:
+      213: 21300080
+    second: Rock_Ccd_SandT
+  - first:
+      213: 21300082
+    second: Rock_Cce_SandT
+  - first:
+      213: 21300084
+    second: Rock__SandT
+  - first:
+      213: 21300086
+    second: Rock_Cbd_RockGroundT
+  - first:
+      213: 21300088
+    second: Rock_Cce_RockGroundT
+  - first:
+      213: 21300090
+    second: Rock_Ccd_RockGroundT
+  - first:
+      213: 21300092
+    second: Rock_EW_RockGroundT
+  - first:
+      213: 21300094
+    second: Rock_ES_RockGroundT
+  - first:
+      213: 21300096
+    second: Rock_NE_RockGroundT
+  - first:
+      213: 21300098
+    second: Rock_NS_RockGroundT
+  - first:
+      213: 21300100
+    second: Rock_NW_RockGroundT
+  - first:
+      213: 21300102
+    second: Rock_ESW_RockGroundT
+  - first:
+      213: 21300104
+    second: Rock_NSW_RockGroundT
+  - first:
+      213: 21300106
+    second: Rock_NES_RockGroundT
+  - first:
+      213: 21300108
+    second: Rock_NEW_RockGroundT
+  - first:
+      213: 21300110
+    second: Rocks_15
+  - first:
+      213: 21300112
+    second: Rock_E_RockGroundT
+  - first:
+      213: 21300114
+    second: Rock_W_RockGroundT
+  - first:
+      213: 21300116
+    second: Rock_N_RockGroundT
+  - first:
+      213: 21300118
+    second: Rock_Cbd_JungleGrassT
+  - first:
+      213: 21300120
+    second: Rock_Cbe_JungleGrassT
+  - first:
+      213: 21300122
+    second: Rock__JungleGrassT
+  - first:
+      213: 21300124
+    second: Rock__RockGroundT
+  - first:
+      213: 21300126
+    second: Rock_Ccd_JungleGrassT
+  - first:
+      213: 21300128
+    second: Rock_Cce_JungleGrassT
+  - first:
+      213: 21300130
+    second: Rock_EW_JungleGrassT
+  - first:
+      213: 21300132
+    second: Rock_SW_JungleGrassT
+  - first:
+      213: 21300134
+    second: Rock_NS_JungleGrassT
+  - first:
+      213: 21300136
+    second: Rock_NW_JungleGrassT
+  - first:
+      213: 21300138
+    second: Rock_NE_JungleGrassT
+  - first:
+      213: 21300140
+    second: Rock_ES_JungleGrassT
+  - first:
+      213: 21300142
+    second: Rock_ESW_JungleGrassT
+  - first:
+      213: 21300144
+    second: Rocks_32
+  - first:
+      213: 21300146
+    second: Rock_NSW_JungleGrassT
+  - first:
+      213: 21300148
+    second: Rock_NEW_JungleGrassT
+  - first:
+      213: 21300150
+    second: Rock_NES_JungleGrassT
+  - first:
+      213: 21300152
+    second: Rock_S_JungleGrassT
+  - first:
+      213: 21300154
+    second: Rocks_37
+  - first:
+      213: 21300156
+    second: Rock_N_JungleGrassT
+  - first:
+      213: 21300158
+    second: Rock_E_JungleGrassT
+  - first:
+      213: 21300160
+    second: Rock_W_JungleGrassT
   externalObjects: {}
-  serializedVersion: 7
+  serializedVersion: 10
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 1
+    enableMipMap: 0
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -139,7 +301,7 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   platformSettings:
-  - serializedVersion: 2
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -150,7 +312,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -161,6 +324,19 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -184,6 +360,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 06d47f2684da5994dafc90a383e7c0fe
+      internalID: 21300000
       vertices: []
       indices: 
       edges: []
@@ -208,6 +385,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 35ef8394bd970864bbbfcffafaeb72b3
+      internalID: 21300002
       vertices: []
       indices: 
       edges: []
@@ -234,6 +412,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: c162045162628b5418a89b88e52c358b
+      internalID: 21300004
       vertices: []
       indices: 
       edges: []
@@ -259,6 +438,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: b635163a0d7b2e8488b4a105a7c3004e
+      internalID: 21300008
       vertices: []
       indices: 
       edges: []
@@ -285,6 +465,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 26c8af4ff617d3542a8113a6c814e932
+      internalID: 21300010
       vertices: []
       indices: 
       edges: []
@@ -309,6 +490,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: f9030eb060bd5724ba1f45ef3c885961
+      internalID: 21300012
       vertices: []
       indices: 
       edges: []
@@ -336,6 +518,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 6c6050ccd7974d34dacc9331c22b0065
+      internalID: 21300016
       vertices: []
       indices: 
       edges: []
@@ -365,6 +548,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 81819d7892fe2c84ab4bcf8dbe9472a0
+      internalID: 21300018
       vertices: []
       indices: 
       edges: []
@@ -392,6 +576,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 006c78da217f86142ba07f1fff7e9c7d
+      internalID: 21300020
       vertices: []
       indices: 
       edges: []
@@ -420,6 +605,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: b993b9cc6b530b14c88f04743c896ed5
+      internalID: 21300022
       vertices: []
       indices: 
       edges: []
@@ -444,6 +630,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 5f03ca4eec8098f4690243336f4c55c6
+      internalID: 21300028
       vertices: []
       indices: 
       edges: []
@@ -468,6 +655,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: a458c8433156a2d49b7e29e632232bd8
+      internalID: 21300006
       vertices: []
       indices: 
       edges: []
@@ -488,6 +676,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 057d69eaa6f122e4096c78b860fa0a6a
+      internalID: 21300032
       vertices: []
       indices: 
       edges: []
@@ -513,6 +702,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: d4e5c3669eecc8a4daed0c7f0ddcded6
+      internalID: 21300034
       vertices: []
       indices: 
       edges: []
@@ -537,6 +727,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 4e551a57412910a49b22c50d3c31a6e5
+      internalID: 21300014
       vertices: []
       indices: 
       edges: []
@@ -561,6 +752,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 0e96e71d9bd49b34687ad5ca227bdf79
+      internalID: 21300026
       vertices: []
       indices: 
       edges: []
@@ -585,6 +777,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 8e9085025ba87b545a066e0b17ad34a8
+      internalID: 21300036
       vertices: []
       indices: 
       edges: []
@@ -609,6 +802,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 5ed4bf70dc1d407459607bbbc9459b6d
+      internalID: 21300038
       vertices: []
       indices: 
       edges: []
@@ -633,6 +827,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 185020a230f5fdd4192f09bf3f58a74f
+      internalID: 21300040
       vertices: []
       indices: 
       edges: []
@@ -641,13 +836,15 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: ec9be2ac23dec8c4e80de66d47a7e1b4
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
+    secondaryTextures: []
   spritePackingTag: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
+  pSDShowRemoveMatteOption: 1
   userData: 
   assetBundleName: 
   assetBundleVariant: 
