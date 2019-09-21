@@ -2775,10 +2775,6 @@ MonoBehaviour:
     MaxAmount: 100
     Stack: 0
     About:
-      IsBlock: 0
-      IsHarvestTool: 0
-      IsWeapond: 0
-      IsPlacer: 0
       BlockType: 0
       placer: 0
       BlockDamage: -1
@@ -2787,7 +2783,6 @@ MonoBehaviour:
       DurabilityDefault: 100
       Distance: 3
       FireRate: 0.4
-    ItemsInside: []
     CanEquip: 0
   Icon: {fileID: 114106604534075408}
   Num: {fileID: 114598810890165032}
@@ -5815,10 +5810,6 @@ MonoBehaviour:
     MaxAmount: 100
     Stack: 0
     About:
-      IsBlock: 0
-      IsHarvestTool: 0
-      IsWeapond: 0
-      IsPlacer: 0
       BlockType: 0
       placer: 0
       BlockDamage: -1
@@ -5827,7 +5818,6 @@ MonoBehaviour:
       DurabilityDefault: 100
       Distance: 3
       FireRate: 0.4
-    ItemsInside: []
     CanEquip: 0
   Icon: {fileID: 114389630564161190}
   Num: {fileID: 114089630736810618}
@@ -10108,10 +10098,6 @@ MonoBehaviour:
     MaxAmount: 100
     Stack: 0
     About:
-      IsBlock: 0
-      IsHarvestTool: 0
-      IsWeapond: 0
-      IsPlacer: 0
       BlockType: 0
       placer: 0
       BlockDamage: -1
@@ -10120,7 +10106,6 @@ MonoBehaviour:
       DurabilityDefault: 100
       Distance: 3
       FireRate: 0.4
-    ItemsInside: []
     CanEquip: 0
   Icon: {fileID: 114514219928564416}
   Num: {fileID: 114072878517227438}
@@ -10955,10 +10940,6 @@ MonoBehaviour:
     MaxAmount: 100
     Stack: 0
     About:
-      IsBlock: 0
-      IsHarvestTool: 0
-      IsWeapond: 0
-      IsPlacer: 0
       BlockType: 0
       placer: 0
       BlockDamage: -1
@@ -10967,7 +10948,6 @@ MonoBehaviour:
       DurabilityDefault: 100
       Distance: 3
       FireRate: 0.4
-    ItemsInside: []
     CanEquip: 0
   Icon: {fileID: 114610137457820712}
   Num: {fileID: 114744329788898352}
@@ -11581,10 +11561,6 @@ MonoBehaviour:
     MaxAmount: 100
     Stack: 0
     About:
-      IsBlock: 0
-      IsHarvestTool: 0
-      IsWeapond: 0
-      IsPlacer: 0
       BlockType: 0
       placer: 0
       BlockDamage: -1
@@ -11593,7 +11569,6 @@ MonoBehaviour:
       DurabilityDefault: 100
       Distance: 3
       FireRate: 0.4
-    ItemsInside: []
     CanEquip: 0
   Icon: {fileID: 114156059880274552}
   Num: {fileID: 114426299482712180}
@@ -12833,6 +12808,7 @@ MonoBehaviour:
   UserId: 
   Version: 1.0.0
   Seed: 0
+  WorldName: YourWorldName
   SinglePlayer: 0
   MultiPlayer: 0
   MousePointer:
@@ -12851,6 +12827,7 @@ MonoBehaviour:
   SHOWDEBUG: 0
   Net: {fileID: 114377742362985650}
   t:
+    typeVariante: 0
     ConnecyToNightboors: 0
     IsColider: 0
     RenderLevel: 0
@@ -12862,6 +12839,7 @@ MonoBehaviour:
     HP: 100
   mouseX: 0
   mouseY: 0
+  seilacam: 8.5
 --- !u!114 &114280201115003610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13938,10 +13916,6 @@ MonoBehaviour:
     MaxAmount: 100
     Stack: 0
     About:
-      IsBlock: 0
-      IsHarvestTool: 0
-      IsWeapond: 0
-      IsPlacer: 0
       BlockType: 0
       placer: 0
       BlockDamage: -1
@@ -13950,7 +13924,6 @@ MonoBehaviour:
       DurabilityDefault: 100
       Distance: 3
       FireRate: 0.4
-    ItemsInside: []
     CanEquip: 0
   Icon: {fileID: 114146716656267034}
   Num: {fileID: 114804706431700048}

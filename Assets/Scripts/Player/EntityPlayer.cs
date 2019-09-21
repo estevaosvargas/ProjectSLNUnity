@@ -267,6 +267,7 @@ public class EntityPlayer : EntityLife
             {
                 Vector3 lookPos = Camera.main.ScreenToWorldPoint(mousePos);
                 lookPos = lookPos - transform.position;
+
                 float angle = Mathf.Atan2(lookPos.y, lookPos.x) * Mathf.Rad2Deg;
                 //Vector.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
                 NetStats.angle = (int)angle;

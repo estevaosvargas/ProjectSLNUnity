@@ -165,11 +165,11 @@ public class HandManager : MonoBehaviour
         }
     }
 
-    float Distance = 0;
+    int Distance = 0;
 
     void Update()
     {
-        Distance = Vector2.Distance(Camera.main.transform.position, new Vector2(Game.GameManager.mouseX, Game.GameManager.mouseY));
+        Distance = (int)Vector2.Distance(transform.position, new Vector2(Game.GameManager.mouseX, Game.GameManager.mouseY));
 
         if (Distance <= 3)
         {

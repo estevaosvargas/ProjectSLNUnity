@@ -214,6 +214,9 @@ public class GameManager : UIElements
         }
     }
 
+    public float seilacam = 5;
+    Vector3 possss;
+
     void Update()
     {
         DarckNet.Network.Update();
@@ -246,8 +249,13 @@ public class GameManager : UIElements
         {
             if (LastMouseX != (int)Input.mousePosition.x || LastMouseY != (int)Input.mousePosition.y)
             {
-                mouseX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
-                mouseY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y;
+                Vector3 mousePos = Input.mousePosition;
+
+                possss = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, seilacam)); ;
+
+                mouseX = possss.x;
+                mouseY = possss.y;
+
                 if (WorldGenerator.Instance)
                 {
                     t = WorldGenerator.Instance.GetTileAt(mouseX, mouseY);
@@ -256,6 +264,7 @@ public class GameManager : UIElements
                 hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
 
             }
+
             LastMouseX = (int)Input.mousePosition.x;
             LastMouseY = (int)Input.mousePosition.y;
         }
