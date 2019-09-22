@@ -173,6 +173,14 @@ public class Tile
 
     public void PerlinSetType(TypeBlock type)
     {
+        if (typego == TakeGO.empty)
+        {
+            if (type == TypeBlock.Grass)
+            {
+                typego = TakeGO.Grass;
+            }
+        }
+
         this.type = type;
         SetUpTile(this);
     }

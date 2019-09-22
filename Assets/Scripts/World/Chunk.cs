@@ -308,18 +308,11 @@ public class Chunk : MonoBehaviour
         if (tile.typego != TakeGO.empty)
         {
             GameObject trees = null;
-            trees = Instantiate(SpriteManager.Instance.GetPrefabbyname(tile.typego.ToString()), new Vector3(tile.x + 0.5f, tile.y, 0.5f), Quaternion.identity);
+            trees = Instantiate(SpriteManager.Instance.GetPrefabbyname(tile.typego.ToString()), new Vector3(tile.x, tile.y, 0), Quaternion.identity);
             trees.transform.SetParent(this.transform, true);
             tile.ObjThis = trees;
 
-            if (trees.transform.position.y > 0)
-            {
-                trees.transform.position = new Vector3(tile.x + 0.5f, tile.y, -0.05f);
-            }
-            else if (trees.transform.position.y < 0)
-            {
-                trees.transform.position = new Vector3(tile.x + 0.5f, tile.y, 0.05f);
-            }
+            trees.transform.position = new Vector3(tile.x + Random.Range(0f, 1f), tile.y + Random.Range(0f, 1f), 0);
 
             trees.transform.Rotate(new Vector3(-90, 0,0), Space.Self);
 
