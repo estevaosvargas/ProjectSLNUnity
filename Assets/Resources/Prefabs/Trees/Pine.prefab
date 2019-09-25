@@ -67,8 +67,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4237302715523732}
   - component: {fileID: 212427312877144668}
-  - component: {fileID: 61052778399858930}
   - component: {fileID: 114110084845033720}
+  - component: {fileID: 8618854694895705374}
   m_Layer: 8
   m_Name: Pine
   m_TagString: Tree
@@ -83,7 +83,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1876308745601634}
-  m_LocalRotation: {x: -0.42261827, y: 0, z: 0, w: 0.9063079}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.7690475, y: 0.06314774, z: 6.3941965}
   m_LocalScale: {x: 1.5133929, y: 1.5436959, z: 1}
   m_Children:
@@ -92,7 +92,7 @@ Transform:
   - {fileID: 2577917068169057596}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -50, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &212427312877144668
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -100,7 +100,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1876308745601634}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -143,32 +143,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &61052778399858930
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1876308745601634}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.0027549267, y: 0.2107612}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.003340447}
-    oldSize: {x: 2.0333333, y: 2.9}
-    newSize: {x: 0.6333333, y: 0.73333335}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.3714525, y: 0.56244767}
-  m_EdgeRadius: 0
 --- !u!114 &114110084845033720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,6 +171,20 @@ MonoBehaviour:
     HP: 100
   ItemDrop: 2
   DropQuanty: 10
+--- !u!136 &8618854694895705374
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876308745601634}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.15
+  m_Height: 2.1179185
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.0492718, z: 0}
 --- !u!1 &1989963335715010
 GameObject:
   m_ObjectHideFlags: 0
@@ -308,22 +296,22 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: 31da2c69911565a4eaa7780931448a00,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.71015114
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 31da2c69911565a4eaa7780931448a00,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 31da2c69911565a4eaa7780931448a00,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 31da2c69911565a4eaa7780931448a00,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.70404935
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 31da2c69911565a4eaa7780931448a00,
         type: 3}
@@ -333,7 +321,7 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: 31da2c69911565a4eaa7780931448a00,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -90.493996
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 31da2c69911565a4eaa7780931448a00,
         type: 3}

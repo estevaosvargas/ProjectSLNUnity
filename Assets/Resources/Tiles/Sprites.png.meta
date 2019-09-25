@@ -1,194 +1,17 @@
 fileFormatVersion: 2
 guid: 7e08542d63f0c804d9a8e082af826389
 TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: 21300000
-    second: Bloco_
-  - first:
-      213: 21300002
-    second: Empty_
-  - first:
-      213: 21300004
-    second: Full_
-  - first:
-      213: 21300006
-    second: Wall_
-  - first:
-      213: 21300008
-    second: Bloco_SE
-  - first:
-      213: 21300010
-    second: Bloco_SW
-  - first:
-      213: 21300012
-    second: Block_NE
-  - first:
-      213: 21300014
-    second: Bloco_NW
-  - first:
-      213: 21300016
-    second: Bloco_NESW
-  - first:
-      213: 21300018
-    second: Bloco_E
-  - first:
-      213: 21300020
-    second: Bloco_S
-  - first:
-      213: 21300022
-    second: Bloco_N
-  - first:
-      213: 21300024
-    second: Bloco_W
-  - first:
-      213: 21300026
-    second: Bloco_EW
-  - first:
-      213: 21300028
-    second: Bloco_ES
-  - first:
-      213: 21300030
-    second: Bloco_NS
-  - first:
-      213: 21300032
-    second: Bloco_NE
-  - first:
-      213: 21300034
-    second: Sprites_1
-  - first:
-      213: 21300036
-    second: Bloco_NEW
-  - first:
-      213: 21300038
-    second: Bloco_ESW
-  - first:
-      213: 21300040
-    second: Bloco_NSW
-  - first:
-      213: 21300042
-    second: Bloco_NES
-  - first:
-      213: 21300044
-    second: Sand_
-  - first:
-      213: 21300046
-    second: Water_
-  - first:
-      213: 21300048
-    second: Bush_
-  - first:
-      213: 21300050
-    second: WhiteBloco_
-  - first:
-      213: 21300052
-    second: RockCave_
-  - first:
-      213: 21300054
-    second: RockCave_ES
-  - first:
-      213: 21300056
-    second: RockCave_EW
-  - first:
-      213: 21300058
-    second: RockCave_SW
-  - first:
-      213: 21300060
-    second: RockCave_NS
-  - first:
-      213: 21300062
-    second: RockCave_NE
-  - first:
-      213: 21300064
-    second: RockCave_NE
-  - first:
-      213: 21300066
-    second: RockCave_NW
-  - first:
-      213: 21300068
-    second: RockCave_NS
-  - first:
-      213: 21300070
-    second: RockCave_
-  - first:
-      213: 21300072
-    second: RockCave_NESW
-  - first:
-      213: 21300074
-    second: RockCave_S
-  - first:
-      213: 21300076
-    second: RockCave_N
-  - first:
-      213: 21300078
-    second: RockCave_E
-  - first:
-      213: 21300080
-    second: RockCave_W
-  - first:
-      213: 21300082
-    second: RockCave_ESW
-  - first:
-      213: 21300084
-    second: RockCave_RockWall
-  - first:
-      213: 21300086
-    second: RockCave_NSW
-  - first:
-      213: 21300088
-    second: RockCave_NES
-  - first:
-      213: 21300090
-    second: DirtGrass_
-  - first:
-      213: 21300092
-    second: JungleGrass_
-  - first:
-      213: 21300094
-    second: JunGrassTall_
-  - first:
-      213: 21300096
-    second: Rock_SN
-  - first:
-      213: 21300098
-    second: Rock_EN
-  - first:
-      213: 21300100
-    second: RockMeia_
-  - first:
-      213: 21300102
-    second: RockCave_SS
-  - first:
-      213: 21300104
-    second: SandMolhada_
-  - first:
-      213: 21300106
-    second: 666_
-  - first:
-      213: 21300108
-    second: MeiaMeia_
-  - first:
-      213: 21300110
-    second: Lava_
-  - first:
-      213: 21300112
-    second: DirtRoad_
-  - first:
-      213: 21300114
-    second: Water_01
-  - first:
-      213: 21300116
-    second: RockGround_
+  internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 1
+    enableMipMap: 0
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
-    mipMapsPreserveCoverage: 0
+    mipMapsPreserveCoverage: 1
     alphaTestReferenceValue: 0.5
     mipMapFadeDistanceStart: 1
     mipMapFadeDistanceEnd: 3
@@ -211,9 +34,9 @@ TextureImporter:
     filterMode: 0
     aniso: -1
     mipBias: -100
-    wrapU: 0
-    wrapV: 0
-    wrapW: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -237,9 +60,9 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 1024
+    maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 4
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
@@ -251,12 +74,12 @@ TextureImporter:
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 12
-    textureCompression: 3
+    textureFormat: 4
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
-    overridden: 1
+    overridden: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -273,9 +96,9 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 1
   - serializedVersion: 3
     buildTarget: Android
-    maxTextureSize: 1024
+    maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 4
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0

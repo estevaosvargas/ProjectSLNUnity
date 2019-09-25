@@ -20,7 +20,7 @@ public static class Biome
     public static float amplitude = 79.12f;
     public static int octaves = 26;
 
-    public static TypeBlock ForestNormal(int x, int y, Tile tile, float sample)
+    public static TypeBlock ForestNormal(int x, int z, Tile tile, float sample)
     {
         Scale = 30f;
         height = 50;
@@ -29,17 +29,17 @@ public static class Biome
         noisefactor = 0.1f;
 
         float xCorde = (float)x / width * Scale;
-        float yCorde = (float)y / height * Scale;
+        float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + WorldGenerator.Instance.Seed, yCorde * noisefactor + WorldGenerator.Instance.Seed);
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, WorldGenerator.Instance.Seed, false).GetValue(x, y, 0);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + WorldGenerator.Instance.Seed, zCorde * noisefactor + WorldGenerator.Instance.Seed);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, WorldGenerator.Instance.Seed, false).GetValue(x, z, 0);
 
         //Debug.Log("village Chance : " + (int)sample2);
 
         //sample2 *= 10;
         if ((int)sample2 == 2 || (int)sample2 == -2)
         {
-            Color color = WorldGenerator.Instance.HeightTeste.GetPixel(x, y);
+            Color color = WorldGenerator.Instance.HeightTeste.GetPixel(x, z);
 
             #region Villa
 
@@ -54,41 +54,41 @@ public static class Biome
             }
             else
             {
-                if (UnityEngine.Random.Range(1, 128) > 125)
+                if (Random.Range(1, 128) > 125)
                 {
-                    if (tile.typego == TakeGO.empty && tile.y != 0)
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
                     {
                         tile.typego = TakeGO.Weed01;
                     }
                     return TypeBlock.Grass;
                 }
-                if (UnityEngine.Random.Range(1, 128) > 125)
+                if (Random.Range(1, 128) > 125)
                 {
-                    if (tile.typego == TakeGO.empty && tile.y != 0)
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
                     {
                         tile.typego = TakeGO.RockProp;
                     }
                     return TypeBlock.Grass;
                 }
-                if (UnityEngine.Random.Range(1, 128) > 125)
+                if (Random.Range(1, 128) > 125)
                 {
-                    if (tile.typego == TakeGO.empty && tile.y != 0)
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
                     {
                         tile.typego = TakeGO.WeedTall;
                     }
                     return TypeBlock.Grass;
                 }
-                else if (UnityEngine.Random.Range(1, 128) > 125)
+                else if (Random.Range(1, 128) > 125)
                 {
-                    if (tile.typego == TakeGO.empty && tile.y != 0)
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
                     {
                         tile.typego = TakeGO.Pine;
                     }
                     return TypeBlock.Grass;
                 }
-                else if (UnityEngine.Random.Range(1, 128) > 125)
+                else if (Random.Range(1, 128) > 125)
                 {
-                    if (tile.typego == TakeGO.empty && tile.y != 0)
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
                     {
                         tile.typego = TakeGO.Oak;
                     }
@@ -118,58 +118,57 @@ public static class Biome
                 if (perlin > 0.2f && perlin < 0.6f)
                 {
                     //grass and bushs and trees
-                     
-                    if (UnityEngine.Random.Range(1, 128) > 125)
+                    if (Random.Range(1, 128) > 125)
                     {
-                        if (tile.typego == TakeGO.empty && tile.y != 0)
+                        if (tile.typego == TakeGO.empty && tile.z != 0)
                         {
                             tile.typego = TakeGO.Weed01;
                         }
                         return TypeBlock.Grass;
                     }
-                    if (UnityEngine.Random.Range(1, 128) > 125)
+                    if (Random.Range(1, 128) > 125)
                     {
-                        if (tile.typego == TakeGO.empty && tile.y != 0)
+                        if (tile.typego == TakeGO.empty && tile.z != 0)
                         {
                             tile.typego = TakeGO.RockProp;
                         }
                         return TypeBlock.Grass;
                     }
-                    if (UnityEngine.Random.Range(1, 128) > 125)
+                    if (Random.Range(1, 128) > 125)
                     {
-                        if (tile.typego == TakeGO.empty && tile.y != 0)
+                        if (tile.typego == TakeGO.empty && tile.z != 0)
                         {
                             tile.typego = TakeGO.WeedTall;
                         }
                         return TypeBlock.Grass;
                     }
-                    else if (UnityEngine.Random.Range(1, 128) > 125)
+                    else if (Random.Range(1, 128) > 125)
                     {
-                        if (tile.typego == TakeGO.empty && tile.y != 0)
+                        if (tile.typego == TakeGO.empty && tile.z != 0)
                         {
                             tile.typego = TakeGO.Pine;
                         }
                         return TypeBlock.Grass;
                     }
-                    else if (UnityEngine.Random.Range(1, 128) > 125)
+                    else if (Random.Range(1, 128) > 125)
                     {
-                        if (tile.typego == TakeGO.empty && tile.y != 0)
+                        if (tile.typego == TakeGO.empty && tile.z != 0)
                         {
                             tile.typego = TakeGO.Oak;
                         }
                         return TypeBlock.Grass;
                     }
-                    else if (UnityEngine.Random.Range(1, 128) > 125)
+                    else if (Random.Range(1, 128) > 125)
                     {
                         tile.typeVariante = TypeVariante.GrassFL1;
                         return TypeBlock.Grass;
                     }
-                    else if (UnityEngine.Random.Range(1, 128) > 125)
+                    else if (Random.Range(1, 128) > 125)
                     {
                         tile.typeVariante = TypeVariante.GrassFL2;
                         return TypeBlock.Grass;
                     }
-                    else if (UnityEngine.Random.Range(1, 128) > 125)
+                    else if (Random.Range(1, 128) > 125)
                     {
                         tile.typeVariante = TypeVariante.GrassRC;
                         return TypeBlock.Grass;
@@ -223,7 +222,7 @@ public static class Biome
         }
     }
 
-    public static TypeBlock Desert(int x, int y, Tile tile, float sample)
+    public static TypeBlock Desert(int x, int z, Tile tile, float sample)
     {
         Scale = 30f;
         height = 50;
@@ -232,15 +231,15 @@ public static class Biome
         noisefactor = 0.1f;
 
         float xCorde = (float)x / width * Scale + WorldGenerator.Instance.Seed;
-        float yCorde = (float)y / height * Scale + WorldGenerator.Instance.Seed;
+        float zCorde = (float)z / height * Scale + WorldGenerator.Instance.Seed;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor, yCorde * noisefactor);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor, zCorde * noisefactor);
 
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, WorldGenerator.Instance.Seed, false).GetValue(x, y, 0);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, WorldGenerator.Instance.Seed, false).GetValue(x, z, 0);
 
         if ((int)sample2 == 2 || (int)sample2 == -2)
         {
-            Color color = WorldGenerator.Instance.HeightTeste.GetPixel(x, y);
+            Color color = WorldGenerator.Instance.HeightTeste.GetPixel(x, z);
 
             #region Villa
 
@@ -358,12 +357,12 @@ public static class Biome
         }
     }
 
-    public static TypeBlock OceanNormal(int x, int y, Tile tile, float sample)
+    public static TypeBlock OceanNormal(int x, int z, Tile tile, float sample)
     {
         return TypeBlock.Water;
     }
 
-    public static TypeBlock Bench(int x, int y, Tile tile, float sample)
+    public static TypeBlock Bench(int x, int z, Tile tile, float sample)
     {
         if (sample > 0.48f)
         {
@@ -398,7 +397,7 @@ public static class Biome
         }
     }
 
-    public static TypeBlock Jungle(int x, int y, Tile tile, float sample)
+    public static TypeBlock Jungle(int x, int z, Tile tile, float sample)
     {
         Scale = 30f;
         height = 50;
@@ -407,9 +406,9 @@ public static class Biome
         noisefactor = 0.1f;
 
         float xCorde = (float)x / width * Scale;
-        float yCorde = (float)y / height * Scale;
+        float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + WorldGenerator.Instance.Seed, yCorde * noisefactor + WorldGenerator.Instance.Seed);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + WorldGenerator.Instance.Seed, zCorde * noisefactor + WorldGenerator.Instance.Seed);
 
         if (perlin >= 0.0f && perlin <= 0.15f)
         {
@@ -496,7 +495,7 @@ public static class Biome
         return TypeBlock.Grass;
     }
 
-    public static TypeBlock Plaine(int x, int y, Tile tile, float sample)
+    public static TypeBlock Plaine(int x, int z, Tile tile, float sample)
     {
         Scale = 30f;
         height = 50;
@@ -505,15 +504,15 @@ public static class Biome
         noisefactor = 0.1f;
 
         float xCorde = (float)x / width * Scale;
-        float yCorde = (float)y / height * Scale;
+        float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + WorldGenerator.Instance.Seed, yCorde * noisefactor + WorldGenerator.Instance.Seed);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + WorldGenerator.Instance.Seed, zCorde * noisefactor + WorldGenerator.Instance.Seed);
 
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, WorldGenerator.Instance.Seed, false).GetValue(x, y, 0);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, WorldGenerator.Instance.Seed, false).GetValue(x, z, 0);
 
         if ((int)sample2 == 2 || (int)sample2 == -2)
         {
-            Color color = WorldGenerator.Instance.HeightTeste.GetPixel(x, y);
+            Color color = WorldGenerator.Instance.HeightTeste.GetPixel(x, z);
 
             #region Villa
 
@@ -658,7 +657,7 @@ public static class Biome
 
     }
 
-    public static TypeBlock ForestSnow(int x, int y, Tile tile, float sample)
+    public static TypeBlock ForestSnow(int x, int z, Tile tile, float sample)
     {
         Scale = 30f;
         height = 50;
@@ -667,9 +666,9 @@ public static class Biome
         noisefactor = 0.1f;
 
         float xCorde = (float)x / width * Scale;
-        float yCorde = (float)y / height * Scale;
+        float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + WorldGenerator.Instance.Seed, yCorde * noisefactor + WorldGenerator.Instance.Seed);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + WorldGenerator.Instance.Seed, zCorde * noisefactor + WorldGenerator.Instance.Seed);
 
         if (perlin >= 0.0f && perlin <= 0.15f)
         {
@@ -752,7 +751,7 @@ public static class Biome
 
     }
 
-    public static TypeBlock Montanhas(int x, int y, Tile tile, float sample)
+    public static TypeBlock Montanhas(int x, int z, Tile tile, float sample)
     {
         Scale = 20f;
         height = 50;
@@ -766,13 +765,13 @@ public static class Biome
         int octaves = 184;
 
         float xCordee = (float)octaves * x / width * Scale + WorldGenerator.Instance.Seed;
-        float yCordee = (float)octaves * y / height * Scale + WorldGenerator.Instance.Seed;
+        float zCordee = (float)octaves * z / height * Scale + WorldGenerator.Instance.Seed;
 
         // modify with frequency
         xCordee *= frequency;
-        yCordee *= frequency;
+        zCordee *= frequency;
 
-        float perlin = Mathf.PerlinNoise(xCordee, yCordee) * amplitude / persistence;
+        float perlin = Mathf.PerlinNoise(xCordee, zCordee) * amplitude / persistence;
 
 
         if (perlin >= 0.0f && perlin <= 0.15f)

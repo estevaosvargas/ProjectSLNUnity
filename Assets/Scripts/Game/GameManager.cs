@@ -55,9 +55,10 @@ public class GameManager : UIElements
     public static List<DCallBack> CallBacks = new List<DCallBack>();
     public Tile t;
     public Ray ray;
-    public RaycastHit2D hit;
+    public RaycastHit hit;
     public float mouseX;
     public float mouseY;
+    public float mouseZ;
     private int LastMouseX;
     private int LastMouseY;
 
@@ -217,6 +218,8 @@ public class GameManager : UIElements
     public float seilacam = 5;
     Vector3 possss;
 
+    public float mouseplus = 1;
+
     void Update()
     {
         DarckNet.Network.Update();
@@ -251,18 +254,21 @@ public class GameManager : UIElements
             {
                 Vector3 mousePos = Input.mousePosition;
 
-                possss = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, seilacam)); ;
+                possss = Camera.main.ScreenToWorldPoint(new Vector3((int)mousePos.x, (int)mousePos.y, seilacam));
 
-                mouseX = possss.x;
-                mouseY = possss.y;
+                Ray rayy = Camera.main.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y + mouseplus, Input.mousePosition.z));
 
-                if (WorldGenerator.Instance)
+                if (Physics.Raycast(rayy, out hit, 10000))
                 {
-                    t = WorldGenerator.Instance.GetTileAt(mouseX, mouseY);
-                }
-                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
+                    mouseX = hit.point.x;
+                    mouseY = hit.point.y;
+                    mouseZ = hit.point.z;
 
+                    if (WorldGenerator.Instance)
+                    {
+                        t = WorldGenerator.Instance.GetTileAt(hit.point.x, hit.point.z);
+                    }
+                }
             }
 
             LastMouseX = (int)Input.mousePosition.x;
@@ -882,14 +888,14 @@ public class SavePlayerInfo
     public SaveInventory Inve;
     public LifeStatus Status;
     public float x;
-    public float y;
+    public float z;
     public float Life;
 
-    public SavePlayerInfo(SaveInventory inve, Vector2 pos, float life, LifeStatus status)
+    public SavePlayerInfo(SaveInventory inve, Vector3 pos, float life, LifeStatus status)
     {
         Inve = inve;
         x = pos.x;
-        y = pos.y;
+        z = pos.z;
         Life = life;
         Status = status;
     }

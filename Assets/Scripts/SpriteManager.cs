@@ -349,7 +349,7 @@ public class SpriteManager : MonoBehaviour
 
             if (tile.type == TypeBlock.Rock)
             {
-                if (neighbors[0] != null && neighbors[1] != null && neighbors[2] != null && neighbors[3] != null)
+                if (neighbors[0] != null && neighbors[1] != null && neighbors[2] != null && neighbors[3] != null && neighbors[4] != null && neighbors[5] != null && neighbors[6] != null && neighbors[7] != null)
                 {
                     if (neighbors[0].type == tile.type && neighbors[1].type != tile.type && neighbors[2].type != tile.type && neighbors[3].type != tile.type)//123
                     {

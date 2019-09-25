@@ -6,13 +6,13 @@ using System.IO;
 public class ChunkInfo
 {
     public int x = 0;
-    public int y = 0;
+    public int z = 0;
     public Chunk ThisChunk;
 
-    public ChunkInfo(int x, int y, Chunk chu)
+    public ChunkInfo(int x, int z, Chunk chu)
     {
         this.x = x;
-        this.y = y;
+        this.z = z;
         this.ThisChunk = chu;
     }
 }
@@ -61,9 +61,9 @@ public class Chunk : MonoBehaviour
         BiomeType typebiom = BiomeType.ForestNormal;
         bool havesave = false;
 
-        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + WorldGenerator.Instance.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.y)))
+        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + WorldGenerator.Instance.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z)))
         {
-            tiles = SaveWorld.Load(WorldGenerator.Instance.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.y);
+            tiles = SaveWorld.Load(WorldGenerator.Instance.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z);
             havesave = true;
         }
 
@@ -72,18 +72,20 @@ public class Chunk : MonoBehaviour
         {
             for (int j = 0; j < Size * TileObj.transform.localScale.y; j++)
             {
-                if (!havesave) { tiles[i, j] = new Tile(i + (int)transform.position.x, j + (int)transform.position.y, 0, typebiom); }
+                if (!havesave) { tiles[i, j] = new Tile(i + (int)transform.position.x, 0, j + (int)transform.position.z, typebiom); }
 
                 tiles[i, j].SetUpTile(tiles[i, j]);
                 tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
 
-                GameObject TileGo = GameObject.Instantiate(TileObj, new Vector3(tiles[i, j].x, tiles[i, j].y, 0.05f), Quaternion.identity);
-                TileGo.name = "Tile_" + tiles[i, j].x + "_" + tiles[i, j].y;
-                TileGo.transform.position = new Vector3(tiles[i, j].x, tiles[i, j].y, 0);
+                GameObject TileGo = GameObject.Instantiate(TileObj, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), Quaternion.identity);
+                TileGo.name = "Tile_" + tiles[i, j].x + "_" + tiles[i, j].z;
+                TileGo.transform.position = new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z);
                 TileGo.transform.SetParent(this.transform, true);
 
+                TileGo.transform.Rotate(new Vector3(90, 0, 0), Space.Self);
+
                 tiles[i, j].TileObj = TileGo.GetComponent<TileObj>();
-                tiles[i, j].TileChunk = new ChunkInfo((int)transform.position.x, (int)transform.position.y, this);
+                tiles[i, j].TileChunk = new ChunkInfo((int)transform.position.x, (int)transform.position.z, this);
 
                 //Set Up Tree OBject
                 SetUpTileTree(tiles[i, j]);
@@ -104,7 +106,7 @@ public class Chunk : MonoBehaviour
 
                 TileSave tilesa = new TileSave();
                 tilesa.x = tiles[i, j].x;
-                tilesa.y = tiles[i, j].y;
+                tilesa.z = tiles[i, j].z;
                 tilesa.type = tiles[i, j].type;
                 tilesa.placer = tiles[i, j].placerObj;
                 tilesa.typego = tiles[i, j].typego;
@@ -123,20 +125,10 @@ public class Chunk : MonoBehaviour
 
     private void SpawnAiTeste(Tile tile)
     {
-        if (tile.y > 0)
-        {
-            GameObject obj = Instantiate(SpriteManager.Instance.GetPrefabOnRecources("Prefabs/Villager/Villager"), new Vector3(tile.x, tile.y, tile.z + 0.5f), Quaternion.identity);
-            obj.GetComponent<Vilanger>().Born("VillagerTeste");
-            obj.transform.SetParent(this.transform, true);
-            Ai.Add(obj);
-        }
-        else if (tile.y < 0)
-        {
-            GameObject obj = Instantiate(SpriteManager.Instance.GetPrefabOnRecources("Prefabs/Villager/Villager"), new Vector3(tile.x, tile.y, tile.z - 0.5f), Quaternion.identity);
-            obj.GetComponent<Vilanger>().Born("VillagerTeste");
-            obj.transform.SetParent(this.transform, true);
-            Ai.Add(obj);
-        }
+        GameObject obj = Instantiate(SpriteManager.Instance.GetPrefabOnRecources("Prefabs/Villager/Villager"), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
+        obj.GetComponent<Vilanger>().Born("VillagerTeste");
+        obj.transform.SetParent(this.transform, true);
+        Ai.Add(obj);
     }
 
     public void OnTileTypeChange(Tile tile)
@@ -152,46 +144,46 @@ public class Chunk : MonoBehaviour
 
         if (GetPresets.TileOrder(tile))
         {
-            spritee.transform.position = new Vector3(tile.x, tile.y, 0);
+            spritee.transform.position = new Vector3(tile.x, tile.y, tile.z);
             spritee.transform.SetParent(this.transform, true);
 
-            if (spritee.transform.position.y > 0)
+            if (spritee.transform.position.z > 0)
             {
-                spritee.transform.position = new Vector3(tile.x, tile.y, -0.05f);
+                spritee.transform.position = new Vector3(tile.x, tile.y, tile.z);
             }
-            else if (tileGOmap[tile].transform.position.y < 0)
+            else if (tileGOmap[tile].transform.position.z < 0)
             {
-                spritee.transform.position = new Vector3(tile.x, tile.y, 0.05f);
+                spritee.transform.position = new Vector3(tile.x, tile.y, tile.z);
             }
 
-            spritee.GetComponent<SpriteRenderer>().sortingOrder = -(int)spritee.transform.position.y;
+            spritee.GetComponent<SpriteRenderer>().sortingOrder = -(int)spritee.transform.position.z;
             spritee.sortingLayerName = "Player";
         }
         else
         {
-            spritee.transform.position = new Vector3(tile.x, tile.y, 0);
+            spritee.transform.position = new Vector3(tile.x, tile.y, tile.z);
             spritee.GetComponent<SpriteRenderer>().sortingOrder = 0;
             spritee.sortingLayerName = "Default";
         }
 
         #region SetUpPathGrid
-        if (!Game.PathGrid.tiles.ContainsKey(new Vector2(tile.x, tile.y)))
+        if (!Game.PathGrid.tiles.ContainsKey(new Vector2(tile.x, tile.z)))
         {
             if (tile.CanWalk)
             {
                 if (tile.typego == TakeGO.empty && tile.placerObj == Placer.empty)
                 {
                     int coust = tile.CanWalk ? 0 : 1;
-                    Game.PathGrid.tiles.Add(new Vector2(tile.x, tile.y), new Node(tile.CanWalk, new Vector3(tile.x, tile.y, 0), coust));
+                    Game.PathGrid.tiles.Add(new Vector2(tile.x, tile.z), new Node(tile.CanWalk, new Vector3(tile.x, tile.y, tile.z), coust));
                 }
                 else
                 {
-                    Game.PathGrid.tiles.Add(new Vector2(tile.x, tile.y), new Node(false, new Vector3(tile.x, tile.y, 0), 1));
+                    Game.PathGrid.tiles.Add(new Vector2(tile.x, tile.z), new Node(false, new Vector3(tile.x, tile.y, tile.z), 1));
                 }
             }
             else
             {
-                Game.PathGrid.tiles.Add(new Vector2(tile.x, tile.y), new Node(false, new Vector3(tile.x, tile.y, 0), 1));
+                Game.PathGrid.tiles.Add(new Vector2(tile.x, tile.z), new Node(false, new Vector3(tile.x, tile.y, tile.z), 1));
             }
         }
         else
@@ -199,11 +191,11 @@ public class Chunk : MonoBehaviour
             if (tile.typego == TakeGO.empty && tile.placerObj == Placer.empty)
             {
                 int coust = tile.CanWalk ? 0 : 1;
-                Game.PathGrid.tiles[new Vector2(tile.x, tile.y)] = new Node(tile.CanWalk, new Vector3(tile.x, tile.y, 0), coust);
+                Game.PathGrid.tiles[new Vector2(tile.x, tile.z)] = new Node(tile.CanWalk, new Vector3(tile.x, tile.y, tile.z), coust);
             }
             else
             {
-                Game.PathGrid.tiles[new Vector2(tile.x, tile.y)] = new Node(false, new Vector3(tile.x, tile.y, 0), 1);
+                Game.PathGrid.tiles[new Vector2(tile.x, tile.z)] = new Node(false, new Vector3(tile.x, tile.y, tile.z), 1);
             }
         }
         #endregion
@@ -272,15 +264,15 @@ public class Chunk : MonoBehaviour
         if (tile.placerObj != Placer.empty)
         {
             GameObject trees = null;
-            trees = Instantiate(SpriteManager.Instance.Getplacerbyname(tile.placerObj.ToString()), new Vector3(tile.x, tile.y, 0), Quaternion.identity);
+            trees = Instantiate(SpriteManager.Instance.Getplacerbyname(tile.placerObj.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
 
-            if (trees.transform.position.y > 0)
+            if (trees.transform.position.z > 0)
             {
-                trees.transform.position = new Vector3(tile.x, tile.y, -0.05f);
+                trees.transform.position = new Vector3(tile.x, tile.y, tile.z);
             }
-            else if (trees.transform.position.y < 0)
+            else if (trees.transform.position.z < 0)
             {
-                trees.transform.position = new Vector3(tile.x, tile.y, 0.05f);
+                trees.transform.position = new Vector3(tile.x, tile.y, tile.z);
             }
 
             trees.transform.SetParent(this.transform, true);
@@ -294,11 +286,11 @@ public class Chunk : MonoBehaviour
 
             if (trees.GetComponent<SpriteRenderer>())
             {
-                trees.GetComponent<SpriteRenderer>().sortingOrder = -(int)trees.transform.position.y;
+                trees.GetComponent<SpriteRenderer>().sortingOrder = -(int)trees.transform.position.z;
             }
             else if (trees.GetComponentInChildren<SpriteRenderer>())
             {
-                trees.GetComponentInChildren<SpriteRenderer>().sortingOrder = -(int)trees.transform.position.y;
+                trees.GetComponentInChildren<SpriteRenderer>().sortingOrder = -(int)trees.transform.position.z;
             }
         }
     }
@@ -308,13 +300,11 @@ public class Chunk : MonoBehaviour
         if (tile.typego != TakeGO.empty)
         {
             GameObject trees = null;
-            trees = Instantiate(SpriteManager.Instance.GetPrefabbyname(tile.typego.ToString()), new Vector3(tile.x, tile.y, 0), Quaternion.identity);
+            trees = Instantiate(SpriteManager.Instance.GetPrefabbyname(tile.typego.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
             trees.transform.SetParent(this.transform, true);
             tile.ObjThis = trees;
 
-            trees.transform.position = new Vector3(tile.x + Random.Range(0f, 1f), tile.y + Random.Range(0f, 1f), 0);
-
-            trees.transform.Rotate(new Vector3(-90, 0,0), Space.Self);
+            trees.transform.position = new Vector3(tile.x + Random.Range(0f, 1f), tile.y, tile.z + Random.Range(0f, 1f));
 
             if (trees.GetComponent<Trees>())
             {
@@ -323,11 +313,11 @@ public class Chunk : MonoBehaviour
 
             if (trees.GetComponent<SpriteRenderer>())
             {
-                trees.GetComponent<SpriteRenderer>().sortingOrder = -(int)trees.transform.position.y;
+                trees.GetComponent<SpriteRenderer>().sortingOrder = -(int)trees.transform.position.z;
             }
             else if (trees.GetComponentInChildren<SpriteRenderer>())
             {
-                trees.GetComponentInChildren<SpriteRenderer>().sortingOrder = -(int)trees.transform.position.y;
+                trees.GetComponentInChildren<SpriteRenderer>().sortingOrder = -(int)trees.transform.position.z;
             }
         }
     }
@@ -336,7 +326,7 @@ public class Chunk : MonoBehaviour
     {
         if (Game.GameManager.SinglePlayer)
         {
-            SaveWorld.Save(tiles, WorldGenerator.Instance.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.y);
+            SaveWorld.Save(tiles, WorldGenerator.Instance.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z);
         }
         else if (Game.GameManager.MultiPlayer)
         {
@@ -453,22 +443,22 @@ public class Chunk : MonoBehaviour
         for (int v = 0; v < tile.Length; v++)
         {
             int i = tile[v].x - (int)transform.position.x;
-            int j = tile[v].y - (int)transform.position.y;
+            int j = tile[v].z - (int)transform.position.z;
 
             tiles[i, j] = new Tile(tile[v]);
 
             tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
 
-            GameObject TileGo = GameObject.Instantiate(TileObj, new Vector3(tiles[i, j].x, tiles[i, j].y, 0), Quaternion.identity);
+            GameObject TileGo = GameObject.Instantiate(TileObj, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), Quaternion.identity);
 
-            TileGo.name = "Tile_" + tiles[i, j].x + "_" + tiles[i, j].y;
+            TileGo.name = "Tile_" + tiles[i, j].x + "_" + tiles[i, j].z;
 
-            TileGo.transform.position = new Vector3(tiles[i, j].x, tiles[i, j].y, 0);
+            TileGo.transform.position = new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z);
             TileGo.transform.SetParent(this.transform, true);
 
             tiles[i, j].TileObj = TileGo.GetComponent<TileObj>();
 
-            tiles[i, j].TileChunk = new ChunkInfo((int)transform.position.x, (int)transform.position.y, this);
+            tiles[i, j].TileChunk = new ChunkInfo((int)transform.position.x, (int)transform.position.z, this);
 
             //SetUp Tree object, spawn tree object and transalte for a new position
             SetUpTileTree(tiles[i, j]);

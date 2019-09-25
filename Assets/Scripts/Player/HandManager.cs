@@ -169,7 +169,10 @@ public class HandManager : MonoBehaviour
 
     void Update()
     {
-        Distance = (int)Vector2.Distance(transform.position, new Vector2(Game.GameManager.mouseX, Game.GameManager.mouseY));
+        if (Game.GameManager.t != null)
+        {
+            Distance = (int)Vector3.Distance(transform.position, new Vector3(Game.GameManager.t.x, Game.GameManager.t.y, Game.GameManager.t.z));
+        }
 
         if (Distance <= 3)
         {
@@ -196,7 +199,7 @@ public class HandManager : MonoBehaviour
                     if (CurrentItem.ITEMTYPE == ItemType.Block || CurrentItem.ITEMTYPE == ItemType.Tools || CurrentItem.ITEMTYPE == ItemType.Placer)
                     {
                         WorldGenerator.Instance.SlectedBlock.gameObject.SetActive(true);
-                        WorldGenerator.Instance.SlectedBlock.position = new Vector3(Game.GameManager.t.x, Game.GameManager.t.y, 0);
+                        WorldGenerator.Instance.SlectedBlock.position = new Vector3(Game.GameManager.t.x, 0, Game.GameManager.t.z);
                     }
                     else
                     {

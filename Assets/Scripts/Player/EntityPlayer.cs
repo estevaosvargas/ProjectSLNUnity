@@ -21,7 +21,7 @@ public class EntityPlayer : EntityLife
 {
     public AudioSource AUDIOSOURCE;
     public Transform World;
-    public Rigidbody2D body;
+    public Rigidbody body;
     public Animator Anim;
     public ParticleSystem FootPArticle;
     public float Speed = 5;
@@ -42,10 +42,10 @@ public class EntityPlayer : EntityLife
     public GameObject villagerteste;
 
     private int LastPostitionIntX;
-    private int LastPostitionIntY;
+    private int LastPostitionIntZ;
 
     public NetWorkView Net;
-
+    public int FootParticleCount = 1;
     public int pathsize = 20;
 
     void Start()
@@ -56,7 +56,7 @@ public class EntityPlayer : EntityLife
 
         Game.TileAnimations.StartTileAnimation();
 
-		transform.Rotate(new Vector3(-87.839f, 0,0), Space.Self);
+		transform.Rotate(new Vector3(3.6f, 0,0), Space.Self);
 
         if (Net.isMine)
         {
@@ -65,11 +65,11 @@ public class EntityPlayer : EntityLife
                 World = WorldGenerator.Instance.transform;
             }
 
-            body.simulated = true;
+            body.isKinematic = false;
         }
         else
         {
-            body.simulated = false;
+            body.isKinematic = true;
         }
     }
 
@@ -146,7 +146,7 @@ public class EntityPlayer : EntityLife
         {
             WorldGenerator.Instance.UpdateFindChunk();
 
-            Tile tile = WorldGenerator.Instance.GetTileAt(transform.position.x, transform.position.y);
+            Tile tile = WorldGenerator.Instance.GetTileAt(transform.position.x, transform.position.z);
 
             NetStats.CurrentTile = tile.type;
 
@@ -160,7 +160,7 @@ public class EntityPlayer : EntityLife
             }
             else
             {
-                Speed = 1.8f;
+                Speed = 2f;
             }
 
             if (tile.type == TypeBlock.Grass)
@@ -253,10 +253,10 @@ public class EntityPlayer : EntityLife
             Status.UpdateStatus();
             mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
             
-            Vector2 movement = new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"), CrossPlatformInputManager.GetAxis("Vertical"));
+            Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxis("Horizontal"), 0, CrossPlatformInputManager.GetAxis("Vertical"));
 
             body.velocity = movement.normalized * Speed;
-            SPRITERENDER.sortingOrder = -(int)transform.position.y;
+            SPRITERENDER.sortingOrder = -(int)transform.position.z;
 
             if (Input.GetKeyDown(KeyCode.Return))
             {
@@ -282,12 +282,12 @@ public class EntityPlayer : EntityLife
             }
             lastposition = transform.position;
 
-            if (LastPostitionIntX != (int)transform.position.x || LastPostitionIntY != (int)transform.position.y)
+            if (LastPostitionIntX != (int)transform.position.x || LastPostitionIntZ != (int)transform.position.z)
             {
                 UpdateOnMoveInt();
             }
             LastPostitionIntX = (int)transform.position.x;
-            LastPostitionIntY = (int)transform.position.y;
+            LastPostitionIntZ = (int)transform.position.z;
             #endregion
 
             if (NetStats.handhide == true)
@@ -343,13 +343,13 @@ public class EntityPlayer : EntityLife
     public void FootPrintRight()
     {
         AUDIOSOURCE.PlayOneShot(Game.AudioManager.GetFootSound(NetStats.CurrentTile));
-        FootPArticle.Emit(1);
+        FootPArticle.Emit(FootParticleCount);
     }
 
     public void FootPrintLeft()
     {
         AUDIOSOURCE.PlayOneShot(Game.AudioManager.GetFootSound(NetStats.CurrentTile));
-        FootPArticle.Emit(1);
+        FootPArticle.Emit(FootParticleCount);
     }
 
     public override void OnDead()

@@ -24,8 +24,8 @@ public class Vilanger : Pathfindingentity
     public void Born(string name)
     {
         GetComponent<SpriteRenderer>().color = new Color(Random.value, Random.value, Random.value, 1);
-        GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.y;
-        transform.position = new Vector3(transform.position.x, transform.position.y, 0.05f);
+        GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.z;
+        //transform.position = new Vector3(transform.position.x, transform.position.y, 0.05f);
         Name = name;
         Type = VilagerVocation.none;
 		transform.Rotate(new Vector3(-87.839f, 0,0), Space.Self);
@@ -53,7 +53,7 @@ public class Vilanger : Pathfindingentity
 
     internal void GetNewPostion()
     {
-        Run(new Vector3(Random.Range(transform.position.x - 10, transform.position.x + 10), Random.Range(transform.position.y - 10, transform.position.y + 10), transform.position.z));
+        Run(new Vector3(Random.Range(transform.position.x - 10, transform.position.x + 10), 0, Random.Range(transform.position.z - 10, transform.position.z + 10)));
     }
 
     public override void Updateoverride()

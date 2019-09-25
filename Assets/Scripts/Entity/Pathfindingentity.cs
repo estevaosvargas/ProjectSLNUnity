@@ -100,13 +100,13 @@ public class Pathfindingentity : EntityLife
     IEnumerator FollowPath()
     {
         int currentWaypointX = (int)path[0].x;
-        int currentWaypointY = (int)path[0].y;
+        int currentWaypointZ = (int)path[0].z;
 
         bool follow = true;
         int targetIndex = 0;
         while (follow)
         {
-            if (new Vector3((int)transform.position.x, (int)transform.position.y, (int)transform.position.z) == new Vector3(currentWaypointX, currentWaypointY, transform.position.z))
+            if (new Vector3((int)transform.position.x, 0, (int)transform.position.z) == new Vector3(currentWaypointX, 0, currentWaypointZ))
             {
                 targetIndex++;
                 if (targetIndex >= path.Length)
@@ -114,13 +114,13 @@ public class Pathfindingentity : EntityLife
                     yield break;
                 }
                 currentWaypointX = (int)path[targetIndex].x;
-                currentWaypointY = (int)path[targetIndex].y;
+                currentWaypointZ = (int)path[targetIndex].z;
             }
 
-            transform.position = Vector3.MoveTowards(transform.position, new Vector3(currentWaypointX, currentWaypointY, transform.position.z), speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(currentWaypointX, 0, currentWaypointZ), speed * Time.deltaTime);
             yield return null;
 
-            if (new Vector3((int)transform.position.x, (int)transform.position.y, (int)transform.position.z) == Targetnode)
+            if (new Vector3((int)transform.position.x, 0, (int)transform.position.z) == Targetnode)
             {
                 follow = false;
             }
@@ -135,8 +135,8 @@ public class Pathfindingentity : EntityLife
         Vector3[] waypoints = new Vector3[0];
         bool pathSuccess = false;
 
-        Node startNode = GetTileAt((int)request.pathStart.x, (int)request.pathStart.y);
-        Node targetNode = GetTileAt((int)request.pathEnd.x, (int)request.pathEnd.y);
+        Node startNode = GetTileAt((int)request.pathStart.x, (int)request.pathStart.z);
+        Node targetNode = GetTileAt((int)request.pathEnd.x, (int)request.pathEnd.z);
 
         if (startNode != null && targetNode != null)
         {
@@ -199,17 +199,17 @@ public class Pathfindingentity : EntityLife
 
         for (int x = -1; x <= 1; x++)
         {
-            for (int y = -1; y <= 1; y++)
+            for (int z = -1; z <= 1; z++)
             {
-                if (x == 0 && y == 0)
+                if (x == 0 && z == 0)
                     continue;
 
                 int checkX = (int)node.worldPosition.x + x;
-                int checkY = (int)node.worldPosition.y + y;
+                int checkZ = (int)node.worldPosition.z + z;
 
-                if (Game.PathGrid.tiles.ContainsKey(new Vector2(checkX, checkY)))
+                if (Game.PathGrid.tiles.ContainsKey(new Vector2(checkX, checkZ)))
                 {
-                    neighbours.Add(Game.PathGrid.tiles[new Vector2(checkX, checkY)]);
+                    neighbours.Add(Game.PathGrid.tiles[new Vector2(checkX, checkZ)]);
                 }
             }
         }
@@ -217,11 +217,11 @@ public class Pathfindingentity : EntityLife
         return neighbours;
     }
 
-    public Node GetTileAt(int x, int y)
+    public Node GetTileAt(int x, int z)
     {
-        if (Game.PathGrid.tiles.ContainsKey(new Vector2(x, y)))
+        if (Game.PathGrid.tiles.ContainsKey(new Vector2(x, z)))
         {
-            return Game.PathGrid.tiles[new Vector2(x, y)];
+            return Game.PathGrid.tiles[new Vector2(x, z)];
         }
         return null;
     }
@@ -265,11 +265,11 @@ public class Pathfindingentity : EntityLife
     int GetDistance(Node nodeA, Node nodeB)
     {
         int dstX = Mathf.Abs((int)nodeA.worldPosition.x - (int)nodeB.worldPosition.x);
-        int dstY = Mathf.Abs((int)nodeA.worldPosition.y - (int)nodeB.worldPosition.y);
+        int dstZ = Mathf.Abs((int)nodeA.worldPosition.z - (int)nodeB.worldPosition.z);
 
-        if (dstX > dstY)
-            return 14 * dstY + 10 * (dstX - dstY);
-        return 14 * dstX + 10 * (dstY - dstX);
+        if (dstX > dstZ)
+            return 14 * dstZ + 10 * (dstX - dstZ);
+        return 14 * dstX + 10 * (dstZ - dstX);
     }
     #endregion
 }

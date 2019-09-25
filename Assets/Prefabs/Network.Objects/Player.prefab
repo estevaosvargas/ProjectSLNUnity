@@ -359,7 +359,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.77
+      scalar: 3
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -466,7 +466,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.42268968, g: 0.7529412, b: 0.39607844, a: 1}
+      maxColor: {r: 0, g: 1, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -528,7 +528,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.41
+      scalar: 0.17
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -850,7 +850,7 @@ ParticleSystem:
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
-      scalar: -0.01
+      scalar: 0.06
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -903,8 +903,8 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 0
-    angle: 25
+    type: 4
+    angle: 3.76
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 0
@@ -990,7 +990,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 0.0001
+      value: 0.1
       mode: 0
       spread: 0
       speed:
@@ -1377,7 +1377,7 @@ ParticleSystem:
         m_RotationOrder: 4
     separateAxes: 0
   RotationModule:
-    enabled: 0
+    enabled: 1
     x:
       serializedVersion: 2
       minMaxState: 0
@@ -1547,7 +1547,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 1, b: 1, a: 1}
+        key0: {r: 1, g: 1, b: 1, a: 0.22745098}
         key1: {r: 1, g: 1, b: 1, a: 0}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
@@ -4974,10 +4974,10 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 660810391
-  m_SortingLayer: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 1
-  m_RenderMode: 3
+  m_RenderMode: 4
   m_SortMode: 0
   m_MinParticleSize: 0
   m_MaxParticleSize: 0.5
@@ -4995,7 +4995,7 @@ ParticleSystemRenderer:
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_VertexStreams: 00010304
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
@@ -5095,11 +5095,11 @@ GameObject:
   - component: {fileID: 114246513993113868}
   - component: {fileID: 114161712818232822}
   - component: {fileID: 114067372861037966}
-  - component: {fileID: 50525546397152528}
   - component: {fileID: 95241139421231152}
   - component: {fileID: 114066613193702464}
   - component: {fileID: 114675796371926942}
-  - component: {fileID: 3038508333210784048}
+  - component: {fileID: 8238467790666831973}
+  - component: {fileID: 4404721391609997342}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -5114,8 +5114,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1915398696615718}
-  m_LocalRotation: {x: -0.6936474, y: 0, z: 0, w: 0.72031474}
-  m_LocalPosition: {x: -26.511965, y: 531.8991, z: -0.006}
+  m_LocalRotation: {x: 0.03141073, y: 0, z: 0, w: 0.9995066}
+  m_LocalPosition: {x: -27.009584, y: 0, z: 0}
   m_LocalScale: {x: 0.9813736, y: 1.854582, z: 1}
   m_Children:
   - {fileID: 4753514897003424}
@@ -5124,7 +5124,7 @@ Transform:
   - {fileID: 4223847734343012065}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -87.839005, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 3.6, y: 0, z: 0}
 --- !u!212 &212816658032859936
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5298,7 +5298,7 @@ MonoBehaviour:
   LastAttacker: 
   AUDIOSOURCE: {fileID: 6679709516443144081}
   World: {fileID: 0}
-  body: {fileID: 50525546397152528}
+  body: {fileID: 8238467790666831973}
   Anim: {fileID: 95241139421231152}
   FootPArticle: {fileID: 198870550756704852}
   Speed: 2
@@ -5328,6 +5328,7 @@ MonoBehaviour:
   villagerteste: {fileID: 1459282729364594, guid: 7799e939b9f7eaa43a537b122f54276c,
     type: 3}
   Net: {fileID: 114066613193702464}
+  FootParticleCount: 5
   pathsize: 20
 --- !u!114 &114067372861037966
 MonoBehaviour:
@@ -5371,27 +5372,6 @@ MonoBehaviour:
     Distance: 1
     FireRate: 0.3
   HandTransform: {fileID: 4104868406472256}
---- !u!50 &50525546397152528
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1915398696615718}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
 --- !u!95 &95241139421231152
 Animator:
   serializedVersion: 3
@@ -5444,32 +5424,36 @@ MonoBehaviour:
   - {fileID: 114067372861037966}
   - {fileID: 114161712818232822}
   ObjectToDisable: []
---- !u!61 &3038508333210784048
-BoxCollider2D:
+--- !u!54 &8238467790666831973
+Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1915398696615718}
-  m_Enabled: 1
-  m_Density: 1
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 116
+  m_CollisionDetection: 0
+--- !u!136 &4404721391609997342
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1915398696615718}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.00081172585, y: 0.09796591}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.64, y: 0.64}
-    newSize: {x: 0.64, y: 0.64}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.25675863, y: 0.12767732}
-  m_EdgeRadius: 0
+  m_Enabled: 1
+  m_Radius: 0.10527992
+  m_Height: 0.20355362
+  m_Direction: 1
+  m_Center: {x: 0.0058617466, y: 0.12923194, z: -0.000000008151775}
 --- !u!1 &8173727284702119474
 GameObject:
   m_ObjectHideFlags: 0

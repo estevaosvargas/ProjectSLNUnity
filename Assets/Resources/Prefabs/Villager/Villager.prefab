@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 212594259101423644}
   - component: {fileID: 61627897656603238}
   - component: {fileID: 95158326085517274}
+  - component: {fileID: 8713991056757337766}
   - component: {fileID: 155474608623118998}
   m_Layer: 9
   m_Name: Villager
@@ -129,6 +130,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &8713991056757337766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1459282729364594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b37bea61378e79a48b7908974b92dd98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraToLookAt: {fileID: 0}
 --- !u!114 &155474608623118998
 MonoBehaviour:
   m_ObjectHideFlags: 0

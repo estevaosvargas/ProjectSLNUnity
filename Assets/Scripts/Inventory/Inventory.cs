@@ -25,7 +25,7 @@ public class Inventory : MonoBehaviour
             {
                 ItemList = inve.Inve.ItemList;
 
-                transform.position = new Vector3(inve.x, inve.y, 0);
+                transform.position = new Vector3(inve.x, 0, inve.z);
 
                 GetComponent<EntityPlayer>().Status = inve.Status;
                 GetComponent<EntityPlayer>().HP = inve.Life;
@@ -35,7 +35,7 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            SaveInventory inve = SaveWorld.LoadInve(transform.position.x + ","+ transform.position.y);
+            SaveInventory inve = SaveWorld.LoadInve(transform.position.x + ","+ transform.position.z);
 
             if (inve != null)
             {
@@ -53,7 +53,7 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            SaveWorld.SaveInve(new SaveInventory(ItemList), transform.position.x + "," + transform.position.y);
+            SaveWorld.SaveInve(new SaveInventory(ItemList), transform.position.x + "," + transform.position.z);
         }
     }
 
@@ -65,7 +65,7 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            SaveWorld.DeletCont(transform.position.x + "," + transform.position.y);
+            SaveWorld.DeletCont(transform.position.x + "," + transform.position.z);
         }
     }
     #endregion

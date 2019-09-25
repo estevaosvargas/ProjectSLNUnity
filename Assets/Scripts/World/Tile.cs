@@ -94,7 +94,7 @@ public class Tile
     public Tile(TileSave tile)
     {
         x = tile.x;
-        y = tile.y;
+        z = tile.z;
         type = tile.type;
         typego = tile.typego;
         placerObj = tile.placer;
@@ -107,14 +107,14 @@ public class Tile
     public Tile(int x, int y, TypeBlock Type)
     {
         this.x = x;
-        this.y = y;
+        //this.y = y;
         type = Type;
     }
 
     public Tile(int x, int y, int z, BiomeType biotype)
     {
         this.x = x;
-        this.y = y;
+        //this.y = y;
         this.z = z;
 
         float persistence = 39.9f;
@@ -128,12 +128,12 @@ public class Tile
         float Scale = 1f;
 
         float xCordee = (float)octaves * x / width * Scale;
-        float yCordee = (float)octaves * y / height * Scale;
+        float zCordee = (float)octaves * z / height * Scale;
 
         xCordee *= frequency;
-        yCordee *= frequency;
+        zCordee *= frequency;
 
-        float sample = Mathf.PerlinNoise(xCordee + WorldGenerator.Instance.Seed, yCordee + WorldGenerator.Instance.Seed) * amplitude / persistence;
+        float sample = Mathf.PerlinNoise(xCordee + WorldGenerator.Instance.Seed, zCordee + WorldGenerator.Instance.Seed) * amplitude / persistence;
 
         if (WorldGenerator.Instance.CurrentWorld == WorldType.Caves)
         {
@@ -152,34 +152,34 @@ public class Tile
 
                 //float sample2 = Mathf.PerlinNoise(xbiome + WorldGenerator.Instance.Seed, ybiome + WorldGenerator.Instance.Seed) * sample / 0.11f;
 
-                float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.005f, 1, WorldGenerator.Instance.Seed, false).GetValue(x, y, 0);
+                float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.005f, 1, WorldGenerator.Instance.Seed, false).GetValue(x, z, 0);
 
                 sample2 *= 10;
 
-                PerlinSetType(SetUpBiome(x, y, this, sample, sample2));
+                PerlinSetType(SetUpBiome(x, z, this, sample, sample2));
             }
             else if (sample > 0.3f)
             {
                 TileBiome = BiomeType.Bench;
-                PerlinSetType(Biome.Bench(x, y, this, sample));
+                PerlinSetType(Biome.Bench(x, z, this, sample));
             }
             else
             {
                 TileBiome = BiomeType.OceanNormal;
-                PerlinSetType(Biome.OceanNormal(x, y, this, sample));
+                PerlinSetType(Biome.OceanNormal(x, z, this, sample));
             }
         }
     }
 
     public void PerlinSetType(TypeBlock type)
     {
-        if (typego == TakeGO.empty)
+        /*if (typego == TakeGO.empty)
         {
             if (type == TypeBlock.Grass)
             {
                 typego = TakeGO.Grass;
             }
-        }
+        }*/
 
         this.type = type;
         SetUpTile(this);
@@ -212,13 +212,13 @@ public class Tile
                     DamageTypeSet(TypeBlock.RockGround);
                     break;
                 case TypeBlock.RockGround:
-                    DamageTypeSet(getcavetile(x, y));
+                    DamageTypeSet(getcavetile(x, z));
                     break;
                 case TypeBlock.DirtGrass:
                     DamageTypeSet(TypeBlock.Dirt);
                     break;
                 case TypeBlock.Dirt:
-                    DamageTypeSet(getcavetile(x, y));
+                    DamageTypeSet(getcavetile(x, z));
                     break;
                 default:
                     DamageTypeSet(TypeBlock.Air);
@@ -289,17 +289,17 @@ public class Tile
 
         placerObj = type;
 
-        GameObject trees = GameObject.Instantiate(SpriteManager.Instance.Getplacerbyname(placerObj.ToString()), new Vector3(x, y, 0), Quaternion.identity);
+        GameObject trees = GameObject.Instantiate(SpriteManager.Instance.Getplacerbyname(placerObj.ToString()), new Vector3(x, y, z), Quaternion.identity);
 
         if (trees == null) { return; }//if gameobject are null, code get error and come back
 
         if (TileChunk.ThisChunk.transform.position.y > 0)
         {
-            trees.transform.position = new Vector3(x, y, -0.05f);
+            trees.transform.position = new Vector3(x, y, z);
         }
         else if (TileChunk.ThisChunk.transform.position.y < 0)
         {
-            trees.transform.position = new Vector3(x, y, 0.05f);
+            trees.transform.position = new Vector3(x, y, z);
         }
 
         trees.transform.SetParent(TileChunk.ThisChunk.transform, true);
@@ -404,91 +404,91 @@ public class Tile
         {
             neighbors = new Tile[8];
 
-            neighbors[0] = WorldGenerator.Instance.GetTileAt(x, y + 1);//cima
-            neighbors[1] = WorldGenerator.Instance.GetTileAt(x + 1, y);//direita
-            neighbors[2] = WorldGenerator.Instance.GetTileAt(x, y - 1);//baixo
-            neighbors[3] = WorldGenerator.Instance.GetTileAt(x - 1, y);//esquerda
+            neighbors[0] = WorldGenerator.Instance.GetTileAt(x, z + 1);//cima
+            neighbors[1] = WorldGenerator.Instance.GetTileAt(x + 1, z);//direita
+            neighbors[2] = WorldGenerator.Instance.GetTileAt(x, z - 1);//baixo
+            neighbors[3] = WorldGenerator.Instance.GetTileAt(x - 1, z);//esquerda
 
-            neighbors[4] = WorldGenerator.Instance.GetTileAt(x + 1, y - 1);//corn baixo direita
-            neighbors[5] = WorldGenerator.Instance.GetTileAt(x - 1, y + 1);//corn cima esquerda
-            neighbors[6] = WorldGenerator.Instance.GetTileAt(x + 1, y + 1);//corn cima direita
-            neighbors[7] = WorldGenerator.Instance.GetTileAt(x - 1, y - 1);//corn baixo esuqerda
+            neighbors[4] = WorldGenerator.Instance.GetTileAt(x + 1, z - 1);//corn baixo direita
+            neighbors[5] = WorldGenerator.Instance.GetTileAt(x - 1, z + 1);//corn cima esquerda
+            neighbors[6] = WorldGenerator.Instance.GetTileAt(x + 1, z + 1);//corn cima direita
+            neighbors[7] = WorldGenerator.Instance.GetTileAt(x - 1, z - 1);//corn baixo esuqerda
 
         }
         else
         {
             neighbors = new Tile[4];
 
-            neighbors[0] = WorldGenerator.Instance.GetTileAt(x, y + 1);//cima
-            neighbors[1] = WorldGenerator.Instance.GetTileAt(x + 1, y);//direita
-            neighbors[2] = WorldGenerator.Instance.GetTileAt(x, y - 1);//baixo
-            neighbors[3] = WorldGenerator.Instance.GetTileAt(x - 1, y);//esquerda
+            neighbors[0] = WorldGenerator.Instance.GetTileAt(x, z + 1);//cima
+            neighbors[1] = WorldGenerator.Instance.GetTileAt(x + 1, z);//direita
+            neighbors[2] = WorldGenerator.Instance.GetTileAt(x, z - 1);//baixo
+            neighbors[3] = WorldGenerator.Instance.GetTileAt(x - 1, z);//esquerda
         }
 
         return neighbors;
     }
 
     //Valus to determine whear what biome is on the positions
-    public TypeBlock SetUpBiome(int x, int y, Tile tile, float sample, float sample2)
+    public TypeBlock SetUpBiome(int x, int z, Tile tile, float sample, float sample2)
     {
         if ((int)sample2 == 0)
         {
             //sem nemhum
             TileBiome = BiomeType.ForestNormal;
-            return Biome.ForestNormal(x, y, this, sample);
+            return Biome.ForestNormal(x, z, this, sample);
         }
         else if ((int)sample2 == 1)
         {
             //Jungle
             TileBiome = BiomeType.Jungle;
-            return Biome.Jungle(x, y, this, sample);
+            return Biome.Jungle(x, z, this, sample);
         }
         else if ((int)sample2 == 2)
         {
             //Oceano Normal
             TileBiome = BiomeType.ForestNormal;
-            return Biome.ForestNormal(x, y, this, sample);
+            return Biome.ForestNormal(x, z, this, sample);
         }
         else if ((int)sample2 == 3)
         {
             //Deserto
             TileBiome = BiomeType.Montahas;
-            return Biome.Montanhas(x, y, this, sample);
+            return Biome.Montanhas(x, z, this, sample);
         }
         else if ((int)sample2 == 4)
         {
             //sem nemhum
             TileBiome = BiomeType.Plain;
-            return Biome.Plaine(x, y, this, sample);
+            return Biome.Plaine(x, z, this, sample);
         }
         else if ((int)sample2 == 5)
         {
             //sem nemhum
             TileBiome = BiomeType.Snow;
-            return Biome.ForestSnow(x, y, this, sample);
+            return Biome.ForestSnow(x, z, this, sample);
         }
         else if ((int)sample2 == 6)
         {
             //sem nemhum
             TileBiome = BiomeType.Montahas;
-            return Biome.Montanhas(x, y, this, sample);
+            return Biome.Montanhas(x, z, this, sample);
         }
         else if ((int)sample2 == 7)
         {
             //sem nemhum
             TileBiome = BiomeType.Desert;
-            return Biome.Desert(x, y, this, sample);
+            return Biome.Desert(x, z, this, sample);
         }
         else if ((int)sample2 == -4)
         {
             //sem nemhum
             TileBiome = BiomeType.Plain;
-            return Biome.Plaine(x, y, this, sample);
+            return Biome.Plaine(x, z, this, sample);
         }
         else
         {
             TileBiome = BiomeType.ForestNormal;
-            return Biome.ForestNormal(x, y, this, sample);
+            return Biome.ForestNormal(x, z, this, sample);
         }
     }
 
@@ -636,7 +636,7 @@ public class TileSave
     public bool ConnecyToNightboors = false;
     public bool IsColider = false;
     public int x;
-    public int y;
+    public int z;
     public BiomeType Biomeofthis;
     public bool HaveHosue = false;
     public bool Emessive = false;
