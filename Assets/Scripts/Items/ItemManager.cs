@@ -173,6 +173,15 @@ public class ItemManager : MonoBehaviour {
 
         obj.GetComponent<ItemDrop>().SetDrop(item, quanty);
     }
+
+    public void SpawnItem(int index, int quanty, Vector3 world_position)
+    {
+        ItemData item = ItemManager.Instance.GetItem(index);
+
+        GameObject obj = GameObject.Instantiate(Drop, world_position, Quaternion.identity);
+
+        obj.GetComponent<ItemDrop>().SetDrop(item, quanty);
+    }
 }
 
 [System.Serializable]

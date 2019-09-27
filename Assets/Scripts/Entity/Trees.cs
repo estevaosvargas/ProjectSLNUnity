@@ -28,7 +28,7 @@ public class Trees : MonoBehaviour {
             ThisTreeTile.typego = TakeGO.empty;
             ThisTreeTile.RefreshTile();
             ThisTreeTile.SaveChunk();
-            ItemManager.Instance.SpawnItem(ItemDrop, DropQuanty);
+            ItemManager.Instance.SpawnItem(ItemDrop, DropQuanty, transform.position);
             Destroy(this.gameObject);
         }
     }

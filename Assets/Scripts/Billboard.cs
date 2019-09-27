@@ -6,6 +6,7 @@ public class Billboard : MonoBehaviour
 {
     public Camera cameraToLookAt;
     bool IsVisible = false;
+    public float smoth = 2;
 
     void Start()
     {
@@ -17,8 +18,29 @@ public class Billboard : MonoBehaviour
         if (IsVisible)
         {
             Vector3 v = cameraToLookAt.transform.position - transform.position;
-            v.z = 0.0f;
-            transform.LookAt(cameraToLookAt.transform.position - v);
+
+            //v.x = v.z = 0.0f;
+            v.y = v.z = 0.0f;
+
+            transform.LookAt(cameraToLookAt.transform.position - v * smoth * Time.deltaTime);
+
+            if (v.x > 3.6f)
+            {
+                v.x = 3.6f;
+            }
+            else if (v.x < -3.6f)
+            {
+                v.x = -3.6f;
+            }
+
+            if (v.y > 15)
+            {
+                v.y = 15;
+            }
+            else if (v.y < -15)
+            {
+                v.y = -15;
+            }
         }
     }
 

@@ -143,6 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraToLookAt: {fileID: 0}
+  smoth: 0.01
 --- !u!114 &155474608623118998
 MonoBehaviour:
   m_ObjectHideFlags: 0

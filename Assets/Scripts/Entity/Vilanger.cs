@@ -71,7 +71,7 @@ public class Vilanger : Pathfindingentity
             var fwdDotProduct = Vector3.Dot(transform.forward, velocity);
             var upDotProduct = Vector3.Dot(transform.up, velocity);
             var rightDotProduct = Vector3.Dot(transform.right, velocity);
-            Render.sortingOrder = -(int)transform.position.y;
+            Render.sortingOrder = -(int)transform.position.z;
 
             if (transform.position.y > 0)
             {
