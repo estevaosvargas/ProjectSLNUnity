@@ -78,7 +78,7 @@ public class EntityPlayer : EntityLife
         DontDestroyOnLoad(this.gameObject);
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter(Collider collision)
     {
         if (collision.tag == "TreeTrigger")
         {
@@ -100,7 +100,7 @@ public class EntityPlayer : EntityLife
         }
     }
 
-    void OnTriggerExit2D(Collider2D collision)
+    void OnTriggerExit(Collider collision)
     {
         if (collision.tag == "TreeTrigger")
         {

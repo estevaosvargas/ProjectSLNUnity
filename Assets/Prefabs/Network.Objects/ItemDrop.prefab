@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4827713137813248}
   - component: {fileID: 212089238201459612}
   - component: {fileID: 114805839420894412}
-  - component: {fileID: 58372826747702802}
   - component: {fileID: 82771168361417640}
   - component: {fileID: 114153319555113062}
+  - component: {fileID: 7854196333027297275}
   m_Layer: 0
   m_Name: ItemDrop
   m_TagString: ItemDrop
@@ -118,22 +118,6 @@ MonoBehaviour:
     CanEquip: 0
   Qunty: -1
   PickUpSound: {fileID: 8300000, guid: 8addecf7cab393c41a9a8c59221b60c3, type: 3}
---- !u!58 &58372826747702802
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1982240538145316}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 1.18
 --- !u!82 &82771168361417640
 AudioSource:
   m_ObjectHideFlags: 0
@@ -246,3 +230,16 @@ MonoBehaviour:
   ViewID: 0
   DeliveModo: 1
   IdMode: 1
+--- !u!135 &7854196333027297275
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982240538145316}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.2
+  m_Center: {x: 0, y: 0, z: 0}

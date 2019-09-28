@@ -312,7 +312,11 @@ public class HandManager : MonoBehaviour
                 if (WorldGenerator.Instance.SlectedBlock != null)
                 {
                     WorldGenerator.Instance.SlectedBlock.gameObject.SetActive(true);
-                    WorldGenerator.Instance.SlectedBlock.position = new Vector3(Game.GameManager.t.x, Game.GameManager.t.y, 0);
+                    WorldGenerator.Instance.SlectedBlock.position = new Vector3(Game.GameManager.t.x, 0, Game.GameManager.t.z);
+                }
+                else
+                {
+                    WorldGenerator.Instance.SlectedBlock.gameObject.SetActive(false);
                 }
             }
 
