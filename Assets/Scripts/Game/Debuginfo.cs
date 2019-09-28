@@ -17,7 +17,7 @@ public class Debuginfo : MonoBehaviour
     {
         if (Game.GameManager.MyPlayer.MyObject != null)
         {
-            Position.text = "X:" + Game.GameManager.MyPlayer.MyObject.transform.position.x + "," + "Y:" + Game.GameManager.MyPlayer.MyObject.transform.position.y;
+            Position.text = "X:" + Game.GameManager.MyPlayer.MyObject.transform.position.x + ", Y:" + Game.GameManager.MyPlayer.MyObject.transform.position.y + ", Z:" + Game.GameManager.MyPlayer.MyObject.transform.position.z;
         }
     }
 }

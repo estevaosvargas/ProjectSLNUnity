@@ -59,6 +59,7 @@ public class GameManager : UIElements
     public float mouseX;
     public float mouseY;
     public float mouseZ;
+    public float mouseplus = 1;
     private int LastMouseX;
     private int LastMouseY;
 
@@ -204,6 +205,7 @@ public class GameManager : UIElements
         if (Mtype != type)
         {
             Mtype = type;
+
             if (Mtype == MouseType.none)
             {
                 Cursor.SetCursor(MousePointer.cursorTexture, MousePointer.hotSpot, MousePointer.cursorMode);
@@ -215,14 +217,10 @@ public class GameManager : UIElements
         }
     }
 
-    public float seilacam = 5;
-    Vector3 possss;
-
-    public float mouseplus = 1;
-
     void Update()
     {
         DarckNet.Network.Update();
+
         #region CursorPointer
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
@@ -248,14 +246,11 @@ public class GameManager : UIElements
             }
         }
         #endregion
+
         if (Playing)
         {
             if (LastMouseX != (int)Input.mousePosition.x || LastMouseY != (int)Input.mousePosition.y)
             {
-                Vector3 mousePos = Input.mousePosition;
-
-                possss = Camera.main.ScreenToWorldPoint(new Vector3((int)mousePos.x, (int)mousePos.y, seilacam));
-
                 Ray rayy = Camera.main.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y + mouseplus, Input.mousePosition.z));
 
                 if (Physics.Raycast(rayy, out hit, 10000))
@@ -268,76 +263,28 @@ public class GameManager : UIElements
                     {
                         t = WorldGenerator.Instance.GetTileAt(hit.point.x, hit.point.z);
                     }
-                }
-            }
 
-            LastMouseX = (int)Input.mousePosition.x;
-            LastMouseY = (int)Input.mousePosition.y;
-        }
-
-        /*if (Playing == true)
-        {
-            mouseX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
-            mouseY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y;
-
-            if (WorldGenerator.Instance)
-            {
-                t = WorldGenerator.Instance.GetTileAt(mouseX, mouseY);
-            }
-
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-
-            #region CursorInfo
-            if (hit.collider != null)
-            {
-                if (hit.collider.tag == "Tree")
-                {
-                   //Take Wood From Tree HUD
-                }
-                else if (hit.collider.tag == "TreeTrigger")
-                {
-                    //Take Wood From Tree HUD(Trigger)
-                }
-                else
-                {
                     if (t != null)
                     {
                         if (GetPresets.GetMouseIteract(t))
                         {
-                            GameManager.Instance.UpdateCursor(MouseType.Open);
+                            UpdateCursor(MouseType.Open);
                         }
                         else
                         {
-                            GameManager.Instance.UpdateCursor(MouseType.none);
+                            UpdateCursor(MouseType.none);
                         }
-                    }
-                    else
-                    {
-                        GameManager.Instance.UpdateCursor(MouseType.none);
-                    }
-                }
-            }
-            else
-            {
-                if (t != null)
-                {
-                    if (GetPresets.GetMouseIteract(t))
-                    {
-                        UpdateCursor(MouseType.Open);
                     }
                     else
                     {
                         UpdateCursor(MouseType.none);
                     }
                 }
-                else
-                {
-                    GameManager.Instance.UpdateCursor(MouseType.none);
-                }
             }
-            #endregion
-        }*/
+
+            LastMouseX = (int)Input.mousePosition.x;
+            LastMouseY = (int)Input.mousePosition.y;
+        }
 
         if (results.Count > 0)
         {
