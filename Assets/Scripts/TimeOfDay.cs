@@ -9,7 +9,7 @@ public class TimeOfDay : MonoBehaviour
     public Gradient LightColor;
     public bool IsDay = true;
     public float time;
-    private new UnityEngine.Experimental.Rendering.LWRP.Light2D light;
+    public Light light;
 
     public static TimeOfDay Instance;
 
@@ -17,7 +17,7 @@ public class TimeOfDay : MonoBehaviour
     {
         Instance = this;
 
-        light = GetComponent<UnityEngine.Experimental.Rendering.LWRP.Light2D>();
+        light = GetComponent<Light>();
 
         TimeH = DataTime.skytime;
     }

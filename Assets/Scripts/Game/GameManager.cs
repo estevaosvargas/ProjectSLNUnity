@@ -90,6 +90,12 @@ public class GameManager : UIElements
             UserId = Itch.GetMyUserId();
             UserName = Itch.GetMyUserName();
         }*/
+
+        if (!Directory.Exists(Path.GetFullPath("Saves./")))
+        {
+            Directory.CreateDirectory(Path.GetFullPath("Saves./"));
+        }
+
         WorldInfo info = SaveWorld.LoadInfo("World");
         if (info != null)
         {
@@ -641,7 +647,7 @@ public class SaveWorld
     public static void SaveInve(SaveInventory info, string userid)
     {
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" + "Entity," + userid);
+        FileStream file = File.Create(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" + userid);
 
         bf.Serialize(file, info);
         file.Close();
@@ -649,18 +655,18 @@ public class SaveWorld
 
     public static void DeletCont(string userid)
     {
-        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" + "Entity," + userid))
+        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" +  userid))
         {
-            File.Delete(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" + "Entity," + userid);
+            File.Delete(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" +  userid);
         }
     }
 
     public static SaveInventory LoadInve(string userid)
     {
-        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" + "Entity," + userid))
+        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" + userid))
         {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" + "Entity," + userid, FileMode.Open);
+            FileStream file = File.Open(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" + userid, FileMode.Open);
 
             SaveInventory dataa = (SaveInventory)bf.Deserialize(file);
             file.Close();
