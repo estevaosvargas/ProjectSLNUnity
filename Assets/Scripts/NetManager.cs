@@ -32,12 +32,7 @@ public class NetManager : MonoBehaviour {
     /// <param name="y"></param>
     public void SetupPlayer(GameObject playerobj,float x, float y)
     {
-        GameObject player = DarckNet.Network.Instantiate(playerobj, new Vector3(x, y, 0), Quaternion.identity, 0);
-
-        Game.GameManager.MyPlayer.MyObject = player;
-        Game.GameManager.MyPlayer.MyInventory = player.GetComponent<Inventory>();
-        Game.GameManager.MyPlayer.MyPlayerMove = player.GetComponent<EntityPlayer>();
-        Game.GameManager.MyPlayer.MyPlayerMove.IsAlive = true;
+        DarckNet.Network.Instantiate(playerobj, new Vector3(x, y, 0), Quaternion.identity, 0);
 
         /*PlayerInfo playerinf = new PlayerInfo();
         playerinf.UserName = GameManager.Instance.UserName;

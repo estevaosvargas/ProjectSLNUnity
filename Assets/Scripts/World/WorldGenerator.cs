@@ -11,9 +11,10 @@ public class WorldGenerator : DCallBack
     public Transform Player;
     public UnityStandardAssets.Utility.SmoothFollow Cam;
     public GameObject ChunkGO;
+    public GameObject SUN;
     public int RenderDistance;
     public int DisRenderDistance = 5;
-
+    public int World_ID = 0;
     Dictionary<Vector3, Chunk> chunkMap;
     Dictionary<Vector3, bool> ClientchunkMap;
     public List<Chunk> ChunksList = new List<Chunk>();
@@ -33,6 +34,13 @@ public class WorldGenerator : DCallBack
         Instance = this;
         chunkMap = new Dictionary<Vector3, Chunk>();
         ClientchunkMap = new Dictionary<Vector3, bool>();
+
+        if (DarckNet.Network.IsServer)
+        {
+            DarckNet.Network.Instantiate(SUN, Vector3.zero, Quaternion.identity, World_ID);
+            Debug.Log("SERVER: Sun Spawned");
+        }
+
 #if Client
         Seed = Game.GameManager.Seed;
 

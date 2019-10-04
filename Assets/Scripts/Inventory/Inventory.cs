@@ -35,7 +35,7 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            SaveInventory inve = SaveWorld.LoadInve(transform.position.x + ","+ transform.position.z);
+            SaveInventory inve = SaveWorld.LoadInve((transform.position.x + "," + transform.position.z).GetHashCode().ToString());
 
             if (inve != null)
             {
@@ -53,7 +53,7 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            SaveWorld.SaveInve(new SaveInventory(ItemList), transform.position.x + "," + transform.position.z);
+            SaveWorld.SaveInve(new SaveInventory(ItemList), (transform.position.x + "," + transform.position.z).GetHashCode().ToString());
         }
     }
 
@@ -65,7 +65,7 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            SaveWorld.DeletCont(transform.position.x + "," + transform.position.z);
+            SaveWorld.DeletCont((transform.position.x + "," + transform.position.z).GetHashCode().ToString());
         }
     }
     #endregion

@@ -35,7 +35,6 @@ public class GameManager : UIElements
     public string editorApiKey;
 #endif
     Queue<PathResult> results = new Queue<PathResult>();
-    public static ItchAPi Itch = new ItchAPi();
     public GameObject Cnavas;
     public string UserName = "Guest";
     public string UserId = "";
@@ -76,20 +75,25 @@ public class GameManager : UIElements
     {
         Application.targetFrameRate = 60;
         Game.AudioManager.LoadAudio();
-        /*if (Application.isEditor)
+		ItchAPi.StartItchApi();
+
+		if (Application.isEditor)
         {
 #if UNITY_EDITOR
-            Itch.EditorApiKey = "5av3kO2VL0iQuBu3zp7TNTbb6b257OYL81R3KQQ6";
-            Itch.StartItchApi(true, "122257");
+			ItchAPi.Instance.EditorApiKey = "5av3kO2VL0iQuBu3zp7TNTbb6b257OYL81R3KQQ6";
+			ItchAPi.Instance.SetupApi(true, "424930");
 #endif
         }
         else
         {
-            Itch.StartItchApi(false);
+			ItchAPi.Instance.SetupApi(false, "424930");
 
-            UserId = Itch.GetMyUserId();
-            UserName = Itch.GetMyUserName();
-        }*/
+            UserId = ItchAPi.Instance.GetMyUserId();
+            UserName = ItchAPi.Instance.GetMyUserName();
+        }
+
+        UserName = "Gues";
+        UserId = "486280";
 
         if (!Directory.Exists(Path.GetFullPath("Saves./")))
         {
@@ -148,7 +152,6 @@ public class GameManager : UIElements
         }
         SinglePlayer = true;
         Playing = true;
-        DarckNet.Network.IsSelftHosteMode = true;
         DarckNet.Network.Create("127.0.0.1", 25000, 1);
     }
 
@@ -220,6 +223,10 @@ public class GameManager : UIElements
             {
                 Cursor.SetCursor(MousePointer.cursorOpen1, MousePointer.hotSpot, MousePointer.cursorMode);
             }
+            else if (Mtype == MouseType.Chat)
+            {
+                Cursor.SetCursor(MousePointer.cursor1_Chat, MousePointer.hotSpot, MousePointer.cursorMode);
+            }
         }
     }
 
@@ -238,6 +245,10 @@ public class GameManager : UIElements
             {
                 Cursor.SetCursor(MousePointer.cursorOpen2, MousePointer.hotSpot, MousePointer.cursorMode);
             }
+            else if (Mtype == MouseType.Chat)
+            {
+                Cursor.SetCursor(MousePointer.cursor2_Chat, MousePointer.hotSpot, MousePointer.cursorMode);
+            }
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
@@ -249,6 +260,10 @@ public class GameManager : UIElements
             else if (Mtype == MouseType.Open)
             {
                 Cursor.SetCursor(MousePointer.cursorOpen1, MousePointer.hotSpot, MousePointer.cursorMode);
+            }
+            else if (Mtype == MouseType.Chat)
+            {
+                Cursor.SetCursor(MousePointer.cursor1_Chat, MousePointer.hotSpot, MousePointer.cursorMode);
             }
         }
         #endregion
@@ -270,20 +285,27 @@ public class GameManager : UIElements
                         t = WorldGenerator.Instance.GetTileAt(hit.point.x, hit.point.z);
                     }
 
-                    if (t != null)
+                    if (hit.collider.gameObject.GetComponent<Vilanger>())
                     {
-                        if (GetPresets.GetMouseIteract(t))
+                        UpdateCursor(MouseType.Chat);
+                    }
+                    else
+                    {
+                        if (t != null)
                         {
-                            UpdateCursor(MouseType.Open);
+                            if (GetPresets.GetMouseIteract(t))
+                            {
+                                UpdateCursor(MouseType.Open);
+                            }
+                            else
+                            {
+                                UpdateCursor(MouseType.none);
+                            }
                         }
                         else
                         {
                             UpdateCursor(MouseType.none);
                         }
-                    }
-                    else
-                    {
-                        UpdateCursor(MouseType.none);
                     }
                 }
             }
@@ -682,7 +704,7 @@ public class SaveWorld
     public static void SavePlayer(SavePlayerInfo info, string userid)
     {
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./player./" + "Player," + userid);
+        FileStream file = File.Create(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./player./" + userid);
        
         bf.Serialize(file, info);
         file.Close();
@@ -690,15 +712,15 @@ public class SaveWorld
 
     public static void DeletPlayer(string userid)
     {
-        File.Delete(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./player./Player," + userid));
+        File.Delete(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./player./" + userid));
     }
 
     public static SavePlayerInfo LoadPlayer(string userid)
     {
-        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./player./" + "Player," + userid))
+        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./player./" + userid))
         {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./player./" + "Player," + userid, FileMode.Open);
+            FileStream file = File.Open(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./player./" + userid, FileMode.Open);
             
             SavePlayerInfo dataa = (SavePlayerInfo)bf.Deserialize(file);
             file.Close();
@@ -808,9 +830,12 @@ public static class DataTime
         }
         else
         {
-            WorldInfo newinfo = new WorldInfo{ Seed = Game.GameManager.Seed, h = Hora, d = Dia, m = Mes , skytime = skytime };
+            if (DarckNet.Network.IsServer || Game.GameManager.SinglePlayer)
+            {
+                WorldInfo newinfo = new WorldInfo { Seed = Game.GameManager.Seed, h = Hora, d = Dia, m = Mes, skytime = skytime };
 
-            SaveWorld.SaveInfo(newinfo, "World");
+                SaveWorld.SaveInfo(newinfo, "World");
+            }
         }
         lasth = Hora;
     }
@@ -822,9 +847,11 @@ public class MousePngs
     [Header("Textures Pointer")]
     public Texture2D cursorTexture;
     public Texture2D cursorTexture2;
+    public Texture2D cursor1_Chat;
 
     public Texture2D cursorOpen1;
     public Texture2D cursorOpen2;
+    public Texture2D cursor2_Chat;
 
     public CursorMode cursorMode = CursorMode.Auto;
     public Vector2 hotSpot = Vector2.zero;
@@ -832,7 +859,7 @@ public class MousePngs
 
 public enum MouseType
 {
-    none, Info, Take, Open
+    none, Info, Take, Open, Chat
 }
 
 [System.Serializable]
@@ -1213,6 +1240,8 @@ public static class Game
     public static TileAnimations TileAnimations;
     public static MenuManager MenuManager;
     public static AudioManager AudioManager = new AudioManager();
+    public static TimeOfDay TimeOfDay;
+    public static ConsoleInGame ConsoleInGame;
 
     #region StaticMethods
 

@@ -6,31 +6,29 @@ using System.Text;
 
 public class DcsItchExemple : MonoBehaviour
 {
-    public ItchAPi Itch;
-
     void Start()
     {
-        Itch = gameObject.AddComponent<ItchAPi>();
+		ItchAPi.StartItchApi();
 
-        if (Application.isEditor)
+		if (Application.isEditor)
         {
 #if UNITY_EDITOR
-            Itch.EditorApiKey = "5av3kO2VL0iQuBu3zp7TNTbb6b257OYL81R3KQQ6";
-            Itch.ServerApiKey = "5av3kO2VL0iQuBu3zp7TNTbb6b257OYL81R3KQQ6";
-            Itch.StartItchApi(true, "122257");
+			ItchAPi.Instance.EditorApiKey = "5av3kO2VL0iQuBu3zp7TNTbb6b257OYL81R3KQQ6";
+			ItchAPi.Instance.ServerApiKey = "5av3kO2VL0iQuBu3zp7TNTbb6b257OYL81R3KQQ6";
+			ItchAPi.Instance.SetupApi(true, "122257");
 
-            Debug.Log("Have Donwload Key: " + Itch.HaveDownloadKey("870669"));
-            Debug.Log("Have Purchased: " + Itch.UserPurchase("870669", false));
-            Debug.Log("Is A DONATOR: " + Itch.UserPurchase("870669", true));
+            Debug.Log("Have Donwload Key: " + ItchAPi.Instance.HaveDownloadKey("870669"));
+            Debug.Log("Have Purchased: " + ItchAPi.Instance.UserPurchase("870669", false));
+            Debug.Log("Is A DONATOR: " + ItchAPi.Instance.UserPurchase("870669", true));
 #endif
         }
         else
         {
-            Itch.StartItchApi(false);
+			ItchAPi.Instance.SetupApi(false);
 
-            Debug.Log("UserId : " + Itch.GetMyUserId());
-            Debug.Log("UserName : " + Itch.GetMyUserName());
-            Debug.Log("UserImage : " + Itch.GetMyUserImg().ToString());
+            Debug.Log("UserId : " + ItchAPi.Instance.GetMyUserId());
+            Debug.Log("UserName : " + ItchAPi.Instance.GetMyUserName());
+            Debug.Log("UserImage : " + ItchAPi.Instance.GetMyUserImg().ToString());
         }
     }
 

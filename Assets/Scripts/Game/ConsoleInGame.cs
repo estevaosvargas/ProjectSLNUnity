@@ -17,6 +17,11 @@ public class ConsoleInGame : MonoBehaviour
     [Header("Input Console")]
     public InputField InputConsole;
 
+    void Awake()
+    {
+        Game.ConsoleInGame = this;
+    }
+
     private void Start()
     {
         Application.logMessageReceived += HandleLog;
@@ -70,6 +75,7 @@ public class ConsoleInGame : MonoBehaviour
         if (string.Equals(value[0], "Quit", StringComparison.OrdinalIgnoreCase))
         {
             #region Comand
+            DarckNet.Network.Disconnect();
             Application.Quit();
             #endregion
         }
@@ -113,8 +119,9 @@ public class ConsoleInGame : MonoBehaviour
         else if (string.Equals(value[0], "SetTime", StringComparison.OrdinalIgnoreCase))
         {
             #region Comand
-            TimeOfDay.Instance.TimeH = float.Parse(value[1]) / 24;
-            AddInRoolGUI("Time Set for : " + TimeOfDay.Instance.TimeH, true);
+            Game.TimeOfDay.TimeH = float.Parse(value[1]) / 24;
+            Game.TimeOfDay.LastUpdateTime();
+            AddInRoolGUI("Time Set for : " + Game.TimeOfDay.TimeH, true);
             #endregion
         }
         else if (string.Equals(value[0], "Clear", StringComparison.OrdinalIgnoreCase))

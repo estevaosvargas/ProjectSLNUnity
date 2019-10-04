@@ -38,7 +38,7 @@ namespace DarckNet
         internal static bool Runing = false;
         internal static bool onconnectbool = false;
         internal static bool onstartserverbool = false;
-        public static bool IsSelftHosteMode = false;
+        public static bool ServerSinglePlayer = false;
         public static bool IsServer { get { if (Server != null) { return true; } else { return false; } } private set { } }
         public static bool IsClient { get { if (Client != null) { return true; } else { return false; } } private set { } }
         public static bool Ready { get; private set; }
@@ -108,14 +108,17 @@ namespace DarckNet
                 Ready = true;
                 Runing = true;
 
-                #region SelfHost
-                if (IsSelftHosteMode)
+                if (ServerSinglePlayer)
                 {
                     WorldList wlist = new WorldList();
                     wlist.Players.Add(MyPeer.UniqueIdentifier);
                     NetDimension.Add(0, wlist);
                 }
-                #endregion
+                else
+                {
+                    WorldList wlist = new WorldList();
+                    NetDimension.Add(0, wlist);
+                }
 
                 for (int i = 0; i < Events.Count; i++)
                 {
@@ -246,15 +249,24 @@ namespace DarckNet
                     Events[i].OnServerClose();
                 }
 
+                var om = MyPeer.CreateMessage();
+
+                Ready = false;//Stop any outgoing pakets
+
+                om.Write((byte)DataType.ServerStop);
+                Server.SendToAll(om, NetDeliveryMode);
+
+                Debug.Log("SERVER-NET: Waiting for everyone disconnect, before shutdown the server");
+                while (Server.Connections.Count > 0) { }
+                Debug.Log("SERVER-NET: Everyone is out, now we can shutdown the server (:");
+                
                 Server.Shutdown("ServerClosed");
 
                 Client = null;
                 Server = null;
                 MyPeer = null;
-                Ready = false;
                 Runing = false;
                 onstartserverbool = false;
-                IsSelftHosteMode = false;
 
                 NetworkViews.Clear();
                 NetDimension.Clear();
@@ -270,6 +282,7 @@ namespace DarckNet
                 }
 
                 Events.Clear();
+                Debug.Log("SERVER-NET: Server is Offline, and memory is clear!");
             }
             else if (IsClient)
             {
@@ -288,7 +301,6 @@ namespace DarckNet
                 Runing = false;
                 onconnectbool = false;
                 Ready = false;
-                IsSelftHosteMode = false;
 
                 NetworkViews.Clear();
                 NetDimension.Clear();
@@ -316,17 +328,6 @@ namespace DarckNet
             {
                 if (NetDimension.ContainsKey(g))
                 {
-                    while (NetworkViews.ContainsKey(ViwesIDs) == true)
-                    {
-                        ViwesIDs++;
-                    }
-
-                    GameObject obj = GameObject.Instantiate(Object, position, rotation);
-                    NetworkViews.Add(ViwesIDs, obj.GetComponent<NetworkObj>());
-                    obj.GetComponent<NetworkObj>().SetID(ViwesIDs, obj.GetComponent<NetworkObj>().PrefabID, MyPeer.UniqueIdentifier);
-                    obj.GetComponent<NetworkObj>().Dimension = g;
-                    ViwesIDs++;
-
                     var om = MyPeer.CreateMessage();
 
                     om.Write((byte)DataType.Instantiate);
@@ -345,16 +346,30 @@ namespace DarckNet
 
                     if (IsClient)
                     {
+                        //om.WriteVariableInt64(MyPeer.UniqueIdentifier);
+
                         Client.SendMessage(om, NetDeliveryMode);
                     }
-                    else if (IsServer)
+                    else
                     {
-                        List<NetConnection> listanet = new List<NetConnection>(GetPeer(NetDimension[g].Players.ToArray()));
+                        while (NetworkViews.ContainsKey(ViwesIDs) == true)
+                        {
+                            ViwesIDs++;
+                        }
 
+                        GameObject obj = GameObject.Instantiate(Object, position, rotation);
+                        NetworkViews.Add(ViwesIDs, obj.GetComponent<NetworkObj>());
+                        obj.GetComponent<NetworkObj>().SetID(ViwesIDs, Object.GetComponent<NetworkObj>().PrefabID, MyPeer.UniqueIdentifier);
+                        obj.GetComponent<NetworkObj>().Dimension = g;
+
+                        List<NetConnection> listanet = new List<NetConnection>(GetPeer(NetDimension[g].Players.ToArray()));
+                        listanet.Remove(Server.Myconnection);
                         Server.SendToAll(om, listanet.ToArray(), NetDeliveryMode);
+
+                        return obj;
                     }
 
-                    return obj;
+                    return null;
                 }
                 else
                 {
@@ -504,10 +519,11 @@ namespace DarckNet
                                 break;
                             case NetIncomingMessageType.ConnectionApproval:
                                 string s = inc.ReadString();
-                                if (s == NetConfig.SecretKey)
-                                    inc.SenderConnection.Approve();
-                                else
-                                    inc.SenderConnection.Deny();
+
+                                for (int i = 0; i < Events.Count; i++)
+                                {
+                                    Events[i].PlayerApproval(s, inc.SenderConnection);
+                                }
                                 break;
                             default:
                                 if (inc.SenderConnection.Status == NetConnectionStatus.Connected)
@@ -676,9 +692,7 @@ namespace DarckNet
                                         Events[i].OnPlayerDisconnect(inc.SenderConnection);
                                     }
 
-
-
-                                    Debug.Log("Player : " + NetUtility.ToHexString(inc.SenderConnection.RemoteUniqueIdentifier) + " Disconnected!");
+                                    Debug.Log("You : " + NetUtility.ToHexString(inc.SenderConnection.RemoteUniqueIdentifier) + " Disconnected! From Server, Reson : " + inc.SenderConnection.m_disconnectMessage);
                                 }
                                 else if (inc.SenderConnection.Status == NetConnectionStatus.Disconnecting)
                                 {
@@ -723,6 +737,11 @@ namespace DarckNet
             }
             else if (type == DataType.Instantiate)
             {
+                while (NetworkViews.ContainsKey(ViwesIDs) == true)
+                {
+                    ViwesIDs++;
+                }
+
                 Vector3 Pos = new Vector3();
                 Quaternion Rot = new Quaternion();
 
@@ -740,11 +759,12 @@ namespace DarckNet
                 Rot.z = inc.ReadFloat();
                 Rot.w = 1;
 
+                //long uniq = inc.ReadVariableInt64();
+
                 GameObject Objc = GameObject.Instantiate(PregabsList.Prefabs[prefabid], Pos, Rot);
                 NetworkViews.Add(ViwesIDs, Objc.GetComponent<NetworkObj>());
                 Objc.GetComponent<NetworkObj>().SetID(ViwesIDs, prefabid, inc.SenderConnection.RemoteUniqueIdentifier);
                 Objc.GetComponent<NetworkObj>().Dimension = dimension;
-                ViwesIDs += 1;
 
                 Debug.Log("ViewsIDs" + ViwesIDs);
 
@@ -767,12 +787,14 @@ namespace DarckNet
                 om.Write(Rot.y);
                 om.Write(Rot.z);
 
+                om.WriteVariableInt64(inc.SenderConnection.RemoteUniqueIdentifier);
+
                 long[] ids = NetDimension[dimension].Players.ToArray();
                 List<NetConnection> listanet = new List<NetConnection>();
 
                 for (int i = 0; i < ids.Length; i++)
                 {
-                    if (ids[i] != inc.SenderConnection.RemoteUniqueIdentifier)
+                    if (ids[i] != MyPeer.UniqueIdentifier)
                     {
                         listanet.Add(GetPeer(ids[i]));
                     }
@@ -918,6 +940,10 @@ namespace DarckNet
                     }
                 }
             }
+            else if (type == DataType.ServerStop)
+            {
+                Debug.LogError("Wait your the server, you can't do nothing with this! go back...");
+            }
         }
 
         static void ProceMenssagClient(NetIncomingMessage inc)
@@ -952,9 +978,16 @@ namespace DarckNet
                 Rot.z = inc.ReadFloat();
                 Rot.w = 1;
 
+                long uniq = inc.ReadVariableInt64();
+
+                while (NetworkViews.ContainsKey(ViwesIDs) == true)
+                {
+                    ViwesIDs++;
+                }
+
                 GameObject Objc = GameObject.Instantiate(PregabsList.Prefabs[prefabid], Pos, Rot);
                 NetworkViews.Add(ViwesIDs, Objc.GetComponent<NetworkObj>());
-                Objc.GetComponent<NetworkObj>().SetID(ViwesIDs, prefabid, inc.SenderConnection.RemoteUniqueIdentifier);
+                Objc.GetComponent<NetworkObj>().SetID(ViwesIDs, prefabid, uniq);
                 Objc.GetComponent<NetworkObj>().Dimension = dimension;
                 ViwesIDs += 1;
 
@@ -993,10 +1026,12 @@ namespace DarckNet
                     Objc.GetComponent<NetworkObj>().SetID(nv.ViewID, nv.PrefabID, nv.Owner);
                     Objc.GetComponent<NetworkObj>().Dimension = nv.Dimension;
                     NetworkViews.Add(nv.ViewID, Objc.GetComponent<NetworkObj>());
+
+                    Debug.LogError("ViewID : " + nv.ViewID + " | PrefabName : " + PregabsList.Prefabs[nv.PrefabID].name);
                 }
                 Debug.LogError("Debu03");
 
-                if (world.Length >= 0)
+                if (world.Length > 0)
                 {
                     int f = -1;
                     foreach (WorldList nv in world)
@@ -1128,6 +1163,12 @@ namespace DarckNet
                         NetDimension[dimension].Players.Remove(inc.SenderConnection.RemoteUniqueIdentifier);
                     }
                 }
+            }
+            else if (type == DataType.ServerStop)
+            {
+                Debug.Log("Disconnecting from server...");
+
+                Disconnect();
             }
         }
 
@@ -1407,7 +1448,7 @@ namespace DarckNet
     }
 
     /// <summary>
-    /// MainClass for Network callback, and whit MonoBehaviour.
+    /// MainClass for Network callback, with UnityEngine.MonoBehaviour.
     /// </summary>
     public class DarckMonoBehaviour : MonoBehaviour
     {
@@ -1418,6 +1459,14 @@ namespace DarckNet
         public virtual void OnServerAfterClose() { }
         public virtual void OnConnect() { }
         public virtual void OnDisconnect() { }
+
+
+        /// <summary>
+        /// Used to check data sended from client and aprove connection, Just use one of this, in one script.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="player_connection">Player_Sender.Approve() : to aprove connection, Player_Sender.Deny() : to deny</param>
+        public virtual void PlayerApproval(string data, NetConnection player_connection) { }
 
         void OnEnable()
         {
@@ -1527,7 +1576,9 @@ public enum DataType : byte
     RPC_All = 10,
     RPC_AllOwner = 11,
     RPC_Owner = 12,
-    RPC_ALLDimension = 13
+    RPC_ALLDimension = 13,
+
+    ServerStop = 14
 }
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]

@@ -454,6 +454,7 @@ public class Chunk : MonoBehaviour
             TileGo.name = "Tile_" + tiles[i, j].x + "_" + tiles[i, j].z;
 
             TileGo.transform.position = new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z);
+            TileGo.transform.Rotate(new Vector3(90, 0, 0), Space.Self);
             TileGo.transform.SetParent(this.transform, true);
 
             tiles[i, j].TileObj = TileGo.GetComponent<TileObj>();

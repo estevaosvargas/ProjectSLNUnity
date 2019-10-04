@@ -7,18 +7,21 @@ public class TimeOfDay : MonoBehaviour
     public float TimeH = 0.5f;
     public float TimePerDay = 20;
     public Gradient LightColor;
+    public Gradient FogColor;
     public bool IsDay = true;
     public float time;
-    public Light light;
+    public NetWorkView Net;
+    private float LastUpdate;
 
-    public static TimeOfDay Instance;
+    void Awake()
+    {
+        Game.TimeOfDay = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     void Start()
     {
-        Instance = this;
-
-        light = GetComponent<Light>();
-
+        Debug.Log("SERVER: Sun Started");
         TimeH = DataTime.skytime;
     }
 
@@ -30,20 +33,51 @@ public class TimeOfDay : MonoBehaviour
         }
     }
 
+    public Color CurrentFogColor
+    {
+        get
+        {
+            return FogColor.Evaluate(TimeH);
+        }
+    }
+
+    public void LastUpdateTime()
+    {
+        Net.RPC("RPC_Updatetime", DarckNet.RPCMode.AllNoOwner, TimeH);
+        //Debug.Log("SERVER: SkyUpdate.");
+    }
+
     void Update()
     {
-        TimeH += TimePerDay * Time.deltaTime;
-        time = TimeH * 24;
+        if (DarckNet.Network.IsServer || Game.GameManager.SinglePlayer)
+        {
+            TimeH += TimePerDay * Time.deltaTime;
+            time = TimeH * 24;
 
-        DataTime.skytime = TimeH;
+            DataTime.skytime = TimeH;
+
+            if (TimeH >= 1)
+            {
+                TimeH = 0;
+                time = 0;
+            }
+
+            if (time != LastUpdate)
+            {
+                LastUpdateTime();
+            }
+            LastUpdate = time;
+        }
+
+        if (DarckNet.Network.IsClient || Game.GameManager.SinglePlayer)
+        {
+            time = TimeH * 24;
+
+            RenderSettings.ambientLight = CurrentSkyTint;
+            RenderSettings.fogColor = CurrentFogColor;
+        }
 
         DataTime.SetTimeData((int)time);
-
-        if (TimeH >= 1)
-        {
-            TimeH = 0;
-            time = 0;
-        }
 
         if (DataTime.Hora >= 6 && DataTime.Hora <= 18)
         {
@@ -60,7 +94,11 @@ public class TimeOfDay : MonoBehaviour
             //Noite
             IsDay = false;
         }
+    }
 
-        light.color = CurrentSkyTint;
+    [RPC]
+    void RPC_Updatetime(float time)
+    {
+        TimeH = time;
     }
 }

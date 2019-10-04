@@ -48,8 +48,21 @@ public class ServerManager : DarckNet.DarckMonoBehaviour
 
         SaveWorld.CreateDerectorys();
 
+        Debug.Log("SERVER_WORLD: Loading World...");
         UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Map");
         base.OnServerStart();
+    }
+
+    public override void PlayerApproval(string data, NetConnection Player_Sender)
+    {
+        if (data == NetConfig.SecretKey)
+        {
+            Player_Sender.Approve();
+        }
+        else
+        {
+            Player_Sender.Deny("Sorry your data i'sent equal to server!");
+        }
     }
 
     void OnLevelWasLoaded(int level)
@@ -60,6 +73,24 @@ public class ServerManager : DarckNet.DarckMonoBehaviour
 
     Config LoadConfig()
     {
+        if (!File.Exists(Path.GetFullPath("./ServerConfig.ini")))
+        {
+            Debug.Log("SERVER_FILE: Don't find ServerConfig.ini, crating one!");
+
+            IniFile filenew = new IniFile("ServerConfig", Path.GetFullPath("./"));
+
+            filenew.SetString("ServerName", "Your Server Name");
+            filenew.SetString("Ip", "127.0.0.1");
+            filenew.SetInt("Port", 25000);
+            filenew.SetString("Password", "");
+            filenew.SetInt("MaxPlayer", 100);
+            filenew.SetBool("Dedicated", true);
+
+            filenew.Save("ServerConfig", Path.GetFullPath("./"));
+        }
+
+        Debug.Log("SERVER_FILE: Loading ServerConfig!");
+
         Config conf = new Config();
         IniFile file = new IniFile("ServerConfig", Path.GetFullPath("./"));
 
@@ -81,6 +112,7 @@ public class ServerManager : DarckNet.DarckMonoBehaviour
         System.Console.WriteLine("Server Dedicated: " + conf.Dedicated);
 
         file.Save("ServerConfig", Path.GetFullPath("./"));
+        Debug.Log("SERVER_FILE: ServerConfig, Loaded and ready!");
         return conf;
     }
 }

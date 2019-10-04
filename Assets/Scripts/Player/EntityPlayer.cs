@@ -76,6 +76,11 @@ public class EntityPlayer : EntityLife
     private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
+
+        Game.GameManager.MyPlayer.MyObject = gameObject;
+        Game.GameManager.MyPlayer.MyInventory = GetComponent<Inventory>();
+        Game.GameManager.MyPlayer.MyPlayerMove = this;
+        Game.GameManager.MyPlayer.MyPlayerMove.IsAlive = true;
     }
 
     void OnTriggerEnter(Collider collision)
@@ -122,22 +127,8 @@ public class EntityPlayer : EntityLife
     {
         if (DarckNet.Network.IsClient)
         {
-            Net.RPC("UpdatePosition", DarckNet.RPCMode.AllNoOwner, new Vector3(transform.position.x, transform.position.y, 0));
+            Net.RPC("UpdatePosition", DarckNet.RPCMode.AllNoOwner, new Vector3(transform.position.x, transform.position.y, transform.position.z));
         }
-
-        if (World)
-        {
-           // World.position = transform.position;
-        }
-
-        /*layer -= (int)transform.position.y;
-
-        if (layer > lastlayer)
-        {
-            GetComponent<SpriteRenderer>().sortingOrder -= (int)transform.position.y;
-        }
-
-        lastlayer = GetComponent<SpriteRenderer>().sortingOrder;*/
     }
 
     void UpdateOnMoveInt()
@@ -147,6 +138,7 @@ public class EntityPlayer : EntityLife
             WorldGenerator.Instance.UpdateFindChunk();
 
             Tile tile = WorldGenerator.Instance.GetTileAt(transform.position.x, transform.position.z);
+            var main = FootPArticle.main;
 
             NetStats.CurrentTile = tile.type;
 
@@ -165,27 +157,27 @@ public class EntityPlayer : EntityLife
 
             if (tile.type == TypeBlock.Grass)
             {
-                FootPArticle.startColor = Color.green;
+                main.startColor = Color.green;
             }
             else if (tile.type == TypeBlock.Dirt)
             {
-                FootPArticle.startColor = Color.magenta;
+                main.startColor = Color.magenta;
             }
             else if (tile.type == TypeBlock.DirtRoad)
             {
-                FootPArticle.startColor = Color.magenta;
+                main.startColor = Color.magenta;
             }
             else if (tile.type == TypeBlock.Sand || tile.type == TypeBlock.BeachSand)
             {
-                FootPArticle.startColor = Color.yellow;
+                main.startColor = Color.yellow;
             }
             else if (tile.type == TypeBlock.Rock || tile.type == TypeBlock.RockGround)
             {
-                FootPArticle.startColor = Color.gray;
+                main.startColor = Color.gray;
             }
             else if (tile.type == TypeBlock.Snow)
             {
-                FootPArticle.startColor = Color.white;
+                main.startColor = Color.white;
             }
         }
 
@@ -195,9 +187,9 @@ public class EntityPlayer : EntityLife
         }
     }
 
+    #region DirectionsMethods
     public void Direita()
     {
-        //Anim.SetFloat("X", 0);
         NetStats.Side = 0;
         if (NetStats.swiming == false)
         {
@@ -207,7 +199,6 @@ public class EntityPlayer : EntityLife
     }
     public void Esquerda()
     {
-        //Anim.SetFloat("X", 180);
         NetStats.Side = 1;
         if (NetStats.swiming == false)
         {
@@ -231,23 +222,11 @@ public class EntityPlayer : EntityLife
             NetStats.HandLayer = SPRITERENDER.sortingOrder;
         }
     }
+    #endregion
 
     void Update()
     {
         #region Client-Single
-
-        if (Input.GetKey(KeyCode.P))
-        {
-            GameObject obj = Instantiate(villagerteste, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Quaternion.identity);
-            obj.GetComponent<Vilanger>().Born("VillagerTeste");
-        }
-
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            GameObject obj = Instantiate(villagerteste, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Quaternion.identity);
-            obj.GetComponent<Vilanger>().Born("VillagerTeste");
-        }
-
         if (Game.GameManager.MultiPlayer || Game.GameManager.SinglePlayer)
         {
             Status.UpdateStatus();
@@ -257,11 +236,6 @@ public class EntityPlayer : EntityLife
 
             body.velocity = movement.normalized * Speed;
             SPRITERENDER.sortingOrder = -(int)transform.position.z;
-
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                DoDamage(5, "Teste", true);
-            }
 
             if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
             {

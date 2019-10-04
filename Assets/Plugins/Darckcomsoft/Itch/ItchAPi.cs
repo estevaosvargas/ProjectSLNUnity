@@ -28,23 +28,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using darckcomsoft.SimpleJSON;
+using System;
+using System.Net;
+using System.Text;
 
 namespace darckcomsoft.itch
 {
     public class ItchAPi : MonoBehaviour
     {
-        Dictionary<DataType, object> PlayerData = new Dictionary<DataType, object>();
+		public static ItchAPi Instance;
+		Dictionary<DataType, object> PlayerData = new Dictionary<DataType, object>();
         string ClientApiReturn;
         public string GameId = "000000";
         public string ServerApiKey = "key on server side, only put this on runtime";
         public string EditorApiKey = "Add your api key, if this is in editor";
 
-        public ItchAPi()
-        {
-            
-        }
+		private void Awake()
+		{
+			DontDestroyOnLoad(gameObject);
+		}
 
-        public void StartItchApi(bool IsEditor, string gameId, string serverapi)
+		public static void StartItchApi()
+		{
+			if (Instance == null)
+			{
+				GameObject ItchManager = new GameObject("ItchManager");
+				ItchManager.AddComponent<ItchAPi>();
+				Instance = ItchManager.GetComponent<ItchAPi>();
+			}
+			else
+			{
+				Debug.LogError("ItchApi is allready instantiated, you can use (ItchAPi.Instance), to get ItchApi class");
+			}
+		}
+
+        public void SetupApi(bool IsEditor, string gameId, string serverapi)
         {
             GameId = gameId;
             ServerApiKey = serverapi;
@@ -52,14 +70,14 @@ namespace darckcomsoft.itch
             LinkItch(IsEditor);
         }
 
-        public void StartItchApi(bool IsEditor, string gameId)
+        public void SetupApi(bool IsEditor, string gameId)
         {
             GameId = gameId;
 
             LinkItch(IsEditor);
         }
 
-        public void StartItchApi(bool IsEditor)
+        public void SetupApi(bool IsEditor)
         {
             LinkItch(IsEditor);
         }
@@ -75,14 +93,14 @@ namespace darckcomsoft.itch
         {
             if (iseditor)
             {
-                WWW www = new WWW("https://itch.io/api/1/" + EditorApiKey + "/me");
+				WWW www = new WWW("https://itch.io/api/1/" + EditorApiKey + "/me");
                 StartCoroutine(RequestApi(www));
             }
             else
             {
                 ClientApiReturn = System.Environment.GetEnvironmentVariable("ITCHIO_API_KEY");
                 WWW www = new WWW("https://itch.io/api/1/jwt/me", (byte[])null, new Dictionary<string, string>() { { "Authorization", ClientApiReturn } });
-                StartCoroutine(RequestApi(www));
+				StartCoroutine(RequestApi(www));
             }
         }
 
@@ -301,10 +319,11 @@ namespace darckcomsoft.itch
                 Debug.Log("ERROR: " + www.error);
             }
         }
-        #endregion
-    }
+		#endregion
 
-    public struct ReturnValues
+	}
+
+	public struct ReturnValues
     {
         public Texture2D Image;
         public bool boolean;

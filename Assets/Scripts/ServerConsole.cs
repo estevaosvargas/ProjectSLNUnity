@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,9 +26,13 @@ public class ServerConsole : MonoBehaviour
         input.OnInputText += OnInputText;
 
         //Application.RegisterLogCallback(HandleLog);
-        Application.logMessageReceived += HandleLog;
-
+ 
         Debug.Log("Console Started");
+    }
+
+    void Start()
+    {
+        Application.logMessageReceived += HandleLog;
     }
 
     //
@@ -36,7 +41,29 @@ public class ServerConsole : MonoBehaviour
     //
     void OnInputText(string obj)
     {
-        
+        string[] textarray = obj.Split(" "[0]);
+
+        if (string.Equals(textarray[0], "SetTime", StringComparison.OrdinalIgnoreCase))
+        {
+            #region Comand
+            Game.TimeOfDay.TimeH = float.Parse(textarray[1]) / 24;
+            Game.TimeOfDay.LastUpdateTime();
+            Debug.Log("Time Set for : " + Game.TimeOfDay.TimeH);
+            #endregion
+        }
+        else if (string.Equals(textarray[0], "Stop", StringComparison.OrdinalIgnoreCase))
+        {
+            #region Comand
+            Debug.Log("Server is Shutingdown...");
+            DarckNet.Network.Disconnect();
+            Debug.Log("Network Is Finished...");
+            Debug.Log("Saving...");
+            //Save Method soon here
+            System.Threading.Thread.Sleep(100);
+            Debug.Log("Quiting...");
+            Application.Quit();
+            #endregion
+        }
     }
 
     //
@@ -44,15 +71,8 @@ public class ServerConsole : MonoBehaviour
     //
     void HandleLog(string message, string stackTrace, LogType type)
     {
-        if (message == "This uLink evaluation license is temporary. You will need to purchase a full license at muchdifferent.com/ulink. If you've bought uLink from the Asset Store, please contact sales@muchdifferent.com to get your license key.")
-        {
-
-        }else
-        {
-            System.Console.WriteLine(message);
-            System.Console.ForegroundColor = System.ConsoleColor.White;
-            //input.RedrawInputLine();
-        }
+        System.Console.WriteLine(message);
+        System.Console.ForegroundColor = System.ConsoleColor.White;
     }
 
     //
