@@ -61,18 +61,18 @@ public class MiniMapManager : MonoBehaviour
         xCordee *= frequency;
         yCordee *= frequency;
 
-        float sample = Mathf.PerlinNoise(xCordee + WorldGenerator.Instance.Seed, yCordee + WorldGenerator.Instance.Seed) * amplitude / persistence;
+        float sample = Mathf.PerlinNoise(xCordee + Game.WorldGenerator.Seed, yCordee + Game.WorldGenerator.Seed) * amplitude / persistence;
 
-        if (WorldGenerator.Instance.CurrentWorld == WorldType.Caves)
+        if (Game.WorldGenerator.CurrentWorld == WorldType.Caves)
         {
             
         }
-        else if (WorldGenerator.Instance.CurrentWorld == WorldType.Normal)
+        else if (Game.WorldGenerator.CurrentWorld == WorldType.Normal)
         {
             // normal 0.8f
             if (sample > 0.5f)
             {
-                float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.005f, 1, WorldGenerator.Instance.Seed, false).GetValue(x, y, 0);
+                float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.005f, 1, Game.WorldGenerator.Seed, false).GetValue(x, y, 0);
 
                 sample2 *= 10;
 

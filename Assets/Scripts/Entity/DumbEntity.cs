@@ -17,7 +17,7 @@ public class DumbEntity : EntityLife
         body = GetComponent<Rigidbody2D>();
         Anim = GetComponent<Animator>();
 
-        target = WorldGenerator.Instance.Player;
+        target = Game.WorldGenerator.Player;
     }
 
     private Vector3 velocity;

@@ -194,16 +194,16 @@ public class HandManager : MonoBehaviour
         {
             if (Game.GameManager.t != null)
             {
-                if (WorldGenerator.Instance.SlectedBlock != null)
+                if (Game.WorldGenerator.SlectedBlock != null)
                 {
                     if (CurrentItem.ITEMTYPE == ItemType.Block || CurrentItem.ITEMTYPE == ItemType.Tools || CurrentItem.ITEMTYPE == ItemType.Placer)
                     {
-                        WorldGenerator.Instance.SlectedBlock.gameObject.SetActive(true);
-                        WorldGenerator.Instance.SlectedBlock.position = new Vector3(Game.GameManager.t.x, 0, Game.GameManager.t.z);
+                        Game.WorldGenerator.SlectedBlock.gameObject.SetActive(true);
+                        Game.WorldGenerator.SlectedBlock.position = new Vector3(Game.GameManager.t.x, 0, Game.GameManager.t.z);
                     }
                     else
                     {
-                        WorldGenerator.Instance.SlectedBlock.gameObject.SetActive(false);
+                        Game.WorldGenerator.SlectedBlock.gameObject.SetActive(false);
                     }
                 }
             }
@@ -257,11 +257,11 @@ public class HandManager : MonoBehaviour
                         {
                             if (Application.loadedLevel == 2)
                             {
-                                WorldManager.This.ChangeWorld("Map", Game.GameManager.t.x, Game.GameManager.t.y);
+                                //WorldManager.This.ChangeWorld("Map", Game.GameManager.t.x, Game.GameManager.t.y);
                             }
                             else
                             {
-                                WorldManager.This.ChangeWorld("Cave", Game.GameManager.t.x, Game.GameManager.t.y);
+                                //WorldManager.This.ChangeWorld("Cave", Game.GameManager.t.x, Game.GameManager.t.y);
                             }
                             return;
                         }
@@ -284,11 +284,11 @@ public class HandManager : MonoBehaviour
                     {
                         if (Application.loadedLevel == 2)
                         {
-                            WorldManager.This.ChangeWorld("Map", Game.GameManager.t.x, Game.GameManager.t.y);
+                            //WorldManager.This.ChangeWorld("Map", Game.GameManager.t.x, Game.GameManager.t.y);
                         }
                         else
                         {
-                            WorldManager.This.ChangeWorld("Cave", Game.GameManager.t.x, Game.GameManager.t.y);
+                            //WorldManager.This.ChangeWorld("Cave", Game.GameManager.t.x, Game.GameManager.t.y);
                         }
                         return;
                     }
@@ -309,14 +309,14 @@ public class HandManager : MonoBehaviour
         {
             if (Game.GameManager.t != null)
             {
-                if (WorldGenerator.Instance.SlectedBlock != null)
+                if (Game.WorldGenerator.SlectedBlock != null)
                 {
-                    WorldGenerator.Instance.SlectedBlock.gameObject.SetActive(true);
-                    WorldGenerator.Instance.SlectedBlock.position = new Vector3(Game.GameManager.t.x, 0, Game.GameManager.t.z);
+                    Game.WorldGenerator.SlectedBlock.gameObject.SetActive(true);
+                    Game.WorldGenerator.SlectedBlock.position = new Vector3(Game.GameManager.t.x, 0, Game.GameManager.t.z);
                 }
                 else
                 {
-                    WorldGenerator.Instance.SlectedBlock.gameObject.SetActive(false);
+                    Game.WorldGenerator.SlectedBlock.gameObject.SetActive(false);
                 }
             }
 
@@ -356,11 +356,11 @@ public class HandManager : MonoBehaviour
         }
         else
         {
-            if (WorldGenerator.Instance)
+            if (Game.WorldGenerator)
             {
-                if (WorldGenerator.Instance.SlectedBlock != null)
+                if (Game.WorldGenerator.SlectedBlock != null)
                 {
-                    WorldGenerator.Instance.SlectedBlock.gameObject.SetActive(false);
+                    Game.WorldGenerator.SlectedBlock.gameObject.SetActive(false);
                 }
             }
         }

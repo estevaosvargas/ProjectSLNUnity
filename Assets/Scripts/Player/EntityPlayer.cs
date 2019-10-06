@@ -60,11 +60,17 @@ public class EntityPlayer : EntityLife
 
         if (Net.isMine)
         {
-            if (WorldGenerator.Instance != null)
+            if (Game.WorldGenerator != null)
             {
-                World = WorldGenerator.Instance.transform;
+                World = Game.WorldGenerator.transform;
             }
 
+            Game.GameManager.MyPlayer.MyObject = gameObject;
+            Game.GameManager.MyPlayer.MyInventory = GetComponent<Inventory>();
+            Game.GameManager.MyPlayer.MyPlayerMove = this;
+            Game.GameManager.MyPlayer.MyPlayerMove.IsAlive = true;
+
+            Game.WorldGenerator.Setplayer_data();
             body.isKinematic = false;
         }
         else
@@ -76,11 +82,6 @@ public class EntityPlayer : EntityLife
     private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
-
-        Game.GameManager.MyPlayer.MyObject = gameObject;
-        Game.GameManager.MyPlayer.MyInventory = GetComponent<Inventory>();
-        Game.GameManager.MyPlayer.MyPlayerMove = this;
-        Game.GameManager.MyPlayer.MyPlayerMove.IsAlive = true;
     }
 
     void OnTriggerEnter(Collider collision)
@@ -133,11 +134,11 @@ public class EntityPlayer : EntityLife
 
     void UpdateOnMoveInt()
     {
-        if (WorldGenerator.Instance)
+        if (Game.WorldGenerator)
         {
-            WorldGenerator.Instance.UpdateFindChunk();
+            Game.WorldGenerator.UpdateFindChunk();
 
-            Tile tile = WorldGenerator.Instance.GetTileAt(transform.position.x, transform.position.z);
+            Tile tile = Game.WorldGenerator.GetTileAt(transform.position.x, transform.position.z);
             var main = FootPArticle.main;
 
             NetStats.CurrentTile = tile.type;
@@ -357,7 +358,7 @@ public class EntityPlayer : EntityLife
 
     public bool IsOnWater(int x, int y)
     {
-        if (WorldGenerator.Instance.GetTileAt(x, y) .type == TypeBlock.Water)
+        if (Game.WorldGenerator.GetTileAt(x, y) .type == TypeBlock.Water)
         {
             return true;
         }

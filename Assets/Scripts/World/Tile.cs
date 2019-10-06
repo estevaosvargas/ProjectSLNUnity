@@ -111,8 +111,9 @@ public class Tile
         type = Type;
     }
 
-    public Tile(int x, int y, int z, BiomeType biotype)
+    public Tile(int x, int y, int z, ChunkInfo ChunkInfo)
     {
+        TileChunk = ChunkInfo;
         this.x = x;
         //this.y = y;
         this.z = z;
@@ -133,13 +134,13 @@ public class Tile
         xCordee *= frequency;
         zCordee *= frequency;
 
-        float sample = Mathf.PerlinNoise(xCordee + WorldGenerator.Instance.Seed, zCordee + WorldGenerator.Instance.Seed) * amplitude / persistence;
+        float sample = Mathf.PerlinNoise(xCordee + Game.WorldGenerator.Seed, zCordee + Game.WorldGenerator.Seed) * amplitude / persistence;
 
-        if (WorldGenerator.Instance.CurrentWorld == WorldType.Caves)
+        if (Game.WorldGenerator.CurrentWorld == WorldType.Caves)
         {
             Debug.LogError("Sorry Caves Is Not enable in alpha!");
         }
-        else if (WorldGenerator.Instance.CurrentWorld == WorldType.Normal)
+        else if (Game.WorldGenerator.CurrentWorld == WorldType.Normal)
         {
             // normal 0.8f
             if (sample > 0.5f)
@@ -150,9 +151,9 @@ public class Tile
                 //xbiome *= 0.01f;
                 //ybiome *= 0.01f;
 
-                //float sample2 = Mathf.PerlinNoise(xbiome + WorldGenerator.Instance.Seed, ybiome + WorldGenerator.Instance.Seed) * sample / 0.11f;
+                //float sample2 = Mathf.PerlinNoise(xbiome + Game.WorldGenerator.Seed, ybiome + Game.WorldGenerator.Seed) * sample / 0.11f;
 
-                float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.005f, 1, WorldGenerator.Instance.Seed, false).GetValue(x, z, 0);
+                float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.005f, 1, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
 
                 sample2 *= 10;
 
@@ -229,9 +230,9 @@ public class Tile
 
     TypeBlock getcavetile(int x, int y)
     {
-        Color color = SpriteManager.Instance.GetPerlinImage("Caves01").GetPixel(x + WorldGenerator.Instance.Seed, y + WorldGenerator.Instance.Seed);
+        Color color = SpriteManager.Instance.GetPerlinImage("Caves01").GetPixel(x + Game.WorldGenerator.Seed, y + Game.WorldGenerator.Seed);
 
-        if (WorldGenerator.Instance.CurrentWorld == WorldType.Normal)
+        if (Game.WorldGenerator.CurrentWorld == WorldType.Normal)
         {
             if (color.r == 1 && color.g == 0 && color.b == 0)
             {
@@ -246,7 +247,7 @@ public class Tile
                 return TypeBlock.RockGround;
             }
         }
-        else if (WorldGenerator.Instance.CurrentWorld == WorldType.Caves)
+        else if (Game.WorldGenerator.CurrentWorld == WorldType.Caves)
         {
             if (color.r == 1 && color.g == 0 && color.b == 0)
             {
@@ -404,25 +405,25 @@ public class Tile
         {
             neighbors = new Tile[8];
 
-            neighbors[0] = WorldGenerator.Instance.GetTileAt(x, z + 1);//cima
-            neighbors[1] = WorldGenerator.Instance.GetTileAt(x + 1, z);//direita
-            neighbors[2] = WorldGenerator.Instance.GetTileAt(x, z - 1);//baixo
-            neighbors[3] = WorldGenerator.Instance.GetTileAt(x - 1, z);//esquerda
+            neighbors[0] = Game.WorldGenerator.GetTileAt(x, z + 1);//cima
+            neighbors[1] = Game.WorldGenerator.GetTileAt(x + 1, z);//direita
+            neighbors[2] = Game.WorldGenerator.GetTileAt(x, z - 1);//baixo
+            neighbors[3] = Game.WorldGenerator.GetTileAt(x - 1, z);//esquerda
 
-            neighbors[4] = WorldGenerator.Instance.GetTileAt(x + 1, z - 1);//corn baixo direita
-            neighbors[5] = WorldGenerator.Instance.GetTileAt(x - 1, z + 1);//corn cima esquerda
-            neighbors[6] = WorldGenerator.Instance.GetTileAt(x + 1, z + 1);//corn cima direita
-            neighbors[7] = WorldGenerator.Instance.GetTileAt(x - 1, z - 1);//corn baixo esuqerda
+            neighbors[4] = Game.WorldGenerator.GetTileAt(x + 1, z - 1);//corn baixo direita
+            neighbors[5] = Game.WorldGenerator.GetTileAt(x - 1, z + 1);//corn cima esquerda
+            neighbors[6] = Game.WorldGenerator.GetTileAt(x + 1, z + 1);//corn cima direita
+            neighbors[7] = Game.WorldGenerator.GetTileAt(x - 1, z - 1);//corn baixo esuqerda
 
         }
         else
         {
             neighbors = new Tile[4];
 
-            neighbors[0] = WorldGenerator.Instance.GetTileAt(x, z + 1);//cima
-            neighbors[1] = WorldGenerator.Instance.GetTileAt(x + 1, z);//direita
-            neighbors[2] = WorldGenerator.Instance.GetTileAt(x, z - 1);//baixo
-            neighbors[3] = WorldGenerator.Instance.GetTileAt(x - 1, z);//esquerda
+            neighbors[0] = Game.WorldGenerator.GetTileAt(x, z + 1);//cima
+            neighbors[1] = Game.WorldGenerator.GetTileAt(x + 1, z);//direita
+            neighbors[2] = Game.WorldGenerator.GetTileAt(x, z - 1);//baixo
+            neighbors[3] = Game.WorldGenerator.GetTileAt(x - 1, z);//esquerda
         }
 
         return neighbors;

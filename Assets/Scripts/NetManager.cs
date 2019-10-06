@@ -30,9 +30,9 @@ public class NetManager : MonoBehaviour {
     /// <param name="playerobj"></param>
     /// <param name="x"></param>
     /// <param name="y"></param>
-    public void SetupPlayer(GameObject playerobj,float x, float y)
+    public void SetupPlayer(GameObject playerobj, int x, int y, int z, int multiplayer_dimension)
     {
-        DarckNet.Network.Instantiate(playerobj, new Vector3(x, y, 0), Quaternion.identity, 0);
+        DarckNet.Network.Instantiate(playerobj, new Vector3(x, y, z), Quaternion.identity, multiplayer_dimension);
 
         /*PlayerInfo playerinf = new PlayerInfo();
         playerinf.UserName = GameManager.Instance.UserName;

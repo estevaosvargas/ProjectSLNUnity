@@ -31,15 +31,15 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + WorldGenerator.Instance.Seed, zCorde * noisefactor + WorldGenerator.Instance.Seed);
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, WorldGenerator.Instance.Seed, false).GetValue(x, z, 0);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Seed, zCorde * noisefactor + Game.WorldGenerator.Seed);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
 
         //Debug.Log("village Chance : " + (int)sample2);
 
         //sample2 *= 10;
         if ((int)sample2 == 2 || (int)sample2 == -2)
         {
-            Color color = WorldGenerator.Instance.HeightTeste.GetPixel(x, z);
+            Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
 
             #region Villa
 
@@ -54,7 +54,10 @@ public static class Biome
             }
             else
             {
-                if (Random.Range(1, 128) > 125)
+                System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                int randnum = (rand.Next(1, 30));
+
+                if (randnum == 1)
                 {
                     if (tile.typego == TakeGO.empty && tile.z != 0)
                     {
@@ -62,7 +65,7 @@ public static class Biome
                     }
                     return TypeBlock.Grass;
                 }
-                if (Random.Range(1, 128) > 125)
+                else if (randnum == 2)
                 {
                     if (tile.typego == TakeGO.empty && tile.z != 0)
                     {
@@ -70,7 +73,7 @@ public static class Biome
                     }
                     return TypeBlock.Grass;
                 }
-                if (Random.Range(1, 128) > 125)
+                else if (randnum == 3)
                 {
                     if (tile.typego == TakeGO.empty && tile.z != 0)
                     {
@@ -78,7 +81,7 @@ public static class Biome
                     }
                     return TypeBlock.Grass;
                 }
-                else if (Random.Range(1, 128) > 125)
+                else if (randnum == 4)
                 {
                     if (tile.typego == TakeGO.empty && tile.z != 0)
                     {
@@ -86,12 +89,27 @@ public static class Biome
                     }
                     return TypeBlock.Grass;
                 }
-                else if (Random.Range(1, 128) > 125)
+                else if (randnum == 5)
                 {
                     if (tile.typego == TakeGO.empty && tile.z != 0)
                     {
                         tile.typego = TakeGO.Oak;
                     }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 6)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL1;
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 7)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL2;
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 8)
+                {
+                    tile.typeVariante = TypeVariante.GrassRC;
                     return TypeBlock.Grass;
                 }
                 else
@@ -118,7 +136,10 @@ public static class Biome
                 if (perlin > 0.2f && perlin < 0.6f)
                 {
                     //grass and bushs and trees
-                    if (Random.Range(1, 128) > 125)
+                    System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                    int randnum = (rand.Next(1, 20));
+
+                    if (randnum == 1)
                     {
                         if (tile.typego == TakeGO.empty && tile.z != 0)
                         {
@@ -126,7 +147,7 @@ public static class Biome
                         }
                         return TypeBlock.Grass;
                     }
-                    if (Random.Range(1, 128) > 125)
+                    else if (randnum == 2)
                     {
                         if (tile.typego == TakeGO.empty && tile.z != 0)
                         {
@@ -134,7 +155,7 @@ public static class Biome
                         }
                         return TypeBlock.Grass;
                     }
-                    if (Random.Range(1, 128) > 125)
+                    else if (randnum == 3)
                     {
                         if (tile.typego == TakeGO.empty && tile.z != 0)
                         {
@@ -142,7 +163,7 @@ public static class Biome
                         }
                         return TypeBlock.Grass;
                     }
-                    else if (Random.Range(1, 128) > 125)
+                    else if (randnum == 4)
                     {
                         if (tile.typego == TakeGO.empty && tile.z != 0)
                         {
@@ -150,7 +171,7 @@ public static class Biome
                         }
                         return TypeBlock.Grass;
                     }
-                    else if (Random.Range(1, 128) > 125)
+                    else if (randnum == 5)
                     {
                         if (tile.typego == TakeGO.empty && tile.z != 0)
                         {
@@ -158,17 +179,17 @@ public static class Biome
                         }
                         return TypeBlock.Grass;
                     }
-                    else if (Random.Range(1, 128) > 125)
+                    else if (randnum == 6)
                     {
                         tile.typeVariante = TypeVariante.GrassFL1;
                         return TypeBlock.Grass;
                     }
-                    else if (Random.Range(1, 128) > 125)
+                    else if (randnum == 7)
                     {
                         tile.typeVariante = TypeVariante.GrassFL2;
                         return TypeBlock.Grass;
                     }
-                    else if (Random.Range(1, 128) > 125)
+                    else if (randnum == 8)
                     {
                         tile.typeVariante = TypeVariante.GrassRC;
                         return TypeBlock.Grass;
@@ -230,16 +251,16 @@ public static class Biome
 
         noisefactor = 0.1f;
 
-        float xCorde = (float)x / width * Scale + WorldGenerator.Instance.Seed;
-        float zCorde = (float)z / height * Scale + WorldGenerator.Instance.Seed;
+        float xCorde = (float)x / width * Scale + Game.WorldGenerator.Seed;
+        float zCorde = (float)z / height * Scale + Game.WorldGenerator.Seed;
 
         float perlin = Mathf.PerlinNoise(xCorde * noisefactor, zCorde * noisefactor);
 
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, WorldGenerator.Instance.Seed, false).GetValue(x, z, 0);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
 
         if ((int)sample2 == 2 || (int)sample2 == -2)
         {
-            Color color = WorldGenerator.Instance.HeightTeste.GetPixel(x, z);
+            Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
 
             #region Villa
 
@@ -254,7 +275,10 @@ public static class Biome
             }
             else
             {
-                if (UnityEngine.Random.Range(1, 128) > 125)
+                System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                int randnum = (rand.Next(1, 20));
+
+                if (randnum == 1)
                 {
                     if (tile.typego == TakeGO.empty)
                     {
@@ -262,7 +286,7 @@ public static class Biome
                     }
                     return TypeBlock.Sand;
                 }
-                else if (UnityEngine.Random.Range(1, 128) > 125)
+                else if (randnum == 5)
                 {
                     if (tile.typego == TakeGO.empty)
                     {
@@ -292,8 +316,10 @@ public static class Biome
                 if (perlin > 0.2f && perlin < 0.6f)
                 {
                     //grass and bushs and trees
+                    System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                    int randnum = (rand.Next(1, 20));
 
-                    if (UnityEngine.Random.Range(1, 128) > 125)
+                    if (randnum == 1)
                     {
                         if (tile.typego == TakeGO.empty)
                         {
@@ -301,7 +327,7 @@ public static class Biome
                         }
                         return TypeBlock.Sand;
                     }
-                    else if (UnityEngine.Random.Range(1, 128) > 125)
+                    else if (randnum == 5)
                     {
                         if (tile.typego == TakeGO.empty)
                         {
@@ -366,7 +392,10 @@ public static class Biome
     {
         if (sample > 0.48f)
         {
-            if (UnityEngine.Random.Range(1, 125) > 120)
+            System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+            int randnum = (rand.Next(1, 20));
+
+            if (randnum == 1)
             {
                 if (tile.typego == TakeGO.empty)
                 {
@@ -374,7 +403,7 @@ public static class Biome
                 }
                 return TypeBlock.BeachSand;
             }
-            else if (UnityEngine.Random.Range(1, 125) > 120)
+            else if (randnum == 5)
             {
                 if (tile.typego == TakeGO.empty)
                 {
@@ -408,7 +437,7 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + WorldGenerator.Instance.Seed, zCorde * noisefactor + WorldGenerator.Instance.Seed);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Seed, zCorde * noisefactor + Game.WorldGenerator.Seed);
 
         if (perlin >= 0.0f && perlin <= 0.15f)
         {
@@ -425,8 +454,10 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
+                System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                int randnum = (rand.Next(1, 20));
 
-                if (UnityEngine.Random.Range(1, 125) > 120)
+                if (randnum == 1)
                 {
                     if (tile.typego == TakeGO.empty)
                     {
@@ -434,7 +465,7 @@ public static class Biome
                     }
                     return TypeBlock.Grass;
                 }
-                else if (UnityEngine.Random.Range(1, 125) > 120)
+                else if (randnum == 3)
                 {
                     if (tile.typego == TakeGO.empty)
                     {
@@ -442,7 +473,7 @@ public static class Biome
                     }
                     return TypeBlock.Grass;
                 }
-                else if (UnityEngine.Random.Range(1, 125) > 120)
+                else if (randnum == 5)
                 {
                     if (tile.typego == TakeGO.empty)
                     {
@@ -506,27 +537,50 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + WorldGenerator.Instance.Seed, zCorde * noisefactor + WorldGenerator.Instance.Seed);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Seed, zCorde * noisefactor + Game.WorldGenerator.Seed);
 
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, WorldGenerator.Instance.Seed, false).GetValue(x, z, 0);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
 
         if ((int)sample2 == 2 || (int)sample2 == -2)
         {
-            Color color = WorldGenerator.Instance.HeightTeste.GetPixel(x, z);
+            Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
 
             #region Villa
 
             if (color == new Color(1, 0, 0, 1))
             {
                 tile.placerObj = Placer.MainBuild2;
-                return TypeBlock.Air;
+                return TypeBlock.Grass;
             }
             else if (color == new Color(1, 1, 1, 1))
             {
                 return TypeBlock.DirtRoad;
             }
+            else
+            {
+                System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                int randnum = (rand.Next(1, 20));
 
-            return TypeBlock.Grass;
+                if (randnum == 1)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL1;
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 3)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL2;
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 5)
+                {
+                    tile.typeVariante = TypeVariante.GrassRC;
+                    return TypeBlock.Grass;
+                }
+                else
+                {
+                    return TypeBlock.Grass;
+                }
+            }
             #endregion
         }
         else
@@ -547,57 +601,21 @@ public static class Biome
                 if (perlin > 0.2f && perlin < 0.6f)
                 {
                     //grass and bushs and trees
-                    if (UnityEngine.Random.Range(1, 128) > 125)
-                    {
-                        if (tile.typego == TakeGO.empty && tile.y != 0)
-                        {
-                            tile.typego = TakeGO.Weed01;
-                        }
-                        return TypeBlock.Grass;
-                    }
-                    if (UnityEngine.Random.Range(1, 128) > 125)
-                    {
-                        if (tile.typego == TakeGO.empty && tile.y != 0)
-                        {
-                            tile.typego = TakeGO.RockProp;
-                        }
-                        return TypeBlock.Grass;
-                    }
-                    if (UnityEngine.Random.Range(1, 128) > 125)
-                    {
-                        if (tile.typego == TakeGO.empty && tile.y != 0)
-                        {
-                            tile.typego = TakeGO.WeedTall;
-                        }
-                        return TypeBlock.Grass;
-                    }
-                    else if (UnityEngine.Random.Range(1, 128) > 125)
-                    {
-                        if (tile.typego == TakeGO.empty && tile.y != 0)
-                        {
-                            tile.typego = TakeGO.Pine;
-                        }
-                        return TypeBlock.Grass;
-                    }
-                    else if (UnityEngine.Random.Range(1, 128) > 125)
-                    {
-                        if (tile.typego == TakeGO.empty && tile.y != 0)
-                        {
-                            tile.typego = TakeGO.Oak;
-                        }
-                        return TypeBlock.Grass;
-                    }
-                    else if (UnityEngine.Random.Range(1, 128) > 125)
+
+                    System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                    int randnum = (rand.Next(1, 20));
+
+                    if (randnum == 1)
                     {
                         tile.typeVariante = TypeVariante.GrassFL1;
                         return TypeBlock.Grass;
                     }
-                    else if (UnityEngine.Random.Range(1, 128) > 125)
+                    else if (randnum == 3)
                     {
                         tile.typeVariante = TypeVariante.GrassFL2;
                         return TypeBlock.Grass;
                     }
-                    else if (UnityEngine.Random.Range(1, 128) > 125)
+                    else if (randnum == 5)
                     {
                         tile.typeVariante = TypeVariante.GrassRC;
                         return TypeBlock.Grass;
@@ -668,7 +686,7 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + WorldGenerator.Instance.Seed, zCorde * noisefactor + WorldGenerator.Instance.Seed);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Seed, zCorde * noisefactor + Game.WorldGenerator.Seed);
 
         if (perlin >= 0.0f && perlin <= 0.15f)
         {
@@ -685,8 +703,10 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
+                System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                int randnum = (rand.Next(1, 20));
 
-                if (UnityEngine.Random.Range(1, 128) > 125)
+                if (randnum == 1)
                 {
                     if (tile.typego == TakeGO.empty)
                     {
@@ -694,7 +714,7 @@ public static class Biome
                     }
                     return TypeBlock.Snow;
                 }
-                else if (UnityEngine.Random.Range(1, 128) > 125)
+                else if (randnum == 5)
                 {
                     if (tile.typego == TakeGO.empty)
                     {
@@ -764,8 +784,8 @@ public static class Biome
         float amplitude = 52.79f;
         int octaves = 184;
 
-        float xCordee = (float)octaves * x / width * Scale + WorldGenerator.Instance.Seed;
-        float zCordee = (float)octaves * z / height * Scale + WorldGenerator.Instance.Seed;
+        float xCordee = (float)octaves * x / width * Scale + Game.WorldGenerator.Seed;
+        float zCordee = (float)octaves * z / height * Scale + Game.WorldGenerator.Seed;
 
         // modify with frequency
         xCordee *= frequency;
@@ -789,7 +809,10 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                if (UnityEngine.Random.Range(1, 128) > 125)
+                System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                int randnum = (rand.Next(1, 20));
+
+                if (randnum == 1)
                 {
                     if (tile.typego == TakeGO.empty && tile.y != 0)
                     {
@@ -797,7 +820,7 @@ public static class Biome
                     }
                     return TypeBlock.Grass;
                 }
-                if (UnityEngine.Random.Range(1, 128) > 125)
+                else if (randnum == 2)
                 {
                     if (tile.typego == TakeGO.empty && tile.y != 0)
                     {
@@ -805,7 +828,7 @@ public static class Biome
                     }
                     return TypeBlock.Grass;
                 }
-                if (UnityEngine.Random.Range(1, 128) > 125)
+                else if (randnum == 3)
                 {
                     if (tile.typego == TakeGO.empty && tile.y != 0)
                     {
@@ -813,7 +836,7 @@ public static class Biome
                     }
                     return TypeBlock.Grass;
                 }
-                else if (UnityEngine.Random.Range(1, 128) > 125)
+                else if (randnum == 4)
                 {
                     if (tile.typego == TakeGO.empty && tile.y != 0)
                     {
@@ -821,7 +844,7 @@ public static class Biome
                     }
                     return TypeBlock.Grass;
                 }
-                else if (UnityEngine.Random.Range(1, 128) > 125)
+                else if (randnum == 5)
                 {
                     if (tile.typego == TakeGO.empty && tile.y != 0)
                     {
@@ -829,17 +852,17 @@ public static class Biome
                     }
                     return TypeBlock.Grass;
                 }
-                else if (UnityEngine.Random.Range(1, 128) > 125)
+                else if (randnum == 6)
                 {
                     tile.typeVariante = TypeVariante.GrassFL1;
                     return TypeBlock.Grass;
                 }
-                else if (UnityEngine.Random.Range(1, 128) > 125)
+                else if (randnum == 7)
                 {
                     tile.typeVariante = TypeVariante.GrassFL2;
                     return TypeBlock.Grass;
                 }
-                else if (UnityEngine.Random.Range(1, 128) > 125)
+                else if (randnum == 8)
                 {
                     tile.typeVariante = TypeVariante.GrassRC;
                     return TypeBlock.Grass;

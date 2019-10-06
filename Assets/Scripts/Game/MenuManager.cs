@@ -246,22 +246,26 @@ public class MenuManager : Menus
 
     public void Respawn()
     {
-        WorldManager.This.SetUpPlayer(0,0);
+        if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
+        {
+            WorldManager.This.SpawnPlayer(UnityEngine.Random.Range(-100, 100), 0, UnityEngine.Random.Range(-100, 100), Game.WorldGenerator.World_ID);
 
-        DCallBack.Call(CallType.OnRespawn);
-
-        CloseMenuName("Respawn");
-        MouselockFake.IsLock = false;
+            DCallBack.Call(CallType.OnRespawn);
+            CloseMenuName("Respawn");
+            MouselockFake.IsLock = false;
+        }
     }
 
     public void RespawnBed()
     {
-        WorldManager.This.SetUpPlayer(0, 0);
+        if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
+        {
+            WorldManager.This.SpawnPlayer(UnityEngine.Random.Range(-100, 100), 0, UnityEngine.Random.Range(-100, 100), Game.WorldGenerator.World_ID);
 
-        DCallBack.Call(CallType.OnRespawn);
-
-        CloseMenuName("Respawn");
-        MouselockFake.IsLock = false;
+            DCallBack.Call(CallType.OnRespawn);
+            CloseMenuName("Respawn");
+            MouselockFake.IsLock = false;
+        }
     }
 
     public void OpenInveContainer(Inventory cont)

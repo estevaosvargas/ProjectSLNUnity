@@ -7,7 +7,6 @@ using System;
 
 public class WorldGenerator : DCallBack
 {
-    public static WorldGenerator Instance;
     public Transform Player;
     public UnityStandardAssets.Utility.SmoothFollow Cam;
     public GameObject ChunkGO;
@@ -31,7 +30,7 @@ public class WorldGenerator : DCallBack
 
     void Awake()
     {
-        Instance = this;
+        Game.WorldGenerator = this;
         chunkMap = new Dictionary<Vector3, Chunk>();
         ClientchunkMap = new Dictionary<Vector3, bool>();
 
@@ -40,28 +39,33 @@ public class WorldGenerator : DCallBack
             DarckNet.Network.Instantiate(SUN, Vector3.zero, Quaternion.identity, World_ID);
             Debug.Log("SERVER: Sun Spawned");
         }
+    }
 
-#if Client
-        Seed = Game.GameManager.Seed;
+    public void Setplayer_data()
+    {
+        if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
+        {
+            Seed = Game.GameManager.Seed;
+            Player = Game.GameManager.MyPlayer.MyObject.transform;
+            Player.GetComponent<EntityPlayer>().World = this.transform;
+            Cam.target = Game.GameManager.MyPlayer.MyObject.transform;
 
-        Player = Game.GameManager.MyPlayer.MyObject.transform;
-        Player.GetComponent<EntityPlayer>().World = this.transform;
-        Cam.target = Game.GameManager.MyPlayer.MyObject.transform;
-#endif
+            UpdateFindChunk();
+        }
     }
 
     public override void OnRespawn()
     {
-        Player = Game.GameManager.MyPlayer.MyObject.transform;
-        Player.GetComponent<EntityPlayer>().World = this.transform;
-        Cam.target = Game.GameManager.MyPlayer.MyObject.transform;
-
+        Setplayer_data();
         base.OnRespawn();
     }
 
     void Start()
     {
-        UpdateFindChunk();
+        if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
+        {
+            WorldManager.This.SpawnPlayer(UnityEngine.Random.Range(-100, 100), 0, UnityEngine.Random.Range(-100, 100), World_ID);
+        }
     }
 
 

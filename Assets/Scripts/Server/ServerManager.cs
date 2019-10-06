@@ -29,6 +29,12 @@ public class ServerManager : DarckNet.DarckMonoBehaviour
         DarckNet.Network.Create(ip, port, maxplayers);
     }
 
+    public override void OnPlayerRequestStartData(NetConnection Peer)
+    {
+        Game.TimeOfDay.LastUpdateTime();//Send Skytime, to player sync for first time.
+        base.OnPlayerRequestStartData(Peer);
+    }
+
     public override void OnPlayerConnect(NetConnection Peer)
     {
         base.OnPlayerConnect(Peer);
@@ -75,7 +81,7 @@ public class ServerManager : DarckNet.DarckMonoBehaviour
     {
         if (!File.Exists(Path.GetFullPath("./ServerConfig.ini")))
         {
-            Debug.Log("SERVER_FILE: Don't find ServerConfig.ini, crating one!");
+            System.Console.WriteLine("SERVER_FILE: Don't find ServerConfig.ini, crating one (:");
 
             IniFile filenew = new IniFile("ServerConfig", Path.GetFullPath("./"));
 
@@ -89,7 +95,7 @@ public class ServerManager : DarckNet.DarckMonoBehaviour
             filenew.Save("ServerConfig", Path.GetFullPath("./"));
         }
 
-        Debug.Log("SERVER_FILE: Loading ServerConfig!");
+        System.Console.WriteLine("SERVER_FILE: Loading ServerConfig!");
 
         Config conf = new Config();
         IniFile file = new IniFile("ServerConfig", Path.GetFullPath("./"));
@@ -112,7 +118,8 @@ public class ServerManager : DarckNet.DarckMonoBehaviour
         System.Console.WriteLine("Server Dedicated: " + conf.Dedicated);
 
         file.Save("ServerConfig", Path.GetFullPath("./"));
-        Debug.Log("SERVER_FILE: ServerConfig, Loaded and ready!");
+        System.Console.ForegroundColor = System.ConsoleColor.White;
+        System.Console.WriteLine("SERVER_FILE: ServerConfig, Loaded and ready!");
         return conf;
     }
 }

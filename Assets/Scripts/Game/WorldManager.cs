@@ -12,19 +12,24 @@ public class WorldManager : MonoBehaviour
         This = this;
     }
 
-    public void ChangeWorld(string worldto, float px, float py)
+    public void StartNewWorld(string worldto)
+    {
+        SceneManager.LoadSceneAsync(worldto);
+    }
+
+    public void ChangeWorld(string worldto, int px, int py, int pz, int world_id)
     {
         if (Game.GameManager.MyPlayer.MyObject)
         {
             RemovePlayerWorld(Game.GameManager.MyPlayer.MyObject);
         }
-        SetUpPlayer(px, py);
+        SpawnPlayer(px, py, pz, world_id);
         SceneManager.LoadSceneAsync(worldto);
     }
 
-    public void SetUpPlayer(float x, float y)
+    public void SpawnPlayer(int x, int y, int z, int world_id)
     {
-        NetManager.Instance.SetupPlayer(playerobj, x, y);
+        NetManager.Instance.SetupPlayer(playerobj, x, y, z, world_id);
     }
 
     public void RemovePlayerWorld(GameObject player)

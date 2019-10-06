@@ -57,13 +57,13 @@ public class Chunk : MonoBehaviour
     {
         tileGOmap = new Dictionary<Tile, GameObject>();
         tiles = new Tile[Size, Size];
-        WorldGenerator.Instance.ChunksList.Add(this);
+        Game.WorldGenerator.ChunksList.Add(this);
         BiomeType typebiom = BiomeType.ForestNormal;
         bool havesave = false;
 
-        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + WorldGenerator.Instance.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z)))
+        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + Game.WorldGenerator.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z)))
         {
-            tiles = SaveWorld.Load(WorldGenerator.Instance.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z);
+            tiles = SaveWorld.Load(Game.WorldGenerator.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z);
             havesave = true;
         }
 
@@ -72,7 +72,7 @@ public class Chunk : MonoBehaviour
         {
             for (int j = 0; j < Size * TileObj.transform.localScale.y; j++)
             {
-                if (!havesave) { tiles[i, j] = new Tile(i + (int)transform.position.x, 0, j + (int)transform.position.z, typebiom); }
+                if (!havesave) { tiles[i, j] = new Tile(i + (int)transform.position.x, 0, j + (int)transform.position.z, new ChunkInfo((int)transform.position.x, (int)transform.position.z, this)); }
 
                 tiles[i, j].SetUpTile(tiles[i, j]);
                 tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
@@ -85,7 +85,6 @@ public class Chunk : MonoBehaviour
                 TileGo.transform.Rotate(new Vector3(90, 0, 0), Space.Self);
 
                 tiles[i, j].TileObj = TileGo.GetComponent<TileObj>();
-                tiles[i, j].TileChunk = new ChunkInfo((int)transform.position.x, (int)transform.position.z, this);
 
                 //Set Up Tree OBject
                 SetUpTileTree(tiles[i, j]);
@@ -256,7 +255,7 @@ public class Chunk : MonoBehaviour
             }
         }
 
-        WorldGenerator.Instance.ChunksList.Remove(this);
+        Game.WorldGenerator.ChunksList.Remove(this);
     }
 
     private void SetUpPlacer(Tile tile)
@@ -326,7 +325,7 @@ public class Chunk : MonoBehaviour
     {
         if (Game.GameManager.SinglePlayer)
         {
-            SaveWorld.Save(tiles, WorldGenerator.Instance.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z);
+            SaveWorld.Save(tiles, Game.WorldGenerator.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z);
         }
         else if (Game.GameManager.MultiPlayer)
         {
@@ -438,7 +437,7 @@ public class Chunk : MonoBehaviour
         #region TileGen
         tileGOmap = new Dictionary<Tile, GameObject>();
         tiles = new Tile[Size, Size];
-        WorldGenerator.Instance.ChunksList.Add(this);
+        Game.WorldGenerator.ChunksList.Add(this);
 
         for (int v = 0; v < tile.Length; v++)
         {
