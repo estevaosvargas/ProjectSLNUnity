@@ -20,20 +20,15 @@ namespace Lidgren.Network
 		private object m_tag;
 		private object m_messageReceivedEventCreationLock = new object();
 
-		internal readonly Dictionary<long,NetConnection> m_connections;
+		internal readonly List<NetConnection> m_connections;
 		private readonly Dictionary<NetEndPoint, NetConnection> m_connectionLookup;
 
 		private string m_shutdownReason;
 
-        /// <summary>
-        /// NetConnection of this peer.
-        /// </summary>
-        public NetConnection Myconnection;
-
-        /// <summary>
-        /// Gets the NetPeerStatus of the NetPeer
-        /// </summary>
-        public NetPeerStatus Status { get { return m_status; } }
+		/// <summary>
+		/// Gets the NetPeerStatus of the NetPeer
+		/// </summary>
+		public NetPeerStatus Status { get { return m_status; } }
 
 		/// <summary>
 		/// Signalling event which can be waited on to determine when a message is queued for reading.
@@ -84,47 +79,19 @@ namespace Lidgren.Network
 		/// <summary>
 		/// Gets a copy of the list of connections
 		/// </summary>
-		public Dictionary<long, NetConnection> Connections
+		public List<NetConnection> Connections
 		{
 			get
 			{
 				lock (m_connections)
-					return m_connections;
+					return new List<NetConnection>(m_connections);
 			}
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public NetConnection GetConnectionById(long id)
-        {
-            return m_connections[id];
-        }
-
-        /// <summary>
-        /// Get connection by Peer
-        /// </summary>
-        public NetConnection[] GetConnectionByMultipleId(long[] id)
-        {
-            List<NetConnection> net = new List<NetConnection>();
-
-            for (int i = 0; i < id.Length; i++)
-            {
-                if (m_connections.ContainsKey(id[i]))
-                {
-                    net.Add(m_connections[id[i]]);
-                }
-            }
-
-            return net.ToArray();
-        }
-
-        /// <summary>
-        /// Gets the number of active connections
-        /// </summary>
-        public int ConnectionsCount
+		/// <summary>
+		/// Gets the number of active connections
+		/// </summary>
+		public int ConnectionsCount
 		{
 			get { return m_connections.Count; }
 		}
@@ -142,19 +109,20 @@ namespace Lidgren.Network
 		/// </summary>
 		public NetPeerConfiguration Configuration { get { return m_configuration; } }
 
-        /// <summary>
-        /// NetPeer constructor
-        /// </summary>
-        public NetPeer(NetPeerConfiguration config)
+		/// <summary>
+		/// NetPeer constructor
+		/// </summary>
+		public NetPeer(NetPeerConfiguration config)
 		{
 			m_configuration = config;
 			m_statistics = new NetPeerStatistics(this);
 			m_releasedIncomingMessages = new NetQueue<NetIncomingMessage>(4);
 			m_unsentUnconnectedMessages = new NetQueue<NetTuple<NetEndPoint, NetOutgoingMessage>>(2);
-			m_connections = new Dictionary<long, NetConnection>();
+			m_connections = new List<NetConnection>();
 			m_connectionLookup = new Dictionary<NetEndPoint, NetConnection>();
 			m_handshakes = new Dictionary<NetEndPoint, NetConnection>();
-			m_senderRemote = (EndPoint)new NetEndPoint(IPAddress.Any, 0);
+            var address = config.DualStack ? IPAddress.IPv6Any : IPAddress.Any;
+            m_senderRemote = (EndPoint)new NetEndPoint(address, 0);
 			m_status = NetPeerStatus.NotRunning;
 			m_receivedFragmentGroups = new Dictionary<NetConnection, Dictionary<int, ReceivedFragmentGroup>>();	
 		}
@@ -190,7 +158,7 @@ namespace Lidgren.Network
 
 			// send upnp discovery
 			if (m_upnp != null)
-				//m_upnp.Discover(this);
+				m_upnp.Discover(this);
 
 			// allow some time for network thread to start up in case they call Connect() or UPnP calls immediately
 			NetUtility.Sleep(50);
@@ -336,6 +304,8 @@ namespace Lidgren.Network
 		{
 			if (remoteEndPoint == null)
 				throw new ArgumentNullException("remoteEndPoint");
+            if(m_configuration.DualStack)
+                remoteEndPoint = NetUtility.MapToIPv6(remoteEndPoint);
 
 			lock (m_connections)
 			{

@@ -119,7 +119,6 @@ namespace DarckNet
         void SendRPC(string funcname, RPCMode Mode, params object[] param)
         {
             var om = Network.MyPeer.CreateMessage();
-
             if (Mode == RPCMode.All)
             {
                 om.Write((byte)DataType.RPC_All);
@@ -191,7 +190,7 @@ namespace DarckNet
                 }
                 else
                 {
-                    Execute(funcname, Network.MyPeer.Myconnection, param);
+                    Network.RPC_Server(funcname, ViewID, param);
                 }
             }
             else if (Mode == RPCMode.Owner)
@@ -241,6 +240,10 @@ namespace DarckNet
                 else if (param[i].GetType() == typeof(int))
                 {
                     om.Write((int)param[i]);
+                }
+                else if (param[i].GetType() == typeof(bool))
+                {
+                    om.Write((bool)param[i]);
                 }
                 else if (param[i].GetType() == typeof(float))
                 {
@@ -312,10 +315,16 @@ namespace DarckNet
             return null;
         }
 
-        internal object[] Execute(string funcName, NetConnection peer, object[] param)
+        /// <summary>
+        /// Exute RPC on server side, or for host, not for the client
+        /// </summary>
+        /// <param name="funcName"></param>
+        /// <param name="peer"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        internal void ExecuteServer(string funcName, NetConnection peer, object[] param)
         {
             //if (mParent != null) return mParent.Execute(funcName, parameters);
-
             if (verifyd == false)
             {
                 RebuildMethodList();
@@ -327,21 +336,35 @@ namespace DarckNet
             {
                 if (ent.parameters == null)
                     ent.parameters = ent.func.GetParameters();
-
                 try
                 {
-                    ent.func.Invoke(ent.obj, param);
+                    List<object> objects = new List<object>();
+                    for (int i = 0; i < ent.parameters.Length; i++)
+                    {
+                        if (ent.parameters[i].ParameterType == typeof(DNetConnection))
+                        {
+                            DNetConnection dnet = new DNetConnection();
+                            if (peer!= null)
+                            {
+                                dnet.unique = peer.Peer.UniqueIdentifier;
+                            }
+                            objects.Add(dnet);
+                        }
+                        else
+                        {
+                            objects.Add(param[i]);
+                        }
+                    }
+                    //Debug.Log(param[2].ToString());
 
-                    return param;
+                    ent.func.Invoke(ent.obj, objects.ToArray());
                 }
                 catch (System.Exception ex)
                 {
-                    if (ex.GetType() == typeof(System.NullReferenceException)) return null;
+                    //if (ex.GetType() == typeof(System.NullReferenceException));
                     Debug.LogException(ex);
-                    return null;
                 }
             }
-            return null;
         }
 
         internal object[] ExecuteNo(string funcName, NetIncomingMessage msg)
@@ -424,6 +447,10 @@ namespace DarckNet
             else if (type == typeof(byte))
             {
                 return msg.ReadByte();
+            }
+            else if (type == typeof(bool))
+            {
+                return msg.ReadBoolean();
             }
             else if (type == typeof(float))
             {
@@ -510,6 +537,6 @@ namespace DarckNet
     {
         public long unique;
 
-        public NetConnection NetConnection { get { return Network.GetPeer(unique); } private set { } }
+        public NetConnection NetConnection { get { return Network.GetConnection(unique); } private set { } }
     }
 }

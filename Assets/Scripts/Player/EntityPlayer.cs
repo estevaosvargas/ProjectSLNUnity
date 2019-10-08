@@ -25,10 +25,10 @@ public class EntityPlayer : EntityLife
     public Animator Anim;
     public ParticleSystem FootPArticle;
     public float Speed = 5;
-    public PlayerNetStats NetStats;
     public Transform HandRoot;
     public Inventory myinve;
     public LifeStatus Status;
+    public PlayerNetWork playerNetWork;
     protected SpriteRenderer SPRITERENDER;
     protected SpriteRenderer SPRITERENDERHAND;
 
@@ -50,16 +50,15 @@ public class EntityPlayer : EntityLife
 
     void Start()
     {
-        Anim = GetComponent<Animator>();
-        SPRITERENDER = GetComponent<SpriteRenderer>();
-        SPRITERENDERHAND = HandRoot.GetComponentInChildren<SpriteRenderer>();
-
-        Game.TileAnimations.StartTileAnimation();
-
-		transform.Rotate(new Vector3(3.6f, 0,0), Space.Self);
-
         if (Net.isMine)
         {
+            Anim = GetComponent<Animator>();
+            SPRITERENDER = GetComponent<SpriteRenderer>();
+            SPRITERENDERHAND = HandRoot.GetComponentInChildren<SpriteRenderer>();
+            playerNetWork = GetComponent<PlayerNetWork>();
+            //Game.TileAnimations.StartTileAnimation();//disabel for now
+            transform.Rotate(new Vector3(3.6f, 0, 0), Space.Self);
+
             if (Game.WorldGenerator != null)
             {
                 World = Game.WorldGenerator.transform;
@@ -71,6 +70,7 @@ public class EntityPlayer : EntityLife
             Game.GameManager.MyPlayer.MyPlayerMove.IsAlive = true;
 
             Game.WorldGenerator.Setplayer_data();
+
             body.isKinematic = false;
         }
         else
@@ -141,7 +141,7 @@ public class EntityPlayer : EntityLife
             Tile tile = Game.WorldGenerator.GetTileAt(transform.position.x, transform.position.z);
             var main = FootPArticle.main;
 
-            NetStats.CurrentTile = tile.type;
+            playerNetWork.NetStats.CurrentTile = tile.type;
 
             if (tile.type == TypeBlock.Water)
             {
@@ -191,36 +191,34 @@ public class EntityPlayer : EntityLife
     #region DirectionsMethods
     public void Direita()
     {
-        NetStats.Side = 0;
-        if (NetStats.swiming == false)
+        if (playerNetWork.NetStats.swiming == false)
         {
-            NetStats.handhide = false;
-            NetStats.HandLayer = SPRITERENDER.sortingOrder;
+            playerNetWork.NetStats.handhide = false;
+            playerNetWork.NetStats.HandLayer = SPRITERENDER.sortingOrder;
         }
     }
     public void Esquerda()
     {
-        NetStats.Side = 1;
-        if (NetStats.swiming == false)
+        if (playerNetWork.NetStats.swiming == false)
         {
-            NetStats.HandLayer = SPRITERENDER.sortingOrder - 1;
-            NetStats.handhide = false;
+            playerNetWork.NetStats.HandLayer = SPRITERENDER.sortingOrder - 1;
+            playerNetWork.NetStats.handhide = false;
         }
     }
     public void Cima()
     {
-        if (NetStats.swiming == false)
+        if (playerNetWork.NetStats.swiming == false)
         {
-            NetStats.handhide = true;
-            NetStats.HandLayer = SPRITERENDER.sortingOrder;
+            playerNetWork.NetStats.handhide = true;
+            playerNetWork.NetStats.HandLayer = SPRITERENDER.sortingOrder;
         }
     }
     public void Baixo()
     {
-        if (NetStats.swiming == false)
+        if (playerNetWork.NetStats.swiming == false)
         {
-            NetStats.handhide = false;
-            NetStats.HandLayer = SPRITERENDER.sortingOrder;
+            playerNetWork.NetStats.handhide = false;
+            playerNetWork.NetStats.HandLayer = SPRITERENDER.sortingOrder;
         }
     }
     #endregion
@@ -245,7 +243,7 @@ public class EntityPlayer : EntityLife
 
                 float angle = Mathf.Atan2(lookPos.y, lookPos.x) * Mathf.Rad2Deg;
                 //Vector.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                NetStats.angle = (int)angle;
+                playerNetWork.NetStats.angle = (int)angle;
 
                 Anim.SetFloat("X", (int)angle);
             }
@@ -265,7 +263,7 @@ public class EntityPlayer : EntityLife
             LastPostitionIntZ = (int)transform.position.z;
             #endregion
 
-            if (NetStats.handhide == true)
+            if (playerNetWork.NetStats.handhide == true)
             {
                 HandRoot.gameObject.SetActive(false);
             }
@@ -276,7 +274,7 @@ public class EntityPlayer : EntityLife
 
             if (SPRITERENDERHAND)
             {
-                SPRITERENDERHAND.sortingOrder = NetStats.HandLayer;
+                SPRITERENDERHAND.sortingOrder = playerNetWork.NetStats.HandLayer;
             }
 
             if (Input.GetAxis("Horizontal") >= 0.1f)
@@ -284,46 +282,64 @@ public class EntityPlayer : EntityLife
                 Direita();
                 Anim.SetInteger("Walk", 1);
                 Anim.SetFloat("X", 0);
+
+                playerNetWork.NetStats.walking = true;
+                playerNetWork.NetStats.Side = 0;
             }
             else if (Input.GetAxis("Horizontal") <= -0.1f)
             {
                 Esquerda();
                 Anim.SetInteger("Walk", 1);
                 Anim.SetFloat("X", 180);
+
+                playerNetWork.NetStats.walking = true;
+                playerNetWork.NetStats.Side = 1;
             }
             else if (Input.GetAxis("Vertical") >= 0.1f)
             {
                 Cima();
                 Anim.SetInteger("Walk", 1);
                 Anim.SetFloat("X", 90);
+
+                playerNetWork.NetStats.walking = true;
+                playerNetWork.NetStats.Side = 2;
             }
             else if (Input.GetAxis("Vertical") <= -0.1f)
             {
                 Baixo();
                 Anim.SetInteger("Walk", 1);
                 Anim.SetFloat("X", -90);
+
+                playerNetWork.NetStats.walking = true;
+                playerNetWork.NetStats.Side = 3;
             }
             else
             {
                 Anim.SetInteger("Walk", 0);
                 FootPArticle.Stop();
+
+                playerNetWork.NetStats.walking = false;
             }
+
+            UpdateNetStatus();
         }
         #endregion
+    }
 
-        #region Server
-        #endregion
+    void UpdateNetStatus()//for now is every frame send to all, just for stress test
+    {
+        Net.RPC("RPC_Syncplayervalues", DarckNet.RPCMode.AllNoOwner, playerNetWork.NetStats.angle, playerNetWork.NetStats.Side, playerNetWork.NetStats.walking);
     }
 
     public void FootPrintRight()
     {
-        AUDIOSOURCE.PlayOneShot(Game.AudioManager.GetFootSound(NetStats.CurrentTile));
+        AUDIOSOURCE.PlayOneShot(Game.AudioManager.GetFootSound(playerNetWork.NetStats.CurrentTile));
         FootPArticle.Emit(FootParticleCount);
     }
 
     public void FootPrintLeft()
     {
-        AUDIOSOURCE.PlayOneShot(Game.AudioManager.GetFootSound(NetStats.CurrentTile));
+        AUDIOSOURCE.PlayOneShot(Game.AudioManager.GetFootSound(playerNetWork.NetStats.CurrentTile));
         FootPArticle.Emit(FootParticleCount);
     }
 

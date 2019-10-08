@@ -361,7 +361,7 @@ namespace Lidgren.Network
 							NetIncomingMessage msg = m_peer.SetupReadHelperMessage(ptr, payloadLength);
 							InitializeRemoteTimeOffset(msg.ReadSingle());
 
-							m_peer.AcceptConnection(this, m_remoteUniqueIdentifier);
+							m_peer.AcceptConnection(this);
 							InitializePing();
 							SetStatus(NetConnectionStatus.Connected, "Connected to " + NetUtility.ToHexString(m_remoteUniqueIdentifier));
 							return;
@@ -420,7 +420,7 @@ namespace Lidgren.Network
 							m_remoteHailMessage = null;
 						}
 
-						m_peer.AcceptConnection(this, m_remoteUniqueIdentifier);
+						m_peer.AcceptConnection(this);
 						SendConnectionEstablished();
 						return;
 					}

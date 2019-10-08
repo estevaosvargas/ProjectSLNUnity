@@ -187,7 +187,7 @@ public class HandManager : MonoBehaviour
 
         if (HandTransform.GetComponent<Animator>())
         {
-            HandTransform.GetComponent<Animator>().SetInteger("Side", GetComponent<EntityPlayer>().NetStats.Side);
+            HandTransform.GetComponent<Animator>().SetInteger("Side", GetComponent<EntityPlayer>().playerNetWork.NetStats.Side);
         }
 
         if (MouselockFake.IsLock == false && CurrentItem != null && Distance <= CurrentItem.About.Distance && OnHand == false)

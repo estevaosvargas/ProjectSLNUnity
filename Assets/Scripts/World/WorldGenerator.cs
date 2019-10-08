@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
+using System.Threading;
 
 public class WorldGenerator : DCallBack
 {
@@ -116,7 +117,7 @@ public class WorldGenerator : DCallBack
     #endif
     }
 
-    void FindChunksToLoad()
+    public void FindChunksToLoad()
     {
         if (Player)
         {
@@ -149,12 +150,12 @@ public class WorldGenerator : DCallBack
         if (chunkMap.ContainsKey(new Vector3(x, 0, z)) == false)
         {
             GameObject go = Instantiate(ChunkGO, new Vector3(x, 0, z), Quaternion.identity);
-
+            go.SetActive(true);
             chunkMap.Add(new Vector3(x, 0,z), go.GetComponent<Chunk>());
         }
     }
 
-    void DeleteChunk()
+    public void DeleteChunk()
     {
         if (Player)
         {

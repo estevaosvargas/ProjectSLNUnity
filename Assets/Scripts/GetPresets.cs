@@ -149,7 +149,7 @@ public static class GetPresets
             case BiomeType.Jungle:
                 if (tile == TypeBlock.Grass)
                 {
-                    return Color.green;
+                    return new Color(0.3128338f, 0.6981132f, 0.3446094f, 1);
                 }
                 else
                 {

@@ -46,7 +46,6 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -208,7 +207,6 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -4951,7 +4949,6 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
-  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -5139,7 +5136,6 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -5302,14 +5298,6 @@ MonoBehaviour:
   Anim: {fileID: 95241139421231152}
   FootPArticle: {fileID: 198870550756704852}
   Speed: 2
-  NetStats:
-    walking: 0
-    handhide: 0
-    swiming: 0
-    angle: 0
-    HandLayer: 5
-    CurrentTile: 0
-    Side: -1
   HandRoot: {fileID: 4753514897003424}
   myinve: {fileID: 114246513993113868}
   Status:
@@ -5322,6 +5310,7 @@ MonoBehaviour:
     SkillsList: []
     WPSkillsList: []
     XP_PLAYER: 0
+  playerNetWork: {fileID: 0}
   animstatus: 0
   Vector: {fileID: 4443738411197922}
   AttackSword: {fileID: 95925241092886188}
@@ -5419,11 +5408,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 816fd95d9113a0441b7be8280657dd90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HP: 100
+  MaxHP: 100
+  IsAlive: 0
+  LastAttacker: 
   Net: {fileID: 114066613193702464}
-  ScriptToDisable:
-  - {fileID: 114067372861037966}
+  ScriptToRemove:
   - {fileID: 114161712818232822}
+  - {fileID: 114067372861037966}
   ObjectToDisable: []
+  NetStats:
+    walking: 0
+    handhide: 0
+    swiming: 0
+    angle: 0
+    HandLayer: 5
+    CurrentTile: 0
+    Side: -1
+  Anim: {fileID: 0}
 --- !u!54 &8238467790666831973
 Rigidbody:
   m_ObjectHideFlags: 0

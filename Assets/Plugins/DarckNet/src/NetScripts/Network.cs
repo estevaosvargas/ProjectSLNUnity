@@ -222,9 +222,16 @@ namespace DarckNet
         /// </summary>
         /// <param name="uniq"></param>
         /// <returns></returns>
-        public static NetConnection GetPeer(long uniq)
+        public static NetConnection GetConnection(long uniq)
         {
-            return MyPeer.GetConnectionById(uniq);
+            foreach (var item in MyPeer.Connections)
+            {
+                if (item.RemoteUniqueIdentifier == uniq)
+                {
+                    return item;
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -232,9 +239,21 @@ namespace DarckNet
         /// </summary>
         /// <param name="uniq"></param>
         /// <returns></returns>
-        public static NetConnection[] GetPeer(long[] uniq)
+        public static NetConnection[] GetConnections(long[] uniq)
         {
-            return MyPeer.GetConnectionByMultipleId(uniq);
+            List<NetConnection> nets = new List<NetConnection>();
+
+            foreach (var item in uniq)
+            {
+                foreach (var connection in MyPeer.Connections)
+                {
+                    if (connection.RemoteUniqueIdentifier == item)
+                    {
+                        nets.Add(connection);
+                    }
+                }
+            }
+            return nets.ToArray();
         }
 
         /// <summary>
@@ -291,7 +310,7 @@ namespace DarckNet
                 om.Write((byte)DataType.ExitDimension);
                 om.Write(DimensionGeral);
 
-                Client.SendToAll(om, NetDeliveryMode);
+                Client.SendMessage(om, NetDeliveryMode);
 
                 Client.Disconnect("Disconnect");
 
@@ -360,11 +379,12 @@ namespace DarckNet
                         obj.GetComponent<NetworkObj>().SetID(ViwesIDs, Object.GetComponent<NetworkObj>().PrefabID, MyPeer.UniqueIdentifier);
                         obj.GetComponent<NetworkObj>().Dimension = g;
 
-                        List<NetConnection> listanet = new List<NetConnection>(GetPeer(NetDimension[g].Players.ToArray()));
-                        listanet.Remove(Server.Myconnection);
-                        if (listanet.Count > 0)
+                        List<NetConnection> listanet = new List<NetConnection>(GetConnections(NetDimension[g].Players.ToArray()));
+                        listanet.Remove(GetConnection(MyPeer.UniqueIdentifier));
+
+                        foreach (var item in listanet)
                         {
-                            Server.SendToAll(om, listanet.ToArray(), NetDeliveryMode);
+                            Server.SendMessage(om, item, NetDeliveryMode);
                         }
 
                         return obj;
@@ -418,8 +438,13 @@ namespace DarckNet
                         }
                         else if (IsServer)
                         {
-                            List<NetConnection> listanet = new List<NetConnection>(GetPeer(NetDimension[Dimension].Players.ToArray()));
-                            Server.SendToAll(om, listanet.ToArray(), NetDeliveryMode);
+                            List<NetConnection> listanet = new List<NetConnection>(GetConnections(NetDimension[Dimension].Players.ToArray()));
+                            listanet.Remove(GetConnection(MyPeer.UniqueIdentifier));
+                            foreach (var item in listanet)
+                            {
+                                Server.SendMessage(om, item, NetDeliveryMode);
+                            }
+
                             NetworkViews.Remove(Object.GetComponent<NetworkObj>().ViewID);
                             GameObject.Destroy(Object);
                         }
@@ -586,7 +611,7 @@ namespace DarckNet
 
                                     foreach (var net in Server.m_connections.ToArray())
                                     {
-                                        if (Server.m_connections[net.Key] != inc.SenderConnection)
+                                        if (net != inc.SenderConnection)
                                         {
                                             var om2 = MyPeer.CreateMessage();
 
@@ -596,7 +621,7 @@ namespace DarckNet
                                             om2.Write(0);
                                             om2.Write(-1);
 
-                                            Server.SendMessage(om2, Server.m_connections[net.Key], NetDeliveryMode);
+                                            Server.SendMessage(om2, net, NetDeliveryMode);
                                         }
                                     }
                                 }
@@ -791,18 +816,13 @@ namespace DarckNet
 
                 om.WriteVariableInt64(inc.SenderConnection.RemoteUniqueIdentifier);
 
-                long[] ids = NetDimension[dimension].Players.ToArray();
-                List<NetConnection> listanet = new List<NetConnection>();
+                List<NetConnection> listanet = new List<NetConnection>(GetConnections(NetDimension[dimension].Players.ToArray()));
+                listanet.Remove(GetConnection(MyPeer.UniqueIdentifier));
 
-                for (int i = 0; i < ids.Length; i++)
+                foreach (var item in listanet)
                 {
-                    if (ids[i] != MyPeer.UniqueIdentifier)
-                    {
-                        listanet.Add(GetPeer(ids[i]));
-                    }
+                    Server.SendMessage(om, item, NetDeliveryMode);
                 }
-
-                Server.SendToAll(om, listanet.ToArray(), NetDeliveryMode);
                 #endregion
             }
             else if (type == DataType.Destroy)
@@ -819,15 +839,13 @@ namespace DarckNet
                     om.Write((byte)DataType.Destroy);
                     om.Write(viewid);
 
-                    long[] ids = NetDimension[net.Dimension].Players.ToArray();
-                    List<NetConnection> listanet = new List<NetConnection>();
+                    List<NetConnection> listanet = new List<NetConnection>(GetConnections(NetDimension[net.Dimension].Players.ToArray()));
+                    listanet.Remove(GetConnection(MyPeer.UniqueIdentifier));
 
-                    for (int i = 0; i < ids.Length; i++)
+                    foreach (var item in listanet)
                     {
-                        listanet.Add(GetPeer(ids[i]));
+                        Server.SendMessage(om, item, NetDeliveryMode);
                     }
-
-                    Server.SendToAll(om, listanet.ToArray(), NetDeliveryMode);
                     #endregion
 
                     GameObject.Destroy(net.gameObject);
@@ -916,7 +934,7 @@ namespace DarckNet
 
                 foreach (var net in Server.m_connections.ToArray())
                 {
-                    if (Server.m_connections[net.Key] != inc.SenderConnection)
+                    if (net != inc.SenderConnection)
                     {
                         var om2 = MyPeer.CreateMessage();
 
@@ -926,7 +944,7 @@ namespace DarckNet
                         om2.Write(dimension);
                         om2.Write(lastdimension);
 
-                        Server.SendMessage(om2, Server.m_connections[net.Key], NetDeliveryMode);
+                        Server.SendMessage(om2, net, NetDeliveryMode);
                     }
                 }
             }
@@ -940,6 +958,18 @@ namespace DarckNet
                     {
                         NetDimension[dimension].Players.Remove(inc.SenderConnection.RemoteUniqueIdentifier);
                     }
+                }
+
+                var om = MyPeer.CreateMessage();
+                om.Write((byte)DataType.ExitDimension);
+                om.Write(dimension);
+
+                List<NetConnection> listanet = new List<NetConnection>(GetConnections(NetDimension[dimension].Players.ToArray()));
+                listanet.Remove(GetConnection(Server.UniqueIdentifier));
+
+                foreach (var item in listanet)
+                {
+                    Server.SendMessage(om, item, NetDeliveryMode);
                 }
             }
             else if (type == DataType.ServerStop)
@@ -1203,6 +1233,16 @@ namespace DarckNet
             ///move dimension logic, send data etc. soon
         }
 
+        /// <summary>
+        /// (client and server) Move player to another dimension.
+        /// </summary>
+        /// <param name="player_id"></param>
+        /// <param name="dimension_id"></param>
+        public static void ChangeDimension(long player_id, int dimension_id)
+        {
+            //all logic of move player to another dimension, send data etc.
+        }
+
         public static NetworkObj[] GetAutomaticView(int dimension)
         {
             List<NetworkObj> obj = new List<NetworkObj>();
@@ -1241,7 +1281,10 @@ namespace DarckNet
 
             DoData(om, obj);
 
-            Server.SendToAll(om, GetPeer(NetDimension[d].Players.ToArray()), Net.DeliveModo);
+            foreach (var item in GetConnections(NetDimension[d].Players.ToArray()))
+            {
+                Server.SendMessage(om, item, NetDeliveryMode);
+            }
         }
 
         internal static void RPC_AllOwner(NetIncomingMessage inc)
@@ -1263,18 +1306,13 @@ namespace DarckNet
 
             DoData(om, obj);
 
-            long[] ids = NetDimension[d].Players.ToArray();
-            List<NetConnection> listanet = new List<NetConnection>();
+            List<NetConnection> listanet = new List<NetConnection>(GetConnections(NetDimension[d].Players.ToArray()));
+            listanet.Remove(GetConnection(Net.Owner));
 
-            for (int i = 0; i < ids.Length; i++)
+            foreach (var item in listanet)
             {
-                if (ids[i] != Net.Owner)
-                {
-                    listanet.Add(GetPeer(ids[i]));
-                }
+                Server.SendMessage(om, item, NetDeliveryMode);
             }
-
-            Server.SendToAll(om, listanet.ToArray(), Net.DeliveModo);
         }
 
         internal static void RPC_Owner(NetIncomingMessage inc)
@@ -1282,6 +1320,7 @@ namespace DarckNet
             inc.ReadString(out string funcname);
             inc.ReadInt32(out int viewidd);
             NetworkObj Net = NetworkViews[viewidd];
+            
             object[] obj = Net.ExecuteNo(funcname, inc);
 
 
@@ -1293,7 +1332,7 @@ namespace DarckNet
 
             DoData(om, obj);
 
-            Server.SendMessage(om, GetPeer(Net.Owner), Net.DeliveModo);
+            Server.SendMessage(om, GetConnection(Net.Owner), Net.DeliveModo);
         }
 
         internal static void RPC_ALLDimension(NetIncomingMessage inc)
@@ -1328,6 +1367,10 @@ namespace DarckNet
                 else if (param[i].GetType() == typeof(int))
                 {
                     om.Write((int)param[i]);
+                }
+                else if (param[i].GetType() == typeof(bool))
+                {
+                    om.Write((bool)param[i]);
                 }
                 else if (param[i].GetType() == typeof(float))
                 {
@@ -1369,7 +1412,7 @@ namespace DarckNet
         {
             NetworkObj Net = NetworkViews[viewid];
 
-            Net.Execute(funcname, Server.Myconnection, param);
+            Net.ExecuteServer(funcname, GetConnection(Server.UniqueIdentifier), param);
 
             var om = Network.MyPeer.CreateMessage();
             om.Write((byte)DataType.RPC);
@@ -1379,14 +1422,20 @@ namespace DarckNet
 
             DoData(om, param);
 
-            Server.SendToAll(om, GetPeer(NetDimension[d].Players.ToArray()), Net.DeliveModo);
+            List<NetConnection> listanet = new List<NetConnection>(GetConnections(NetDimension[d].Players.ToArray()));
+            listanet.Remove(GetConnection(Server.UniqueIdentifier));
+
+            foreach (var item in listanet)
+            {
+                Server.SendMessage(om, item, NetDeliveryMode);
+            }
         }
 
         internal static void RPC_AllOwner(string funcname, int viewid, int d, object[] param)
         {
             NetworkObj Net = NetworkViews[viewid];
 
-            Net.Execute(funcname, Server.Myconnection, param);
+            Net.ExecuteServer(funcname, GetConnection(Server.UniqueIdentifier), param);
 
             var om = Network.MyPeer.CreateMessage();
             om.Write((byte)DataType.RPC);
@@ -1396,18 +1445,14 @@ namespace DarckNet
 
             DoData(om, param);
 
-            long[] ids = NetDimension[d].Players.ToArray();
-            List<NetConnection> listanet = new List<NetConnection>();
 
-            for (int i = 0; i < ids.Length; i++)
+            List<NetConnection> listanet = new List<NetConnection>(GetConnections(NetDimension[d].Players.ToArray()));
+            listanet.Remove(GetConnection(Net.Owner));
+
+            foreach (var item in listanet)
             {
-                if (ids[i] != Net.Owner)
-                {
-                    listanet.Add(GetPeer(ids[i]));
-                }
+                Server.SendMessage(om, item, NetDeliveryMode);
             }
-
-            Server.SendToAll(om, listanet.ToArray(), Net.DeliveModo);
         }
 
         internal static void RPC_Owner(string funcname, int viewid, object[] param)
@@ -1422,13 +1467,13 @@ namespace DarckNet
 
             DoData(om, param);
 
-            Server.SendMessage(om, GetPeer(Net.Owner), Net.DeliveModo);
+            Server.SendMessage(om, GetConnection(Net.Owner), Net.DeliveModo);
         }
 
         internal static void RPC_ALLDimension(string funcname, int viewid, object[] param)
         {
             NetworkObj Net = NetworkViews[viewid];
-            Net.Execute(funcname, Server.Myconnection, param);
+            Net.ExecuteServer(funcname, GetConnection(Server.UniqueIdentifier), param);
 
             var om = Network.MyPeer.CreateMessage();
             om.Write((byte)DataType.RPC);
@@ -1441,11 +1486,17 @@ namespace DarckNet
             Server.SendToAll(om, Net.DeliveModo);
         }
 
+        internal static void RPC_Server(string funcname, int viewid, object[] param)
+        {
+            NetworkObj Net = NetworkViews[viewid];
+            Net.ExecuteServer(funcname, GetConnection(Server.UniqueIdentifier), param);
+        }
+
         #endregion
     }
 
     /// <summary>
-    /// 
+    /// Class to execute a rpc functions
     /// </summary>
     public class CallFunc
     {

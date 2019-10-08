@@ -11,6 +11,7 @@ public class SpriteManager : MonoBehaviour
 
     Dictionary<string, Sprite> tileSprites;
     Dictionary<string, Texture2D> Perlinimage;
+    Dictionary<string, GameObject> Objects = new Dictionary<string, GameObject>();
 
     void Awake()
     {
@@ -25,20 +26,15 @@ public class SpriteManager : MonoBehaviour
         }
         ConnectData.Clear();
 
-        LoadSprites();
+        LoadAssets();
         LoadSystems.LoadedSprites();
     }
 
     public GameObject GetPrefabbyname(string name)
     {
-        GameObject[] sprites = Resources.LoadAll<GameObject>("Prefabs/Trees/");
-
-        foreach (var s in sprites)
+        if (Objects.ContainsKey(name))
         {
-            if (s.name == name)
-            {
-                return s;
-            }
+            return Objects[name];
         }
         Debug.LogError("Nao encontrado esse tipo: " + name);
         return null;
@@ -59,14 +55,9 @@ public class SpriteManager : MonoBehaviour
 
     public GameObject Getmobbyname(string name)
     {
-        GameObject[] sprites = Resources.LoadAll<GameObject>("Prefabs/Mobs/");
-
-        foreach (var s in sprites)
+        if (Objects.ContainsKey(name))
         {
-            if (s.name == name)
-            {
-                return s;
-            }
+            return Objects[name];
         }
         Debug.LogError("Nao encontrado esse tipo: " + name);
         return null;
@@ -74,14 +65,9 @@ public class SpriteManager : MonoBehaviour
 
     public GameObject Getplacerbyname(string name)
     {
-        GameObject[] sprites = Resources.LoadAll<GameObject>("Prefabs/Placer/");
-
-        foreach (var s in sprites)
+        if (Objects.ContainsKey(name))
         {
-            if (s.name == name)
-            {
-                return s;
-            }
+            return Objects[name];
         }
         Debug.LogError("Nao encontrado esse tipo: " + name);
         return null;
@@ -112,7 +98,7 @@ public class SpriteManager : MonoBehaviour
         return null;
     }
 
-    void LoadSprites()
+    void LoadAssets()
     {
         Texture2D[] textures = Resources.LoadAll<Texture2D>("Caves01");
 
@@ -124,6 +110,21 @@ public class SpriteManager : MonoBehaviour
         foreach (var s in Resources.LoadAll<Sprite>("Tiles/"))
         {
             tileSprites.Add(s.name, s);
+        }
+
+        foreach (var s in Resources.LoadAll<GameObject>("Prefabs/Trees/"))
+        {
+            Objects.Add(s.name, s);
+        }
+
+        foreach (var s in Resources.LoadAll<GameObject>("Prefabs/Placer/"))
+        {
+            Objects.Add(s.name, s);
+        }
+
+        foreach (var s in Resources.LoadAll<GameObject>("Prefabs/Mobs/"))
+        {
+            Objects.Add(s.name, s);
         }
     }
 

@@ -21,7 +21,7 @@ public class TileObj : MonoBehaviour
             GameObject TileGo = null;
 
             TileGo = GameObject.Instantiate(TileObject, new Vector3(0, 0, 0), Quaternion.identity);
-
+            TileGo.SetActive(true);
             SpriteRenderer Render = TileGo.GetComponent<SpriteRenderer>();
 
             TileGo.transform.SetParent(this.transform, false);

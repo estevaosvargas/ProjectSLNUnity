@@ -49,12 +49,10 @@ namespace Lidgren.Network
 		/// </summary>
 		public NetPeer Peer { get { return m_peer; } }
 
-        public long UniqueIdentifier { get { return m_peer.m_uniqueIdentifier; } }
-
-        /// <summary>
-        /// Gets the current status of the connection (synced to the last status message read)
-        /// </summary>
-        public NetConnectionStatus Status { get { return m_visibleStatus; } }
+		/// <summary>
+		/// Gets the current status of the connection (synced to the last status message read)
+		/// </summary>
+		public NetConnectionStatus Status { get { return m_visibleStatus; } }
 
 		/// <summary>
 		/// Gets various statistics for this connection
@@ -88,8 +86,7 @@ namespace Lidgren.Network
 		internal NetConnection(NetPeer peer, NetEndPoint remoteEndPoint)
 		{
 			m_peer = peer;
-            m_peer.Myconnection = this;
-            m_peerConfiguration = m_peer.Configuration;
+			m_peerConfiguration = m_peer.Configuration;
 			m_status = NetConnectionStatus.None;
 			m_outputtedStatus = NetConnectionStatus.None;
 			m_visibleStatus = NetConnectionStatus.None;

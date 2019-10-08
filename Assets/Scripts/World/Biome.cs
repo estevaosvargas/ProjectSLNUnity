@@ -136,7 +136,7 @@ public static class Biome
                 if (perlin > 0.2f && perlin < 0.6f)
                 {
                     //grass and bushs and trees
-                    System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                    System.Random rand = new System.Random(Game.WorldGenerator.Seed + x * z + (tile.TileChunk.x + tile.TileChunk.z));
                     int randnum = (rand.Next(1, 20));
 
                     if (randnum == 1)

@@ -9,6 +9,7 @@ public class Inventory : MonoBehaviour
     public List<InveItem> ItemList = new List<InveItem>();
     public GameObject Drop;
     public bool IsPlayer = false;
+    public NetWorkView Net;
 
     void Awake()
     {
@@ -17,6 +18,8 @@ public class Inventory : MonoBehaviour
 
     void Start()
     {
+        Net = GetComponent<NetWorkView>();
+
         if (IsPlayer == true)
         {
             SavePlayerInfo inve = SaveWorld.LoadPlayer(Game.GameManager.UserId);
@@ -47,32 +50,42 @@ public class Inventory : MonoBehaviour
     #region Save/Delete
     public void Save()
     {
-        if (IsPlayer == true)
+        if (Game.GameManager.SinglePlayer)
         {
-            SaveWorld.SavePlayer(new SavePlayerInfo(new SaveInventory(ItemList), transform.position, GetComponent<EntityLife>().HP, GetComponent<EntityPlayer>().Status), Game.GameManager.UserId);
-        }
-        else
-        {
-            SaveWorld.SaveInve(new SaveInventory(ItemList), (transform.position.x + "," + transform.position.z).GetHashCode().ToString());
+            if (IsPlayer == true)
+            {
+                SaveWorld.SavePlayer(new SavePlayerInfo(new SaveInventory(ItemList), transform.position, GetComponent<EntityLife>().HP, GetComponent<EntityPlayer>().Status), Game.GameManager.UserId);
+            }
+            else
+            {
+                SaveWorld.SaveInve(new SaveInventory(ItemList), (transform.position.x + "," + transform.position.z).GetHashCode().ToString());
+            }
         }
     }
 
     public void DeletSave()
     {
-        if (IsPlayer == true)
+        if (Game.GameManager.SinglePlayer)
         {
-            SaveWorld.DeletPlayer(Game.GameManager.UserId);
-        }
-        else
-        {
-            SaveWorld.DeletCont((transform.position.x + "," + transform.position.z).GetHashCode().ToString());
+            if (IsPlayer == true)
+            {
+                SaveWorld.DeletPlayer(Game.GameManager.UserId);
+            }
+            else
+            {
+                SaveWorld.DeletCont((transform.position.x + "," + transform.position.z).GetHashCode().ToString());
+            }
         }
     }
     #endregion
 
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            _Additem(1, 1, 1);
+            Net.RPC("RPC_SyncSlot", DarckNet.RPCMode.Owner, 0, 1, ItemList[0].Index, ItemList[1].Index, ItemList[0].Amount, ItemList[1].Amount);
+        }
     }
 
     void _RemoveQuanty(int slot, int quanty)
@@ -249,13 +262,16 @@ public class Inventory : MonoBehaviour
 
     void UpdateUi(int slotindex)
     {
-        if (IsPlayer)
+        if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
-            Game.MenuManager.InveGui.Player_RefreshSlot(slotindex);
-        }
-        else
-        {
-            Game.MenuManager.InveGui.Container_RefreshSlot(slotindex);
+            if (IsPlayer)
+            {
+                Game.MenuManager.InveGui.Player_RefreshSlot(slotindex);
+            }
+            else
+            {
+                Game.MenuManager.InveGui.Container_RefreshSlot(slotindex);
+            }
         }
     }
 
@@ -298,14 +314,7 @@ public class Inventory : MonoBehaviour
 
     public void Move(int on, int to)
     {
-        if (Game.GameManager.SinglePlayer)
-        {
-            _Move(on, to);
-        }
-        else
-        {
-            GetComponent<NetWorkView>().RPC("RPC_MOVE", DarckNet.RPCMode.Server, on, to);
-        }
+        Net.RPC("RPC_MOVE", DarckNet.RPCMode.Server, on, to);
     }
 
     public void DropItem(int slot)
@@ -321,11 +330,29 @@ public class Inventory : MonoBehaviour
     }
     #endregion
 
+    #region RPC_INVE_Client
+    [RPC]
+    void RPC_SyncSlot(int on, int to, int index_on, int index_to, int Ammount_on, int Ammount_to)
+    {
+        ItemList[on].Index = index_on;
+        ItemList[on].Amount = Ammount_on;
+
+        ItemList[to].Index = index_to;
+        ItemList[to].Amount = Ammount_to;
+
+        OnMove(on);
+        UpdateUi(to);
+        UpdateUi(on);
+    }
+    #endregion
+
     #region RPC_INVE
     [RPC]
-    void RPC_MOVE(int on, int to)
+    void RPC_MOVE(int on, int to, DarckNet.DNetConnection sender)
     {
+        UnityEngine.Debug.Log("ON: " + on + " | TO: " + to);
         _Move(on, to);
+        Net.RPC("RPC_SyncSlot", sender.NetConnection, on, to, ItemList[on].Index, ItemList[to].Index, ItemList[on].Amount, ItemList[to].Amount);
     }
     #endregion
 }

@@ -234,12 +234,6 @@ public class GameManager : UIElements
     {
         DarckNet.Network.Update();
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            System.Random rand = new System.Random(Seed + (int)testepos.x + (int)testepos.z);
-            transform.position = new Vector3(rand.Next(0, 10), rand.Next(0, 10) ,rand.Next(0, 10));
-        }
-
         #region CursorPointer
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {

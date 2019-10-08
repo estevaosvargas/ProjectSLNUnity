@@ -11,7 +11,7 @@ public class BuildingGame : MonoBehaviour {
     private static void NewMenuOption()
     {
         chanageClient();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown/2DTopDown.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown/ProjectEvilyn.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -29,7 +29,7 @@ public class BuildingGame : MonoBehaviour {
     private static void NewMenuOptionBuild()
     {
         chanageClient();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown/2DTopDown.exe", BuildTarget.StandaloneWindows64, BuildOptions.Development);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown/ProjectEvilyn.exe", BuildTarget.StandaloneWindows64, BuildOptions.Development);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -47,7 +47,7 @@ public class BuildingGame : MonoBehaviour {
     private static void ClientWindows32()
     {
         chanageClient();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown32/2DTopDown.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown32/ProjectEvilyn.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -97,7 +97,7 @@ public class BuildingGame : MonoBehaviour {
     private static void ClientWindows64Demo()
     {
         DemochanageClient();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown/2DTopDown.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown/ProjectEvilynDemo.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -115,7 +115,7 @@ public class BuildingGame : MonoBehaviour {
     private static void ClientWindows32Demo()
     {
         DemochanageClient();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown32/2DTopDown.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown32/ProjectEvilynDemo.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -147,7 +147,7 @@ public class BuildingGame : MonoBehaviour {
     private static void NewMenuOption4()
     {
         chanageServer();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDownServer32/2DTopDownServer.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDownServer32/ProjectEvilynServer.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -166,7 +166,7 @@ public class BuildingGame : MonoBehaviour {
     private static void NewMenuOption8()
     {
         chanageServer();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDownServer/2DTopDownServer.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDownServer/ProjectEvilynServer.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -185,7 +185,7 @@ public class BuildingGame : MonoBehaviour {
     private static void NewMenuOption5()
     {
         chanageServer();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDownServer/", BuildTarget.StandaloneLinux, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/ProjectEvilynServer/", BuildTarget.StandaloneLinux, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -211,7 +211,7 @@ public class BuildingGame : MonoBehaviour {
         scenes[3].enabled = true;
 
         PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, "CROSS_PLATFORM_INPUT;" + "Server;");
-
+        PlayerSettings.productName = "ProjectEvilyn-Server";
         Debug.Log("Building Server...");
 
         EditorBuildSettings.scenes = scenes;
@@ -227,7 +227,7 @@ public class BuildingGame : MonoBehaviour {
         scenes[3].enabled = true;
 
         PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, "CROSS_PLATFORM_INPUT;" + "Client;");
-
+        PlayerSettings.productName = "ProjectEvilyn-Client";
         Debug.Log("Building Client...");
 
         EditorBuildSettings.scenes = scenes;
@@ -243,7 +243,7 @@ public class BuildingGame : MonoBehaviour {
         scenes[3].enabled = true;
 
         PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, "CROSS_PLATFORM_INPUT; Client; Demo;");
-
+        PlayerSettings.productName = "ProjectEvilyn-Demo";
         Debug.Log("Building Demo Client...");
 
         EditorBuildSettings.scenes = scenes;

@@ -78,6 +78,7 @@ public class Chunk : MonoBehaviour
                 tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
 
                 GameObject TileGo = GameObject.Instantiate(TileObj, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), Quaternion.identity);
+                TileGo.SetActive(true);
                 TileGo.name = "Tile_" + tiles[i, j].x + "_" + tiles[i, j].z;
                 TileGo.transform.position = new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z);
                 TileGo.transform.SetParent(this.transform, true);
@@ -133,11 +134,10 @@ public class Chunk : MonoBehaviour
     public void OnTileTypeChange(Tile tile)
     {
         SpriteRenderer spritee = tileGOmap[tile].GetComponent<SpriteRenderer>();
-        PolygonCollider2D boxcol = tileGOmap[tile].GetComponent<PolygonCollider2D>();
         LightToD light = tileGOmap[tile].GetComponentInChildren<LightToD>();
         TileObj tilescript = tileGOmap[tile].GetComponentInChildren<TileObj>();
 
-        spritee.color = spritee.color * GetPresets.ColorBiome(tile.TileBiome, tile.type);
+        spritee.color = GetPresets.ColorBiome(tile.TileBiome, tile.type);
         spritee.sprite = SpriteManager.Instance.GetSprite(tile);
         tile.spritetile = spritee;
 
@@ -199,7 +199,7 @@ public class Chunk : MonoBehaviour
         }
         #endregion
 
-        if (tile.IsColider)
+        /*if (tile.IsColider)
         {
             if (spritee.sprite.name != "Rock_")
             {
@@ -220,7 +220,7 @@ public class Chunk : MonoBehaviour
             {
                 Destroy(boxcol);
             }
-        }
+        }*/
     }
 
     public void TileTransitionChange(Tile tile)
@@ -397,38 +397,40 @@ public class Chunk : MonoBehaviour
         {
             ai.GetComponent<Vilanger>().GetNewPostion();
         }
-        
-        ///Sistema de Update, using data for update that tiles
-        /*for (int i = 0; i < TileList.Count; i++)
+
+        for (int i = 0; i < Size; i++)
         {
-            if (TileList[i].type == TypeBlock.DirtGrass)
+            for (int j = 0; j < Size; j++)
             {
-                if (DataTime.Hora >= TileList[i].Hora && DataTime.Dia >= TileList[i].Dia && DataTime.Mes >= TileList[i].Mes)
+                if (tiles[i, j].type == TypeBlock.DirtGrass)
                 {
-                    Tile[] ney = TileList[i].GetNeighboors();
-
-                    #region Grama
-                    if (ney[0] != null && ney[0].type == TypeBlock.Grass || ney[1] != null && ney[1].type == TypeBlock.Grass || ney[2] != null && ney[2].type == TypeBlock.Grass || ney[3] != null && ney[3].type == TypeBlock.Grass)
+                    if (DataTime.Hora >= tiles[i, j].Hora && DataTime.Dia >= tiles[i, j].Dia && DataTime.Mes >= tiles[i, j].Mes)
                     {
-                        TileList[i].SetTileType(TypeBlock.Grass);
-                        TileList[i].Reset();
-                    }
-                    #endregion
-                }
-                else if (DataTime.Hora <= TileList[i].Hora && DataTime.Dia > TileList[i].Dia && DataTime.Mes > TileList[i].Mes)
-                {
-                    Tile[] ney = TileList[i].GetNeighboors();
+                        Tile[] ney = tiles[i, j].GetNeighboors();
 
-                    #region Grama
-                    if (ney[0] != null && ney[0].type == TypeBlock.Grass || ney[1] != null && ney[1].type == TypeBlock.Grass || ney[2] != null && ney[2].type == TypeBlock.Grass || ney[3] != null && ney[3].type == TypeBlock.Grass)
-                    {
-                        TileList[i].SetTileType(TypeBlock.Grass);
-                        TileList[i].Reset();
+                        #region Grama
+                        if (ney[0] != null && ney[0].type == TypeBlock.Grass || ney[1] != null && ney[1].type == TypeBlock.Grass || ney[2] != null && ney[2].type == TypeBlock.Grass || ney[3] != null && ney[3].type == TypeBlock.Grass)
+                        {
+                            tiles[i, j].PerlinSetType(TypeBlock.Grass);
+                            tiles[i, j].Reset();
+                        }
+                        #endregion
                     }
-                    #endregion
+                    else if (DataTime.Hora <= tiles[i, j].Hora && DataTime.Dia > tiles[i, j].Dia && DataTime.Mes > tiles[i, j].Mes)
+                    {
+                        Tile[] ney = tiles[i, j].GetNeighboors();
+
+                        #region Grama
+                        if (ney[0] != null && ney[0].type == TypeBlock.Grass || ney[1] != null && ney[1].type == TypeBlock.Grass || ney[2] != null && ney[2].type == TypeBlock.Grass || ney[3] != null && ney[3].type == TypeBlock.Grass)
+                        {
+                            tiles[i, j].PerlinSetType(TypeBlock.Grass);
+                            tiles[i, j].Reset();
+                        }
+                        #endregion
+                    }
                 }
             }
-        }*/
+        }
     }
 
     //MultiPlayer Client

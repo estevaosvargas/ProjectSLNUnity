@@ -17,8 +17,6 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 
 #if !__NOIPENDPOINT__
@@ -32,35 +30,34 @@ namespace Lidgren.Network
 	/// </summary>
 	public class NetClient : NetPeer
 	{
-        /// <summary>
-        /// Gets the connection to the server, if any
-        /// </summary>
-        public NetConnection ServerConnection
-        {
-            get
-            {
-                NetConnection[] net = m_connections.Values.ToArray();
-                NetConnection retval = null;
-                if (m_connections.Count > 0)
-                {
-                    try
-                    {
-                        retval = m_connections.Values.ToArray()[0];
-                    }
-                    catch
-                    {
-                        // preempted!
-                        return null;
-                    }
-                }
-                return retval;
-            }
-        }
+		/// <summary>
+		/// Gets the connection to the server, if any
+		/// </summary>
+		public NetConnection ServerConnection
+		{
+			get
+			{
+				NetConnection retval = null;
+				if (m_connections.Count > 0)
+				{
+					try
+					{
+						retval = m_connections[0];
+					}
+					catch
+					{
+						// preempted!
+						return null;
+					}
+				}
+				return retval;
+			}
+		}
 
-        /// <summary>
-        /// Gets the connection status of the server connection (or NetConnectionStatus.Disconnected if no connection)
-        /// </summary>
-        public NetConnectionStatus ConnectionStatus
+		/// <summary>
+		/// Gets the connection status of the server connection (or NetConnectionStatus.Disconnected if no connection)
+		/// </summary>
+		public NetConnectionStatus ConnectionStatus
 		{
 			get
 			{
@@ -136,48 +133,10 @@ namespace Lidgren.Network
 			serverConnection.Disconnect(byeMessage);
 		}
 
-        /// <summary>
-        /// Send a message to all connections
-        /// </summary>
-        /// <param name="msg">The message to send</param>
-        /// <param name="method">How to deliver the message</param>
-        public void SendToAll(NetOutgoingMessage msg, IList<NetConnection> all, NetDeliveryMethod method)
-        {
-            // Modifying m_connections will modify the list of the connections of the NetPeer. Do only reads here
-
-            if (all.Count <= 0)
-            {
-                if (msg.m_isSent == false)
-                    Recycle(msg);
-                return;
-            }
-
-            SendMessage(msg, all, method, 0);
-        }
-
-        /// <summary>
-		/// Send a message to all connections
+		/// <summary>
+		/// Sends message to server
 		/// </summary>
-		/// <param name="msg">The message to send</param>
-		/// <param name="method">How to deliver the message</param>
-		public void SendToAll(NetOutgoingMessage msg, NetDeliveryMethod method)
-        {
-            // Modifying m_connections will modify the list of the connections of the NetPeer. Do only reads here
-            var all = m_connections;
-            if (all.Count <= 0)
-            {
-                if (msg.m_isSent == false)
-                    Recycle(msg);
-                return;
-            }
-
-            SendMessage(msg, all.Values.ToArray(), method, 0);
-        }
-
-        /// <summary>
-        /// Sends message to server
-        /// </summary>
-        public NetSendResult SendMessage(NetOutgoingMessage msg, NetDeliveryMethod method)
+		public NetSendResult SendMessage(NetOutgoingMessage msg, NetDeliveryMethod method)
 		{
 			NetConnection serverConnection = ServerConnection;
 			if (serverConnection == null)
