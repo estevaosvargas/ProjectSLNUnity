@@ -19,7 +19,6 @@ public class PlayerNetStats
 
 public class EntityPlayer : EntityLife
 {
-    public AudioSource AUDIOSOURCE;
     public Transform World;
     public Rigidbody body;
     public Animator Anim;
@@ -289,13 +288,11 @@ public class EntityPlayer : EntityLife
 
     public void FootPrintRight()
     {
-        AUDIOSOURCE.PlayOneShot(Game.AudioManager.GetFootSound(playerNetWork.NetStats.CurrentTile));
         FootPArticle.Emit(FootParticleCount);
     }
 
     public void FootPrintLeft()
     {
-        AUDIOSOURCE.PlayOneShot(Game.AudioManager.GetFootSound(playerNetWork.NetStats.CurrentTile));
         FootPArticle.Emit(FootParticleCount);
     }
 

@@ -11,12 +11,14 @@ public class PlayerNetWork : EntityLife
     public PlayerNetStats NetStats;
     public Animator Anim;
     public Inventory Inve;
+    public UniversalStatusPlayer UniPlayer;
 
     void Start()
     {
         Anim = GetComponent<Animator>();
         Net = GetComponent<NetWorkView>();
         Inve = GetComponent<Inventory>();
+        UniPlayer.AUDIOSOURCE = GetComponent<AudioSource>();
 
         if (Net.isMine)
         {
@@ -102,14 +104,23 @@ public class PlayerNetWork : EntityLife
 
     public void FootPrintRight()
     {
-        //AUDIOSOURCE.PlayOneShot(Game.AudioManager.GetFootSound(playerNetWork.NetStats.CurrentTile));
+        UniPlayer.AUDIOSOURCE.PlayOneShot(Game.AudioManager.GetFootSound(NetStats.CurrentTile));
         //FootPArticle.Emit(FootParticleCount);
     }
 
     public void FootPrintLeft()
     {
-        //AUDIOSOURCE.PlayOneShot(Game.AudioManager.GetFootSound(playerNetWork.NetStats.CurrentTile));
+        UniPlayer.AUDIOSOURCE.PlayOneShot(Game.AudioManager.GetFootSound(NetStats.CurrentTile));
         //FootPArticle.Emit(FootParticleCount);
+    }
+
+    [RPC]
+    void RPC_CURAITEM(int slot)
+    {
+        if (Inve.ItemList[slot].Index >= 0)
+        {
+
+        }
     }
 
     [RPC]
@@ -149,4 +160,10 @@ public class PlayerNetWork : EntityLife
             NetStats.walking = iswalking;
         }
     }
+}
+
+[System.Serializable]
+public class UniversalStatusPlayer
+{
+    public AudioSource AUDIOSOURCE;
 }

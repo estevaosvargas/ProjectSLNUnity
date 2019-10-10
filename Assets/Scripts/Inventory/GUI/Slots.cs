@@ -79,7 +79,6 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
         DropSlot = null;
     }
 
-
     public void MoveCont(Inventory player, Inventory cont, int on, int to)
     {
         if (cont.ItemList[to].Index >= 0)

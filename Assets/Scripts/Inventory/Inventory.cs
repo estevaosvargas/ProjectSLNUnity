@@ -257,13 +257,13 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    bool _DropItem(int slot)
+    bool _DropItem(int slot, Vector3 pos)
     {
         if (ItemList[slot].Index >= 0)
         {
             ItemData item = ItemManager.Instance.GetItem(ItemList[slot].Index);
 
-            GameObject obj = DarckNet.Network.Instantiate(Drop, new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0), Quaternion.identity, 0);
+            GameObject obj = DarckNet.Network.Instantiate(Drop, pos, Quaternion.identity, 0);
 
             obj.GetComponent<ItemDrop>().SetDrop(item, ItemList[slot].Amount);
 
@@ -350,7 +350,7 @@ public class Inventory : MonoBehaviour
 
     public void DropItem(int slot)
     {
-        Net.RPC("RPC_DROP", DarckNet.RPCMode.Server, slot);
+        Net.RPC("RPC_DROP", DarckNet.RPCMode.Server, slot, new Vector3(transform.position.x + 1.5f, transform.position.y + 0.5f, transform.position.z));
     }
     #endregion
 
@@ -381,18 +381,22 @@ public class Inventory : MonoBehaviour
     #endregion
 
     #region RPC_INVE
-    [RPC]void RPC_DROP(int slot, DarckNet.DNetConnection sender)
+    [RPC]void RPC_DROP(int slot, Vector3 world_pos, DarckNet.DNetConnection sender)
     {
-        if (_DropItem(slot))
+        if (Net.Owner == sender.unique)
         {
-            UnityEngine.Debug.Log("Request Drop: " + slot + " ::: " + sender.unique);
-
-            if (!sender.IsMine)
+            if (_DropItem(slot, world_pos))
             {
-                Net.RPC("RPC_SyncOneSlot", sender.NetConnection, slot, ItemList[slot].Index, ItemList[slot].Amount);
+                UnityEngine.Debug.Log("Request Drop: " + slot + " ::: " + sender.unique);
+
+                if (!sender.IsMine)
+                {
+                    Net.RPC("RPC_SyncOneSlot", sender.NetConnection, slot, ItemList[slot].Index, ItemList[slot].Amount);
+                }
             }
         }
     }
+
     [RPC]
     void RPC_MOVE(int on, int to, DarckNet.DNetConnection sender)
     {
