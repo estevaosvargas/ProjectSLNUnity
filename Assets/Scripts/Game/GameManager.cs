@@ -427,7 +427,7 @@ public class GameManager : UIElements
     #endregion
 }
 
-public class EntityLife : MonoBehaviour
+public class EntityLife : Entity
 {
     public float HP = 100;
     public float MaxHP = 100;
@@ -479,6 +479,19 @@ public class EntityLife : MonoBehaviour
     public virtual void FinishCura()
     {
 
+    }
+}
+
+/// <summary>
+/// Main Class for all entity in the game
+/// </summary>
+public class Entity : MonoBehaviour
+{
+    public NetWorkView Net;
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
     }
 }
 

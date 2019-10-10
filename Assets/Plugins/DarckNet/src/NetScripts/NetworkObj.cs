@@ -322,7 +322,7 @@ namespace DarckNet
         /// <param name="peer"></param>
         /// <param name="param"></param>
         /// <returns></returns>
-        internal void ExecuteServer(string funcName, NetConnection peer, object[] param)
+        internal void ExecuteServer(string funcName, object[] param)
         {
             //if (mParent != null) return mParent.Execute(funcName, parameters);
             if (verifyd == false)
@@ -344,10 +344,7 @@ namespace DarckNet
                         if (ent.parameters[i].ParameterType == typeof(DNetConnection))
                         {
                             DNetConnection dnet = new DNetConnection();
-                            if (peer!= null)
-                            {
-                                dnet.unique = peer.Peer.UniqueIdentifier;
-                            }
+                            dnet.unique = Network.MyPeer.m_uniqueIdentifier;
                             objects.Add(dnet);
                         }
                         else
@@ -533,10 +530,23 @@ namespace DarckNet
 
     }
 
+    /// <summary>
+    /// Sender class to send rpc back to the sender
+    /// </summary>
     public struct DNetConnection
     {
+        /// <summary>
+        /// UniqueId of the sender connection
+        /// </summary>
         public long unique;
 
+        /// <summary>
+        /// Get your connection to send a menssage to this connection, if you are the server you can't use this
+        /// </summary>
         public NetConnection NetConnection { get { return Network.GetConnection(unique); } private set { } }
+        /// <summary>
+        /// Check if you send this messagen for you, if you is the sender, i gone return true.
+        /// </summary>
+        public bool IsMine { get { if (unique == Network.MyPeer.UniqueIdentifier) { return true; } else { return false; } } private set { } }
     }
 }

@@ -18,8 +18,12 @@ public class Vilanger : Pathfindingentity
     public float damping = 1;
     public bool RunAway = false;
     public int direction = 0;
-    public bool ISVISIBLE = false;
+    public bool ISVISIBLE = false;    
 
+    void Start()
+    {
+        Net = GetComponent<NetWorkView>();
+    }
 
     public void Born(string name)
     {

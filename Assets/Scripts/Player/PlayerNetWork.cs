@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class PlayerNetWork : EntityLife
 {
-    public NetWorkView Net;
     public bool Render_IsVisible { get; private set; }
     public bool IsMyPlayerNet { get; private set; }
     public List<MonoBehaviour> ScriptToRemove = new List<MonoBehaviour>();
     public List<GameObject> ObjectToDisable = new List<GameObject>();
     public PlayerNetStats NetStats;
     public Animator Anim;
+    public Inventory Inve;
 
     void Start()
     {
         Anim = GetComponent<Animator>();
+        Net = GetComponent<NetWorkView>();
+        Inve = GetComponent<Inventory>();
+
         if (Net.isMine)
         {
             foreach (var item in ScriptToRemove)
@@ -44,6 +47,46 @@ public class PlayerNetWork : EntityLife
 
                 }
             }
+        }
+    }
+
+    void OnTriggerEnter(Collider collision)
+    {
+        if (collision.tag == "TreeTrigger")
+        {
+            SpriteRenderer sprite = collision.transform.GetComponentInParent<SpriteRenderer>();
+
+            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0.3f);
+        }
+        else if (collision.tag == "ItemDrop")
+        {
+            collision.GetComponent<ItemDrop>().GetThisItem(Inve);
+        }
+        else if (collision.tag == "City")
+        {
+            Game.MenuManager.PopUpName("My Homes - City");
+        }
+        else if (collision.tag == "Entity")
+        {
+            //collision.GetComponent<Pathfindingentity>().Run(transform);
+        }
+    }
+
+    void OnTriggerExit(Collider collision)
+    {
+        if (collision.tag == "TreeTrigger")
+        {
+            SpriteRenderer sprite = collision.transform.GetComponentInParent<SpriteRenderer>();
+
+            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1f);
+        }
+        else if (collision.tag == "ItemDrop")
+        {
+
+        }
+        else if (collision.tag == "Entity")
+        {
+            //collision.GetComponent<Pathfindingentity>().Stop();
         }
     }
 

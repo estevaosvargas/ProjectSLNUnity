@@ -127,6 +127,11 @@ public class Inventory : MonoBehaviour
         ItemList[slot].Amount = Amount;
         Save();
         UpdateUi(slot);
+
+        if (!Net.isMine)
+        {
+            Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, slot, ItemList[slot].Index, ItemList[slot].Amount);
+        }
     }
 
     void _Additem(int index, int amount)
@@ -140,6 +145,12 @@ public class Inventory : MonoBehaviour
                     ItemList[i].Amount += amount;
                     UpdateUi(i);
                     Save();
+
+                    if (!Net.isMine)
+                    {
+                        Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, i, ItemList[i].Index, ItemList[i].Amount);
+                    }
+
                     return;
                 }
                 else if (ItemList[i].Index == -1)
@@ -148,6 +159,12 @@ public class Inventory : MonoBehaviour
                     ItemList[i].Amount = amount;
                     UpdateUi(i);
                     Save();
+
+                    if (!Net.isMine)
+                    {
+                        Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, i, ItemList[i].Index, ItemList[i].Amount);
+                    }
+
                     return;
                 }
             }
@@ -157,6 +174,12 @@ public class Inventory : MonoBehaviour
                 ItemList[i].Amount = amount;
                 UpdateUi(i);
                 Save();
+
+                if (!Net.isMine)
+                {
+                    Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, i, ItemList[i].Index, ItemList[i].Amount);
+                }
+
                 return;
             }
         }
@@ -234,19 +257,27 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    void _DropItem(int slot)
+    bool _DropItem(int slot)
     {
-        ItemData item = ItemManager.Instance.GetItem(ItemList[slot].Index);
+        if (ItemList[slot].Index >= 0)
+        {
+            ItemData item = ItemManager.Instance.GetItem(ItemList[slot].Index);
 
-        GameObject obj = DarckNet.Network.Instantiate(Drop, new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0), Quaternion.identity, 0);
+            GameObject obj = DarckNet.Network.Instantiate(Drop, new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0), Quaternion.identity, 0);
 
-        obj.GetComponent<ItemDrop>().SetDrop(item, ItemList[slot].Amount);
+            obj.GetComponent<ItemDrop>().SetDrop(item, ItemList[slot].Amount);
 
-        ItemList[slot].Index = -1;
-        ItemList[slot].Amount = -1;
-        OnMove(slot);
-        UpdateUi(slot);
-        Save();
+            ItemList[slot].Index = -1;
+            ItemList[slot].Amount = -1;
+            OnMove(slot);
+            UpdateUi(slot);
+            Save();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     void OnMove(int index)
@@ -284,7 +315,7 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            //Send RPC, to server
+            UnityEngine.Debug.LogError("Sorry you don't have permission to do this!");
         }
     }
 
@@ -296,19 +327,19 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            //Send RPC, to server
+            UnityEngine.Debug.LogError("Sorry you don't have permission to do this!");
         }
     }
 
     public void Additem(int index, int amount)
     {
-        if (Game.GameManager.SinglePlayer)
+        if (Game.GameManager.SinglePlayer || DarckNet.Network.IsServer)
         {
             _Additem(index, amount);
         }
         else
         {
-            //Send RPC, to server
+            UnityEngine.Debug.LogError("Sorry you don't have permission to do this!");
         }
     }
 
@@ -319,14 +350,7 @@ public class Inventory : MonoBehaviour
 
     public void DropItem(int slot)
     {
-        if (Game.GameManager.SinglePlayer)
-        {
-            _DropItem(slot);
-        }
-        else
-        {
-            //Send RPC, to server
-        }
+        Net.RPC("RPC_DROP", DarckNet.RPCMode.Server, slot);
     }
     #endregion
 
@@ -344,15 +368,41 @@ public class Inventory : MonoBehaviour
         UpdateUi(to);
         UpdateUi(on);
     }
+
+    [RPC]
+    void RPC_SyncOneSlot(int slot, int index, int Ammount)
+    {
+        ItemList[slot].Index = index;
+        ItemList[slot].Amount = Ammount;
+
+        OnMove(slot);
+        UpdateUi(slot);
+    }
     #endregion
 
     #region RPC_INVE
+    [RPC]void RPC_DROP(int slot, DarckNet.DNetConnection sender)
+    {
+        if (_DropItem(slot))
+        {
+            UnityEngine.Debug.Log("Request Drop: " + slot + " ::: " + sender.unique);
+
+            if (!sender.IsMine)
+            {
+                Net.RPC("RPC_SyncOneSlot", sender.NetConnection, slot, ItemList[slot].Index, ItemList[slot].Amount);
+            }
+        }
+    }
     [RPC]
     void RPC_MOVE(int on, int to, DarckNet.DNetConnection sender)
     {
-        UnityEngine.Debug.Log("ON: " + on + " | TO: " + to);
+        UnityEngine.Debug.Log("ON: " + on + " | TO: " + to + " ::: " + sender.unique);
         _Move(on, to);
-        Net.RPC("RPC_SyncSlot", sender.NetConnection, on, to, ItemList[on].Index, ItemList[to].Index, ItemList[on].Amount, ItemList[to].Amount);
+
+        if (!sender.IsMine)
+        {
+            Net.RPC("RPC_SyncSlot", sender.NetConnection, on, to, ItemList[on].Index, ItemList[to].Index, ItemList[on].Amount, ItemList[to].Amount);
+        }
     }
     #endregion
 }
