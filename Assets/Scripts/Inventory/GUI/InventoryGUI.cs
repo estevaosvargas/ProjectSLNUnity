@@ -43,6 +43,7 @@ public class InventoryGUI : MonoBehaviour {
         InveCont = null;
         NumSlot = Inve.ItemList.Count;
 
+        Inve.RequestInveData();
 
         ContainerInve.SetActive(false);
         ClearCanvasPlayer();

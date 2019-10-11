@@ -5276,6 +5276,7 @@ MonoBehaviour:
     Amount: -1
   Drop: {fileID: 1982240538145316, guid: 2045fdc92c4eeaf4c8f37b44ba29e320, type: 3}
   IsPlayer: 1
+  Net: {fileID: 0}
 --- !u!114 &114161712818232822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5288,11 +5289,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f2f9c568d6784747bd5b63d043c4816, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Net: {fileID: 114066613193702464}
   HP: 80
   MaxHP: 80
   IsAlive: 0
   LastAttacker: 
-  AUDIOSOURCE: {fileID: 6679709516443144081}
   World: {fileID: 0}
   body: {fileID: 8238467790666831973}
   Anim: {fileID: 95241139421231152}
@@ -5316,7 +5317,6 @@ MonoBehaviour:
   AttackSword: {fileID: 95925241092886188}
   villagerteste: {fileID: 1459282729364594, guid: 7799e939b9f7eaa43a537b122f54276c,
     type: 3}
-  Net: {fileID: 114066613193702464}
   FootParticleCount: 5
   pathsize: 20
 --- !u!114 &114067372861037966
@@ -5408,11 +5408,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 816fd95d9113a0441b7be8280657dd90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Net: {fileID: 114066613193702464}
   HP: 100
   MaxHP: 100
   IsAlive: 0
   LastAttacker: 
-  Net: {fileID: 114066613193702464}
   ScriptToRemove:
   - {fileID: 114161712818232822}
   - {fileID: 114067372861037966}
@@ -5426,6 +5426,9 @@ MonoBehaviour:
     CurrentTile: 0
     Side: -1
   Anim: {fileID: 0}
+  Inve: {fileID: 0}
+  UniPlayer:
+    AUDIOSOURCE: {fileID: 6679709516443144081}
 --- !u!54 &8238467790666831973
 Rigidbody:
   m_ObjectHideFlags: 0

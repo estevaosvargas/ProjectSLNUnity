@@ -83,7 +83,7 @@ public class Inventory : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            _Additem(1, 1, 1);
+            _Additem(1, 1);
             Net.RPC("RPC_SyncSlot", DarckNet.RPCMode.Owner, 0, 1, ItemList[0].Index, ItemList[1].Index, ItemList[0].Amount, ItemList[1].Amount);
         }
     }
@@ -350,7 +350,12 @@ public class Inventory : MonoBehaviour
 
     public void DropItem(int slot)
     {
-        Net.RPC("RPC_DROP", DarckNet.RPCMode.Server, slot, new Vector3(transform.position.x + 1.5f, transform.position.y + 0.5f, transform.position.z));
+        Net.RPC("RPC_DROP", DarckNet.RPCMode.Server, slot, new Vector3(Game.GameManager.hit.point.x, 0.5f, Game.GameManager.hit.point.z));
+    }
+
+    public void RequestInveData()
+    {
+        Net.RPC("RPC_REQUESTDATA", DarckNet.RPCMode.Server, JsonHelper.ToJson(ItemList.ToArray()).GetHashCode());
     }
     #endregion
 
@@ -378,10 +383,33 @@ public class Inventory : MonoBehaviour
         OnMove(slot);
         UpdateUi(slot);
     }
+
+    [RPC]
+    void RPC_RECEIVEDATA(string compressed_data)
+    {
+        string decompresed = CompressString.StringCompressor.DecompressString(compressed_data);
+        ItemList = new List<InveItem>(JsonHelper.FromJson<InveItem>(decompresed));
+        UnityEngine.Debug.Log("Receive data : " + decompresed);
+    }
+
     #endregion
 
     #region RPC_INVE
-    [RPC]void RPC_DROP(int slot, Vector3 world_pos, DarckNet.DNetConnection sender)
+    [RPC]
+    void RPC_REQUESTDATA(int hashcode ,DarckNet.DNetConnection sender)
+    {
+        string json = JsonHelper.ToJson(ItemList.ToArray());
+
+        if (json.GetHashCode() != hashcode)
+        {
+            string compresded = CompressString.StringCompressor.CompressString(json);
+            Net.RPC("RPC_RECEIVEDATA", sender.NetConnection, compresded);
+            UnityEngine.Debug.Log("Hash Code : " + hashcode + " : Sended inve data to : " + sender.unique + " : Data: " + compresded);
+        }
+    }
+
+    [RPC]
+    void RPC_DROP(int slot, Vector3 world_pos, DarckNet.DNetConnection sender)
     {
         if (Net.Owner == sender.unique)
         {

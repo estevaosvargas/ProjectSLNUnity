@@ -59,8 +59,7 @@ namespace DarckNet
             if (IdMode == IdMode.ManualId)
             {
                 PrefabID = -1;
-                Network.NetworkViews.Add(Network.ViwesIDs, this);
-                Network.ViwesIDs += 1;
+                Network.NetworkViews.Add(Network.NetworkViews.Count, this);
             }
         }
 

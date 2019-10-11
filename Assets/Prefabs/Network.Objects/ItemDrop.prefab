@@ -49,11 +49,10 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 01f3d4f6e8f54024d8acab792c1f408e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -97,6 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8be1a84468bc96b4c947548228a8c629, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Net: {fileID: 114153319555113062}
   ThisItem:
     Index: -1
     itemRarity: 1

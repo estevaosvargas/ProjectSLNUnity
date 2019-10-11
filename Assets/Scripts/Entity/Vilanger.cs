@@ -20,11 +20,6 @@ public class Vilanger : Pathfindingentity
     public int direction = 0;
     public bool ISVISIBLE = false;    
 
-    void Start()
-    {
-        Net = GetComponent<NetWorkView>();
-    }
-
     public void Born(string name)
     {
         GetComponent<SpriteRenderer>().color = new Color(Random.value, Random.value, Random.value, 1);

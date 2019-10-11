@@ -18,7 +18,6 @@ public class PlayerNetWork : EntityLife
         Anim = GetComponent<Animator>();
         Net = GetComponent<NetWorkView>();
         Inve = GetComponent<Inventory>();
-        UniPlayer.AUDIOSOURCE = GetComponent<AudioSource>();
 
         if (Net.isMine)
         {

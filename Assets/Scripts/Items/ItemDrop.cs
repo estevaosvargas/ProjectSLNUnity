@@ -15,6 +15,11 @@ public class ItemDrop : Entity
         name = item.Name + "(Clone)";
 
         GetComponent<SpriteRenderer>().sprite = item.Icon;
+
+        if (DarckNet.Network.IsServer)
+        {
+            Net.RPC("RPC_DROPSYNC", DarckNet.RPCMode.AllNoOwner, item.Index);
+        }
     }
 
     public void GetThisItem(Inventory inve)
@@ -25,5 +30,12 @@ public class ItemDrop : Entity
             GetComponent<AudioSource>().PlayOneShot(PickUpSound);
             DarckNet.Network.Destroy(this.gameObject, 0.05f);
         }
+    }
+
+    [RPC]
+    void RPC_DROPSYNC(int index)
+    {
+        ItemData item = ItemManager.Instance.GetItem(index);
+        SetDrop(item, 1);
     }
 }

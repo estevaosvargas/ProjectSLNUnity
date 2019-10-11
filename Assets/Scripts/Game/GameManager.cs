@@ -492,6 +492,33 @@ public class Entity : MonoBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
+        Awakeoverride();
+    }
+
+    private void Start()
+    {
+        Net = GetComponent<NetWorkView>();
+        Startoverride();
+    }
+
+    private void Update()
+    {
+        Updateoverride();
+    }
+
+    public virtual void Updateoverride()
+    {
+
+    }
+
+    public virtual void Startoverride()
+    {
+
+    }
+
+    public virtual void Awakeoverride()
+    {
+
     }
 }
 
@@ -837,11 +864,7 @@ public static class DataTime
             Mes = 1;
         }
 
-        if (lasth == Hora)
-        {
-
-        }
-        else
+        if (lasth != Hora)
         {
             if (DarckNet.Network.IsServer || Game.GameManager.SinglePlayer)
             {
@@ -850,6 +873,7 @@ public static class DataTime
                 SaveWorld.SaveInfo(newinfo, "World");
             }
         }
+
         lasth = Hora;
     }
 }

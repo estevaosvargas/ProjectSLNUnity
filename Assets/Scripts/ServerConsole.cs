@@ -64,6 +64,15 @@ public class ServerConsole : MonoBehaviour
             Application.Quit();
             #endregion
         }
+        else if (string.Equals(textarray[0], "AddItem", StringComparison.OrdinalIgnoreCase))
+        {
+            #region Comand
+            foreach (var playerobj in FindObjectsOfType<PlayerNetWork>())
+            {
+                playerobj.GetComponent<Inventory>().Additem(Tools.GetStringInt(textarray[1]), Tools.GetStringInt(textarray[2]));
+            }
+            #endregion
+        }
     }
 
     //

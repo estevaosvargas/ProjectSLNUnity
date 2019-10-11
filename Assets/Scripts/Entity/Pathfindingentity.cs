@@ -16,11 +16,6 @@ public class Pathfindingentity : EntityLife
     Vector3[] path = new Vector3[0] { };
     Vector3 Targetnode;
 
-    private void Start()
-    {
-        Startoverride();
-    }
-
     public void OnDrawGizmos()
     {
         /*Gizmos.color = Color.black;
@@ -31,21 +26,6 @@ public class Pathfindingentity : EntityLife
                 Gizmos.DrawCube(new Vector3(p.x + 0.5f, p.y + 0.5f, p.z + 1), Vector3.one);
             }
         }*/
-    }
-
-    private void Update()
-    {
-        Updateoverride();
-    }
-
-    public virtual void Updateoverride()
-    {
-        
-    }
-
-    public virtual void Startoverride()
-    {
-
     }
 
     public void Run(Vector3 Target)

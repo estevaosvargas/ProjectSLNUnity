@@ -26,7 +26,6 @@ namespace DarckNet
         #region Vars
         internal static NetPeer MyPeer;
         internal static NetConnection MyConnection;
-        internal static int ViwesIDs = 0;
         internal static NetServer Server;
         internal static NetClient Client;
         internal static List<NetPeer> Players = new List<NetPeer>();
@@ -45,6 +44,7 @@ namespace DarckNet
         public static bool Ready { get; private set; }
         public static NetPeerStatistics PeerStat;
         public static int DimensionGeral = -1;
+        private Thread updateThread;
 
         #endregion
 
@@ -186,6 +186,7 @@ namespace DarckNet
                 MyPeer = peer;
                 PeerStat = peer.Statistics;
 
+
                 Debug.Log("Unique identifier is " + NetUtility.ToHexString(peer.UniqueIdentifier));
 
                 Ready = true;
@@ -249,7 +250,7 @@ namespace DarckNet
             return nets.ToArray();
         }
 
-        public static void Server_SendToAll(NetOutgoingMessage msg, NetConnection[] connections,NetDeliveryMethod method)
+        public static void Server_SendToAll(NetOutgoingMessage msg, NetConnection[] connections, NetDeliveryMethod method)
         {
             if (IsServer)
             {
@@ -337,7 +338,7 @@ namespace DarckNet
                 NetDimension.Clear();
                 Players.Clear();
 
-                ViwesIDs = 0;
+
                 DimensionGeral = -1;
 
                 for (int i = 0; i < Events.Count; i++)
@@ -370,7 +371,6 @@ namespace DarckNet
                 NetDimension.Clear();
                 Players.Clear();
 
-                ViwesIDs = 0;
                 DimensionGeral = -1;
 
                 Events.Clear();
@@ -413,14 +413,11 @@ namespace DarckNet
                     }
                     else
                     {
-                        while (NetworkViews.ContainsKey(ViwesIDs) == true)
-                        {
-                            ViwesIDs++;
-                        }
+                        int viewid = NetworkViews.Count;
 
                         GameObject obj = GameObject.Instantiate(Object, position, rotation);
-                        NetworkViews.Add(ViwesIDs, obj.GetComponent<NetworkObj>());
-                        obj.GetComponent<NetworkObj>().SetID(ViwesIDs, Object.GetComponent<NetworkObj>().PrefabID, MyPeer.UniqueIdentifier);
+                        NetworkViews.Add(viewid, obj.GetComponent<NetworkObj>());
+                        obj.GetComponent<NetworkObj>().SetID(viewid, Object.GetComponent<NetworkObj>().PrefabID, MyPeer.UniqueIdentifier);
                         obj.GetComponent<NetworkObj>().Dimension = g;
 
                         List<NetConnection> listanet = new List<NetConnection>(GetConnections(NetDimension[g].Players.ToArray()));
@@ -548,7 +545,7 @@ namespace DarckNet
         /// <summary>
         ///  Update method network
         /// </summary>
-        public static void Update()
+       public static void Update()
         {
             if (MyPeer != null)
             {
@@ -600,7 +597,7 @@ namespace DarckNet
                                     List<NetViewSerializer> netvi = new List<NetViewSerializer>();
                                     var om = MyPeer.CreateMessage();
                                     om.Write((byte)DataType.Instantiate_Pool);
-                                    om.Write(ViwesIDs);
+
                                     om.WriteVariableInt64(inc.SenderConnection.RemoteUniqueIdentifier);
                                     foreach (var kvp in GetAutomaticView(0))
                                     {
@@ -748,7 +745,7 @@ namespace DarckNet
                             default:
                                 if (inc.SenderConnection.Status == NetConnectionStatus.Connected)
                                 {
-                                    
+
                                 }
                                 else if (inc.SenderConnection.Status == NetConnectionStatus.RespondedConnect)
                                 {
@@ -820,11 +817,6 @@ namespace DarckNet
             }
             else if (type == DataType.Instantiate)
             {
-                while (NetworkViews.ContainsKey(ViwesIDs) == true)
-                {
-                    ViwesIDs++;
-                }
-
                 Vector3 Pos = new Vector3();
                 Quaternion Rot = new Quaternion();
 
@@ -843,13 +835,14 @@ namespace DarckNet
                 Rot.w = 1;
 
                 //long uniq = inc.ReadVariableInt64();
+                int viewid = NetworkViews.Count;
 
                 GameObject Objc = GameObject.Instantiate(PregabsList.Prefabs[prefabid], Pos, Rot);
-                NetworkViews.Add(ViwesIDs, Objc.GetComponent<NetworkObj>());
-                Objc.GetComponent<NetworkObj>().SetID(ViwesIDs, prefabid, inc.SenderConnection.RemoteUniqueIdentifier);
+                NetworkViews.Add(viewid, Objc.GetComponent<NetworkObj>());
+                Objc.GetComponent<NetworkObj>().SetID(viewid, prefabid, inc.SenderConnection.RemoteUniqueIdentifier);
                 Objc.GetComponent<NetworkObj>().Dimension = dimension;
 
-                Debug.Log("ViewsIDs" + ViwesIDs);
+                Debug.Log("ViewsIDs" + viewid);
 
                 //--------------------------------------------------//
 
@@ -928,7 +921,6 @@ namespace DarckNet
                 var om = MyPeer.CreateMessage();
 
                 om.Write((byte)DataType.Instantiate_PoolD);
-                om.Write(ViwesIDs);
 
                 om.WriteVariableInt64(inc.SenderConnection.RemoteUniqueIdentifier);
                 om.Write(dimension);
@@ -1045,7 +1037,6 @@ namespace DarckNet
                 inc.ReadInt32(out int viewidd);
 
                 NetworkObj Net = NetworkViews[viewidd];
-
                 Net.Execute(funcname, inc);
             }
             else if (type == DataType.Instantiate)
@@ -1069,18 +1060,14 @@ namespace DarckNet
 
                 long uniq = inc.ReadVariableInt64();
 
-                while (NetworkViews.ContainsKey(ViwesIDs) == true)
-                {
-                    ViwesIDs++;
-                }
+                int viewid = NetworkViews.Count;
 
                 GameObject Objc = GameObject.Instantiate(PregabsList.Prefabs[prefabid], Pos, Rot);
-                NetworkViews.Add(ViwesIDs, Objc.GetComponent<NetworkObj>());
-                Objc.GetComponent<NetworkObj>().SetID(ViwesIDs, prefabid, uniq);
+                NetworkViews.Add(viewid, Objc.GetComponent<NetworkObj>());
+                Objc.GetComponent<NetworkObj>().SetID(viewid, prefabid, uniq);
                 Objc.GetComponent<NetworkObj>().Dimension = dimension;
-                ViwesIDs += 1;
 
-                Debug.LogError("ViewsIDs" + ViwesIDs);
+                Debug.LogError("ViewsIDs" + viewid);
             }
             else if (type == DataType.Destroy)
             {
@@ -1097,7 +1084,6 @@ namespace DarckNet
             }
             else if (type == DataType.Instantiate_Pool)
             {
-                inc.ReadInt32(out ViwesIDs);
                 long uniq = inc.ReadVariableInt64();
 
                 inc.ReadString(out string datadime);
@@ -1166,7 +1152,6 @@ namespace DarckNet
             }
             else if (type == DataType.Instantiate_PoolD)
             {
-                inc.ReadInt32(out ViwesIDs);
                 long uniq = inc.ReadVariableInt64();
                 inc.ReadInt32(out int dimension);
                 inc.ReadInt32(out int lastdimension);
@@ -1484,7 +1469,10 @@ namespace DarckNet
         {
             NetworkObj Net = NetworkViews[viewid];
 
-            Net.ExecuteServer(funcname, param);
+            if (Net.Owner != MyPeer.UniqueIdentifier)
+            {
+                Net.ExecuteServer(funcname, param);
+            }
 
             var om = Network.MyPeer.CreateMessage();
             om.Write((byte)DataType.RPC);
