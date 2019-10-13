@@ -7,7 +7,7 @@ using System.Linq;
 
 public enum IdMode : byte
 {
-    ManualId, AutomaticId
+    Manual_Id, AutomaticId
 }
 
 namespace DarckNet
@@ -56,10 +56,10 @@ namespace DarckNet
 
         void Awake()
         {
-            if (IdMode == IdMode.ManualId)
+            if (IdMode == IdMode.Manual_Id)
             {
                 PrefabID = -1;
-                Network.NetworkViews.Add(Network.NetworkViews.Count, this);
+                Network.NetworkViews.Add(ViewID, this);
             }
         }
 

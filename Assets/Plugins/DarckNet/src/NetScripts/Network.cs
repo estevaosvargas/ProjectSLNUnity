@@ -44,8 +44,6 @@ namespace DarckNet
         public static bool Ready { get; private set; }
         public static NetPeerStatistics PeerStat;
         public static int DimensionGeral = -1;
-        private Thread updateThread;
-
         #endregion
 
         /// <summary>
@@ -98,13 +96,7 @@ namespace DarckNet
                 PeerStat = peer.Statistics;
                 MyConnection = ServerConnection;
 
-                if (NetworkViews[0] != null)
-                {
-                    if (NetworkViews[0].IdMode == IdMode.ManualId)
-                    {
-                        NetworkViews[0].Owner = MyPeer.UniqueIdentifier;
-                    }
-                }
+                SETUP_MANUAL_VIEWSID();
 
                 Debug.Log("Unique identifier is " + peer.UniqueIdentifier);
                 Ready = true;
@@ -132,24 +124,6 @@ namespace DarckNet
             {
                 Debug.LogError("Server already started");
                 return false;
-            }
-        }
-
-        public static void ConnectUrl(string url, int port, string password)
-        {
-            url = url.Replace("http://", ""); //remove http://
-            url = url.Replace("https://", ""); //remove https://
-            url = url.Substring(0, url.IndexOf("/")); //remove everything after the first /
-
-            try
-            {
-                IPHostEntry hosts = Dns.GetHostEntry(url);
-                if (hosts.AddressList.Length > 0)
-                    Connect(hosts.AddressList[0].ToString(), port, password);
-            }
-            catch
-            {
-                Debug.LogError("Could not get IP for URL " + url);
             }
         }
 
@@ -204,19 +178,65 @@ namespace DarckNet
                         throw;
                 }
 
-                if (NetworkViews[0] != null)
-                {
-                    if (NetworkViews[0].IdMode == IdMode.ManualId)
-                    {
-                        NetworkViews[0].Owner = MyPeer.UniqueIdentifier;
-                    }
-                }
+                SETUP_MANUAL_VIEWSID();//setup manual views
                 return peer;
             }
             else
             {
                 Debug.LogError("You already connected in some server");
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Use Http or https, protocol to connect, its just resolve Url to ip, all the network isn't http(s) protocol!
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="port"></param>
+        /// <param name="password"></param>
+        public static void ConnectUrl(string url, int port, string password)
+        {
+            url = url.Replace("http://", ""); //remove http://
+            url = url.Replace("https://", ""); //remove https://
+            url = url.Substring(0, url.IndexOf("/")); //remove everything after the first /
+
+            try
+            {
+                IPHostEntry hosts = Dns.GetHostEntry(url);
+                if (hosts.AddressList.Length > 0)
+                    Connect(hosts.AddressList[0].ToString(), port, password);
+            }
+            catch
+            {
+                Debug.LogError("Could not get IP for URL " + url);
+            }
+        }
+
+        /// <summary>
+        /// Generate a unique id. Length is for how long you want to be the id, 1 is normal(short)
+        /// </summary>
+        /// <param name="Length"></param>
+        /// <returns></returns>
+        public static int UniqueID(int Length)
+        {
+            DateTime epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            int currentEpochTime = (int)(DateTime.UtcNow - epochStart).TotalSeconds;
+            int z1 = UnityEngine.Random.Range(0, 1000000);
+            int z2 = UnityEngine.Random.Range(0, 1000);
+            return (currentEpochTime / z1 + z2 * Length);
+        }
+
+        /// <summary>
+        /// Use for set your manual id, manual views is just for like a static viewid, to make like a global viewid
+        /// </summary>
+        private static void SETUP_MANUAL_VIEWSID()
+        {
+            foreach (var view in NetworkViews.Values)
+            {
+                if (view.IdMode == IdMode.Manual_Id)
+                {
+                    view.Owner = MyPeer.UniqueIdentifier;
+                }
             }
         }
 
@@ -393,8 +413,11 @@ namespace DarckNet
                 {
                     var om = MyPeer.CreateMessage();
 
+                    int viewid = UniqueID(1);
+
                     om.Write((byte)DataType.Instantiate);
                     om.Write(Object.GetComponent<NetworkObj>().PrefabID);
+                    om.Write(viewid);
                     om.Write(g);
 
                     //Position
@@ -413,7 +436,6 @@ namespace DarckNet
                     }
                     else
                     {
-                        int viewid = NetworkViews.Count;
 
                         GameObject obj = GameObject.Instantiate(Object, position, rotation);
                         NetworkViews.Add(viewid, obj.GetComponent<NetworkObj>());
@@ -497,7 +519,7 @@ namespace DarckNet
             }
             else
             {
-                Debug.LogError("This objects don't over network");
+                Debug.LogError("This objects isn't over network");
             }
         }
 
@@ -821,6 +843,7 @@ namespace DarckNet
                 Quaternion Rot = new Quaternion();
 
                 inc.ReadInt32(out int prefabid);
+                inc.ReadInt32(out int viewid);
                 inc.ReadInt32(out int dimension);
 
                 //Position
@@ -835,7 +858,6 @@ namespace DarckNet
                 Rot.w = 1;
 
                 //long uniq = inc.ReadVariableInt64();
-                int viewid = NetworkViews.Count;
 
                 GameObject Objc = GameObject.Instantiate(PregabsList.Prefabs[prefabid], Pos, Rot);
                 NetworkViews.Add(viewid, Objc.GetComponent<NetworkObj>());
@@ -851,6 +873,7 @@ namespace DarckNet
 
                 om.Write((byte)DataType.Instantiate);
                 om.Write(prefabid);
+                om.Write(viewid);
                 om.Write(dimension);
 
                 //Position
@@ -1045,6 +1068,7 @@ namespace DarckNet
                 Quaternion Rot = new Quaternion();
 
                 inc.ReadInt32(out int prefabid);
+                inc.ReadInt32(out int viewid);
                 inc.ReadInt32(out int dimension);
 
                 //Position
@@ -1059,8 +1083,6 @@ namespace DarckNet
                 Rot.w = 1;
 
                 long uniq = inc.ReadVariableInt64();
-
-                int viewid = NetworkViews.Count;
 
                 GameObject Objc = GameObject.Instantiate(PregabsList.Prefabs[prefabid], Pos, Rot);
                 NetworkViews.Add(viewid, Objc.GetComponent<NetworkObj>());

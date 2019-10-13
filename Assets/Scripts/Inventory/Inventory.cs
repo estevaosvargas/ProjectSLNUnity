@@ -83,7 +83,7 @@ public class Inventory : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            _Additem(1, 1);
+            _Additem(1, 1 ,-1 , true);
             Net.RPC("RPC_SyncSlot", DarckNet.RPCMode.Owner, 0, 1, ItemList[0].Index, ItemList[1].Index, ItemList[0].Amount, ItemList[1].Amount);
         }
     }
@@ -102,70 +102,70 @@ public class Inventory : MonoBehaviour
         UpdateUi(slot);
     }
 
-    void _Additem(int index, int amount, int slot)
+    void _AdditemSlot(int index, int amount, int slot, bool first)
     {
         int Index = ItemList[slot].Index;
         int Amount = ItemList[slot].Amount;
 
         if (Index == index)
         {
-            if (Amount >= ItemManager.Instance.GetItem(index).MaxAmount)
+            if (Amount > ItemManager.Instance.GetItem(index).MaxAmount)
             {
-                _Additem(index, amount);
+                _Additem(index, amount, slot, first);
             }
             else
             {
                 Amount += amount;
+
+                ItemList[slot].Index = Index;
+                ItemList[slot].Amount = Amount;
+                Save();
+                UpdateUi(slot);
+
+                if (!Net.isMine || !Game.GameManager.SinglePlayer)
+                {
+                    Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, slot, ItemList[slot].Index, ItemList[slot].Amount);
+                }
             }
         }
         else
         {
-            _Additem(index, amount);
-        }
-
-        ItemList[slot].Index = Index;
-        ItemList[slot].Amount = Amount;
-        Save();
-        UpdateUi(slot);
-
-        if (!Net.isMine)
-        {
-            Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, slot, ItemList[slot].Index, ItemList[slot].Amount);
+            _Additem(index, amount, slot, first);
         }
     }
 
-    void _Additem(int index, int amount)
+    void _Additem(int index, int amount, int slotchek, bool first)
     {
         for (int i = 0; i < ItemList.Count; i++)
         {
             if (ItemList[i].Index == index)
             {
-                if (ItemList[i].Amount < ItemManager.Instance.GetItem(ItemList[i].Index).MaxAmount)
+                if (i != slotchek || first)
                 {
-                    ItemList[i].Amount += amount;
-                    UpdateUi(i);
-                    Save();
-
-                    if (!Net.isMine)
+                    if (ItemList[i].Amount < ItemManager.Instance.GetItem(ItemList[i].Index).MaxAmount)
                     {
-                        Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, i, ItemList[i].Index, ItemList[i].Amount);
+                        ItemList[i].Amount += amount;
+                        UpdateUi(i);
+                        Save();
+
+                        if (!Net.isMine || !Game.GameManager.SinglePlayer)
+                        {
+                            Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, i, ItemList[i].Index, ItemList[i].Amount);
+                        }
+                        return;
                     }
-
-                    return;
-                }
-                else if (ItemList[i].Index == -1)
-                {
-                    ItemList[i].Index = index;
-                    ItemList[i].Amount = amount;
-                    UpdateUi(i);
-                    Save();
-
-                    if (!Net.isMine)
+                    else if (ItemList[i].Index == -1)
                     {
-                        Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, i, ItemList[i].Index, ItemList[i].Amount);
-                    }
+                        ItemList[i].Index = index;
+                        ItemList[i].Amount = amount;
+                        UpdateUi(i);
+                        Save();
 
-                    return;
+                        if (!Net.isMine || !Game.GameManager.SinglePlayer)
+                        {
+                            Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, i, ItemList[i].Index, ItemList[i].Amount);
+                        }
+                    }
                 }
             }
             else if (ItemList[i].Index == -1)
@@ -175,11 +175,10 @@ public class Inventory : MonoBehaviour
                 UpdateUi(i);
                 Save();
 
-                if (!Net.isMine)
+                if (!Net.isMine || !Game.GameManager.SinglePlayer)
                 {
                     Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, i, ItemList[i].Index, ItemList[i].Amount);
                 }
-
                 return;
             }
         }
@@ -210,7 +209,7 @@ public class Inventory : MonoBehaviour
                     }
                     else
                     {
-                        _Additem(ItemList[to].Index, ItemList[on].Amount);
+                        _Additem(ItemList[on].Index, ItemList[on].Amount, on, false);
 
                         ItemList[on].Index = -1;
                         ItemList[on].Amount = -1;
@@ -224,7 +223,7 @@ public class Inventory : MonoBehaviour
                 }
                 else
                 {
-                    _Additem(ItemList[to].Index, ItemList[on].Amount);
+                    _Additem(ItemList[on].Index, ItemList[on].Amount, on, false);
 
                     ItemList[on].Index = -1;
                     ItemList[on].Amount = -1;
@@ -323,7 +322,7 @@ public class Inventory : MonoBehaviour
     {
         if (Game.GameManager.SinglePlayer)
         {
-            _Additem(index, amount, slot);
+            _Additem(index, amount, slot, true);
         }
         else
         {
@@ -335,7 +334,7 @@ public class Inventory : MonoBehaviour
     {
         if (Game.GameManager.SinglePlayer || DarckNet.Network.IsServer)
         {
-            _Additem(index, amount);
+            _Additem(index, amount, -1 ,true);
         }
         else
         {
@@ -417,7 +416,7 @@ public class Inventory : MonoBehaviour
             {
                 UnityEngine.Debug.Log("Request Drop: " + slot + " ::: " + sender.unique);
 
-                if (!sender.IsMine)
+                if (!Net.isMine || !Game.GameManager.SinglePlayer)
                 {
                     Net.RPC("RPC_SyncOneSlot", sender.NetConnection, slot, ItemList[slot].Index, ItemList[slot].Amount);
                 }
@@ -431,7 +430,7 @@ public class Inventory : MonoBehaviour
         UnityEngine.Debug.Log("ON: " + on + " | TO: " + to + " ::: " + sender.unique);
         _Move(on, to);
 
-        if (!sender.IsMine)
+        if (!Net.isMine || !Game.GameManager.SinglePlayer)
         {
             Net.RPC("RPC_SyncSlot", sender.NetConnection, on, to, ItemList[on].Index, ItemList[to].Index, ItemList[on].Amount, ItemList[to].Amount);
         }
