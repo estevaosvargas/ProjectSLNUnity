@@ -72,7 +72,14 @@ public class Chunk : MonoBehaviour
         {
             for (int j = 0; j < Size * TileObj.transform.localScale.y; j++)
             {
-                if (!havesave) { tiles[i, j] = new Tile(i + (int)transform.position.x, 0, j + (int)transform.position.z, new ChunkInfo((int)transform.position.x, (int)transform.position.z, this)); }
+                if (!havesave) 
+                { 
+                    tiles[i, j] = new Tile(i + (int)transform.position.x, 0, j + (int)transform.position.z, new ChunkInfo((int)transform.position.x, (int)transform.position.z, this)); 
+                } 
+                else 
+                { 
+                    tiles[i, j].TileChunk = new ChunkInfo((int)transform.position.x, (int)transform.position.z, this); 
+                }
 
                 tiles[i, j].SetUpTile(tiles[i, j]);
                 tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
@@ -446,7 +453,7 @@ public class Chunk : MonoBehaviour
             int i = tile[v].x - (int)transform.position.x;
             int j = tile[v].z - (int)transform.position.z;
 
-            tiles[i, j] = new Tile(tile[v]);
+            tiles[i, j] = new Tile(tile[v], new ChunkInfo((int)transform.position.x, (int)transform.position.z, this));
 
             tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
 

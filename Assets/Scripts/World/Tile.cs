@@ -91,8 +91,9 @@ public class Tile
 
     }
 
-    public Tile(TileSave tile)
+    public Tile(TileSave tile, ChunkInfo ChunkInfo)
     {
+        TileChunk = ChunkInfo;
         x = tile.x;
         z = tile.z;
         type = tile.type;
@@ -104,8 +105,9 @@ public class Tile
         TileBiome = tile.Biomeofthis;
     }
 
-    public Tile(int x, int y, TypeBlock Type)
+    public Tile(int x, int y, TypeBlock Type, ChunkInfo ChunkInfo)
     {
+        TileChunk = ChunkInfo;
         this.x = x;
         //this.y = y;
         type = Type;
