@@ -205,7 +205,10 @@ public class GameManager : UIElements
         GameObject[] objs = FindObjectsOfType<GameObject>();
         foreach (GameObject obj in objs)
         {
-            GameObject.Destroy(obj);
+            if (obj.name != "DarckConsole")
+            {
+                GameObject.Destroy(obj);
+            }
         }
     }
 
@@ -565,6 +568,7 @@ public class DCFMath
 public static class MouselockFake
 {
     public static bool IsLock { get; set; }
+    public static bool ConsoleIsOpen { get; set; }
 }
 
 public class SaveWorld
@@ -1282,6 +1286,19 @@ public static class Game
     public static WorldGenerator WorldGenerator;
 
     #region StaticMethods
+    public static void Print(string Text, bool is_command, int size = 14)
+    {
+        ConsoleInGame.AddInRoolGUI(Text, is_command, Color.white, size);
+    }
 
+    public static void PrintError(string Text, bool is_command, int size = 14)
+    {
+        ConsoleInGame.AddInRoolGUI(Text, is_command, Color.red, size);
+    }
+
+    public static void PrintWarnig(string Text, bool is_command, int size = 14)
+    {
+        ConsoleInGame.AddInRoolGUI(Text, is_command, Color.yellow, size);
+    }
     #endregion
 }

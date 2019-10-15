@@ -24,10 +24,10 @@ public class Chunk : MonoBehaviour
     public static int Size = 10;
     public Tile[,] tiles { get; private set; }
 
+    public List<Entity> Entitys = new List<Entity>();
     public List<TileSave> Tiles_Save = new List<TileSave>();
     public List<long> Players = new List<long>();
     Dictionary<Tile, GameObject> tileGOmap;
-    List<GameObject> Ai = new List<GameObject>();
 
     private float timetemp = 0;
     private float timetemp2 = 0;
@@ -51,6 +51,48 @@ public class Chunk : MonoBehaviour
                 }
             }
         }
+        else if (DarckNet.Network.IsServer)
+        {
+            for (int i = 0; i < Size; i++)
+            {
+                for (int j = 0; j < Size; j++)
+                {
+                    #region SetUpPathGrid
+                    if (!Game.PathGrid.tiles.ContainsKey(new Vector2(tiles[i, j].x, tiles[i, j].z)))
+                    {
+                        if (tiles[i, j].CanWalk)
+                        {
+                            if (tiles[i, j].typego == TakeGO.empty && tiles[i, j].placerObj == Placer.empty)
+                            {
+                                int coust = tiles[i, j].CanWalk ? 0 : 1;
+                                Game.PathGrid.tiles.Add(new Vector2(tiles[i, j].x, tiles[i, j].z), new Node(tiles[i, j].CanWalk, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), coust));
+                            }
+                            else
+                            {
+                                Game.PathGrid.tiles.Add(new Vector2(tiles[i, j].x, tiles[i, j].z), new Node(false, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), 1));
+                            }
+                        }
+                        else
+                        {
+                            Game.PathGrid.tiles.Add(new Vector2(tiles[i, j].x, tiles[i, j].z), new Node(false, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), 1));
+                        }
+                    }
+                    else
+                    {
+                        if (tiles[i, j].typego == TakeGO.empty && tiles[i, j].placerObj == Placer.empty)
+                        {
+                            int coust = tiles[i, j].CanWalk ? 0 : 1;
+                            Game.PathGrid.tiles[new Vector2(tiles[i, j].x, tiles[i, j].z)] = new Node(tiles[i, j].CanWalk, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), coust);
+                        }
+                        else
+                        {
+                            Game.PathGrid.tiles[new Vector2(tiles[i, j].x, tiles[i, j].z)] = new Node(false, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), 1);
+                        }
+                    }
+                    #endregion
+                }
+            }
+        }
     }
 
     public TileSave[] MakeChunk()
@@ -58,7 +100,6 @@ public class Chunk : MonoBehaviour
         tileGOmap = new Dictionary<Tile, GameObject>();
         tiles = new Tile[Size, Size];
         Game.WorldGenerator.ChunksList.Add(this);
-        BiomeType typebiom = BiomeType.ForestNormal;
         bool havesave = false;
 
         if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + Game.WorldGenerator.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z)))
@@ -84,15 +125,22 @@ public class Chunk : MonoBehaviour
                 tiles[i, j].SetUpTile(tiles[i, j]);
                 tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
 
-                GameObject TileGo = GameObject.Instantiate(TileObj, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), Quaternion.identity);
-                TileGo.SetActive(true);
-                TileGo.name = "Tile_" + tiles[i, j].x + "_" + tiles[i, j].z;
-                TileGo.transform.position = new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z);
-                TileGo.transform.SetParent(this.transform, true);
+                if (Game.GameManager.SinglePlayer || DarckNet.Network.IsClient)
+                {
+                    GameObject TileGo = GameObject.Instantiate(TileObj, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), Quaternion.identity);
+                    TileGo.SetActive(true);
+                    TileGo.name = "Tile_" + tiles[i, j].x + "_" + tiles[i, j].z;
+                    TileGo.transform.position = new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z);
+                    TileGo.transform.SetParent(this.transform, true);
 
-                TileGo.transform.Rotate(new Vector3(90, 0, 0), Space.Self);
-
-                tiles[i, j].TileObj = TileGo.GetComponent<TileObj>();
+                    TileGo.transform.Rotate(new Vector3(90, 0, 0), Space.Self);
+                    tileGOmap.Add(tiles[i, j], TileGo);
+                    tiles[i, j].TileObj = TileGo.GetComponent<TileObj>();
+                }
+                else
+                {
+                    tiles[i, j].IsServerTile = true;
+                }
 
                 //Set Up Tree OBject
                 SetUpTileTree(tiles[i, j]);
@@ -102,11 +150,9 @@ public class Chunk : MonoBehaviour
                 {
                     if (Random.Range(1, 125) > 120)
                     {
-                        SpawnAiTeste(tiles[i, j]);
+                        SpawnNetWorkObject(tiles[i, j]);
                     }
                 }
-
-                tileGOmap.Add(tiles[i, j], TileGo);
 
                 //OnTileTypeChange(tiles[i, j]);
                 //TileTransitionChange(tiles[i, j]);
@@ -130,12 +176,11 @@ public class Chunk : MonoBehaviour
         return Tiles_Save.ToArray();
     }
 
-    private void SpawnAiTeste(Tile tile)
+    private void SpawnNetWorkObject(Tile tile)
     {
-        GameObject obj = Instantiate(SpriteManager.Instance.GetPrefabOnRecources("Prefabs/Villager/Villager"), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
-        obj.GetComponent<Vilanger>().Born("VillagerTeste");
-        obj.transform.SetParent(this.transform, true);
-        Ai.Add(obj);
+        GameObject obj = DarckNet.Network.Instantiate(SpriteManager.Instance.GetPrefabOnRecources("Prefabs/Villager/Villager"), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity, Game.WorldGenerator.World_ID);
+        obj.GetComponent<Vilanger>().Born("VillagerTeste", this);
+        Entitys.Add(obj.GetComponent<Vilanger>());
     }
 
     public void OnTileTypeChange(Tile tile)
@@ -255,9 +300,9 @@ public class Chunk : MonoBehaviour
         {
             for (int j = 0; j < Size * TileObj.transform.localScale.y; j++)
             {
-                if (Game.PathGrid.tiles.ContainsKey(new Vector2(tiles[i, j].x, tiles[i, j].y)))
+                if (Game.PathGrid.tiles.ContainsKey(new Vector2(tiles[i, j].x, tiles[i, j].z)))
                 {
-                    Game.PathGrid.tiles.Remove(new Vector2(tiles[i, j].x, tiles[i, j].y));
+                    Game.PathGrid.tiles.Remove(new Vector2(tiles[i, j].x, tiles[i, j].z));
                 }
             }
         }
@@ -371,6 +416,14 @@ public class Chunk : MonoBehaviour
             timetemp2 = Time.time;
         }*/
 #endif
+#if Server
+        if (Time.time > timetemp + TimeUpdate)
+        {
+            UpdateChunk();
+
+            timetemp = Time.time;
+        }
+#endif
     }
 
     public void UpdateLiquid()
@@ -383,14 +436,14 @@ public class Chunk : MonoBehaviour
                 {
                     Tile[] ney = tiles[i, j].GetNeighboors();
 
-                    #region Water
+#region Water
                     if (ney[0] != null && ney[0].type == TypeBlock.Water || ney[1] != null && ney[1].type == TypeBlock.Water || ney[2] != null && ney[2].type == TypeBlock.Water || ney[3] != null && ney[3].type == TypeBlock.Water)
                     {
                         //tiles[i, j].SetTileType(TypeBlock.Water);
                         tiles[i, j].Reset();
                         return;
                     }
-                    #endregion Water
+#endregion Water
                 }
             }
         }
@@ -400,9 +453,12 @@ public class Chunk : MonoBehaviour
 
     public void UpdateChunk()
     {
-        foreach (var ai in Ai)
+        foreach (var ai in Entitys.ToArray())
         {
-            ai.GetComponent<Vilanger>().GetNewPostion();
+            if (ai != null)
+            {
+                ai.GetComponent<Vilanger>().GetNewPostion();
+            }
         }
 
         for (int i = 0; i < Size; i++)
@@ -415,25 +471,25 @@ public class Chunk : MonoBehaviour
                     {
                         Tile[] ney = tiles[i, j].GetNeighboors();
 
-                        #region Grama
+#region Grama
                         if (ney[0] != null && ney[0].type == TypeBlock.Grass || ney[1] != null && ney[1].type == TypeBlock.Grass || ney[2] != null && ney[2].type == TypeBlock.Grass || ney[3] != null && ney[3].type == TypeBlock.Grass)
                         {
                             tiles[i, j].PerlinSetType(TypeBlock.Grass);
                             tiles[i, j].Reset();
                         }
-                        #endregion
+#endregion
                     }
                     else if (DataTime.Hora <= tiles[i, j].Hora && DataTime.Dia > tiles[i, j].Dia && DataTime.Mes > tiles[i, j].Mes)
                     {
                         Tile[] ney = tiles[i, j].GetNeighboors();
 
-                        #region Grama
+#region Grama
                         if (ney[0] != null && ney[0].type == TypeBlock.Grass || ney[1] != null && ney[1].type == TypeBlock.Grass || ney[2] != null && ney[2].type == TypeBlock.Grass || ney[3] != null && ney[3].type == TypeBlock.Grass)
                         {
                             tiles[i, j].PerlinSetType(TypeBlock.Grass);
                             tiles[i, j].Reset();
                         }
-                        #endregion
+#endregion
                     }
                 }
             }
@@ -443,7 +499,7 @@ public class Chunk : MonoBehaviour
     //MultiPlayer Client
     public void ClientSetUpChunk(TileSave[] tile)
     {
-        #region TileGen
+#region TileGen
         tileGOmap = new Dictionary<Tile, GameObject>();
         tiles = new Tile[Size, Size];
         Game.WorldGenerator.ChunksList.Add(this);
@@ -495,6 +551,6 @@ public class Chunk : MonoBehaviour
                 tiles[i, j].RefreshTile();
             }
         }
-        #endregion
+#endregion
     }
 }

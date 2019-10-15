@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8713991056757337766}
   - component: {fileID: 155474608623118998}
   - component: {fileID: 5531139975782748323}
+  - component: {fileID: -4515052521310811540}
   m_Layer: 9
   m_Name: Villager
   m_TagString: Entity
@@ -129,6 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 174630b8e9a6ce14a9d11e6d4e2a24ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Net: {fileID: 0}
   HP: 100
   MaxHP: 100
   IsAlive: 0
@@ -139,10 +141,13 @@ MonoBehaviour:
   Name: 
   Type: 0
   LastPosition: {x: 0, y: 0}
+  Cuerrent_Chunk: {fileID: 0}
   damping: 1
   RunAway: 0
   direction: 0
   ISVISIBLE: 0
+  X: 0
+  Z: 0
 --- !u!136 &5531139975782748323
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -157,3 +162,19 @@ CapsuleCollider:
   m_Height: 0.69851035
   m_Direction: 1
   m_Center: {x: -0.0041270014, y: 0.3393735, z: -0.0150190145}
+--- !u!114 &-4515052521310811540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1459282729364594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 556364585e709134c8e6cd575ee76099, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Owner: 0
+  ViewID: 0
+  DeliveModo: 1
+  IdMode: 1

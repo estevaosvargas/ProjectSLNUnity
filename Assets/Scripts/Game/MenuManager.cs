@@ -124,6 +124,14 @@ public class Menus : MonoBehaviour
         }
         Debug.LogError("Don't have this menu : " + name);
     }
+
+    public void CloseAll()//Close menu by name
+    {
+        foreach (var item in MenuList)
+        {
+            item.gameObject.SetActive(false);
+        }
+    }
 }
 
 public class MenuManager : Menus
@@ -156,78 +164,53 @@ public class MenuManager : Menus
         {
             if (Game.GameManager.MyPlayer.MyPlayerMove.IsAlive)
             {
-                if (Input.GetKeyDown(KeyCode.BackQuote))
+                if (!MouselockFake.ConsoleIsOpen)
                 {
-                    //open DevConsole
-                    if (CheckifEnable("DevConsole") == true)
+                    if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.I))
                     {
-                        CloseMenuName("DevConsole");
-                        MouselockFake.IsLock = false;
-                    }
-                    else
-                    {
-                        OpenMenuName("DevConsole");
-                        MouselockFake.IsLock = true;
-                    }
-                }
-
-                if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.I))
-                {
-                    if (CheckifEnable("DevConsole") == false)
-                    {
-                        if (CheckifEnable("Inventory") == true)
+                        if (CheckifEnable("DevConsole") == false)
                         {
-                            CloseMenuName("Inventory");
+                            if (CheckifEnable("Inventory") == true)
+                            {
+                                CloseMenuName("Inventory");
+                                MouselockFake.IsLock = false;
+                            }
+                            else
+                            {
+                                OpenMenuNameNoClose("Inventory");
+                                InveGui.OpenInev(Game.GameManager.MyPlayer.MyInventory);
+                                MouselockFake.IsLock = true;
+                            }
+                        }
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.Escape))
+                    {
+                        if (CheckifEnable("InGameMenu") == true)
+                        {
+                            CloseMenuName("InGameMenu");
                             MouselockFake.IsLock = false;
                         }
                         else
                         {
-                            OpenMenuNameNoClose("Inventory");
-                            InveGui.OpenInev(Game.GameManager.MyPlayer.MyInventory);
+                            OpenMenuName("InGameMenu");
                             MouselockFake.IsLock = true;
                         }
                     }
-                }
 
-                if (Input.GetKeyDown(KeyCode.F1))
-                {
-                    //open info menu
-                    if (CheckifEnable("DebugInfo") == true)
+                    //Player StatusMenu
+                    if (GameInput.STATUSButtonDown())
                     {
-                        CloseMenuName("DebugInfo");
-                    }
-                    else
-                    {
-                        OpenMenuName("DebugInfo");
-                    }
-                }
-
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    if (CheckifEnable("InGameMenu") == true)
-                    {
-                        CloseMenuName("InGameMenu");
-                        MouselockFake.IsLock = false;
-                    }
-                    else
-                    {
-                        OpenMenuName("InGameMenu");
-                        MouselockFake.IsLock = true;
-                    }
-                }
-
-                //Player StatusMenu
-                if (GameInput.STATUSButtonDown())
-                {
-                    if (CheckifEnable("Status") == true)
-                    {
-                        CloseMenuName("Status");
-                        MouselockFake.IsLock = false;
-                    }
-                    else
-                    {
-                        OpenMenuName("Status");
-                        MouselockFake.IsLock = true;
+                        if (CheckifEnable("Status") == true)
+                        {
+                            CloseMenuName("Status");
+                            MouselockFake.IsLock = false;
+                        }
+                        else
+                        {
+                            OpenMenuName("Status");
+                            MouselockFake.IsLock = true;
+                        }
                     }
                 }
             }

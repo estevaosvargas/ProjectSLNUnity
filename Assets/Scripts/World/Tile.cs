@@ -32,7 +32,8 @@ public class Tile
 
     [NonSerialized]
     public bool CanWalk = false;
-
+    [NonSerialized]
+    public bool IsServerTile = false;
     public int HP = 100;
     [NonSerialized]
     public int MaxHP = 100;

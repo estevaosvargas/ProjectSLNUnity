@@ -24,6 +24,7 @@ namespace DarckNet
     public class Network
     {
         #region Vars
+        public static string NetVersion = "0.1";
         internal static NetPeer MyPeer;
         internal static NetConnection MyConnection;
         internal static NetServer Server;
@@ -57,6 +58,8 @@ namespace DarckNet
         {
             if (Client == null && Server == null)
             {
+                Debug.Log("DarckNet - " + NetVersion);
+
                 NetDeliveryMode = NetDeliveryMethod.UnreliableSequenced;
 
                 bool Started = false;
@@ -73,7 +76,7 @@ namespace DarckNet
                 config.SendBufferSize = NetConfig.SendBufferSize;
                 config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
                 config.AcceptIncomingConnections = NetConfig.AcceptConnection;
-
+                config.NetworkThreadName = "DarckNet - Server";
 
                 config.m_port = port;
                 config.BroadcastAddress = new IPAddress(ipe);
@@ -137,6 +140,7 @@ namespace DarckNet
         {
             if (Server == null && Client == null)
             {
+                Debug.Log("DarckNet - " + NetVersion);
                 NetDeliveryMode = NetDeliveryMethod.UnreliableSequenced;
 
                 NetPeerConfiguration config = new NetPeerConfiguration(NetConfig.AppIdentifier);
@@ -147,6 +151,7 @@ namespace DarckNet
                 config.SendBufferSize = NetConfig.SendBufferSize;
                 config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
                 config.ConnectionTimeout = NetConfig.ConnectionTimeout;
+                config.NetworkThreadName = "DarckNet - Client";
 
                 NetClient peer = new NetClient(config);
                 peer.Start(); // needed for initialization
@@ -161,7 +166,7 @@ namespace DarckNet
                 PeerStat = peer.Statistics;
 
 
-                Debug.Log("Unique identifier is " + NetUtility.ToHexString(peer.UniqueIdentifier));
+                Debug.Log("Unique identifier is " + peer.UniqueIdentifier);
 
                 Ready = true;
                 Runing = true;
@@ -249,6 +254,7 @@ namespace DarckNet
         {
             NetConnection net = null;
             ConnectionList.TryGetValue(uniq, out net);
+
             return net;
         }
 
@@ -357,6 +363,7 @@ namespace DarckNet
                 NetworkViews.Clear();
                 NetDimension.Clear();
                 Players.Clear();
+                ConnectionList.Clear();
 
 
                 DimensionGeral = -1;
@@ -390,6 +397,7 @@ namespace DarckNet
                 NetworkViews.Clear();
                 NetDimension.Clear();
                 Players.Clear();
+                ConnectionList.Clear();
 
                 DimensionGeral = -1;
 
@@ -413,7 +421,12 @@ namespace DarckNet
                 {
                     var om = MyPeer.CreateMessage();
 
-                    int viewid = UniqueID(1);
+                    int viewid = UniqueID(5);
+
+                    while (NetworkViews.ContainsKey(viewid))
+                    {
+                        viewid = UniqueID(5);
+                    }
 
                     om.Write((byte)DataType.Instantiate);
                     om.Write(Object.GetComponent<NetworkObj>().PrefabID);
@@ -486,25 +499,36 @@ namespace DarckNet
                 if (Ready)
                 {
                     int Dimension = Object.GetComponent<NetworkObj>().Dimension;
+                    int viewid = Object.GetComponent<NetworkObj>().ViewID;
+
                     var om = MyPeer.CreateMessage();
+
                     om.Write((byte)DataType.Destroy);
-                    om.Write(Object.GetComponent<NetworkObj>().ViewID);
+                    om.Write(viewid);
 
                     if (NetDimension.ContainsKey(Dimension))
                     {
-                        if (IsClient)
+                        if (NetworkViews.ContainsKey(viewid))
                         {
-                            Client.SendMessage(om, NetDeliveryMode);
+                            if (IsClient)
+                            {
+                                Client.SendMessage(om, NetDeliveryMode);
+                            }
+                            else if (IsServer)
+                            {
+                                List<NetConnection> listanet = new List<NetConnection>(GetConnections(NetDimension[Dimension].Players.ToArray()));
+                                listanet.Remove(GetConnection(MyPeer.UniqueIdentifier));
+
+                                Server_SendToAll(om, listanet.ToArray(), NetDeliveryMode);
+
+                                GameObject.Destroy(Object);
+                                
+                                NetworkViews.Remove(viewid);
+                            }
                         }
-                        else if (IsServer)
+                        else
                         {
-                            List<NetConnection> listanet = new List<NetConnection>(GetConnections(NetDimension[Dimension].Players.ToArray()));
-                            listanet.Remove(GetConnection(MyPeer.UniqueIdentifier));
-
-                            Server_SendToAll(om, listanet.ToArray(), NetDeliveryMode);
-
-                            NetworkViews.Remove(Object.GetComponent<NetworkObj>().ViewID);
-                            GameObject.Destroy(Object);
+                            Debug.LogError("Sorry this object already Destroyed or isn't over network");
                         }
                     }
                     else
@@ -519,7 +543,7 @@ namespace DarckNet
             }
             else
             {
-                Debug.LogError("This objects isn't over network");
+                Debug.LogError("This object is manual View, you cant destory using network, you need use unity destroy logic");
             }
         }
 
@@ -817,9 +841,12 @@ namespace DarckNet
                 inc.ReadString(out string funcname);
                 inc.ReadInt32(out int viewidd);
 
-                NetworkObj Net = NetworkViews[viewidd];
+                NetworkObj Net = null;
 
-                Net.Execute(funcname, inc);
+                if (NetworkViews.TryGetValue(viewidd, out Net))
+                {
+                    Net.Execute(funcname, inc);
+                }
             }
             else if (type == DataType.RPC_All)//all in dimension
             {
@@ -898,10 +925,10 @@ namespace DarckNet
             {
                 inc.ReadInt32(out int viewid);
 
-                if (NetworkViews.ContainsKey(viewid))
-                {
-                    NetworkObj net = NetworkViews[viewid];
+                NetworkObj net = null;
 
+                if (NetworkViews.TryGetValue(viewid, out net))
+                {
                     #region DestroySend
                     var om = MyPeer.CreateMessage();
 
@@ -911,10 +938,7 @@ namespace DarckNet
                     List<NetConnection> listanet = new List<NetConnection>(GetConnections(NetDimension[net.Dimension].Players.ToArray()));
                     listanet.Remove(GetConnection(MyPeer.UniqueIdentifier));
 
-                    foreach (var item in listanet)
-                    {
-                        Server.SendMessage(om, item, NetDeliveryMode);
-                    }
+                    Server_SendToAll(om, listanet.ToArray(), NetDeliveryMode);
                     #endregion
 
                     GameObject.Destroy(net.gameObject);
@@ -1088,17 +1112,15 @@ namespace DarckNet
                 NetworkViews.Add(viewid, Objc.GetComponent<NetworkObj>());
                 Objc.GetComponent<NetworkObj>().SetID(viewid, prefabid, uniq);
                 Objc.GetComponent<NetworkObj>().Dimension = dimension;
-
-                Debug.LogError("ViewsIDs" + viewid);
             }
             else if (type == DataType.Destroy)
             {
                 inc.ReadInt32(out int viewid);
 
-                if (NetworkViews.ContainsKey(viewid))
-                {
-                    NetworkObj net = NetworkViews[viewid];
+                NetworkObj net = null;
 
+                if (NetworkViews.TryGetValue(viewid, out net))
+                {
                     GameObject.Destroy(net.gameObject);
 
                     NetworkViews.Remove(viewid);

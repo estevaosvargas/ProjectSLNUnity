@@ -97,7 +97,10 @@ namespace DarckNet
         {
             if (Network.Ready)
             {
-                SendRPC(funcname, Mode, param);
+                if (Network.NetworkViews.ContainsKey(ViewID))
+                {
+                    SendRPC(funcname, Mode, param);
+                }
             }
         }
 
@@ -111,7 +114,10 @@ namespace DarckNet
         {
             if (Network.Ready)
             {
-                SendRPC(funcname, player, param);
+                if (Network.NetworkViews.ContainsKey(ViewID))
+                {
+                    SendRPC(funcname, player, param);
+                }
             }
         }
 

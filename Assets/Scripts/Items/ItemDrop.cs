@@ -6,13 +6,14 @@ public class ItemDrop : Entity
     public ItemData ThisItem;
     public int Qunty = 0;
     public AudioClip PickUpSound;
+    public bool TAKED = false;
 
     public void SetDrop(ItemData item, int quanty)
     {
         ThisItem = item;
         Qunty = quanty;
 
-        name = item.Name + "(Clone)";
+        name = item.Name + "(DROP)";
 
         GetComponent<SpriteRenderer>().sprite = item.Icon;
 
@@ -26,9 +27,17 @@ public class ItemDrop : Entity
     {
         if (Game.GameManager.SinglePlayer || DarckNet.Network.IsServer)
         {
-            inve.Additem(ThisItem.Index, Qunty);
-            GetComponent<AudioSource>().PlayOneShot(PickUpSound);
-            DarckNet.Network.Destroy(this.gameObject, 0.05f);
+            if (TAKED != true)
+            {
+                TAKED = true;
+                inve.Additem(ThisItem.Index, Qunty);
+                GetComponent<AudioSource>().PlayOneShot(PickUpSound);
+                DarckNet.Network.Destroy(this.gameObject, 0.05f);
+            }
+            else
+            {
+                Debug.LogWarning("Someone is trying to take items already taked!");
+            }
         }
     }
 

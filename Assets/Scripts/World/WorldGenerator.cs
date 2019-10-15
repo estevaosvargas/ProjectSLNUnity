@@ -174,6 +174,12 @@ public class WorldGenerator : DCallBack
                 while (deletechuks.Count > 0)
                 {
                     Chunk chuks = deletechuks.Dequeue();
+
+                    foreach (var entity in chuks.Entitys.ToArray())
+                    {
+                        DarckNet.Network.Destroy(entity.gameObject);
+                    }
+
                     chunkMap.Remove(chuks.transform.position);
                     Destroy(chuks.gameObject);
                 }
@@ -333,6 +339,12 @@ public class WorldGenerator : DCallBack
         if (chunkMap.ContainsKey(new Vector3(x, 0,z)) == true && chunkMap[new Vector3(x, 0,z)].Players.Count == 0 || chunkMap.ContainsKey(new Vector3(x, 0, z)) == true && chunkMap[new Vector3(x, 0, z)].Players.Count == 1 && chunkMap[new Vector3(x, 0, z)].Players[0] == player)
         {
             Chunk chunk = chunkMap[new Vector3(x, 0,z)];
+
+            foreach (var entity in chunk.Entitys.ToArray())
+            {
+                DarckNet.Network.Destroy(entity.gameObject);
+            }
+
             chunkMap[new Vector3(x, 0, z)].Players.RemoveAt(0);
             chunkMap.Remove(new Vector3(x, 0, z));
             Destroy(chunk.gameObject);
