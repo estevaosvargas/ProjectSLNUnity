@@ -71,26 +71,21 @@ public class GameManager : UIElements
         Client.Password = "";
     }
 
+#if UNITY_EDITOR
+    public GameObject Console;
+#endif
+
     void Start()
     {
+#if UNITY_EDITOR
+        if (!Game.ConsoleInGame)
+        {
+            Instantiate(Console);
+        }
+#endif
         Application.targetFrameRate = 60;
         Game.AudioManager.LoadAudio();
 		ItchAPi.StartItchApi();
-
-		if (Application.isEditor)
-        {
-#if UNITY_EDITOR
-			ItchAPi.Instance.EditorApiKey = "5av3kO2VL0iQuBu3zp7TNTbb6b257OYL81R3KQQ6";
-			ItchAPi.Instance.SetupApi(true, "424930");
-#endif
-        }
-        else
-        {
-			ItchAPi.Instance.SetupApi(false, "424930");
-
-            UserId = ItchAPi.Instance.GetMyUserId();
-            UserName = ItchAPi.Instance.GetMyUserName();
-        }
 
         UserName = "Gues";
         UserId = "486280";
@@ -205,7 +200,7 @@ public class GameManager : UIElements
         GameObject[] objs = FindObjectsOfType<GameObject>();
         foreach (GameObject obj in objs)
         {
-            if (obj.name != "DarckConsole")
+            if (obj.GetComponent<ConsoleInGame>() == null)
             {
                 GameObject.Destroy(obj);
             }
@@ -236,7 +231,8 @@ public class GameManager : UIElements
     void Update()
     {
         DarckNet.Network.Update();
-
+        UserName = "Gues";
+        UserId = "486280";
         #region CursorPointer
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
@@ -631,18 +627,17 @@ public class SaveWorld
     {
 
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + "./"+ filename);
+        FileStream file = File.Create("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + "./"+ filename + ".chunkdata");
 
         bf.Serialize(file, tile);
         file.Close();
     }
     public static Tile[,] Load(string filename)
     {
-        if (File.Exists("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + "./" + filename))
+        if (File.Exists("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + "./" + filename + ".chunkdata"))
         {
-
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + "./" + filename, FileMode.Open);
+            FileStream file = File.Open("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + "./" + filename + ".chunkdata", FileMode.Open);
 
             Tile[,] dataa = (Tile[,])bf.Deserialize(file);
             file.Close();
@@ -685,17 +680,17 @@ public class SaveWorld
     public static void SaveInfo(WorldInfo info, string filename)
     {
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./") + "./" + filename);
+        FileStream file = File.Create(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./") + "./" + filename + ".database");
 
         bf.Serialize(file, info);
         file.Close();
     }
     public static WorldInfo LoadInfo(string filename)
     {
-        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./") + "./" + filename))
+        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./") + "./" + filename + ".database"))
         {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./") + "./" + filename, FileMode.Open);
+            FileStream file = File.Open(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./") + "./" + filename + ".database", FileMode.Open);
 
             WorldInfo dataa = (WorldInfo)bf.Deserialize(file);
             file.Close();
@@ -713,7 +708,7 @@ public class SaveWorld
     public static void SaveInve(SaveInventory info, string userid)
     {
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" + userid);
+        FileStream file = File.Create(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" + userid + ".database");
 
         bf.Serialize(file, info);
         file.Close();
@@ -721,18 +716,18 @@ public class SaveWorld
 
     public static void DeletCont(string userid)
     {
-        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" +  userid))
+        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" +  userid + ".database"))
         {
-            File.Delete(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" +  userid);
+            File.Delete(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" +  userid + ".database");
         }
     }
 
     public static SaveInventory LoadInve(string userid)
     {
-        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" + userid))
+        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" + userid + ".database"))
         {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" + userid, FileMode.Open);
+            FileStream file = File.Open(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./Entity./" + userid + ".database", FileMode.Open);
 
             SaveInventory dataa = (SaveInventory)bf.Deserialize(file);
             file.Close();
@@ -748,55 +743,25 @@ public class SaveWorld
     public static void SavePlayer(SavePlayerInfo info, string userid)
     {
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./player./" + userid);
-       
+        FileStream file = File.Create(Path.GetFullPath("Saves/" + Game.GameManager.WorldName + "/player/") + userid + ".database");
+        
         bf.Serialize(file, info);
         file.Close();
     }
 
     public static void DeletPlayer(string userid)
     {
-        File.Delete(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./player./" + userid));
+        File.Delete(Path.GetFullPath("Saves/" + Game.GameManager.WorldName + "/player/" + userid + ".database"));
     }
 
     public static SavePlayerInfo LoadPlayer(string userid)
     {
-        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./player./" + userid))
+        if (File.Exists(Path.GetFullPath("Saves/" + Game.GameManager.WorldName) + "/player/" + userid + ".database"))
         {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Path.GetFullPath("Saves./" + Game.GameManager.WorldName) + "./player./" + userid, FileMode.Open);
+            FileStream file = File.Open(Path.GetFullPath("Saves/" + Game.GameManager.WorldName) + "/player/" + userid + ".database", FileMode.Open);
             
             SavePlayerInfo dataa = (SavePlayerInfo)bf.Deserialize(file);
-            file.Close();
-
-            return dataa;
-        }
-
-        return null;
-    }
-    #endregion
-
-    #region LoadItchOff
-    public static void SaveOffData(ItchSave info)
-    {
-        string texto = "";
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Path.GetFullPath("./" + "ItchData" + ".itch"));
-
-        bf.Serialize(file, info);
-
-        file.Close();
-    }
-    public static ItchSave LoadOffData()
-    {
-        if (File.Exists(Path.GetFullPath("./" + "ItchData" + ".itch")))
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Path.GetFullPath("./" + "ItchData" + ".itch"), FileMode.Open);
-
-            ItchSave dataa = (ItchSave)bf.Deserialize(file);
-            
-
             file.Close();
 
             return dataa;
@@ -1284,6 +1249,8 @@ public static class Game
     public static TimeOfDay TimeOfDay;
     public static ConsoleInGame ConsoleInGame;
     public static WorldGenerator WorldGenerator;
+
+    public static List<Entity> Entity_viewing = new List<Entity>();
 
     #region StaticMethods
     public static void Print(string Text, bool is_command, int size = 14)

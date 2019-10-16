@@ -168,19 +168,16 @@ public class MenuManager : Menus
                 {
                     if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.I))
                     {
-                        if (CheckifEnable("DevConsole") == false)
+                        if (CheckifEnable("Inventory") == true)
                         {
-                            if (CheckifEnable("Inventory") == true)
-                            {
-                                CloseMenuName("Inventory");
-                                MouselockFake.IsLock = false;
-                            }
-                            else
-                            {
-                                OpenMenuNameNoClose("Inventory");
-                                InveGui.OpenInev(Game.GameManager.MyPlayer.MyInventory);
-                                MouselockFake.IsLock = true;
-                            }
+                            CloseMenuName("Inventory");
+                            MouselockFake.IsLock = false;
+                        }
+                        else
+                        {
+                            OpenMenuNameNoClose("Inventory");
+                            InveGui.OpenInev(Game.GameManager.MyPlayer.MyInventory);
+                            MouselockFake.IsLock = true;
                         }
                     }
 

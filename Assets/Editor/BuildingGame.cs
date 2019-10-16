@@ -11,7 +11,7 @@ public class BuildingGame : MonoBehaviour {
     private static void NewMenuOption()
     {
         chanageClient();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown/ProjectEvilyn.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown/ProjectEvilyn-Client.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)

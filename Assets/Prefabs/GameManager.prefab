@@ -10622,6 +10622,7 @@ MonoBehaviour:
   mouseY: 0
   mouseZ: 0
   mouseplus: 10
+  Console: {fileID: 5052044726702399252, guid: 302d4e9bda0878f40bd04c571b275e74, type: 3}
   testepos: {x: 0, y: 0, z: 0}
 --- !u!114 &114280201115003610
 MonoBehaviour:

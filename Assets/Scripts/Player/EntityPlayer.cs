@@ -13,6 +13,7 @@ public class PlayerNetStats
     public float angle = 0;
     public int HandLayer = 5;
     public TypeBlock CurrentTile;
+    public BiomeType CurrentBiome;
 
     public int Side = -1;
 }
@@ -97,6 +98,7 @@ public class EntityPlayer : EntityLife
             var main = FootPArticle.main;
 
             playerNetWork.NetStats.CurrentTile = tile.type;
+            playerNetWork.NetStats.CurrentBiome = tile.TileBiome;
 
             if (tile.type == TypeBlock.Water)
             {

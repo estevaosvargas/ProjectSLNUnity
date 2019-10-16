@@ -163,12 +163,14 @@ public class Vilanger : Pathfindingentity
     {
         ISVISIBLE = true;
         Anim.enabled = true;
+        Game.Entity_viewing.Add(this);
     }
 
     private void OnBecameInvisible()
     {
         ISVISIBLE = false;
         Anim.enabled = false;
+        Game.Entity_viewing.Remove(this);
     }
 
     [RPC]
