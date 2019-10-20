@@ -13,12 +13,15 @@ public class ConsoleInGame : MonoBehaviour
     public List<string> List = new List<string>();
     public RectTransform InveRoot;
     public RectTransform HelpRoot;
-    public GameObject Canvas;
+    public GameObject ConsoleWindow;
     public GameObject SlotPrefab;
     public GameObject HelpPrefab;
     public bool IsVisible = false;
     [Header("Input Console")]
     public InputField InputConsole;
+    [Header("LoadingScreen")]
+    public bool IsLoading = false;
+    public GameObject LoadingscreenObj;
 
     public bool Collapse = true;
 
@@ -32,6 +35,7 @@ public class ConsoleInGame : MonoBehaviour
 
     private void Start()
     {
+        LoadingScreen_Hide();
         AddInRoolGUI("DarckConsole : " + ConsoleVersion, false, new Color(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), 1), 16);
         Application.logMessageReceived += HandleLog;
         AddInRoolGUI("Debug mode activated.", true, Color.yellow);
@@ -53,6 +57,7 @@ public class ConsoleInGame : MonoBehaviour
         CommandsData.Add("say");
         CommandsData.Add("quit");
         CommandsData.Add("console.collapse");
+        CommandsData.Add("loadingscreen.show");
 
         AddInRoolGUI("Commands Loaded", true, Color.yellow);
     }
@@ -71,7 +76,7 @@ public class ConsoleInGame : MonoBehaviour
                 {
                     Game.MenuManager.CloseAll();
                 }
-                Canvas.SetActive(true);
+                ConsoleWindow.SetActive(true);
 
                 InputConsole.ActivateInputField();
             }
@@ -80,7 +85,7 @@ public class ConsoleInGame : MonoBehaviour
                 IsVisible = false;
                 MouselockFake.ConsoleIsOpen = false;
                 MouselockFake.IsLock = false;
-                Canvas.SetActive(false);
+                ConsoleWindow.SetActive(false);
             }
         }
 
@@ -99,9 +104,9 @@ public class ConsoleInGame : MonoBehaviour
 
     public void OnClickButao(string text_to_input)
     {
-        InputConsole.text = text_to_input;
         //InputConsole.ActivateInputField();
-
+        InputConsole.text = text_to_input;
+        InputConsole.Select();
         foreach (Transform child in HelpRoot.transform)
         {
             Destroy(child.gameObject);
@@ -221,13 +226,13 @@ public class ConsoleInGame : MonoBehaviour
         else if (string.Equals(value[0], "Info", StringComparison.OrdinalIgnoreCase))
         {
             #region Comand
-            AddInRoolGUI("UserID : " + Game.GameManager.UserId + "| UserName : " + Game.GameManager.UserName + " | GameVersion : " + Game.GameManager.Version, true, Color.white);
+            AddInRoolGUI("UserID : " + Game.GameManager.CurrentPlayer.UserID + "| UserName : " + Game.GameManager.CurrentPlayer.UserName + " | GameVersion : " + Game.GameManager.Version, true, Color.white);
             #endregion
         }
         else if (string.Equals(value[0], "AddItem", StringComparison.OrdinalIgnoreCase))
         {
             #region Comand
-            Game.GameManager.MyPlayer.MyInventory.Additem(Tools.GetStringInt(value[1]), Tools.GetStringInt(value[2]));
+            Game.GameManager.CurrentPlayer.MyInventory.Additem(Tools.GetStringInt(value[1]), Tools.GetStringInt(value[2]));
             AddInRoolGUI("Add This Item on your inventory : " + ItemManager.Instance.GetItem(Tools.GetStringInt(value[1])).Name, true, Color.white);
             #endregion
         }
@@ -285,9 +290,16 @@ public class ConsoleInGame : MonoBehaviour
             AddInRoolGUI("Console Collapse : " + Collapse.ToString(), true, Color.white);
             #endregion
         }
+        else if (string.Equals(value[0], "loadingscreen.show", StringComparison.OrdinalIgnoreCase))
+        {
+            #region Comand
+            LoadingScreen_Show();
+            AddInRoolGUI("LoadingScreen Is Showing!!", true, Color.white);
+            #endregion
+        }
         else if (string.Equals(value[0], "say", StringComparison.OrdinalIgnoreCase))
         {
-            if (value.Length > 2)
+            if (value.Length >= 2)
             {
                 string valuefinal = "";
                 for (int i = 0; i < value.Length; i++)
@@ -446,6 +458,18 @@ public class ConsoleInGame : MonoBehaviour
         }
         return commandsfound.ToArray();
     }
+
+    #region LoadingScreen
+    public void LoadingScreen_Show()
+    {
+        LoadingscreenObj.SetActive(true);
+    }
+
+    public void LoadingScreen_Hide()
+    {
+        LoadingscreenObj.SetActive(false);
+    }
+    #endregion
 }
 
 public class CommandHelp

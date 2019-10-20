@@ -4,59 +4,47 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
-[System.Serializable]
-public class PlayerNetStats
-{
-    public bool walking = false;
-    public bool handhide = false;
-    public bool swiming = false;
-    public float angle = 0;
-    public int HandLayer = 5;
-    public TypeBlock CurrentTile;
-    public BiomeType CurrentBiome;
-
-    public int Side = -1;
-}
-
 public class EntityPlayer : EntityLife
 {
-    public Transform World;
-    public Rigidbody body;
     public Animator Anim;
-    public ParticleSystem FootPArticle;
-    public float Speed = 5;
-    public Transform HandRoot;
-    public Inventory myinve;
+    public Rigidbody body;
+    public Inventory Inve;
+    public Transform World;
     public LifeStatus Status;
-    public PlayerNetWork playerNetWork;
-    protected SpriteRenderer SPRITERENDER;
-    protected SpriteRenderer SPRITERENDERHAND;
-
-    private Vector3 mousePos;
-    public int animstatus;
+    public Transform HandRoot;
+    public PlayerNetStats NetStats;
+    public ParticleSystem FootPArticle;
+    public UniversalStatusPlayer UniPlayer;
+    public List<MonoBehaviour> ScriptToRemove = new List<MonoBehaviour>();
+    public List<GameObject> ObjectToDisable = new List<GameObject>();
     public Transform Vector;
     public Animator AttackSword;
-    private Vector3 lastposition;
-    int lastlayer = 0;
-
-    public GameObject villagerteste;
-
-    private int LastPostitionIntX;
-    private int LastPostitionIntZ;
-
+    public int animstatus;
+    public float Speed = 5;
+    public bool IsVisible = false;
+    public bool IsMe = false;
     public int FootParticleCount = 1;
     public int pathsize = 20;
+
+    protected SpriteRenderer SPRITERENDER;
+    protected SpriteRenderer SPRITERENDERHAND;
+    private Vector3 mousePos;
+    private Vector3 lastposition;
+    private int LastPostitionIntX;
+    private int LastPostitionIntZ;
 
     void Start()
     {
         Net = GetComponent<NetWorkView>();
+        Anim = GetComponent<Animator>();
+        Inve = GetComponent<Inventory>();
+
+        IsMe = Net.isMine;
 
         if (Net.isMine)
         {
-            Anim = GetComponent<Animator>();
             SPRITERENDER = GetComponent<SpriteRenderer>();
             SPRITERENDERHAND = HandRoot.GetComponentInChildren<SpriteRenderer>();
-            playerNetWork = GetComponent<PlayerNetWork>();
             //Game.TileAnimations.StartTileAnimation();//disabel for now
             transform.Rotate(new Vector3(3.6f, 0, 0), Space.Self);
 
@@ -65,10 +53,10 @@ public class EntityPlayer : EntityLife
                 World = Game.WorldGenerator.transform;
             }
 
-            Game.GameManager.MyPlayer.MyObject = gameObject;
-            Game.GameManager.MyPlayer.MyInventory = GetComponent<Inventory>();
-            Game.GameManager.MyPlayer.MyPlayerMove = this;
-            Game.GameManager.MyPlayer.MyPlayerMove.IsAlive = true;
+            Game.GameManager.CurrentPlayer.MyObject = gameObject;
+            Game.GameManager.CurrentPlayer.MyInventory = GetComponent<Inventory>();
+            Game.GameManager.CurrentPlayer.MyPlayerMove = this;
+            Game.GameManager.CurrentPlayer.MyPlayerMove.IsAlive = true;
 
             Game.WorldGenerator.Setplayer_data();
 
@@ -76,6 +64,11 @@ public class EntityPlayer : EntityLife
         }
         else
         {
+            foreach (var item in ScriptToRemove)
+            {
+                Destroy(item);
+            }
+
             body.isKinematic = true;
         }
     }
@@ -97,8 +90,8 @@ public class EntityPlayer : EntityLife
             Tile tile = Game.WorldGenerator.GetTileAt(transform.position.x, transform.position.z);
             var main = FootPArticle.main;
 
-            playerNetWork.NetStats.CurrentTile = tile.type;
-            playerNetWork.NetStats.CurrentBiome = tile.TileBiome;
+            NetStats.CurrentTile = tile.type;
+            NetStats.CurrentBiome = tile.TileBiome;
 
             if (tile.type == TypeBlock.Water)
             {
@@ -148,144 +141,163 @@ public class EntityPlayer : EntityLife
     #region DirectionsMethods
     public void Direita()
     {
-        if (playerNetWork.NetStats.swiming == false)
+        if (NetStats.swiming == false)
         {
-            playerNetWork.NetStats.handhide = false;
-            playerNetWork.NetStats.HandLayer = SPRITERENDER.sortingOrder;
+            NetStats.handhide = false;
+            NetStats.HandLayer = SPRITERENDER.sortingOrder;
         }
     }
     public void Esquerda()
     {
-        if (playerNetWork.NetStats.swiming == false)
+        if (NetStats.swiming == false)
         {
-            playerNetWork.NetStats.HandLayer = SPRITERENDER.sortingOrder - 1;
-            playerNetWork.NetStats.handhide = false;
+            NetStats.HandLayer = SPRITERENDER.sortingOrder - 1;
+            NetStats.handhide = false;
         }
     }
     public void Cima()
     {
-        if (playerNetWork.NetStats.swiming == false)
+        if (NetStats.swiming == false)
         {
-            playerNetWork.NetStats.handhide = true;
-            playerNetWork.NetStats.HandLayer = SPRITERENDER.sortingOrder;
+            NetStats.handhide = true;
+            NetStats.HandLayer = SPRITERENDER.sortingOrder;
         }
     }
     public void Baixo()
     {
-        if (playerNetWork.NetStats.swiming == false)
+        if (NetStats.swiming == false)
         {
-            playerNetWork.NetStats.handhide = false;
-            playerNetWork.NetStats.HandLayer = SPRITERENDER.sortingOrder;
+            NetStats.handhide = false;
+            NetStats.HandLayer = SPRITERENDER.sortingOrder;
         }
     }
     #endregion
 
     void Update()
     {
-        #region Client-Single
-        if (Game.GameManager.MultiPlayer || Game.GameManager.SinglePlayer)
+#if Client
+        if (IsMe)//check if this player is me.
         {
-            Status.UpdateStatus();
-            mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
-            
-            Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxis("Horizontal"), 0, CrossPlatformInputManager.GetAxis("Vertical"));
-
-            body.velocity = movement.normalized * Speed;
-            SPRITERENDER.sortingOrder = -(int)transform.position.z;
-
-            if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
+            #region MyPlayerFunctions
+            if (Game.GameManager.MultiPlayer || Game.GameManager.SinglePlayer)
             {
-                Vector3 lookPos = Camera.main.ScreenToWorldPoint(mousePos);
-                lookPos = lookPos - transform.position;
+                Status.UpdateStatus();
+                mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
 
-                float angle = Mathf.Atan2(lookPos.y, lookPos.x) * Mathf.Rad2Deg;
-                //Vector.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                playerNetWork.NetStats.angle = (int)angle;
+                Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxis("Horizontal"), 0, CrossPlatformInputManager.GetAxis("Vertical"));
 
-                Anim.SetFloat("X", (int)angle);
+                body.velocity = movement.normalized * Speed;
+                SPRITERENDER.sortingOrder = -(int)transform.position.z;
+
+                if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
+                {
+                    Vector3 lookPos = Camera.main.ScreenToWorldPoint(mousePos);
+                    lookPos = lookPos - transform.position;
+
+                    float angle = Mathf.Atan2(lookPos.y, lookPos.x) * Mathf.Rad2Deg;
+                    //Vector.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                    NetStats.angle = (int)angle;
+
+                    Anim.SetFloat("X", (int)angle);
+                }
+
+                #region UpDateOnMove
+                if (lastposition != transform.position)
+                {
+                    UpdateOnMove();
+                }
+                lastposition = transform.position;
+
+                if (LastPostitionIntX != (int)transform.position.x || LastPostitionIntZ != (int)transform.position.z)
+                {
+                    UpdateOnMoveInt();
+                }
+                LastPostitionIntX = (int)transform.position.x;
+                LastPostitionIntZ = (int)transform.position.z;
+                #endregion
+
+                if (NetStats.handhide == true)
+                {
+                    HandRoot.gameObject.SetActive(false);
+                }
+                else
+                {
+                    HandRoot.gameObject.SetActive(true);
+                }
+
+                if (SPRITERENDERHAND)
+                {
+                    SPRITERENDERHAND.sortingOrder = NetStats.HandLayer;
+                }
+
+                if (Input.GetAxis("Horizontal") >= 0.1f)
+                {
+                    Direita();
+                    Anim.SetInteger("Walk", 1);
+                    Anim.SetFloat("X", 0);
+
+                    NetStats.walking = true;
+                    NetStats.Side = 0;
+                }
+                else if (Input.GetAxis("Horizontal") <= -0.1f)
+                {
+                    Esquerda();
+                    Anim.SetInteger("Walk", 1);
+                    Anim.SetFloat("X", 180);
+
+                    NetStats.walking = true;
+                    NetStats.Side = 1;
+                }
+                else if (Input.GetAxis("Vertical") >= 0.1f)
+                {
+                    Cima();
+                    Anim.SetInteger("Walk", 1);
+                    Anim.SetFloat("X", 90);
+
+                    NetStats.walking = true;
+                    NetStats.Side = 2;
+                }
+                else if (Input.GetAxis("Vertical") <= -0.1f)
+                {
+                    Baixo();
+                    Anim.SetInteger("Walk", 1);
+                    Anim.SetFloat("X", -90);
+
+                    NetStats.walking = true;
+                    NetStats.Side = 3;
+                }
+                else
+                {
+                    Anim.SetInteger("Walk", 0);
+                    FootPArticle.Stop();
+
+                    NetStats.walking = false;
+                }
+
+                UpdateNetStatus();
             }
-
-            #region UpDateOnMove
-            if (lastposition != transform.position)
-            {
-                UpdateOnMove();
-            }
-            lastposition = transform.position;
-
-            if (LastPostitionIntX != (int)transform.position.x || LastPostitionIntZ != (int)transform.position.z)
-            {
-                UpdateOnMoveInt();
-            }
-            LastPostitionIntX = (int)transform.position.x;
-            LastPostitionIntZ = (int)transform.position.z;
             #endregion
-
-            if (playerNetWork.NetStats.handhide == true)
-            {
-                HandRoot.gameObject.SetActive(false);
-            }
-            else
-            {
-                HandRoot.gameObject.SetActive(true);
-            }
-
-            if (SPRITERENDERHAND)
-            {
-                SPRITERENDERHAND.sortingOrder = playerNetWork.NetStats.HandLayer;
-            }
-
-            if (Input.GetAxis("Horizontal") >= 0.1f)
-            {
-                Direita();
-                Anim.SetInteger("Walk", 1);
-                Anim.SetFloat("X", 0);
-
-                playerNetWork.NetStats.walking = true;
-                playerNetWork.NetStats.Side = 0;
-            }
-            else if (Input.GetAxis("Horizontal") <= -0.1f)
-            {
-                Esquerda();
-                Anim.SetInteger("Walk", 1);
-                Anim.SetFloat("X", 180);
-
-                playerNetWork.NetStats.walking = true;
-                playerNetWork.NetStats.Side = 1;
-            }
-            else if (Input.GetAxis("Vertical") >= 0.1f)
-            {
-                Cima();
-                Anim.SetInteger("Walk", 1);
-                Anim.SetFloat("X", 90);
-
-                playerNetWork.NetStats.walking = true;
-                playerNetWork.NetStats.Side = 2;
-            }
-            else if (Input.GetAxis("Vertical") <= -0.1f)
-            {
-                Baixo();
-                Anim.SetInteger("Walk", 1);
-                Anim.SetFloat("X", -90);
-
-                playerNetWork.NetStats.walking = true;
-                playerNetWork.NetStats.Side = 3;
-            }
-            else
-            {
-                Anim.SetInteger("Walk", 0);
-                FootPArticle.Stop();
-
-                playerNetWork.NetStats.walking = false;
-            }
-
-            UpdateNetStatus();
         }
-        #endregion
+        else
+        {
+            if (IsVisible)
+            {
+
+            }
+        }
+#endif
+
+#if Server
+        if (IsVisible)
+        {
+            
+        }
+#endif
     }
 
     void UpdateNetStatus()//for now is every frame send to all, just for stress test
     {
-        Net.RPC("RPC_Syncplayervalues", DarckNet.RPCMode.AllNoOwner, playerNetWork.NetStats.angle, playerNetWork.NetStats.Side, playerNetWork.NetStats.walking);
+        Net.RPC("RPC_Syncplayervalues", DarckNet.RPCMode.AllNoOwner, NetStats.angle, NetStats.Side, NetStats.walking);
     }
 
     public void FootPrintRight()
@@ -298,10 +310,70 @@ public class EntityPlayer : EntityLife
         FootPArticle.Emit(FootParticleCount);
     }
 
+    private void OnBecameVisible()
+    {
+        IsVisible = true;
+        Anim.enabled = true;
+        Game.Entity_viewing.Add(this);
+    }
+
+    private void OnBecameInvisible()
+    {
+        IsVisible = false;
+        Anim.enabled = false;
+        Game.Entity_viewing.Remove(this);
+    }
+
+    void OnTriggerEnter(Collider collision)
+    {
+        if (IsMe || DarckNet.Network.IsServer)
+        {
+            if (collision.tag == "TreeTrigger")
+            {
+                SpriteRenderer sprite = collision.transform.GetComponentInParent<SpriteRenderer>();
+
+                sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0.3f);
+            }
+            else if (collision.tag == "ItemDrop")
+            {
+                collision.GetComponent<ItemDrop>().GetThisItem(Inve);
+            }
+            else if (collision.tag == "City")
+            {
+                Game.MenuManager.PopUpName("My Homes - City");
+            }
+            else if (collision.tag == "Entity")
+            {
+                //collision.GetComponent<Pathfindingentity>().Run(transform);
+            }
+        }
+    }
+
+    void OnTriggerExit(Collider collision)
+    {
+        if (IsMe || DarckNet.Network.IsServer)
+        {
+            if (collision.tag == "TreeTrigger")
+            {
+                SpriteRenderer sprite = collision.transform.GetComponentInParent<SpriteRenderer>();
+
+                sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1f);
+            }
+            else if (collision.tag == "ItemDrop")
+            {
+
+            }
+            else if (collision.tag == "Entity")
+            {
+                //collision.GetComponent<Pathfindingentity>().Stop();
+            }
+        }
+    }
+
     public override void OnDead()
     {
         DarckNet.Network.Destroy(this.gameObject);
-        myinve.DeletSave();
+        Inve.DeletSave();
         Game.MenuManager.OpenRespawn();
         base.OnDead();
     }
@@ -310,8 +382,11 @@ public class EntityPlayer : EntityLife
     {
         if (IsAlive)
         {
-            myinve.Save();
-            Debug.Log("Saved Your Player!");
+            if (IsMe)
+            {
+                Inve.Save();
+                Debug.Log("Saved Your Player!");
+            }
         }
     }
 
@@ -338,11 +413,62 @@ public class EntityPlayer : EntityLife
             return false;
         }
     }
+
+#region RPCs
+    [RPC]
+    void RPC_CURAITEM(int slot)
+    {
+        if (Inve.ItemList[slot].Index >= 0)
+        {
+
+        }
+    }
+
+    [RPC]
+    void UpdatePosition(Vector3 pos)
+    {
+        transform.position = pos;
+    }
+
+    [RPC]
+    void RPC_Syncplayervalues(float angle, int side, bool iswalking)
+    {
+        if (IsVisible)// if this player is showing on the camera, the can do any update
+        {
+            int realside = 0;//is gone show the real direction of player in graus EX: 180, 90, 360 etc.
+
+            switch (side)
+            {
+                case 0:
+                    realside = 0;
+                    break;
+                case 1:
+                    realside = 180;
+                    break;
+                case 2:
+                    realside = 90;
+                    break;
+                case 3:
+                    realside = -90;
+                    break;
+            } //Decode side of player, with this we can save transfer data
+
+            Anim.SetInteger("Walk", iswalking ? 1 : 0);
+            Anim.SetFloat("X", realside);
+
+            NetStats.angle = angle;
+            NetStats.Side = side;
+            NetStats.walking = iswalking;
+        }
+    }
+#endregion
 }
 
 [System.Serializable]
 public class LifeStatus
 {
+    [Header("CharCracterstic")]
+    public CharRace Race;
     [Header("CharStatus")]
     public float Water = 80;
     public float Food = 80;
@@ -539,6 +665,26 @@ public class WepoSkillStruc
         MaxSkillXp = maxskillxp;
         MaxSkillLevel = maxskilllevel;
     }
+}
+
+[System.Serializable]
+public class UniversalStatusPlayer
+{
+    public AudioSource AUDIOSOURCE;
+}
+
+[System.Serializable]
+public class PlayerNetStats
+{
+    public bool walking = false;
+    public bool handhide = false;
+    public bool swiming = false;
+    public float angle = 0;
+    public int HandLayer = 5;
+    public TypeBlock CurrentTile;
+    public BiomeType CurrentBiome;
+
+    public int Side = -1;
 }
 
 public enum Skills : byte

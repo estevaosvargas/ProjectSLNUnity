@@ -53,10 +53,10 @@ public class SinglePlayerMenu : MonoBehaviour
     {
         if (File.Exists(System.IO.Path.GetFullPath("Saves./SavesData.data")))
         {
-            foreach (WorldList obj in LoadInfo())
+            /*foreach (WorldList obj in LoadInfo())
             {
                 List.Add(obj);
-            }
+            }*/
 
             DrawnList();
         }
@@ -79,7 +79,7 @@ public class SinglePlayerMenu : MonoBehaviour
     public void CreateSave()
     {
         List.Add(new WorldList(NameInput.text, "", "", SeedInput.text));
-        SaveInfo(List.ToArray());
+        //SaveInfo(List.ToArray());
         Game.GameManager.WorldName = NameInput.text;
         Game.GameManager.SetUpSinglePlayer(SeedInput.text);
     }
@@ -87,34 +87,8 @@ public class SinglePlayerMenu : MonoBehaviour
     public void DeletSave()
     {
         //List.Remove(new WorldList(name, "", ""));
-        SaveInfo(List.ToArray());
+        //SaveInfo(List.ToArray());
     }
-
-    #region InfoGeral
-    public static void SaveInfo(WorldList[] info)
-    {
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(System.IO.Path.GetFullPath("Saves./") + "SavesData.data");
-
-        bf.Serialize(file, info);
-        file.Close();
-    }
-    public static WorldList[] LoadInfo()
-    {
-        if (File.Exists(System.IO.Path.GetFullPath("Saves./") +  "SavesData.data"))
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(System.IO.Path.GetFullPath("Saves./") + "SavesData.data", FileMode.Open);
-
-            WorldList[] dataa = (WorldList[])bf.Deserialize(file);
-            file.Close();
-
-            return dataa;
-        }
-
-        return null;
-    }
-    #endregion
 }
 
 [System.Serializable]

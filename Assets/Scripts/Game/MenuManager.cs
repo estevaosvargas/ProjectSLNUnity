@@ -160,9 +160,9 @@ public class MenuManager : Menus
 
     void InputMenu()
     {
-        if (Game.GameManager.MyPlayer.MyPlayerMove)
+        if (Game.GameManager.CurrentPlayer.MyPlayerMove)
         {
-            if (Game.GameManager.MyPlayer.MyPlayerMove.IsAlive)
+            if (Game.GameManager.CurrentPlayer.MyPlayerMove.IsAlive)
             {
                 if (!MouselockFake.ConsoleIsOpen)
                 {
@@ -176,7 +176,7 @@ public class MenuManager : Menus
                         else
                         {
                             OpenMenuNameNoClose("Inventory");
-                            InveGui.OpenInev(Game.GameManager.MyPlayer.MyInventory);
+                            InveGui.OpenInev(Game.GameManager.CurrentPlayer.MyInventory);
                             MouselockFake.IsLock = true;
                         }
                     }
@@ -258,7 +258,7 @@ public class MenuManager : Menus
         else
         {
             OpenMenuName("Inventory");
-            InveGui.OpenInevContainer(Game.GameManager.MyPlayer.MyInventory, cont);
+            InveGui.OpenInevContainer(Game.GameManager.CurrentPlayer.MyInventory, cont);
             MouselockFake.IsLock = true;
         }
 

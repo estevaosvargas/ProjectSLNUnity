@@ -42,8 +42,8 @@ public class MiniMapManager : MonoBehaviour
     {
         Tile tile = new Tile();
 
-        x = x + (int)Game.GameManager.MyPlayer.MyObject.transform.position.x -25;
-        y = y + (int)Game.GameManager.MyPlayer.MyObject.transform.position.y -25;
+        x = x + (int)Game.GameManager.CurrentPlayer.MyObject.transform.position.x -25;
+        y = y + (int)Game.GameManager.CurrentPlayer.MyObject.transform.position.y -25;
 
         float persistence = 39.9f;
         float frequency = 0.001f;

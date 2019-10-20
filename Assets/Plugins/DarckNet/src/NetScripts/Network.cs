@@ -1272,6 +1272,11 @@ namespace DarckNet
             else if (type == DataType.CloseConnection)
             {
                 Disconnect();
+
+                for (int i = 0; i < Events.Count; i++)
+                {
+                    Events[i].OnDisconnect();
+                }
             }
             else if (type == DataType.ExitDimension)
             {
@@ -1287,9 +1292,12 @@ namespace DarckNet
             }
             else if (type == DataType.ServerStop)
             {
-                Debug.Log("Disconnecting from server...");
-
                 Disconnect();
+
+                for (int i = 0; i < Events.Count; i++)
+                {
+                    Events[i].OnDisconnect();
+                }
             }
         }
 

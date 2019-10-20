@@ -67,7 +67,7 @@ public class ServerConsole : MonoBehaviour
         else if (string.Equals(textarray[0], "AddItem", StringComparison.OrdinalIgnoreCase))
         {
             #region Comand
-            foreach (var playerobj in FindObjectsOfType<PlayerNetWork>())
+            foreach (var playerobj in FindObjectsOfType<EntityPlayer>())
             {
                 playerobj.GetComponent<Inventory>().Additem(Tools.GetStringInt(textarray[1]), Tools.GetStringInt(textarray[2]));
             }

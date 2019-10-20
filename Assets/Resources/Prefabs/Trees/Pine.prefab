@@ -107,7 +107,6 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -230,7 +229,6 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -332,31 +330,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -4216859302048453862, guid: 31da2c69911565a4eaa7780931448a00,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 93.013115
-      objectReference: {fileID: 0}
-    - target: {fileID: -4216859302048453862, guid: 31da2c69911565a4eaa7780931448a00,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 129.9256
-      objectReference: {fileID: 0}
-    - target: {fileID: -4216859302048453862, guid: 31da2c69911565a4eaa7780931448a00,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 81.656494
-      objectReference: {fileID: 0}
-    - target: {fileID: -1504981713932161579, guid: 31da2c69911565a4eaa7780931448a00,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 13c3e3e45788df64997b9aed000893d9, type: 2}
-    - target: {fileID: -1504981713932161579, guid: 31da2c69911565a4eaa7780931448a00,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31da2c69911565a4eaa7780931448a00, type: 3}

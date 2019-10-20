@@ -25,7 +25,7 @@ public class StatusWindow : MonoBehaviour
     private void OnEnable()
     {
         Instance = this;
-        if (Game.GameManager.MyPlayer.MyPlayerMove)
+        if (Game.GameManager.CurrentPlayer.MyPlayerMove)
         {
             switch (Pages)
             {
@@ -34,14 +34,14 @@ public class StatusWindow : MonoBehaviour
                     break;
                 case PagesNum.Page01:
                     ClearCanvas();
-                    if (Game.GameManager.MyPlayer.MyPlayerMove.Status.SkillsList.Count > 0)
+                    if (Game.GameManager.CurrentPlayer.MyPlayerMove.Status.SkillsList.Count > 0)
                     {
-                        SkillsList = Game.GameManager.MyPlayer.MyPlayerMove.Status.SkillsList.ToArray();
+                        SkillsList = Game.GameManager.CurrentPlayer.MyPlayerMove.Status.SkillsList.ToArray();
                         DrawnList01(SkillsList);
                     }
-                    if (Game.GameManager.MyPlayer.MyPlayerMove.Status.WPSkillsList.Count > 0)
+                    if (Game.GameManager.CurrentPlayer.MyPlayerMove.Status.WPSkillsList.Count > 0)
                     {
-                        WeapondSkill = Game.GameManager.MyPlayer.MyPlayerMove.Status.WPSkillsList.ToArray();
+                        WeapondSkill = Game.GameManager.CurrentPlayer.MyPlayerMove.Status.WPSkillsList.ToArray();
                         DrawnList01(WeapondSkill);
                     }
 
@@ -49,9 +49,9 @@ public class StatusWindow : MonoBehaviour
                 case PagesNum.Page02:
                     break;
                 default:
-                    if (Game.GameManager.MyPlayer.MyPlayerMove.Status.SkillsList.Count > 0)
+                    if (Game.GameManager.CurrentPlayer.MyPlayerMove.Status.SkillsList.Count > 0)
                     {
-                        SkillsList = Game.GameManager.MyPlayer.MyPlayerMove.Status.SkillsList.ToArray();
+                        SkillsList = Game.GameManager.CurrentPlayer.MyPlayerMove.Status.SkillsList.ToArray();
                         DrawnList01(SkillsList);
                     }
                     break;
@@ -61,7 +61,7 @@ public class StatusWindow : MonoBehaviour
 
     public void Refresh()
     {
-        if (Game.GameManager.MyPlayer.MyPlayerMove)
+        if (Game.GameManager.CurrentPlayer.MyPlayerMove)
         {
             switch (Pages)
             {
@@ -70,14 +70,14 @@ public class StatusWindow : MonoBehaviour
                     break;
                 case PagesNum.Page01:
                     ClearCanvas();
-                    if (Game.GameManager.MyPlayer.MyPlayerMove.Status.SkillsList.Count > 0)
+                    if (Game.GameManager.CurrentPlayer.MyPlayerMove.Status.SkillsList.Count > 0)
                     {
-                        SkillsList = Game.GameManager.MyPlayer.MyPlayerMove.Status.SkillsList.ToArray();
+                        SkillsList = Game.GameManager.CurrentPlayer.MyPlayerMove.Status.SkillsList.ToArray();
                         DrawnList01(SkillsList);
                     }
-                    if (Game.GameManager.MyPlayer.MyPlayerMove.Status.WPSkillsList.Count > 0)
+                    if (Game.GameManager.CurrentPlayer.MyPlayerMove.Status.WPSkillsList.Count > 0)
                     {
-                        WeapondSkill = Game.GameManager.MyPlayer.MyPlayerMove.Status.WPSkillsList.ToArray();
+                        WeapondSkill = Game.GameManager.CurrentPlayer.MyPlayerMove.Status.WPSkillsList.ToArray();
                         DrawnList01(WeapondSkill);
                     }
 
@@ -85,9 +85,9 @@ public class StatusWindow : MonoBehaviour
                 case PagesNum.Page02:
                     break;
                 default:
-                    if (Game.GameManager.MyPlayer.MyPlayerMove.Status.SkillsList.Count > 0)
+                    if (Game.GameManager.CurrentPlayer.MyPlayerMove.Status.SkillsList.Count > 0)
                     {
-                        SkillsList = Game.GameManager.MyPlayer.MyPlayerMove.Status.SkillsList.ToArray();
+                        SkillsList = Game.GameManager.CurrentPlayer.MyPlayerMove.Status.SkillsList.ToArray();
                         DrawnList01(SkillsList);
                     }
                     break;

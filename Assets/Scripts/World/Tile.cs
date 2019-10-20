@@ -30,6 +30,9 @@ public class Tile
     public int Dia = 1;
     public int Mes = 1;
 
+    /// <summary>
+    /// If AI Can Walk.
+    /// </summary>
     [NonSerialized]
     public bool CanWalk = false;
     [NonSerialized]
@@ -148,14 +151,6 @@ public class Tile
             // normal 0.8f
             if (sample > 0.5f)
             {
-                //float xbiome = (float)1 * x / 50 * 0.5f;
-                //float ybiome = (float)1 * y / 50 * 0.5f;
-
-                //xbiome *= 0.01f;
-                //ybiome *= 0.01f;
-
-                //float sample2 = Mathf.PerlinNoise(xbiome + Game.WorldGenerator.Seed, ybiome + Game.WorldGenerator.Seed) * sample / 0.11f;
-
                 float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.005f, 1, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
 
                 sample2 *= 10;
@@ -535,7 +530,7 @@ public class Tile
                 tile.HP = 100;
                 tile.MaxHP = 100;
                 tile.RenderLevel = 2;
-                tile.CanWalk = true;
+                tile.CanWalk = false;
                 break;
             case TypeBlock.Bloco:
                 tile.ConnecyToNightboors = true;

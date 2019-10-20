@@ -22,7 +22,7 @@ public class Inventory : MonoBehaviour
 
         if (IsPlayer == true)
         {
-            SavePlayerInfo inve = SaveWorld.LoadPlayer(Game.GameManager.UserId);
+            SavePlayerInfo inve = SaveWorld.LoadPlayer(Game.GameManager.CurrentPlayer.UserID);
 
             if (inve != null)
             {
@@ -54,7 +54,7 @@ public class Inventory : MonoBehaviour
         {
             if (IsPlayer == true)
             {
-                SaveWorld.SavePlayer(new SavePlayerInfo(new SaveInventory(ItemList), transform.position, GetComponent<EntityLife>().HP, GetComponent<EntityPlayer>().Status), Game.GameManager.UserId);
+                SaveWorld.SavePlayer(new SavePlayerInfo(new SaveInventory(ItemList), transform.position, GetComponent<EntityLife>().HP, GetComponent<EntityPlayer>().Status), Game.GameManager.CurrentPlayer.UserID);
             }
             else
             {
@@ -69,7 +69,7 @@ public class Inventory : MonoBehaviour
         {
             if (IsPlayer == true)
             {
-                SaveWorld.DeletPlayer(Game.GameManager.UserId);
+                SaveWorld.DeletPlayer(Game.GameManager.CurrentPlayer.UserID);
             }
             else
             {

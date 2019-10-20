@@ -36,8 +36,7 @@ public class GameManager : UIElements
 #endif
     Queue<PathResult> results = new Queue<PathResult>();
     public GameObject Cnavas;
-    public string UserName = "Guest";
-    public string UserId = "";
+    public CharacterCurrentData CurrentPlayer;
     public string Version = "1.0.0";
     public int Seed = 0;
     public string WorldName = "YourWorldName";
@@ -47,7 +46,6 @@ public class GameManager : UIElements
     public MousePngs MousePointer;
     public static MouseType Mtype = MouseType.none;
     public GameObject DMPOP;
-    public MyPlayerInfo MyPlayer;
     public bool SHOWDEBUG = false;
     public ClientConnect Client;
     public NetWorkView Net;
@@ -87,9 +85,6 @@ public class GameManager : UIElements
         Game.AudioManager.LoadAudio();
 		ItchAPi.StartItchApi();
 
-        UserName = "Gues";
-        UserId = "486280";
-
         if (!Directory.Exists(Path.GetFullPath("Saves./")))
         {
             Directory.CreateDirectory(Path.GetFullPath("Saves./"));
@@ -119,32 +114,32 @@ public class GameManager : UIElements
     public void SetUpSinglePlayer(string seed)
     {
         SaveWorld.CreateDerectorys();
+
         if (seed != "")
         {
             Seed = int.Parse(seed);
         }
+
+        WorldInfo info = SaveWorld.LoadInfo("World");
+        if (info != null)
+        {
+            Seed = info.Seed;
+            DataTime.Hora = info.h;
+            DataTime.Dia = info.d;
+            DataTime.Mes = info.m;
+            DataTime.skytime = info.skytime;
+        }
         else
         {
-            WorldInfo info = SaveWorld.LoadInfo("World");
-            if (info != null)
-            {
-                Seed = info.Seed;
-                DataTime.Hora = info.h;
-                DataTime.Dia = info.d;
-                DataTime.Mes = info.m;
-                DataTime.skytime = info.skytime;
-            }
-            else
-            {
-                WorldInfo newinfo = new WorldInfo(12, 1, 1, 0.5f, UnityEngine.Random.Range(-9999, 9999));
-                Seed = newinfo.Seed;
-                DataTime.Hora = newinfo.h;
-                DataTime.Dia = newinfo.d;
-                DataTime.Mes = newinfo.m;
-                DataTime.skytime = newinfo.skytime;
-                SaveWorld.SaveInfo(newinfo, "World");
-            }
+            WorldInfo newinfo = new WorldInfo(12, 1, 1, 0.5f, Seed);
+            Seed = newinfo.Seed;
+            DataTime.Hora = newinfo.h;
+            DataTime.Dia = newinfo.d;
+            DataTime.Mes = newinfo.m;
+            DataTime.skytime = newinfo.skytime;
+            SaveWorld.SaveInfo(newinfo, "World");
         }
+
         SinglePlayer = true;
         Playing = true;
         DarckNet.Network.Create("127.0.0.1", 25000, 1);
@@ -180,7 +175,7 @@ public class GameManager : UIElements
 
     public override void OnDisconnect()
     {
-        DarckNet.Network.Disconnect();
+        Game.ConsoleInGame.LoadingScreen_Show();
         ClearObjects();
         SinglePlayer = false;
         MultiPlayer = false;
@@ -200,9 +195,12 @@ public class GameManager : UIElements
         GameObject[] objs = FindObjectsOfType<GameObject>();
         foreach (GameObject obj in objs)
         {
-            if (obj.GetComponent<ConsoleInGame>() == null)
+            if (obj.transform.root.GetComponent<ConsoleInGame>() == null)
             {
-                GameObject.Destroy(obj);
+                if (obj.GetComponent<ConsoleInGame>() == null)
+                {
+                    GameObject.Destroy(obj);
+                }
             }
         }
     }
@@ -231,8 +229,7 @@ public class GameManager : UIElements
     void Update()
     {
         DarckNet.Network.Update();
-        UserName = "Gues";
-        UserId = "486280";
+
         #region CursorPointer
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
@@ -531,17 +528,6 @@ public class PlayerInfo : MonoBehaviour
     public Lidgren.Network.NetConnection Peer;
 }
 
-[System.Serializable]
-public class MyPlayerInfo
-{
-    public GameObject MyObject;
-    public Inventory MyInventory;
-    public EntityPlayer MyPlayerMove;
-
-    [Header("GUI MY INVENTORY")]
-    public InfoItemGUI InveItemInfo;
-}
-
 public class DCFMath
 {
     public static float PingPong(float minimalvalue, float maxvalue, float time)
@@ -768,6 +754,34 @@ public class SaveWorld
         }
 
         return null;
+    }
+    #endregion
+
+    #region CharList
+    public static void SaveChars(CharacterLista[] info)
+    {
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(Path.GetFullPath("Saves./") + "Characters.database");
+
+        bf.Serialize(file, info);
+        file.Close();
+    }
+    public static CharacterLista[] LoadChars()
+    {
+        if (File.Exists(Path.GetFullPath("Saves./") + "Characters.database"))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Path.GetFullPath("Saves./") + "Characters.database", FileMode.Open);
+
+            CharacterLista[] dataa = (CharacterLista[])bf.Deserialize(file);
+            file.Close();
+
+            return dataa;
+        }
+        else
+        {
+            return null;
+        }
     }
     #endregion
 }
@@ -1030,6 +1044,28 @@ public struct ClientConnect
     public int Port;
     public string Password;
     public bool Connected;
+}
+
+[System.Serializable]
+public class CharacterCurrentData
+{
+    [Header("CharCreator-GlobalData")]
+    public string UserName = "";
+    public string UserID;
+
+    public GameObject MyObject;
+    public Inventory MyInventory;
+    public EntityPlayer MyPlayerMove;
+    [Header("GUI MY INVENTORY")]
+    public InfoItemGUI InveItemInfo;
+
+    [Header("CharCreator-HoldingData")]
+    public CharRace charRace = CharRace.Human;
+}
+
+public enum CharRace : byte
+{
+    God, Human, elf, Orc, Goblin, Unded, Dwarf
 }
 
 public class DCallBack : MonoBehaviour

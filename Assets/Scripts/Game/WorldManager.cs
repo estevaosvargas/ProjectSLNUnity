@@ -19,9 +19,9 @@ public class WorldManager : MonoBehaviour
 
     public void ChangeWorld(string worldto, int px, int py, int pz, int world_id)
     {
-        if (Game.GameManager.MyPlayer.MyObject)
+        if (Game.GameManager.CurrentPlayer.MyObject)
         {
-            RemovePlayerWorld(Game.GameManager.MyPlayer.MyObject);
+            RemovePlayerWorld(Game.GameManager.CurrentPlayer.MyObject);
         }
         SpawnPlayer(px, py, pz, world_id);
         SceneManager.LoadSceneAsync(worldto);

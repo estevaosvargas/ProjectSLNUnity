@@ -201,14 +201,14 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
                 color = Color.white;
             }
 
-            Game.GameManager.MyPlayer.InveItemInfo.gameObject.SetActive(true);
-            Game.GameManager.MyPlayer.InveItemInfo.SetInfo(Item.Name, Item.Description, Item.Icon, Item.itemRarity.ToString(), color);
+            Game.GameManager.CurrentPlayer.InveItemInfo.gameObject.SetActive(true);
+            Game.GameManager.CurrentPlayer.InveItemInfo.SetInfo(Item.Name, Item.Description, Item.Icon, Item.itemRarity.ToString(), color);
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Game.GameManager.MyPlayer.InveItemInfo.gameObject.SetActive(false);
+        Game.GameManager.CurrentPlayer.InveItemInfo.gameObject.SetActive(false);
     }
 
     public void SetSlot(int index, int quanty, ItemData item, bool iscont)

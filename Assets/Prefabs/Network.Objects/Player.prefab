@@ -5094,7 +5094,6 @@ GameObject:
   - component: {fileID: 114067372861037966}
   - component: {fileID: 95241139421231152}
   - component: {fileID: 114066613193702464}
-  - component: {fileID: 114675796371926942}
   - component: {fileID: 8238467790666831973}
   - component: {fileID: 4404721391609997342}
   m_Layer: 9
@@ -5294,14 +5293,12 @@ MonoBehaviour:
   MaxHP: 80
   IsAlive: 0
   LastAttacker: 
-  World: {fileID: 0}
-  body: {fileID: 8238467790666831973}
   Anim: {fileID: 95241139421231152}
-  FootPArticle: {fileID: 198870550756704852}
-  Speed: 2
-  HandRoot: {fileID: 4753514897003424}
-  myinve: {fileID: 114246513993113868}
+  body: {fileID: 8238467790666831973}
+  Inve: {fileID: 0}
+  World: {fileID: 0}
   Status:
+    Race: 1
     Water: 80
     Food: 80
     Mana: 80
@@ -5311,12 +5308,28 @@ MonoBehaviour:
     SkillsList: []
     WPSkillsList: []
     XP_PLAYER: 0
-  playerNetWork: {fileID: 0}
-  animstatus: 0
+  HandRoot: {fileID: 4753514897003424}
+  NetStats:
+    walking: 0
+    handhide: 0
+    swiming: 0
+    angle: 0
+    HandLayer: 5
+    CurrentTile: 0
+    CurrentBiome: 0
+    Side: -1
+  FootPArticle: {fileID: 198870550756704852}
+  UniPlayer:
+    AUDIOSOURCE: {fileID: 6679709516443144081}
+  ScriptToRemove:
+  - {fileID: 114067372861037966}
+  ObjectToDisable: []
   Vector: {fileID: 4443738411197922}
   AttackSword: {fileID: 95925241092886188}
-  villagerteste: {fileID: 1459282729364594, guid: 7799e939b9f7eaa43a537b122f54276c,
-    type: 3}
+  animstatus: 0
+  Speed: 2
+  IsVisible: 0
+  IsMe: 0
   FootParticleCount: 5
   pathsize: 20
 --- !u!114 &114067372861037966
@@ -5396,39 +5409,6 @@ MonoBehaviour:
   ViewID: 0
   DeliveModo: 1
   IdMode: 1
---- !u!114 &114675796371926942
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1915398696615718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 816fd95d9113a0441b7be8280657dd90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Net: {fileID: 114066613193702464}
-  HP: 100
-  MaxHP: 100
-  IsAlive: 0
-  LastAttacker: 
-  ScriptToRemove:
-  - {fileID: 114161712818232822}
-  - {fileID: 114067372861037966}
-  ObjectToDisable: []
-  NetStats:
-    walking: 0
-    handhide: 0
-    swiming: 0
-    angle: 0
-    HandLayer: 5
-    CurrentTile: 0
-    Side: -1
-  Anim: {fileID: 0}
-  Inve: {fileID: 0}
-  UniPlayer:
-    AUDIOSOURCE: {fileID: 6679709516443144081}
 --- !u!54 &8238467790666831973
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -47,9 +47,9 @@ public class WorldGenerator : DCallBack
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
             Seed = Game.GameManager.Seed;
-            Player = Game.GameManager.MyPlayer.MyObject.transform;
+            Player = Game.GameManager.CurrentPlayer.MyObject.transform;
             Player.GetComponent<EntityPlayer>().World = this.transform;
-            Cam.target = Game.GameManager.MyPlayer.MyObject.transform;
+            Cam.target = Game.GameManager.CurrentPlayer.MyObject.transform;
 
             UpdateFindChunk();
         }
@@ -65,8 +65,9 @@ public class WorldGenerator : DCallBack
     {
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
-            WorldManager.This.SpawnPlayer(UnityEngine.Random.Range(-100, 100), 0, UnityEngine.Random.Range(-100, 100), World_ID);
+            WorldManager.This.SpawnPlayer(0, 0, 0, World_ID);
         }
+        Game.ConsoleInGame.LoadingScreen_Hide();
     }
 
 
