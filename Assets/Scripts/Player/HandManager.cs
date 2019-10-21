@@ -93,11 +93,11 @@ public class HandManager : MonoBehaviour
                     {
                         if (Game.GameManager.hit.collider.GetComponent<Trees>())
                         {
-                            Game.GameManager.hit.collider.GetComponent<Trees>().DoDamage(CurrentItem.About.BlockDamage);
+                            Game.GameManager.hit.collider.GetComponent<Trees>().DoDamage(CurrentItem, CurrentItem.About.BlockDamage);
                         }
                         else if (Game.GameManager.hit.collider.GetComponentInChildren<Trees>())
                         {
-                            Game.GameManager.hit.collider.GetComponentInChildren<Trees>().DoDamage(CurrentItem.About.BlockDamage);
+                            Game.GameManager.hit.collider.GetComponentInChildren<Trees>().DoDamage(CurrentItem, CurrentItem.About.BlockDamage);
                         }
                         HandTransform.GetComponent<Animator>().SetTrigger("Play");
                         timetemp = Time.time;
@@ -109,11 +109,11 @@ public class HandManager : MonoBehaviour
                     {
                         if (Game.GameManager.hit.collider.GetComponent<Trees>())
                         {
-                            Game.GameManager.hit.collider.GetComponent<Trees>().DoDamage(Hand.DamageBlock);
+                            Game.GameManager.hit.collider.GetComponent<Trees>().DoDamage(Hand, Hand.DamageBlock);
                         }
                         else if (Game.GameManager.hit.collider.GetComponentInChildren<Trees>())
                         {
-                            Game.GameManager.hit.collider.GetComponentInChildren<Trees>().DoDamage(Hand.DamageBlock);
+                            Game.GameManager.hit.collider.GetComponentInChildren<Trees>().DoDamage(Hand, Hand.DamageBlock);
                         }
                         HandTransform.GetComponent<Animator>().SetTrigger("Play");
                         timetemp = Time.time;
@@ -385,4 +385,6 @@ public class HandData
     public int Distance = 3;
 
     public float FireRate = 0.4f;
+
+    public MaterialHitType MaterialHitBest = MaterialHitType.Entity;
 }

@@ -7,22 +7,17 @@ public class ItemDataBaseFile
         Debug.Log("Loading ItemData...");
         Dictionary<int, ItemData> itemlist = new Dictionary<int, ItemData>();
 
-        itemlist.Add(0, SetUpItem(0, "Wood", "Wood Log Taked from a tree", SpriteManager.Getitemicon("Wood"), ItemRarity.Common, 150, true, false, ItemType.none, new ItemAbout()));
-        itemlist.Add(1, SetUpItem(1, "PickAxe", "PickAxe PickAxe PickAxe PickAxe", SpriteManager.Getitemicon("PickAxe"), ItemRarity.Uncommon, 1, false, true, ItemType.Tools, new ItemAbout(35, 15, 15, 100, 2, 0.5f)));
-        itemlist.Add(2, SetUpItem(2, "Wood Chest", "ChestChestChestChestChestChestChest", SpriteManager.Getitemicon("ChestWood"), ItemRarity.Common, 150, true, true, ItemType.Placer, new ItemAbout(Placer.BauWood, 2)));
-        itemlist.Add(3, SetUpItem(3, "CampFire", "CampFireCampFireCampFireCampFire", SpriteManager.Getitemicon("CampFire"), ItemRarity.Common, 150, true, true, ItemType.Placer, new ItemAbout(Placer.CampFire, 2)));
-        itemlist.Add(4, SetUpItem(4, "CampTend", "CampTendCampTendCampTendCampTendCampTend", SpriteManager.Getitemicon("CampTend"), ItemRarity.Common, 150, true, true, ItemType.Placer, new ItemAbout(Placer.CampTend, 2)));
-        itemlist.Add(5, SetUpItem(5, "MainBuil01", "MainBuil01MainBuil01MainBuil01", SpriteManager.Getitemicon("MainBuil01"), ItemRarity.Common, 150, true, true, ItemType.Placer, new ItemAbout(Placer.MainBuild1, 2)));
-        itemlist.Add(6, SetUpItem(6, "MainBuil02", "MainBuil02MainBuil02MainBuil02", SpriteManager.Getitemicon("MainBuil02"), ItemRarity.Common, 150, true, true, ItemType.Placer, new ItemAbout(Placer.MainBuild2, 2)));
-
-
+        itemlist.Add(0, SetUpItem(0, "Wood", "Wood Log Taked from a tree", Game.SpriteManager.Getitemicon("Wood"), ItemRarity.Common, 150, true, false, ItemType.none, MaterialHitType.none, new ItemAbout()));
+        itemlist.Add(1, SetUpItem(1, "PickAxe", "PickAxe PickAxe PickAxe PickAxe", Game.SpriteManager.Getitemicon("PickAxe"), ItemRarity.Common, 1, false, true, ItemType.Tools, MaterialHitType.Rock, new ItemAbout(25, 45, 45, 100, 2, 0.7f)));
+        itemlist.Add(2, SetUpItem(2, "Wood Chest", "ChestChestChestChestChestChestChest", Game.SpriteManager.Getitemicon("ChestWood"), ItemRarity.Common, 150, true, true, ItemType.Placer, MaterialHitType.none, new ItemAbout(Placer.BauWood, 2)));
+        itemlist.Add(3, SetUpItem(3, "Axe", "Is Good for take wood, cut down a tree!", Game.SpriteManager.Getitemicon("Axe"), ItemRarity.Common, 1, false, true, ItemType.Tools, MaterialHitType.Wood, new ItemAbout(35, 15, 15, 100, 2, 0.7f)));
 
 
         Debug.Log("ItemData Loading Finished!");
         return itemlist;
     }
     #region SetUpItemVoid
-    static ItemData SetUpItem(int index, string namestring, string description, Sprite Icon, ItemRarity itemRarity, int MaxAmount, bool Stack, bool canEquip, ItemType itemType, ItemAbout About)
+    static ItemData SetUpItem(int index, string namestring, string description, Sprite Icon, ItemRarity itemRarity, int MaxAmount, bool Stack, bool canEquip, ItemType itemType, MaterialHitType MaterialHit_Best, ItemAbout About)
     {
         ItemData item = new ItemData();
 
@@ -34,6 +29,7 @@ public class ItemDataBaseFile
         item.Icon = Icon;
         item.itemRarity = itemRarity;
         item.ITEMTYPE = itemType;
+        item.MaterialHitBest = MaterialHit_Best;
         item.MaxAmount = MaxAmount;
         item.Stack = Stack;
 

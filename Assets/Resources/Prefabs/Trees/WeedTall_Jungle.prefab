@@ -139,8 +139,8 @@ MonoBehaviour:
     Dia: 0
     Mes: 0
     HP: 100
-  ItemDrop: 1
-  DropQuanty: 10
+  ItemDrop: 0
+  DropQuanty: 5
 --- !u!1001 &4116271382155281973
 PrefabInstance:
   m_ObjectHideFlags: 0

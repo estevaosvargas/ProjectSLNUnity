@@ -203,6 +203,7 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
 
             Game.GameManager.CurrentPlayer.InveItemInfo.gameObject.SetActive(true);
             Game.GameManager.CurrentPlayer.InveItemInfo.SetInfo(Item.Name, Item.Description, Item.Icon, Item.itemRarity.ToString(), color);
+            Game.GameManager.CurrentPlayer.InveItemInfo.transform.position = Input.mousePosition;
         }
     }
 

@@ -14,7 +14,7 @@ public class TileObj : MonoBehaviour
 
     public void SetUp()
     {
-        TILEANIMATIONDATA = new TileStrucAnimation(GetComponent<SpriteRenderer>(), new Sprite[2] { SpriteManager.Instance.GetSprite("Water_"), SpriteManager.Instance.GetSprite("Water_01") });
+        TILEANIMATIONDATA = new TileStrucAnimation(GetComponent<SpriteRenderer>(), new Sprite[2] { Game.SpriteManager.GetSprite("Water_"), Game.SpriteManager.GetSprite("Water_01") });
 
         for (int i = 0; i < Tiles.Count; i++)
         {

@@ -11,6 +11,8 @@ public class Inventory : MonoBehaviour
     public bool IsPlayer = false;
     public NetWorkView Net;
 
+    public List<Lidgren.Network.NetConnection> PlayerOpen = new List<Lidgren.Network.NetConnection>();
+
     void Awake()
     {
 
@@ -81,11 +83,7 @@ public class Inventory : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            _Additem(1, 1 ,-1 , true);
-            Net.RPC("RPC_SyncSlot", DarckNet.RPCMode.Owner, 0, 1, ItemList[0].Index, ItemList[1].Index, ItemList[0].Amount, ItemList[1].Amount);
-        }
+
     }
 
     void _RemoveQuanty(int slot, int quanty)
@@ -124,7 +122,10 @@ public class Inventory : MonoBehaviour
 
                 if (!Net.isMine || !Game.GameManager.SinglePlayer)
                 {
-                    Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, slot, ItemList[slot].Index, ItemList[slot].Amount);
+                    foreach (var connection in PlayerOpen)
+                    {
+                        Net.RPC("RPC_SyncOneSlot", connection, slot, ItemList[slot].Index, ItemList[slot].Amount);
+                    }
                 }
             }
         }
@@ -150,7 +151,10 @@ public class Inventory : MonoBehaviour
 
                         if (!Net.isMine || !Game.GameManager.SinglePlayer)
                         {
-                            Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, i, ItemList[i].Index, ItemList[i].Amount);
+                            foreach (var connection in PlayerOpen)
+                            {
+                                Net.RPC("RPC_SyncOneSlot", connection, i, ItemList[i].Index, ItemList[i].Amount);
+                            }
                         }
                         return;
                     }
@@ -163,7 +167,10 @@ public class Inventory : MonoBehaviour
 
                         if (!Net.isMine || !Game.GameManager.SinglePlayer)
                         {
-                            Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, i, ItemList[i].Index, ItemList[i].Amount);
+                            foreach (var connection in PlayerOpen)
+                            {
+                                Net.RPC("RPC_SyncOneSlot", connection, i, ItemList[i].Index, ItemList[i].Amount);
+                            }
                         }
                     }
                 }
@@ -177,7 +184,10 @@ public class Inventory : MonoBehaviour
 
                 if (!Net.isMine || !Game.GameManager.SinglePlayer)
                 {
-                    Net.RPC("RPC_SyncOneSlot", DarckNet.RPCMode.Owner, i, ItemList[i].Index, ItemList[i].Amount);
+                    foreach (var connection in PlayerOpen)
+                    {
+                        Net.RPC("RPC_SyncOneSlot", connection, i, ItemList[i].Index, ItemList[i].Amount);
+                    }
                 }
                 return;
             }
@@ -356,6 +366,11 @@ public class Inventory : MonoBehaviour
     {
         Net.RPC("RPC_REQUESTDATA", DarckNet.RPCMode.Server, JsonHelper.ToJson(ItemList.ToArray()).GetHashCode());
     }
+
+    public void NET_SendCloseInve()
+    {
+        Net.RPC("RPC_REQUESTCLOSE", DarckNet.RPCMode.Server);
+    }
     #endregion
 
     #region RPC_INVE_Client
@@ -395,8 +410,25 @@ public class Inventory : MonoBehaviour
 
     #region RPC_INVE
     [RPC]
+    void RPC_REQUESTCLOSE(DarckNet.DNetConnection sender)
+    {
+        Lidgren.Network.NetConnection netcon = sender.NetConnection;
+        if (PlayerOpen.Contains(netcon))
+        {
+            PlayerOpen.Remove(sender.NetConnection);
+            UnityEngine.Debug.Log("This player (" + sender.unique + ") ask to remove him from inventory!");
+        }
+        else
+        {
+            UnityEngine.Debug.Log("This player (" + sender.unique + ") ask to remove him from inventory, but he isn't in inventory");
+        }
+    }
+
+    [RPC]
     void RPC_REQUESTDATA(int hashcode ,DarckNet.DNetConnection sender)
     {
+        PlayerOpen.Add(sender.NetConnection);
+
         string json = JsonHelper.ToJson(ItemList.ToArray());
 
         if (json.GetHashCode() != hashcode)

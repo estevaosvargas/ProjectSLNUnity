@@ -140,8 +140,9 @@ MonoBehaviour:
     Dia: 0
     Mes: 0
     HP: 100
-  ItemDrop: 2
-  DropQuanty: 10
+  ItemDrop: 0
+  DropQuanty: 5
+  MaterialHit: 4
 --- !u!136 &8476169763500337658
 CapsuleCollider:
   m_ObjectHideFlags: 0

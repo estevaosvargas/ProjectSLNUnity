@@ -171,6 +171,17 @@ public static class GetPresets
                 return false;
         }
     }
+
+    public static bool GetPlacerEntity(Placer placer)
+    {
+        switch (placer)
+        {
+            case Placer.BauWood:
+                return true;
+            default:
+                return false;
+        }
+    }
 }
 
 public enum TypeBlock : byte
@@ -200,4 +211,9 @@ public enum TakeGO : byte
 public enum Placer : byte
 {
     empty, BauWood, BauGold, BauDiamond, BauDark, CampTend, CampFire, MainBuild1, MainBuild2
+}
+
+public enum MaterialHitType: byte
+{
+    none, Entity, all, Meet, Wood, Rock, Dirt
 }

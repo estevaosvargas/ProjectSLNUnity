@@ -12,6 +12,7 @@ public class ItemData
     [XmlIgnore]
     public ItemRarity itemRarity = ItemRarity.Common;
     public ItemType ITEMTYPE = ItemType.none;
+    public MaterialHitType MaterialHitBest = MaterialHitType.all;
     public Sprite Icon;
     public string Name = "";
     [TextArea(0, 200)]
@@ -178,7 +179,7 @@ public class ItemManager : MonoBehaviour {
     {
         ItemData item = ItemManager.Instance.GetItem(index);
 
-        GameObject obj = GameObject.Instantiate(Drop, world_position, Quaternion.identity);
+        GameObject obj = DarckNet.Network.Instantiate(Drop, world_position, Quaternion.identity, Game.WorldGenerator.World_ID);
 
         obj.GetComponent<ItemDrop>().SetDrop(item, quanty);
     }

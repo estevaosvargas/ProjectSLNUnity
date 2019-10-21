@@ -39,9 +39,11 @@ namespace DarckNet
         internal static bool Runing = false;
         internal static bool onconnectbool = false;
         internal static bool onstartserverbool = false;
+        private static bool _ISSERVER = false;
+        private static bool _ISCLIENT = false;
         public static bool ServerSinglePlayer = false;
-        public static bool IsServer { get { if (Server != null) { return true; } else { return false; } } private set { } }
-        public static bool IsClient { get { if (Client != null) { return true; } else { return false; } } private set { } }
+        public static bool IsServer { get { return _ISSERVER; }}
+        public static bool IsClient { get { return _ISCLIENT; }}
         public static bool Ready { get; private set; }
         public static NetPeerStatistics PeerStat;
         public static int DimensionGeral = -1;
@@ -98,6 +100,9 @@ namespace DarckNet
                 MyPeer = peer;
                 PeerStat = peer.Statistics;
                 MyConnection = ServerConnection;
+
+                _ISCLIENT = false;
+                _ISSERVER = true;
 
                 SETUP_MANUAL_VIEWSID();
 
@@ -170,6 +175,9 @@ namespace DarckNet
 
                 Ready = true;
                 Runing = true;
+
+                _ISCLIENT = true;
+                _ISSERVER = false;
 
                 var om = peer.CreateMessage();
                 peer.SendUnconnectedMessage(om, new IPEndPoint(IPAddress.Loopback, Port));
@@ -360,6 +368,9 @@ namespace DarckNet
                 Runing = false;
                 onstartserverbool = false;
 
+                _ISCLIENT = false;
+                _ISSERVER = false;
+
                 NetworkViews.Clear();
                 NetDimension.Clear();
                 Players.Clear();
@@ -393,6 +404,9 @@ namespace DarckNet
                 Runing = false;
                 onconnectbool = false;
                 Ready = false;
+
+                _ISCLIENT = false;
+                _ISSERVER = false;
 
                 NetworkViews.Clear();
                 NetDimension.Clear();

@@ -228,7 +228,7 @@ public class Tile
 
     TypeBlock getcavetile(int x, int y)
     {
-        Color color = SpriteManager.Instance.GetPerlinImage("Caves01").GetPixel(x + Game.WorldGenerator.Seed, y + Game.WorldGenerator.Seed);
+        Color color = Game.SpriteManager.GetPerlinImage("Caves01").GetPixel(x + Game.WorldGenerator.Seed, y + Game.WorldGenerator.Seed);
 
         if (Game.WorldGenerator.CurrentWorld == WorldType.Normal)
         {
@@ -288,7 +288,7 @@ public class Tile
 
         placerObj = type;
 
-        GameObject trees = GameObject.Instantiate(SpriteManager.Instance.Getplacerbyname(placerObj.ToString()), new Vector3(x, y, z), Quaternion.identity);
+        GameObject trees = GameObject.Instantiate(Game.SpriteManager.Getplacerbyname(placerObj.ToString()), new Vector3(x, y, z), Quaternion.identity);
 
         if (trees == null) { return; }//if gameobject are null, code get error and come back
 

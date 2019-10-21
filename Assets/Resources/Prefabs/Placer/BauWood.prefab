@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4092558812483922}
   - component: {fileID: 114771100780316526}
+  - component: {fileID: 4506224577811022067}
+  - component: {fileID: -1190274183264762068}
   m_Layer: 0
   m_Name: BauWood
   m_TagString: Untagged
@@ -97,6 +99,41 @@ MonoBehaviour:
     Amount: -1
   Drop: {fileID: 1982240538145316, guid: 2045fdc92c4eeaf4c8f37b44ba29e320, type: 3}
   IsPlayer: 0
+  Net: {fileID: 0}
+--- !u!114 &4506224577811022067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268213067446220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9257a4f7a29cf444ca522877ac35148a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Net: {fileID: 0}
+  HP: 100
+  MaxHP: 100
+  IsAlive: 0
+  LastAttacker: 
+  Static: 1
+--- !u!114 &-1190274183264762068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268213067446220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 556364585e709134c8e6cd575ee76099, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Owner: 0
+  ViewID: 0
+  DeliveModo: 1
+  IdMode: 1
 --- !u!65 &2412021447606352759
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -171,6 +171,7 @@ public class MenuManager : Menus
                         if (CheckifEnable("Inventory") == true)
                         {
                             CloseMenuName("Inventory");
+                            InveGui.CloseInve(Game.GameManager.CurrentPlayer.MyInventory);
                             MouselockFake.IsLock = false;
                         }
                         else
@@ -253,6 +254,7 @@ public class MenuManager : Menus
         if (CheckifEnable("Inventory") == true)
         {
             CloseMenuName("Inventory");
+            InveGui.CloseInve(cont);
             MouselockFake.IsLock = false;
         }
         else
@@ -262,7 +264,7 @@ public class MenuManager : Menus
             MouselockFake.IsLock = true;
         }
 
-        if (CheckifEnable("Inventory") == true || CheckifEnable("InGameMenu") == true || CheckifEnable("DevConsole") == true || CheckifEnable("Status") == true)
+        if (CheckifEnable("Inventory") == true || CheckifEnable("InGameMenu") == true || CheckifEnable("Status") == true)
         {
             MouselockFake.IsLock = true;
         }

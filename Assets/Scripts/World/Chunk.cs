@@ -146,6 +146,11 @@ public class Chunk : MonoBehaviour
                 SetUpTileTree(tiles[i, j]);
                 SetUpPlacer(tiles[i, j]);
 
+                if (GetPresets.GetPlacerEntity(tiles[i, j].placerObj))
+                {
+                    SetUpEntityPlacer(tiles[i, j]);
+                }
+
                 if (tiles[i, j].CanWalk)
                 {
                     if (Random.Range(1, 125) > 120)
@@ -178,7 +183,7 @@ public class Chunk : MonoBehaviour
 
     private void SpawnNetWorkObject(Tile tile)
     {
-        GameObject obj = DarckNet.Network.Instantiate(SpriteManager.Instance.GetPrefabOnRecources("Prefabs/Villager/Villager"), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity, Game.WorldGenerator.World_ID);
+        GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/Villager/Villager"), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity, Game.WorldGenerator.World_ID);
         obj.GetComponent<Vilanger>().Born("VillagerTeste", this);
         Entitys.Add(obj.GetComponent<Vilanger>());
     }
@@ -190,22 +195,13 @@ public class Chunk : MonoBehaviour
         TileObj tilescript = tileGOmap[tile].GetComponentInChildren<TileObj>();
 
         spritee.color = GetPresets.ColorBiome(tile.TileBiome, tile.type);
-        spritee.sprite = SpriteManager.Instance.GetSprite(tile);
+        spritee.sprite = Game.SpriteManager.GetSprite(tile);
         tile.spritetile = spritee;
 
         if (GetPresets.TileOrder(tile))
         {
             spritee.transform.position = new Vector3(tile.x, tile.y, tile.z);
             spritee.transform.SetParent(this.transform, true);
-
-            if (spritee.transform.position.z > 0)
-            {
-                spritee.transform.position = new Vector3(tile.x, tile.y, tile.z);
-            }
-            else if (tileGOmap[tile].transform.position.z < 0)
-            {
-                spritee.transform.position = new Vector3(tile.x, tile.y, tile.z);
-            }
 
             spritee.GetComponent<SpriteRenderer>().sortingOrder = -(int)spritee.transform.position.z;
             spritee.sortingLayerName = "Player";
@@ -281,7 +277,7 @@ public class Chunk : MonoBehaviour
 
         ///SetUp-Transsition
         tilescript.Clear();
-        SpriteManager.Instance.GetTranssition(tile, tilescript);
+        Game.SpriteManager.GetTranssition(tile, tilescript);
         tilescript.SetUp();
         if (tile.type == TypeBlock.Water)
         {
@@ -315,7 +311,7 @@ public class Chunk : MonoBehaviour
         if (tile.placerObj != Placer.empty)
         {
             GameObject trees = null;
-            trees = Instantiate(SpriteManager.Instance.Getplacerbyname(tile.placerObj.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
+            trees = Instantiate(Game.SpriteManager.Getplacerbyname(tile.placerObj.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
 
             if (trees.transform.position.z > 0)
             {
@@ -346,12 +342,22 @@ public class Chunk : MonoBehaviour
         }
     }
 
+    private void SetUpEntityPlacer(Tile tile)
+    {
+        if (tile.placerObj != Placer.empty)
+        {
+            GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.Getplacerbyname(tile.placerObj.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity, Game.WorldGenerator.World_ID);
+            tile.ObjThis = obj;
+            Entitys.Add(obj.GetComponent<ObjectEntity>());
+        }
+    }
+
     private void SetUpTileTree(Tile tile)
     {
         if (tile.typego != TakeGO.empty)
         {
             GameObject trees = null;
-            trees = Instantiate(SpriteManager.Instance.GetPrefabbyname(tile.typego.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
+            trees = Instantiate(Game.SpriteManager.GetPrefabbyname(tile.typego.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
             trees.transform.SetParent(this.transform, true);
             tile.ObjThis = trees;
 
@@ -457,7 +463,10 @@ public class Chunk : MonoBehaviour
         {
             if (ai != null)
             {
-                ai.GetComponent<Vilanger>().GetNewPostion();
+                if (ai.GetComponent<Vilanger>())
+                {
+                    ai.GetComponent<Vilanger>().GetNewPostion();
+                }
             }
         }
 
@@ -528,6 +537,11 @@ public class Chunk : MonoBehaviour
             //SetUp Tree object, spawn tree object and transalte for a new position
             SetUpTileTree(tiles[i, j]);
             SetUpPlacer(tiles[i, j]);
+
+            if (GetPresets.GetPlacerEntity(tiles[i, j].placerObj))
+            {
+                SetUpEntityPlacer(tiles[i, j]);
+            }
 
             if (tiles[i, j] == null)
             {

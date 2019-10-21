@@ -9,9 +9,6 @@ public class InventoryGUI : MonoBehaviour {
     public List<Slots> Container_Slots = new List<Slots>();
 
     public int NumSlot = 2;
-    public int Size = 5;
-    public int SizeC = 5;
-    public float Spacing = 3;
 
     public GameObject SlotPrefab;
     public GameObject SlotHotPrefab;
@@ -22,19 +19,17 @@ public class InventoryGUI : MonoBehaviour {
 
     public GameObject ContainerInve;
 
-    private int numRaw;
-    private int numItem;
-
-
-    private int numRaw2;
-    private int numItem2;
-
     public Inventory Inve;
     public Inventory InveCont;
 
     void Start()
     {
 
+    }
+
+    public void CloseInve(Inventory closeinve)
+    {
+        closeinve.NET_SendCloseInve();
     }
 
     public void OpenInev(Inventory inventory)
@@ -65,6 +60,9 @@ public class InventoryGUI : MonoBehaviour {
         Inve = inventory;
         InveCont = container;
         NumSlot = Inve.ItemList.Count;
+
+        inventory.RequestInveData();
+        container.RequestInveData();
 
         ContainerInve.SetActive(true);
 
@@ -99,58 +97,30 @@ public class InventoryGUI : MonoBehaviour {
 
     public void LoadContainer(int index, int qunty, ItemData item)
     {
-        GameObject obj = (GameObject)GameObject.Instantiate(SlotPrefab, Vector3.zero, Quaternion.identity);
-
+        GameObject obj = GameObject.Instantiate(SlotPrefab, Vector3.zero, Quaternion.identity);
         obj.name = "Slot: " + index;
-
         obj.GetComponent<Slots>().SetSlot(index, qunty, item, true);
         obj.GetComponent<Slots>().InveGUI = this;
-
         obj.transform.SetParent(ContRoot.gameObject.transform);
-        RectTransform rect = obj.GetComponent<RectTransform>();
-
         Container_Slots.Add(obj.GetComponent<Slots>());
-
-        rect.anchoredPosition = new Vector2(((rect.sizeDelta.x + Spacing) * numItem2) + Spacing, -(((rect.sizeDelta.y + Spacing) * numRaw2) + Spacing));
-        rect.localScale = SlotPrefab.gameObject.transform.localScale;
-        numItem2++;
-
-        if (numItem2 >= SizeC)
-        {
-            numItem2 = 0;
-            numRaw2 += 1;
-        }
-
-        ContRoot.sizeDelta = new Vector2(ContRoot.sizeDelta.x, (SlotPrefab.GetComponent<RectTransform>().sizeDelta.y + Spacing) * (numRaw2 + 1));
     }
 
     public void LoadInventory(int index,int qunty, ItemData item)
     {
         if (index >= NumSlot -6 && index < NumSlot)
         {
-            //numItem = 0;
-            numRaw = 0;
-            GameObject obj = (GameObject)GameObject.Instantiate(SlotHotPrefab, Vector3.zero, Quaternion.identity);
-
+            GameObject obj = GameObject.Instantiate(SlotHotPrefab, Vector3.zero, Quaternion.identity);
             obj.name = "HotBar: " + index;
-
             obj.GetComponent<Slots>().SetSlot(index, qunty, item, false);
             obj.GetComponent<Slots>().InveGUI = this;
-
             Player_Slots.Add(obj.GetComponent<Slots>());
-
             obj.GetComponent<HotSlot>().SetSlot(hotba);
-
             obj.transform.SetParent(HotRoot.gameObject.transform);
-            RectTransform rect = obj.GetComponent<RectTransform>();
-
-            rect.anchoredPosition = new Vector2(((rect.sizeDelta.x + Spacing) * hotba) + Spacing, -(((rect.sizeDelta.y + Spacing) * numRaw) + Spacing));
-            rect.localScale = SlotPrefab.gameObject.transform.localScale;
             hotba++;
         }
         else
         {
-            GameObject obj = (GameObject)GameObject.Instantiate(SlotPrefab, Vector3.zero, Quaternion.identity);
+            GameObject obj = GameObject.Instantiate(SlotPrefab, Vector3.zero, Quaternion.identity);
 
             obj.name = "Slot: " + index;
 
@@ -160,19 +130,6 @@ public class InventoryGUI : MonoBehaviour {
             Player_Slots.Add(obj.GetComponent<Slots>());
 
             obj.transform.SetParent(InveRoot.gameObject.transform);
-            RectTransform rect = obj.GetComponent<RectTransform>();
-
-            rect.anchoredPosition = new Vector2(((rect.sizeDelta.x + Spacing) * numItem) + Spacing, -(((rect.sizeDelta.y + Spacing) * numRaw) + Spacing));
-            rect.localScale = SlotPrefab.gameObject.transform.localScale;
-            numItem++;
-
-            if (numItem >= SizeC)
-            {
-                numItem = 0;
-                numRaw += 1;
-            }
-
-            InveRoot.sizeDelta = new Vector2(InveRoot.sizeDelta.x, (SlotPrefab.GetComponent<RectTransform>().sizeDelta.y + Spacing) * (numRaw + 1));
         }
     }
 
@@ -235,13 +192,6 @@ public class InventoryGUI : MonoBehaviour {
     public void ClearCanvasPlayer()
     {
         hotba = 0;
-
-        numItem = 0;
-        numRaw = 0;
-
-        numItem2 = 0;
-        numRaw2 = 0;
-
         Player_Slots.Clear();
 
         foreach (Transform child in InveRoot.transform)
@@ -258,12 +208,6 @@ public class InventoryGUI : MonoBehaviour {
     public void ClearCanvasContainer()
     {
         hotba = 0;
-
-        numItem = 0;
-        numRaw = 0;
-
-        numItem2 = 0;
-        numRaw2 = 0;
         Container_Slots.Clear();
         foreach (Transform child in ContRoot.transform)
         {

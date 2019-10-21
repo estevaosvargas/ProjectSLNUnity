@@ -4,27 +4,18 @@ using UnityEngine;
 
 public class SpriteManager : MonoBehaviour
 {
-    public List<ConnectDataBase> ConnectData = new List<ConnectDataBase>();
-    public static SpriteManager Instance;
-
-    Dictionary<string, ConnectDataDirec> diccondata = new Dictionary<string, ConnectDataDirec>();
-
     Dictionary<string, Sprite> tileSprites;
     Dictionary<string, Texture2D> Perlinimage;
     Dictionary<string, GameObject> Objects = new Dictionary<string, GameObject>();
+    Dictionary<string, Sprite> Icons = new Dictionary<string, Sprite>();
 
     void Awake()
     {
-        Instance = this;
+        Game.SpriteManager = this;
+
         LoadSystems.LoadingSprites();
         tileSprites = new Dictionary<string, Sprite>();
         Perlinimage = new Dictionary<string, Texture2D>();
-
-        foreach (ConnectDataBase data in ConnectData)
-        {
-            diccondata.Add(data.Type.ToString(), new ConnectDataDirec(data));
-        }
-        ConnectData.Clear();
 
         LoadAssets();
         LoadSystems.LoadedSprites();
@@ -40,13 +31,13 @@ public class SpriteManager : MonoBehaviour
         return null;
     }
 
-    public static Sprite Getitemicon(string name)
+    public Sprite Getitemicon(string name)
     {
-        Sprite obj = Resources.Load<Sprite>("ItemsSprites/" + "Icon_" + name);
+        name = "Icon_" + name;
 
-        if (obj != null)
+        if (Icons.ContainsKey(name))
         {
-            return obj;
+            return Icons[name];
         }
 
         Debug.LogError("Nao encontrado esse tipo: " + name);
@@ -110,6 +101,11 @@ public class SpriteManager : MonoBehaviour
         foreach (var s in Resources.LoadAll<Sprite>("Tiles/"))
         {
             tileSprites.Add(s.name, s);
+        }
+
+        foreach (var icon in Resources.LoadAll<Sprite>("ItemsSprites/"))
+        {
+            Icons.Add(icon.name, icon);
         }
 
         foreach (var s in Resources.LoadAll<GameObject>("Prefabs/Trees/"))
@@ -473,30 +469,6 @@ public class SpriteManager : MonoBehaviour
         }
 
         return "";
-    }
-}
-
-
-[System.Serializable]
-public class ConnectDataBase
-{
-    public TypeBlock Type;
-    public TypeBlock[] TypeAllowed;
-}
-
-[System.Serializable]
-public class ConnectDataDirec
-{
-    public TypeBlock Type;
-    public Dictionary<string, TypeBlock> TypeBlocked = new Dictionary<string, TypeBlock>();
-
-    public ConnectDataDirec(ConnectDataBase bases)
-    {
-        Type = bases.Type;
-        foreach (TypeBlock block in bases.TypeAllowed)
-        {
-            TypeBlocked.Add(block.ToString(), block);
-        }
     }
 }
 

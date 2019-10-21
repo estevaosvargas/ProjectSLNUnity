@@ -1285,6 +1285,7 @@ public static class Game
     public static TimeOfDay TimeOfDay;
     public static ConsoleInGame ConsoleInGame;
     public static WorldGenerator WorldGenerator;
+    public static SpriteManager SpriteManager;
 
     public static List<Entity> Entity_viewing = new List<Entity>();
 

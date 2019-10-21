@@ -59,8 +59,9 @@ MonoBehaviour:
     Dia: 0
     Mes: 0
     HP: 100
-  ItemDrop: 1
-  DropQuanty: 10
+  ItemDrop: 0
+  DropQuanty: 5
+  MaterialHit: 4
 --- !u!1 &7446221035984587256
 GameObject:
   m_ObjectHideFlags: 0

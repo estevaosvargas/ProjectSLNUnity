@@ -175,124 +175,122 @@ public class EntityPlayer : EntityLife
 
     void Update()
     {
-#if Client
-        if (IsMe)//check if this player is me.
+        if (IsVisible)//Do the Client Update, and Server.
         {
-            #region MyPlayerFunctions
-            if (Game.GameManager.MultiPlayer || Game.GameManager.SinglePlayer)
+            if (DarckNet.Network.IsClient)///Client Update
             {
-                Status.UpdateStatus();
-                mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
-
-                Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxis("Horizontal"), 0, CrossPlatformInputManager.GetAxis("Vertical"));
-
-                body.velocity = movement.normalized * Speed;
-                SPRITERENDER.sortingOrder = -(int)transform.position.z;
-
-                if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
+                if (IsMe)//check if this player is me.
                 {
-                    Vector3 lookPos = Camera.main.ScreenToWorldPoint(mousePos);
-                    lookPos = lookPos - transform.position;
+                    #region MyPlayerFunctions
+                    if (Game.GameManager.MultiPlayer || Game.GameManager.SinglePlayer)
+                    {
+                        Status.UpdateStatus();
+                        mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
 
-                    float angle = Mathf.Atan2(lookPos.y, lookPos.x) * Mathf.Rad2Deg;
-                    //Vector.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                    NetStats.angle = (int)angle;
+                        Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxis("Horizontal"), 0, CrossPlatformInputManager.GetAxis("Vertical"));
 
-                    Anim.SetFloat("X", (int)angle);
-                }
+                        body.velocity = movement.normalized * Speed;
+                        SPRITERENDER.sortingOrder = -(int)transform.position.z;
 
-                #region UpDateOnMove
-                if (lastposition != transform.position)
-                {
-                    UpdateOnMove();
-                }
-                lastposition = transform.position;
+                        if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
+                        {
+                            Vector3 lookPos = Camera.main.ScreenToWorldPoint(mousePos);
+                            lookPos = lookPos - transform.position;
 
-                if (LastPostitionIntX != (int)transform.position.x || LastPostitionIntZ != (int)transform.position.z)
-                {
-                    UpdateOnMoveInt();
-                }
-                LastPostitionIntX = (int)transform.position.x;
-                LastPostitionIntZ = (int)transform.position.z;
-                #endregion
+                            float angle = Mathf.Atan2(lookPos.y, lookPos.x) * Mathf.Rad2Deg;
+                            //Vector.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                            NetStats.angle = (int)angle;
 
-                if (NetStats.handhide == true)
-                {
-                    HandRoot.gameObject.SetActive(false);
+                            Anim.SetFloat("X", (int)angle);
+                        }
+
+                        #region UpDateOnMove
+                        if (lastposition != transform.position)
+                        {
+                            UpdateOnMove();
+                        }
+                        lastposition = transform.position;
+
+                        if (LastPostitionIntX != (int)transform.position.x || LastPostitionIntZ != (int)transform.position.z)
+                        {
+                            UpdateOnMoveInt();
+                        }
+                        LastPostitionIntX = (int)transform.position.x;
+                        LastPostitionIntZ = (int)transform.position.z;
+                        #endregion
+
+                        if (NetStats.handhide == true)
+                        {
+                            HandRoot.gameObject.SetActive(false);
+                        }
+                        else
+                        {
+                            HandRoot.gameObject.SetActive(true);
+                        }
+
+                        if (SPRITERENDERHAND)
+                        {
+                            SPRITERENDERHAND.sortingOrder = NetStats.HandLayer;
+                        }
+
+                        if (Input.GetAxis("Horizontal") >= 0.1f)
+                        {
+                            Direita();
+                            Anim.SetInteger("Walk", 1);
+                            Anim.SetFloat("X", 0);
+
+                            NetStats.walking = true;
+                            NetStats.Side = 0;
+                        }
+                        else if (Input.GetAxis("Horizontal") <= -0.1f)
+                        {
+                            Esquerda();
+                            Anim.SetInteger("Walk", 1);
+                            Anim.SetFloat("X", 180);
+
+                            NetStats.walking = true;
+                            NetStats.Side = 1;
+                        }
+                        else if (Input.GetAxis("Vertical") >= 0.1f)
+                        {
+                            Cima();
+                            Anim.SetInteger("Walk", 1);
+                            Anim.SetFloat("X", 90);
+
+                            NetStats.walking = true;
+                            NetStats.Side = 2;
+                        }
+                        else if (Input.GetAxis("Vertical") <= -0.1f)
+                        {
+                            Baixo();
+                            Anim.SetInteger("Walk", 1);
+                            Anim.SetFloat("X", -90);
+
+                            NetStats.walking = true;
+                            NetStats.Side = 3;
+                        }
+                        else
+                        {
+                            Anim.SetInteger("Walk", 0);
+                            FootPArticle.Stop();
+
+                            NetStats.walking = false;
+                        }
+
+                        UpdateNetStatus();
+                    }
+                    #endregion
                 }
                 else
                 {
-                    HandRoot.gameObject.SetActive(true);
+
                 }
-
-                if (SPRITERENDERHAND)
-                {
-                    SPRITERENDERHAND.sortingOrder = NetStats.HandLayer;
-                }
-
-                if (Input.GetAxis("Horizontal") >= 0.1f)
-                {
-                    Direita();
-                    Anim.SetInteger("Walk", 1);
-                    Anim.SetFloat("X", 0);
-
-                    NetStats.walking = true;
-                    NetStats.Side = 0;
-                }
-                else if (Input.GetAxis("Horizontal") <= -0.1f)
-                {
-                    Esquerda();
-                    Anim.SetInteger("Walk", 1);
-                    Anim.SetFloat("X", 180);
-
-                    NetStats.walking = true;
-                    NetStats.Side = 1;
-                }
-                else if (Input.GetAxis("Vertical") >= 0.1f)
-                {
-                    Cima();
-                    Anim.SetInteger("Walk", 1);
-                    Anim.SetFloat("X", 90);
-
-                    NetStats.walking = true;
-                    NetStats.Side = 2;
-                }
-                else if (Input.GetAxis("Vertical") <= -0.1f)
-                {
-                    Baixo();
-                    Anim.SetInteger("Walk", 1);
-                    Anim.SetFloat("X", -90);
-
-                    NetStats.walking = true;
-                    NetStats.Side = 3;
-                }
-                else
-                {
-                    Anim.SetInteger("Walk", 0);
-                    FootPArticle.Stop();
-
-                    NetStats.walking = false;
-                }
-
-                UpdateNetStatus();
             }
-            #endregion
-        }
-        else
-        {
-            if (IsVisible)
+            else///Server Update
             {
 
             }
         }
-#endif
-
-#if Server
-        if (IsVisible)
-        {
-            
-        }
-#endif
     }
 
     void UpdateNetStatus()//for now is every frame send to all, just for stress test
@@ -556,7 +554,7 @@ public class LifeStatus
 
     public void CalculateXp(ItemData Item, float Xpadd)
     {
-        if (Item.ITEMTYPE == ItemType.Weapon)
+        if (Item.ITEMTYPE == ItemType.Weapon || Item.ITEMTYPE == ItemType.Tools)
         {
             WepoSkillStruc CurrentSkill = null;
 
@@ -601,13 +599,13 @@ public class LifeStatus
         if (Input.GetKey(KeyCode.K))
         {
             CalculateXp((Skills)Random.Range(0, 11), 1);
-            CalculateXp(ItemManager.Instance.GetItem(Random.Range(0, 6)), 1);
+            CalculateXp(ItemManager.Instance.GetItem(Random.Range(0, 4)), 1);
         }
 
         if (Input.GetKey(KeyCode.L))
         {
             CalculateXp((Skills)Random.Range(0, 11), -1);
-            CalculateXp(ItemManager.Instance.GetItem(Random.Range(0, 6)), -1);
+            CalculateXp(ItemManager.Instance.GetItem(Random.Range(0, 4)), -1);
         }
     }
 
