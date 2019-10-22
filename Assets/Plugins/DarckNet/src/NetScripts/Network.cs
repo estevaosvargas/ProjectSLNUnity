@@ -284,6 +284,18 @@ namespace DarckNet
             return nets.ToArray();
         }
 
+        public static NetworkObj GetNetworkViews(int view_id)
+        {
+            if (NetworkViews.ContainsKey(view_id))
+            {
+                return NetworkViews[view_id];
+            }
+            else
+            {
+                throw new Exception("Don't found this netview : " + view_id + " | maybe is destroyed or isn't over network");
+            }
+        }
+
         public static void Server_SendToAll(NetOutgoingMessage msg, NetConnection[] connections, NetDeliveryMethod method)
         {
             if (IsServer)

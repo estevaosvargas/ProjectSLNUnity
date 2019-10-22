@@ -177,7 +177,7 @@ public class EntityPlayer : EntityLife
     {
         if (IsVisible)//Do the Client Update, and Server.
         {
-            if (DarckNet.Network.IsClient)///Client Update
+            if (DarckNet.Network.IsClient || Game.GameManager.SinglePlayer)///Client Update
             {
                 if (IsMe)//check if this player is me.
                 {

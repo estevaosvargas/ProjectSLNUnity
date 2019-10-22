@@ -22,9 +22,9 @@ public class InventoryGUI : MonoBehaviour {
     public Inventory Inve;
     public Inventory InveCont;
 
-    void Start()
+    void Awake()
     {
-
+        Game.InventoryGUI = this;
     }
 
     public void CloseInve(Inventory closeinve)

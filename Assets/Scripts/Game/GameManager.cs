@@ -342,6 +342,16 @@ public class GameManager : UIElements
         Net.RPC("DeleteChunk", DarckNet.RPCMode.Server, x, y);
     }
 
+    public void MoveCont(Inventory player, Inventory cont, int on, int to)
+    {
+        Net.RPC("RPC_MoveCont", DarckNet.RPCMode.Server, player.Net.ViewID, cont.Net.ViewID, on ,to);
+    }
+
+    public void ContMove(Inventory player, Inventory cont, int on, int to)
+    {
+        Net.RPC("RPC_ContMove", DarckNet.RPCMode.Server, player.Net.ViewID, cont.Net.ViewID, on, to);
+    }
+
     [RPC]
     void ChunkData(Vector2 pos, string data)
     {
@@ -365,6 +375,149 @@ public class GameManager : UIElements
     void DeleteChunk(int x, int y, DarckNet.DNetConnection peer)
     {
         Game.WorldGenerator.NetDeleteChunk(x, y, peer.unique);
+    }
+
+    [RPC]
+    void RPC_MoveCont(int player_netview, int cont_netview, int on, int to, DarckNet.DNetConnection sender)
+    {
+        Inventory player = DarckNet.Network.GetNetworkViews(player_netview).GetComponent<Inventory>();
+        Inventory cont = DarckNet.Network.GetNetworkViews(cont_netview).GetComponent<Inventory>();
+
+        if (cont.ItemList[to].Index >= 0)
+        {
+            if (cont.ItemList[to].Index == player.ItemList[on].Index)
+            {
+                cont.ItemList[to].Index = player.ItemList[on].Index;
+                cont.ItemList[to].Amount += player.ItemList[on].Amount;
+
+                player.ItemList[on].Index = -1;
+                player.ItemList[on].Amount = -1;
+
+                Game.InventoryGUI.Player_RefreshSlot(on);
+                Game.InventoryGUI.Container_RefreshSlot(to);
+
+                if (!Net.isMine || !Game.GameManager.SinglePlayer)
+                {
+                    player.Net.RPC("RPC_SyncSlot", sender.NetConnection, on, to, player.ItemList[on].Index, player.ItemList[to].Index, player.ItemList[on].Amount, player.ItemList[to].Amount);
+                }
+
+                if (!Net.isMine || !Game.GameManager.SinglePlayer)
+                {
+                    foreach (var connection in cont.PlayerOpen)
+                    {
+                        cont.Net.RPC("RPC_SyncSlot", connection, on, to, player.ItemList[on].Index, player.ItemList[to].Index, player.ItemList[on].Amount, player.ItemList[to].Amount);
+                    }
+                }
+            }
+            else
+            {
+                cont.Additem(player.ItemList[to].Index, player.ItemList[on].Amount);
+            }
+        }
+        else
+        {
+            cont.ItemList[to].Index = player.ItemList[on].Index;
+            cont.ItemList[to].Amount = player.ItemList[on].Amount;
+
+            player.ItemList[on].Index = -1;
+            player.ItemList[on].Amount = -1;
+
+            Game.InventoryGUI.Player_RefreshSlot(on);
+            Game.InventoryGUI.Container_RefreshSlot(to);
+
+            if (!Net.isMine || !Game.GameManager.SinglePlayer)
+            {
+                player.Net.RPC("RPC_SyncSlot", sender.NetConnection, on, to, player.ItemList[on].Index, player.ItemList[to].Index, player.ItemList[on].Amount, player.ItemList[to].Amount);
+            }
+
+            if (!Net.isMine || !Game.GameManager.SinglePlayer)
+            {
+                foreach (var connection in cont.PlayerOpen)
+                {
+                    cont.Net.RPC("RPC_SyncSlot", connection, on, to, player.ItemList[on].Index, player.ItemList[to].Index, player.ItemList[on].Amount, player.ItemList[to].Amount);
+                }
+            }
+        }
+
+        cont.Save();
+        player.Save();
+
+
+        if (HandManager.MyHand)
+        {
+            HandManager.MyHand.RemoveItem(on);
+        }
+    }
+
+    [RPC]
+    void RPC_ContMove(int player_netview, int cont_netview, int on, int to, DarckNet.DNetConnection sender)
+    {
+        Inventory player = DarckNet.Network.GetNetworkViews(player_netview).GetComponent<Inventory>();
+        Inventory cont = DarckNet.Network.GetNetworkViews(cont_netview).GetComponent<Inventory>();
+
+        if (player.ItemList[to].Index >= 0)
+        {
+            if (player.ItemList[to].Index == cont.ItemList[on].Index)
+            {
+                player.ItemList[to].Index = cont.ItemList[on].Index;
+                player.ItemList[to].Amount += cont.ItemList[on].Amount;
+
+                cont.ItemList[on].Index = -1;
+                cont.ItemList[on].Amount = -1;
+
+                Game.InventoryGUI.Player_RefreshSlot(to);
+                Game.InventoryGUI.Container_RefreshSlot(on);
+
+                if (!Net.isMine || !Game.GameManager.SinglePlayer)
+                {
+                    player.Net.RPC("RPC_SyncSlot", sender.NetConnection, on, to, player.ItemList[on].Index, player.ItemList[to].Index, player.ItemList[on].Amount, player.ItemList[to].Amount);
+                }
+
+                if (!Net.isMine || !Game.GameManager.SinglePlayer)
+                {
+                    foreach (var connection in cont.PlayerOpen)
+                    {
+                        cont.Net.RPC("RPC_SyncSlot", connection, on, to, player.ItemList[on].Index, player.ItemList[to].Index, player.ItemList[on].Amount, player.ItemList[to].Amount);
+                    }
+                }
+            }
+            else
+            {
+                player.Additem(cont.ItemList[to].Index, cont.ItemList[on].Amount);
+            }
+        }
+        else
+        {
+            player.ItemList[to].Index = cont.ItemList[on].Index;
+            player.ItemList[to].Amount = cont.ItemList[on].Amount;
+
+            cont.ItemList[on].Index = -1;
+            cont.ItemList[on].Amount = -1;
+
+            Game.InventoryGUI.Player_RefreshSlot(to);
+            Game.InventoryGUI.Container_RefreshSlot(on);
+
+            if (!Net.isMine || !Game.GameManager.SinglePlayer)
+            {
+                player.Net.RPC("RPC_SyncSlot", sender.NetConnection, on, to, player.ItemList[on].Index, player.ItemList[to].Index, player.ItemList[on].Amount, player.ItemList[to].Amount);
+            }
+
+            if (!Net.isMine || !Game.GameManager.SinglePlayer)
+            {
+                foreach (var connection in cont.PlayerOpen)
+                {
+                    cont.Net.RPC("RPC_SyncSlot", connection, on, to, player.ItemList[on].Index, player.ItemList[to].Index, player.ItemList[on].Amount, player.ItemList[to].Amount);
+                }
+            }
+        }
+
+        if (HandManager.MyHand)
+        {
+            HandManager.MyHand.RemoveItem(on);
+        }
+
+        cont.Save();
+        player.Save();
     }
 
     #endregion
@@ -1286,6 +1439,7 @@ public static class Game
     public static ConsoleInGame ConsoleInGame;
     public static WorldGenerator WorldGenerator;
     public static SpriteManager SpriteManager;
+    public static InventoryGUI InventoryGUI;
 
     public static List<Entity> Entity_viewing = new List<Entity>();
 
