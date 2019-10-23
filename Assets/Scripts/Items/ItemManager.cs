@@ -188,10 +188,10 @@ public class ItemManager : MonoBehaviour {
 [System.Serializable]
 public enum ItemRarity : byte
 {
-    SelfMade, Common, Uncommon, Epic, Legendary, Dark
+    SelfMade, Common, Uncommon, Epic, Legendary, Dark, Money
 }
 
 public enum ItemType
 {
-    none, Weapon, Tools, Armor, Block, Placer
+    none, Weapon, Tools, Armor, Block, Placer, Trade
 }

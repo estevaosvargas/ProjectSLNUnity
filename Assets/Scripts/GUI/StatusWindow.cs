@@ -63,13 +63,13 @@ public class StatusWindow : MonoBehaviour
     {
         if (Game.GameManager.CurrentPlayer.MyPlayerMove)
         {
+            ClearCanvas();
             switch (Pages)
             {
                 case PagesNum.index:
 
                     break;
                 case PagesNum.Page01:
-                    ClearCanvas();
                     if (Game.GameManager.CurrentPlayer.MyPlayerMove.Status.SkillsList.Count > 0)
                     {
                         SkillsList = Game.GameManager.CurrentPlayer.MyPlayerMove.Status.SkillsList.ToArray();
@@ -132,6 +132,42 @@ public class StatusWindow : MonoBehaviour
         {
             GameObject.Destroy(child.gameObject);
         }
+    }
+
+    public void Next()
+    {
+        switch (Pages)
+        {
+            case PagesNum.index:
+                Pages = PagesNum.Page01;
+                break;
+            case PagesNum.Page01:
+                Pages = PagesNum.Page02;
+                break;
+            case PagesNum.Page02:
+                Pages = PagesNum.Page03;
+                break;
+        }
+
+        Refresh();
+    }
+
+    public void Back()
+    {
+        switch (Pages)
+        {
+            case PagesNum.Page01:
+                Pages = PagesNum.index;
+                break;
+            case PagesNum.Page02:
+                Pages = PagesNum.Page01;
+                break;
+            case PagesNum.Page03:
+                Pages = PagesNum.Page02;
+                break;
+        }
+
+        Refresh();
     }
 }
 //remover depois

@@ -9538,8 +9538,6 @@ MonoBehaviour:
   MenuList: []
   BackGround: {fileID: 502353636}
   Version: {fileID: 1549687643}
-  etgtext: {fileID: 1869716208}
-  etgtext2: {fileID: 1549687643}
 --- !u!114 &900271796
 MonoBehaviour:
   m_ObjectHideFlags: 0

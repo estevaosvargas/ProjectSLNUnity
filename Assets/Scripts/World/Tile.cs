@@ -8,7 +8,7 @@ public class Tile
 {
     public TypeBlock type { get; private set; }
     public TypeVariante typeVariante;
-    public Placer placerObj { get; set; }
+    public Placer PLACER_DATA { get; set; }
     public TakeGO typego { get; set; }
 
     public bool ConnecyToNightboors = false;
@@ -23,6 +23,7 @@ public class Tile
     public BiomeType TileBiome;
 
     public bool Emessive = false;
+    public bool OcupedByOther = false;
 
     public object InsideTile;
 
@@ -102,7 +103,7 @@ public class Tile
         z = tile.z;
         type = tile.type;
         typego = tile.typego;
-        placerObj = tile.placer;
+        PLACER_DATA = tile.placer;
         IsColider = tile.IsColider;
         Emessive = tile.Emessive;
         ConnecyToNightboors = tile.ConnecyToNightboors;
@@ -281,43 +282,27 @@ public class Tile
     //Place a gameobject on tile, and don't remove any thing on tile, object like chest,torch, or other things
     public void SetPlacer(Placer type)
     {
-        if (placerObj != Placer.empty || typego != TakeGO.empty)// if have some object placed on this tile is dont place another with this line
+        if (PLACER_DATA != Placer.empty || typego != TakeGO.empty)// if have some object placed on this tile is dont place another with this line
         {
             return;
         }
 
-        placerObj = type;
+        PLACER_DATA = type;
+        Vector3 vec = Get.PlacerData(type);
 
-        GameObject trees = GameObject.Instantiate(Game.SpriteManager.Getplacerbyname(placerObj.ToString()), new Vector3(x, y, z), Quaternion.identity);
-
-        if (trees == null) { return; }//if gameobject are null, code get error and come back
-
-        if (TileChunk.ThisChunk.transform.position.y > 0)
+        for (int xx = 0; xx < (int)vec.x; xx++)
         {
-            trees.transform.position = new Vector3(x, y, z);
-        }
-        else if (TileChunk.ThisChunk.transform.position.y < 0)
-        {
-            trees.transform.position = new Vector3(x, y, z);
+            for (int zz = 0; zz < (int)vec.z; zz++)
+            {
+                Tile tile_other = Game.WorldGenerator.GetTileAt(x + xx, z + zz);
+
+                tile_other.OcupedByOther = true;
+            }
         }
 
-        trees.transform.SetParent(TileChunk.ThisChunk.transform, true);
-
-        ObjThis = trees;
-
-        if (trees.GetComponent<Trees>())
-        {
-            trees.GetComponent<Trees>().ThisTreeTile = this;
-        }
-
-        if (trees.GetComponent<SpriteRenderer>())
-        {
-            trees.GetComponent<SpriteRenderer>().sortingOrder = -(int)trees.transform.position.y;
-        }
-        else if (trees.GetComponentInChildren<SpriteRenderer>())
-        {
-            trees.GetComponentInChildren<SpriteRenderer>().sortingOrder = -(int)trees.transform.position.y;
-        }
+        GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.Getplacerbyname(PLACER_DATA.ToString()), new Vector3(x, y, z), Quaternion.identity, Game.WorldGenerator.World_ID);
+        ObjThis = obj;
+        TileChunk.ThisChunk.Entitys.Add(obj.GetComponent<ObjectEntity>());
 
         SaveChunk();
     }
@@ -325,7 +310,7 @@ public class Tile
     //For Change the tile to any thing do you want, like change to other, or destroy the tile
     public void DamageTypeSet(TypeBlock type)
     {
-        if (typego != TakeGO.empty || placerObj != Placer.empty)//only to remove or change this tile, need are empty, dont have any object placed on this tile 
+        if (typego != TakeGO.empty || PLACER_DATA != Placer.empty)//only to remove or change this tile, need are empty, dont have any object placed on this tile 
         {
             return;
         }
@@ -353,7 +338,7 @@ public class Tile
 
     public void PlaceBlockSet(TypeBlock type)
     {
-        if (typego != TakeGO.empty || placerObj != Placer.empty)//only to remove or change this tile, need are empty, dont have any object placed on this tile 
+        if (typego != TakeGO.empty || PLACER_DATA != Placer.empty)//only to remove or change this tile, need are empty, dont have any object placed on this tile 
         {
             return;
         }
@@ -379,14 +364,6 @@ public class Tile
     public void SaveChunk()
     {
         TileChunk.ThisChunk.SaveChunk();
-    }
-
-    //to set/add light to tile
-    public void SetLight(Color LightColor, int lightontile, LightToD lighttype)
-    {
-        LightOnTile = lightontile;
-
-        spritetile.color = LightColor;
     }
 
     public void RegisterOnTileTypeChange(Action<Tile> callback)
@@ -634,6 +611,7 @@ public class TileSave
     public TakeGO typego;
     public bool ConnecyToNightboors = false;
     public bool IsColider = false;
+    public bool Ocuped = false;
     public int x;
     public int z;
     public BiomeType Biomeofthis;

@@ -231,7 +231,7 @@ public class Pathfindingentity : EntityLife
 
         for (int i = 1; i < path.Count; i++)
         {
-            waypoints.Add(path[i].worldPosition);
+            waypoints.Add(path[i].worldPosition + new Vector3(1, 0, 1));
             /*Vector2 directionNew = new Vector2(path[i - 1].worldPosition.x - path[i].worldPosition.x, path[i - 1].worldPosition.y - path[i].worldPosition.y);
             if (directionNew != directionOld)
             {

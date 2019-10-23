@@ -14,6 +14,7 @@ public class InventoryGUI : MonoBehaviour {
     public GameObject SlotHotPrefab;
 
     public RectTransform InveRoot;
+    public RectTransform ArmorRoot;
     public RectTransform ContRoot;
     public RectTransform HotRoot;
 
@@ -109,10 +110,23 @@ public class InventoryGUI : MonoBehaviour {
     {
         if (index >= NumSlot -6 && index < NumSlot)
         {
+            GameObject obj = GameObject.Instantiate(SlotPrefab, Vector3.zero, Quaternion.identity);
+            obj.name = "ArmorSlot: " + index;
+            obj.GetComponent<Slots>().SetSlot(index, qunty, item, false);
+            obj.GetComponent<Slots>().InveGUI = this;
+            obj.GetComponent<Slots>().SlotItemType = ItemType.Armor;
+            Inve.ItemList[index].ItemType = ItemType.Armor;
+            Player_Slots.Add(obj.GetComponent<Slots>());
+            obj.transform.SetParent(ArmorRoot.gameObject.transform);
+        }
+        else if (index >= NumSlot -12 && index <= NumSlot -6)
+        {
             GameObject obj = GameObject.Instantiate(SlotHotPrefab, Vector3.zero, Quaternion.identity);
             obj.name = "HotBar: " + index;
             obj.GetComponent<Slots>().SetSlot(index, qunty, item, false);
             obj.GetComponent<Slots>().InveGUI = this;
+            obj.GetComponent<Slots>().SlotItemType = ItemType.none;
+            Inve.ItemList[index].ItemType = ItemType.none;
             Player_Slots.Add(obj.GetComponent<Slots>());
             obj.GetComponent<HotSlot>().SetSlot(hotba);
             obj.transform.SetParent(HotRoot.gameObject.transform);
@@ -126,7 +140,8 @@ public class InventoryGUI : MonoBehaviour {
 
             obj.GetComponent<Slots>().SetSlot(index, qunty, item, false);
             obj.GetComponent<Slots>().InveGUI = this;
-
+            obj.GetComponent<Slots>().SlotItemType = ItemType.none;
+            Inve.ItemList[index].ItemType = ItemType.none;
             Player_Slots.Add(obj.GetComponent<Slots>());
 
             obj.transform.SetParent(InveRoot.gameObject.transform);
@@ -200,6 +215,11 @@ public class InventoryGUI : MonoBehaviour {
         }
 
         foreach (Transform child in HotRoot.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        foreach (Transform child in ArmorRoot.transform)
         {
             GameObject.Destroy(child.gameObject);
         }

@@ -11,6 +11,15 @@ TextureImporter:
   - first:
       213: -899007126866553025
     second: Icon_Axe
+  - first:
+      213: 5350054693067995390
+    second: Icon_GoldCoin
+  - first:
+      213: 530159317684684693
+    second: Icon_SilverCoin
+  - first:
+      213: -1650509363727986899
+    second: Icon_CoperCoin
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -145,7 +154,7 @@ TextureImporter:
         width: 30
         height: 30
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -153,6 +162,69 @@ TextureImporter:
       bones: []
       spriteID: f5e1d3defad484546958a20eb839416b
       internalID: -899007126866553025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_GoldCoin
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 470
+        width: 30
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0ad6b35ac8285748910c619de70955c
+      internalID: 5350054693067995390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_SilverCoin
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 470
+        width: 30
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d7441485b70582747b561dafe283365b
+      internalID: 530159317684684693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_CoperCoin
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 470
+        width: 30
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec2cc68c2cb0a474bbb89220d2b0c93f
+      internalID: -1650509363727986899
       vertices: []
       indices: 
       edges: []

@@ -289,7 +289,7 @@ public class GameManager : UIElements
                     {
                         if (t != null)
                         {
-                            if (GetPresets.GetMouseIteract(t))
+                            if (Get.GetMouseIteract(t))
                             {
                                 UpdateCursor(MouseType.Open);
                             }
@@ -1421,6 +1421,18 @@ public class AudioManager
             default:
                 return NONETILE;
         }
+    }
+}
+
+public class DColor
+{
+    public Color GetHexColor(string Hex)
+    {
+        Color color;
+
+        ColorUtility.TryParseHtmlString("#"+Hex, out color);
+
+        return color;
     }
 }
 

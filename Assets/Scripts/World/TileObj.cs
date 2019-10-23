@@ -32,9 +32,9 @@ public class TileObj : MonoBehaviour
 
             Render.sprite = Tiles[i].sprite;
 
-            Render.color = Render.color * GetPresets.ColorBiome(Tiles[i].Biome, Tiles[i].type);
+            Render.color = Render.color * Get.ColorBiome(Tiles[i].Biome, Tiles[i].type);
 
-            Render.sortingOrder = GetPresets.GetTileRenIndex(Tiles[i].type);
+            Render.sortingOrder = Get.GetTileRenIndex(Tiles[i].type);
 
             obj.Add(TileGo);
         }

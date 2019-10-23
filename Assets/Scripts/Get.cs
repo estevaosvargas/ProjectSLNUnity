@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class GetPresets
+public static class Get
 {
     public static bool GetMouseIteract(Tile t)
     {
@@ -10,7 +10,7 @@ public static class GetPresets
         {
             return true;
         }
-        else if (t.placerObj == Placer.BauWood || t.placerObj == Placer.BauGold || t.placerObj == Placer.BauDiamond || t.placerObj == Placer.BauDark)
+        else if (t.PLACER_DATA == Placer.BauWood || t.PLACER_DATA == Placer.BauGold || t.PLACER_DATA == Placer.BauDiamond || t.PLACER_DATA == Placer.BauDark)
         {
             return true;
         }
@@ -30,7 +30,7 @@ public static class GetPresets
 
     public static bool OpenInveTile(Tile t)
     {
-        switch (t.placerObj)
+        switch (t.PLACER_DATA)
         {
             case Placer.BauDark:
                 return true;
@@ -180,6 +180,17 @@ public static class GetPresets
                 return true;
             default:
                 return false;
+        }
+    }
+
+    public static Vector3 PlacerData(Placer placer)
+    {
+        switch (placer)
+        {
+            case Placer.MainBuild2:
+                return new Vector3(6,0,4);
+            default:
+                return Vector3.zero;
         }
     }
 }

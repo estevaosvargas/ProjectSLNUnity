@@ -180,11 +180,11 @@ public class SpriteManager : MonoBehaviour
         {
             string name = "";
 
-            if (GetPresets.HaveBlend(types[i].type) == true)//Checar se esse Tile Vizinho, permita transsiao
+            if (Get.HaveBlend(types[i].type) == true)//Checar se esse Tile Vizinho, permita transsiao
             {
-                if (GetPresets.TileCanDoBlend(tile.type))//Checar se esse tipo de tile, pode fazer os cauculos de transsiçao
+                if (Get.TileCanDoBlend(tile.type))//Checar se esse tipo de tile, pode fazer os cauculos de transsiçao
                 {
-                    if (GetPresets.CanTransitionTo(types[i].type, tile.type))
+                    if (Get.CanTransitionTo(types[i].type, tile.type))
                     {
                         if (types[i].type != tile.type)//Checar se este tile n e o memso da trassisao, se for o mesmo nao tem por que fazer transiçao
                         {

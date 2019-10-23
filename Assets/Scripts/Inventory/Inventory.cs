@@ -139,57 +139,64 @@ public class Inventory : MonoBehaviour
     {
         for (int i = 0; i < ItemList.Count; i++)
         {
-            if (ItemList[i].Index == index)
+            if (ItemList[i].ItemType == ItemManager.Instance.GetItem(index).ITEMTYPE || ItemList[i].ItemType == ItemType.none)
             {
-                if (i != slotchek || first)
+                if (ItemList[i].Index == index)
                 {
-                    if (ItemList[i].Amount < ItemManager.Instance.GetItem(ItemList[i].Index).MaxAmount)
+                    if (i != slotchek || first)
                     {
-                        ItemList[i].Amount += amount;
-                        UpdateUi(i);
-                        Save();
-
-                        if (!Net.isMine || !Game.GameManager.SinglePlayer)
+                        if (ItemList[i].Amount < ItemManager.Instance.GetItem(ItemList[i].Index).MaxAmount)
                         {
-                            foreach (var connection in PlayerOpen)
+                            ItemList[i].Amount += amount;
+                            UpdateUi(i);
+                            Save();
+
+                            if (!Net.isMine || !Game.GameManager.SinglePlayer)
                             {
-                                Net.RPC("RPC_SyncOneSlot", connection, i, ItemList[i].Index, ItemList[i].Amount);
+                                foreach (var connection in PlayerOpen)
+                                {
+                                    Net.RPC("RPC_SyncOneSlot", connection, i, ItemList[i].Index, ItemList[i].Amount);
+                                }
+                            }
+                            return;
+                        }
+                        else if (ItemList[i].Index == -1)
+                        {
+                            ItemList[i].Index = index;
+                            ItemList[i].Amount = amount;
+                            UpdateUi(i);
+                            Save();
+
+                            if (!Net.isMine || !Game.GameManager.SinglePlayer)
+                            {
+                                foreach (var connection in PlayerOpen)
+                                {
+                                    Net.RPC("RPC_SyncOneSlot", connection, i, ItemList[i].Index, ItemList[i].Amount);
+                                }
                             }
                         }
-                        return;
                     }
-                    else if (ItemList[i].Index == -1)
-                    {
-                        ItemList[i].Index = index;
-                        ItemList[i].Amount = amount;
-                        UpdateUi(i);
-                        Save();
+                }
+                else if (ItemList[i].Index == -1)
+                {
+                    ItemList[i].Index = index;
+                    ItemList[i].Amount = amount;
+                    UpdateUi(i);
+                    Save();
 
-                        if (!Net.isMine || !Game.GameManager.SinglePlayer)
+                    if (!Net.isMine || !Game.GameManager.SinglePlayer)
+                    {
+                        foreach (var connection in PlayerOpen)
                         {
-                            foreach (var connection in PlayerOpen)
-                            {
-                                Net.RPC("RPC_SyncOneSlot", connection, i, ItemList[i].Index, ItemList[i].Amount);
-                            }
+                            Net.RPC("RPC_SyncOneSlot", connection, i, ItemList[i].Index, ItemList[i].Amount);
                         }
                     }
+                    return;
                 }
             }
-            else if (ItemList[i].Index == -1)
+            else
             {
-                ItemList[i].Index = index;
-                ItemList[i].Amount = amount;
-                UpdateUi(i);
-                Save();
-
-                if (!Net.isMine || !Game.GameManager.SinglePlayer)
-                {
-                    foreach (var connection in PlayerOpen)
-                    {
-                        Net.RPC("RPC_SyncOneSlot", connection, i, ItemList[i].Index, ItemList[i].Amount);
-                    }
-                }
-                return;
+                Game.PrintError("Your inventory is full, Can't add this item on your invetory!", false);
             }
         }
     }
@@ -475,6 +482,9 @@ public class InveItem
 {
     public int Index = -1;
     public int Amount = -1;
+
+    [System.NonSerialized]
+    public ItemType ItemType = ItemType.none;
 
     public InveItem(int index, int amount)
     {

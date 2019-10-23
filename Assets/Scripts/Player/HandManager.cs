@@ -178,7 +178,7 @@ public class HandManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
-                if (GetPresets.OpenInveTile(Game.GameManager.t))
+                if (Get.OpenInveTile(Game.GameManager.t))
                 {
                     Game.MenuManager.OpenInveContainer(Game.GameManager.t.ObjThis.GetComponent<Inventory>());
                 }
@@ -246,7 +246,7 @@ public class HandManager : MonoBehaviour
             {
                 if (Game.GameManager.hit.collider != null)
                 {
-                    if (GetPresets.OpenInveTile(Game.GameManager.t))
+                    if (Get.OpenInveTile(Game.GameManager.t))
                     {
                         
                     }

@@ -5271,8 +5271,6 @@ MonoBehaviour:
     Amount: -1
   - Index: -1
     Amount: -1
-  - Index: -1
-    Amount: -1
   Drop: {fileID: 1982240538145316, guid: 2045fdc92c4eeaf4c8f37b44ba29e320, type: 3}
   IsPlayer: 1
   Net: {fileID: 0}
@@ -5348,6 +5346,7 @@ MonoBehaviour:
     Index: 0
     itemRarity: 1
     ITEMTYPE: 0
+    MaterialHitBest: 2
     Icon: {fileID: 0}
     Name: 
     Description: 
@@ -5373,6 +5372,7 @@ MonoBehaviour:
     DamagePlayer: 1
     Distance: 1
     FireRate: 0.3
+    MaterialHitBest: 1
   HandTransform: {fileID: 4104868406472256}
 --- !u!95 &95241139421231152
 Animator:

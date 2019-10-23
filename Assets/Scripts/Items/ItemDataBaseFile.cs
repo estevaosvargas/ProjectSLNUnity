@@ -11,7 +11,10 @@ public class ItemDataBaseFile
         itemlist.Add(1, SetUpItem(1, "PickAxe", "PickAxe PickAxe PickAxe PickAxe", Game.SpriteManager.Getitemicon("PickAxe"), ItemRarity.Common, 1, false, true, ItemType.Tools, MaterialHitType.Rock, new ItemAbout(25, 45, 45, 100, 2, 0.7f)));
         itemlist.Add(2, SetUpItem(2, "Wood Chest", "ChestChestChestChestChestChestChest", Game.SpriteManager.Getitemicon("ChestWood"), ItemRarity.Common, 150, true, true, ItemType.Placer, MaterialHitType.none, new ItemAbout(Placer.BauWood, 2)));
         itemlist.Add(3, SetUpItem(3, "Axe", "Is Good for take wood, cut down a tree!", Game.SpriteManager.Getitemicon("Axe"), ItemRarity.Common, 1, false, true, ItemType.Tools, MaterialHitType.Wood, new ItemAbout(35, 15, 15, 100, 2, 0.7f)));
-
+        itemlist.Add(4, SetUpItem(4, "GoldCoin", "GoldCoin Is a global coin to trade/buy.", Game.SpriteManager.Getitemicon("GoldCoin"), ItemRarity.Money, 1000, true, false, ItemType.Trade, MaterialHitType.none, new ItemAbout()));
+        itemlist.Add(5, SetUpItem(5, "SilverCoin", "SilverCoin Is a global coin to trade/buy.", Game.SpriteManager.Getitemicon("SilverCoin"), ItemRarity.Money, 1000, true, false, ItemType.Trade, MaterialHitType.none, new ItemAbout()));
+        itemlist.Add(6, SetUpItem(6, "CoperCoin", "CoperCoin Is a global coin to trade/buy.", Game.SpriteManager.Getitemicon("CoperCoin"), ItemRarity.Money, 1000, true, false, ItemType.Trade, MaterialHitType.none, new ItemAbout()));
+        itemlist.Add(7, SetUpItem(7, "HeadTeste", "HeadTeste", Game.SpriteManager.Getitemicon("Head"), ItemRarity.Legendary, 1, false, false, ItemType.Armor, MaterialHitType.none, new ItemAbout()));
 
         Debug.Log("ItemData Loading Finished!");
         return itemlist;

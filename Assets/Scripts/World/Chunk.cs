@@ -62,7 +62,7 @@ public class Chunk : MonoBehaviour
                     {
                         if (tiles[i, j].CanWalk)
                         {
-                            if (tiles[i, j].typego == TakeGO.empty && tiles[i, j].placerObj == Placer.empty)
+                            if (tiles[i, j].typego == TakeGO.empty && tiles[i, j].PLACER_DATA == Placer.empty)
                             {
                                 int coust = tiles[i, j].CanWalk ? 0 : 1;
                                 Game.PathGrid.tiles.Add(new Vector2(tiles[i, j].x, tiles[i, j].z), new Node(tiles[i, j].CanWalk, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), coust));
@@ -79,7 +79,7 @@ public class Chunk : MonoBehaviour
                     }
                     else
                     {
-                        if (tiles[i, j].typego == TakeGO.empty && tiles[i, j].placerObj == Placer.empty)
+                        if (tiles[i, j].typego == TakeGO.empty && tiles[i, j].PLACER_DATA == Placer.empty)
                         {
                             int coust = tiles[i, j].CanWalk ? 0 : 1;
                             Game.PathGrid.tiles[new Vector2(tiles[i, j].x, tiles[i, j].z)] = new Node(tiles[i, j].CanWalk, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), coust);
@@ -143,20 +143,15 @@ public class Chunk : MonoBehaviour
                 }
 
                 //Set Up Tree OBject
+                SetupObjects(tiles[i, j]);
                 SetUpTileTree(tiles[i, j]);
-                SetUpPlacer(tiles[i, j]);
-
-                if (GetPresets.GetPlacerEntity(tiles[i, j].placerObj))
-                {
-                    SetUpEntityPlacer(tiles[i, j]);
-                }
 
                 if (tiles[i, j].CanWalk)
                 {
-                    if (Random.Range(1, 125) > 120)
+                    /*if (Random.Range(1, 125) > 120)
                     {
                         SpawnNetWorkObject(tiles[i, j]);
-                    }
+                    }*/
                 }
 
                 //OnTileTypeChange(tiles[i, j]);
@@ -166,7 +161,8 @@ public class Chunk : MonoBehaviour
                 tilesa.x = tiles[i, j].x;
                 tilesa.z = tiles[i, j].z;
                 tilesa.type = tiles[i, j].type;
-                tilesa.placer = tiles[i, j].placerObj;
+                tilesa.placer = tiles[i, j].PLACER_DATA;
+                tilesa.Ocuped = tiles[i, j].OcupedByOther;
                 tilesa.typego = tiles[i, j].typego;
                 tilesa.IsColider = tiles[i, j].IsColider;
                 tilesa.Emessive = tiles[i, j].Emessive;
@@ -191,14 +187,13 @@ public class Chunk : MonoBehaviour
     public void OnTileTypeChange(Tile tile)
     {
         SpriteRenderer spritee = tileGOmap[tile].GetComponent<SpriteRenderer>();
-        LightToD light = tileGOmap[tile].GetComponentInChildren<LightToD>();
         TileObj tilescript = tileGOmap[tile].GetComponentInChildren<TileObj>();
 
-        spritee.color = GetPresets.ColorBiome(tile.TileBiome, tile.type);
+        spritee.color = Get.ColorBiome(tile.TileBiome, tile.type);
         spritee.sprite = Game.SpriteManager.GetSprite(tile);
         tile.spritetile = spritee;
 
-        if (GetPresets.TileOrder(tile))
+        if (Get.TileOrder(tile))
         {
             spritee.transform.position = new Vector3(tile.x, tile.y, tile.z);
             spritee.transform.SetParent(this.transform, true);
@@ -218,7 +213,7 @@ public class Chunk : MonoBehaviour
         {
             if (tile.CanWalk)
             {
-                if (tile.typego == TakeGO.empty && tile.placerObj == Placer.empty)
+                if (tile.typego == TakeGO.empty && tile.PLACER_DATA == Placer.empty)
                 {
                     int coust = tile.CanWalk ? 0 : 1;
                     Game.PathGrid.tiles.Add(new Vector2(tile.x, tile.z), new Node(tile.CanWalk, new Vector3(tile.x, tile.y, tile.z), coust));
@@ -235,7 +230,7 @@ public class Chunk : MonoBehaviour
         }
         else
         {
-            if (tile.typego == TakeGO.empty && tile.placerObj == Placer.empty)
+            if (tile.typego == TakeGO.empty && tile.PLACER_DATA == Placer.empty)
             {
                 int coust = tile.CanWalk ? 0 : 1;
                 Game.PathGrid.tiles[new Vector2(tile.x, tile.z)] = new Node(tile.CanWalk, new Vector3(tile.x, tile.y, tile.z), coust);
@@ -306,49 +301,29 @@ public class Chunk : MonoBehaviour
         Game.WorldGenerator.ChunksList.Remove(this);
     }
 
-    private void SetUpPlacer(Tile tile)
+    /// <summary>
+    /// Setup ChunksObject, if the obejct is a entity, they need to be spawned on network, if dont just in local chunk
+    /// </summary>
+    /// <param name="tile"></param>
+    private void SetupObjects(Tile tile)
     {
-        if (tile.placerObj != Placer.empty)
+        if (Get.GetPlacerEntity(tile.PLACER_DATA))//Network Entity
         {
-            GameObject trees = null;
-            trees = Instantiate(Game.SpriteManager.Getplacerbyname(tile.placerObj.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
-
-            if (trees.transform.position.z > 0)
+            if (tile.PLACER_DATA != Placer.empty)
             {
-                trees.transform.position = new Vector3(tile.x, tile.y, tile.z);
-            }
-            else if (trees.transform.position.z < 0)
-            {
-                trees.transform.position = new Vector3(tile.x, tile.y, tile.z);
-            }
-
-            trees.transform.SetParent(this.transform, true);
-
-            tile.ObjThis = trees;
-
-            if (trees.GetComponent<Trees>())
-            {
-                trees.GetComponent<Trees>().ThisTreeTile = tile;
-            }
-
-            if (trees.GetComponent<SpriteRenderer>())
-            {
-                trees.GetComponent<SpriteRenderer>().sortingOrder = -(int)trees.transform.position.z;
-            }
-            else if (trees.GetComponentInChildren<SpriteRenderer>())
-            {
-                trees.GetComponentInChildren<SpriteRenderer>().sortingOrder = -(int)trees.transform.position.z;
+                GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.Getplacerbyname(tile.PLACER_DATA.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity, Game.WorldGenerator.World_ID);
+                tile.ObjThis = obj;
+                Entitys.Add(obj.GetComponent<ObjectEntity>());
             }
         }
-    }
-
-    private void SetUpEntityPlacer(Tile tile)
-    {
-        if (tile.placerObj != Placer.empty)
+        else//Local Object, Spawned inside of chunk
         {
-            GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.Getplacerbyname(tile.placerObj.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity, Game.WorldGenerator.World_ID);
-            tile.ObjThis = obj;
-            Entitys.Add(obj.GetComponent<ObjectEntity>());
+            if (tile.PLACER_DATA != Placer.empty)
+            {
+                GameObject trees = Instantiate(Game.SpriteManager.Getplacerbyname(tile.PLACER_DATA.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
+                trees.transform.SetParent(this.transform, true);
+                tile.ObjThis = trees;
+            }
         }
     }
 
@@ -361,7 +336,7 @@ public class Chunk : MonoBehaviour
             trees.transform.SetParent(this.transform, true);
             tile.ObjThis = trees;
 
-            trees.transform.position = new Vector3(tile.x + Random.Range(0f, 1f), tile.y, tile.z + Random.Range(0f, 1f));
+            trees.transform.position = new Vector3(tile.x + 0.5f, tile.y, tile.z + 0.5f);
 
             if (trees.GetComponent<Trees>())
             {
@@ -535,13 +510,8 @@ public class Chunk : MonoBehaviour
             tiles[i, j].TileChunk = new ChunkInfo((int)transform.position.x, (int)transform.position.z, this);
 
             //SetUp Tree object, spawn tree object and transalte for a new position
+            SetupObjects(tiles[i, j]);
             SetUpTileTree(tiles[i, j]);
-            SetUpPlacer(tiles[i, j]);
-
-            if (GetPresets.GetPlacerEntity(tiles[i, j].placerObj))
-            {
-                SetUpEntityPlacer(tiles[i, j]);
-            }
 
             if (tiles[i, j] == null)
             {

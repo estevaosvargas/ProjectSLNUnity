@@ -10,6 +10,7 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
     public Text Num;
     public bool Empty = true;
     public InventoryGUI InveGUI;
+    public ItemType SlotItemType = ItemType.none;
 
     public bool IsContainer = false;
 
@@ -58,6 +59,11 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
         }
         else
         {
+            if (DropSlot.SlotItemType != ItemType.none)//If this isnt none type, continue, if is is gona check if the slot is equal the item type
+            {
+                if (DropSlot.SlotItemType != ItemManager.Instance.GetItem(DragSlot.Item.Index).ITEMTYPE) { return; }
+            }
+
             if (DragSlot.IsContainer == false && DropSlot.IsContainer == true)//Player To Container
             {
                 Game.GameManager.MoveCont(InveGUI.Inve, InveGUI.InveCont, DragSlot.Index, DropSlot.Index);
@@ -93,29 +99,32 @@ public class Slots : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClick
         {
             Color32 color = Color.white;
 
-            if (Item.itemRarity == ItemRarity.Common)
+            switch (Item.itemRarity)
             {
-                color = Color.white;
-            }
-            else if (Item.itemRarity == ItemRarity.Uncommon)
-            {
-                color = new Color32(119, 213, 255, 255);
-            }
-            else if (Item.itemRarity == ItemRarity.Epic)
-            {
-                color = new Color32(255, 86, 2, 255);
-            }
-            else if (Item.itemRarity == ItemRarity.Legendary)
-            {
-                color = new Color32(86, 2, 255, 255);
-            }
-            else if (Item.itemRarity == ItemRarity.Dark)
-            {
-                color = new Color32(68, 0, 125, 255);
-            }
-            else if (Item.itemRarity == ItemRarity.SelfMade)
-            {
-                color = Color.white;
+                case ItemRarity.Common:
+                    color = Color.white;
+                    break;
+                case ItemRarity.Uncommon:
+                    color = new Color32(119, 213, 255, 255);
+                    break;
+                case ItemRarity.Epic:
+                    color = new Color32(255, 86, 2, 255);
+                    break;
+                case ItemRarity.Legendary:
+                    color = new Color32(86, 2, 255, 255);
+                    break;
+                case ItemRarity.Dark:
+                    color = new Color32(68, 0, 125, 255);
+                    break;
+                case ItemRarity.SelfMade:
+                    color = Color.white;
+                    break;
+                case ItemRarity.Money:
+                    color = Color.yellow;
+                    break;
+                default:
+                    color = Color.white;
+                    break;
             }
 
             Game.GameManager.CurrentPlayer.InveItemInfo.gameObject.SetActive(true);

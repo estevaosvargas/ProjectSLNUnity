@@ -18,7 +18,7 @@ public class PathGrid : MonoBehaviour
         {
             Gizmos.color = Color.Lerp(Color.white, Color.black, Mathf.InverseLerp(0, 1, n.movementPenalty));
             Gizmos.color = (n.walkable) ? Gizmos.color : Color.red;
-            Gizmos.DrawCube(new Vector3(n.worldPosition.x + 0.5f, n.worldPosition.y + 0.5f, n.worldPosition.z), Vector3.one);
+            Gizmos.DrawCube(new Vector3(n.worldPosition.x + 0.5f, n.worldPosition.y, n.worldPosition.z + 0.5f), Vector3.one);
         }
     }
 }
