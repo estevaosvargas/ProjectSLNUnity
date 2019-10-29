@@ -299,10 +299,18 @@ public class Tile
                 tile_other.OcupedByOther = true;
             }
         }
-
-        GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.Getplacerbyname(PLACER_DATA.ToString()), new Vector3(x, y, z), Quaternion.identity, Game.WorldGenerator.World_ID);
-        ObjThis = obj;
-        TileChunk.ThisChunk.Entitys.Add(obj.GetComponent<ObjectEntity>());
+        if (Get.GetPlacerEntity(PLACER_DATA))
+        {
+            GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.Getplacerbyname(PLACER_DATA.ToString()), new Vector3(x, y, z), Quaternion.identity, Game.WorldGenerator.World_ID);
+            ObjThis = obj;
+            TileChunk.ThisChunk.Entitys.Add(obj.GetComponent<ObjectEntity>());
+        }
+        else
+        {
+            GameObject obj = GameObject.Instantiate(Game.SpriteManager.Getplacerbyname(PLACER_DATA.ToString()), new Vector3(x, y, z), Quaternion.identity);
+            ObjThis = obj;
+            TileChunk.ThisChunk.Entitys.Add(obj.GetComponent<ObjectEntity>());
+        }
 
         SaveChunk();
     }

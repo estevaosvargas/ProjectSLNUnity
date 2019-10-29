@@ -50,6 +50,7 @@ public class GameManager : UIElements
     public ClientConnect Client;
     public NetWorkView Net;
     public static List<DCallBack> CallBacks = new List<DCallBack>();
+    public static AudioSource AudioSourceGlobal;
     public Tile t;
     public Ray ray;
     public RaycastHit hit;
@@ -81,7 +82,8 @@ public class GameManager : UIElements
             Instantiate(Console);
         }
 #endif
-        Application.targetFrameRate = 60;
+        AudioSourceGlobal = GetComponent<AudioSource>();
+        Application.targetFrameRate = 100;
         Game.AudioManager.LoadAudio();
 		ItchAPi.StartItchApi();
 
@@ -1403,12 +1405,16 @@ public class AudioManager
 {
     public AudioClip NONETILE;
     public AudioClip[] GRASS_FOOT;
+    public AudioClip PAGEFLIP01;
+    public AudioClip PAGEFLIP02;
 
     public void LoadAudio()
     {
         Debug.Log("Loading Audio...");
         NONETILE = Resources.Load<AudioClip>("Audio/nonetile");
         GRASS_FOOT = Resources.LoadAll<AudioClip>("Audio/Grass/");
+        PAGEFLIP01 = Resources.Load<AudioClip>("Audio/page-flip-01");
+        PAGEFLIP02 = Resources.Load<AudioClip>("Audio/page-flip-02");
         Debug.Log("Loading Audio Finished!");
     }
 
@@ -1422,17 +1428,20 @@ public class AudioManager
                 return NONETILE;
         }
     }
-}
 
-public class DColor
-{
-    public Color GetHexColor(string Hex)
+    public AudioClip GetPageFlipAudio()
     {
-        Color color;
-
-        ColorUtility.TryParseHtmlString("#"+Hex, out color);
-
-        return color;
+        int rand = UnityEngine.Random.Range(0, 2);
+        if (rand == 1)
+        {
+            Debug.Log("AudioClip01");
+            return PAGEFLIP01;
+        }
+        else
+        {
+            Debug.Log("AudioClip02");
+            return PAGEFLIP02;
+        }
     }
 }
 
@@ -1456,19 +1465,25 @@ public static class Game
     public static List<Entity> Entity_viewing = new List<Entity>();
 
     #region StaticMethods
+    public static Color Color(string Hex)
+    {
+        ColorUtility.TryParseHtmlString("#" + Hex, out Color color);
+        return color;
+    }
+
     public static void Print(string Text, bool is_command, int size = 14)
     {
-        ConsoleInGame.AddInRoolGUI(Text, is_command, Color.white, size);
+        ConsoleInGame.AddInRoolGUI(Text, is_command, UnityEngine.Color.white, size);
     }
 
     public static void PrintError(string Text, bool is_command, int size = 14)
     {
-        ConsoleInGame.AddInRoolGUI(Text, is_command, Color.red, size);
+        ConsoleInGame.AddInRoolGUI(Text, is_command, UnityEngine.Color.red, size);
     }
 
     public static void PrintWarnig(string Text, bool is_command, int size = 14)
     {
-        ConsoleInGame.AddInRoolGUI(Text, is_command, Color.yellow, size);
+        ConsoleInGame.AddInRoolGUI(Text, is_command, UnityEngine.Color.yellow, size);
     }
     #endregion
 }

@@ -599,13 +599,13 @@ public class LifeStatus
         if (Input.GetKey(KeyCode.K))
         {
             CalculateXp((Skills)Random.Range(0, 11), 1);
-            CalculateXp(ItemManager.Instance.GetItem(Random.Range(0, 4)), 1);
+            CalculateXp(ItemManager.Instance.GetItem(Random.Range(0, 7)), 1);
         }
 
         if (Input.GetKey(KeyCode.L))
         {
             CalculateXp((Skills)Random.Range(0, 11), -1);
-            CalculateXp(ItemManager.Instance.GetItem(Random.Range(0, 4)), -1);
+            CalculateXp(ItemManager.Instance.GetItem(Random.Range(0, 7)), -1);
         }
     }
 

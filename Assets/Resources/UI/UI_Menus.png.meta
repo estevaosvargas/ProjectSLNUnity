@@ -11,6 +11,12 @@ TextureImporter:
   - first:
       213: -6095911778782684256
     second: Seta_
+  - first:
+      213: 765569406219746039
+    second: Seta_Right
+  - first:
+      213: 7968822760200699066
+    second: UI_Saving
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 180
-        y: 349
-        width: 179
-        height: 151
+        y: 350
+        width: 175
+        height: 150
       alignment: 2
       pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -140,10 +146,10 @@ TextureImporter:
       name: Seta_
       rect:
         serializedVersion: 2
-        x: 371
-        y: 464
+        x: 373
+        y: 468
         width: 42
-        height: 36
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,6 +159,48 @@ TextureImporter:
       bones: []
       spriteID: f252284441831824dafbee5ec3ab213a
       internalID: -6095911778782684256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Seta_Right
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 468
+        width: 42
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2666807c31695d41a7c65624ef91a70
+      internalID: 765569406219746039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Saving
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 444
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d53af83d6e504d7429cb0dacb4f98355
+      internalID: 7968822760200699066
       vertices: []
       indices: 
       edges: []

@@ -193,21 +193,6 @@ public class Chunk : MonoBehaviour
         spritee.sprite = Game.SpriteManager.GetSprite(tile);
         tile.spritetile = spritee;
 
-        if (Get.TileOrder(tile))
-        {
-            spritee.transform.position = new Vector3(tile.x, tile.y, tile.z);
-            spritee.transform.SetParent(this.transform, true);
-
-            spritee.GetComponent<SpriteRenderer>().sortingOrder = -(int)spritee.transform.position.z;
-            spritee.sortingLayerName = "Player";
-        }
-        else
-        {
-            spritee.transform.position = new Vector3(tile.x, tile.y, tile.z);
-            spritee.GetComponent<SpriteRenderer>().sortingOrder = 0;
-            spritee.sortingLayerName = "Default";
-        }
-
         #region SetUpPathGrid
         if (!Game.PathGrid.tiles.ContainsKey(new Vector2(tile.x, tile.z)))
         {
@@ -323,6 +308,11 @@ public class Chunk : MonoBehaviour
                 GameObject trees = Instantiate(Game.SpriteManager.Getplacerbyname(tile.PLACER_DATA.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
                 trees.transform.SetParent(this.transform, true);
                 tile.ObjThis = trees;
+
+                if (trees.GetComponent<CityManager>())
+                {
+                    trees.GetComponent<CityManager>().ThisChunk= this;
+                }
             }
         }
     }

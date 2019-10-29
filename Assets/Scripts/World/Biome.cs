@@ -38,31 +38,16 @@ public static class Biome
 
         //sample2 *= 10;
 
-        DColor Dcolor = new DColor();
-
         if ((int)sample2 == 2 || (int)sample2 == -2)
         {
             Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
 
             #region Villa
             
-            if (color == Dcolor.GetHexColor("FF0000")|| color == Dcolor.GetHexColor("7F7F7F"))//Somthing Is On this tile
+            if (color == Game.Color("FFD800"))//CityHall Spawn Origin
             {
+                tile.PLACER_DATA = Placer.CityHall;
                 return TypeBlock.Dirt;
-            }
-            else if (color == Dcolor.GetHexColor("FF0048"))//House Spawn Origin
-            {
-                tile.PLACER_DATA = Placer.MainBuild2;
-                return TypeBlock.Dirt;
-            }
-            else if (color == Dcolor.GetHexColor("2D92FF"))//Spawn Chest(TesteOnly)
-            {
-                tile.PLACER_DATA = Placer.BauWood;
-                return TypeBlock.Dirt;
-            }
-            else if (color == Dcolor.GetHexColor("FFFFFF"))//Road
-            {
-                return TypeBlock.DirtRoad;
             }
             else
             {
@@ -270,29 +255,32 @@ public static class Biome
 
         float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
 
-        DColor Dcolor = new DColor();
-
         if ((int)sample2 == 2 || (int)sample2 == -2)
         {
             Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
 
             #region Villa
 
-            if (color == Dcolor.GetHexColor("FF0000") || color == Dcolor.GetHexColor("7F7F7F"))//Somthing Is On this tile
+            if (color == Game.Color("FF0000") || color == Game.Color("7F7F7F"))//Somthing Is On this tile
             {
                 return TypeBlock.Sand;
             }
-            else if (color == Dcolor.GetHexColor("FF0048"))//House Spawn Origin
+            else if (color == Game.Color("FF0048"))//House Spawn Origin
             {
                 tile.PLACER_DATA = Placer.MainBuild2;
                 return TypeBlock.Sand;
             }
-            else if (color == Dcolor.GetHexColor("2D92FF"))//Spawn Chest(TesteOnly)
+            else if (color == Game.Color("FFD800"))//CityHall Spawn Origin
+            {
+                tile.PLACER_DATA = Placer.CityHall;
+                return TypeBlock.Sand;
+            }
+            else if (color == Game.Color("2D92FF"))//Spawn Chest(TesteOnly)
             {
                 tile.PLACER_DATA = Placer.BauWood;
                 return TypeBlock.Sand;
             }
-            else if (color == Dcolor.GetHexColor("FFFFFF"))//Road
+            else if (color == Game.Color("FFFFFF"))//Road
             {
                 return TypeBlock.DirtRoad;
             }
@@ -564,29 +552,32 @@ public static class Biome
 
         float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
 
-        DColor Dcolor = new DColor();
-
         if ((int)sample2 == 2 || (int)sample2 == -2)
         {
             Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
 
             #region Villa
 
-            if (color == Dcolor.GetHexColor("FF0000") || color == Dcolor.GetHexColor("7F7F7F"))//Somthing Is On this tile
+            if (color == Game.Color("FF0000") || color == Game.Color("7F7F7F"))//Somthing Is On this tile
             {
                 return TypeBlock.Dirt;
             }
-            else if (color == Dcolor.GetHexColor("FF0048"))//House Spawn Origin
+            else if (color == Game.Color("FF0048"))//House Spawn Origin
             {
                 tile.PLACER_DATA = Placer.MainBuild2;
                 return TypeBlock.Dirt;
             }
-            else if (color == Dcolor.GetHexColor("2D92FF"))//Spawn Chest(TesteOnly)
+            else if (color == Game.Color("FFD800"))//CityHall Spawn Origin
+            {
+                tile.PLACER_DATA = Placer.CityHall;
+                return TypeBlock.Dirt;
+            }
+            else if (color == Game.Color("2D92FF"))//Spawn Chest(TesteOnly)
             {
                 tile.PLACER_DATA = Placer.BauWood;
                 return TypeBlock.Dirt;
             }
-            else if (color == Dcolor.GetHexColor("FFFFFF"))//Road
+            else if (color == Game.Color("FFFFFF"))//Road
             {
                 return TypeBlock.DirtRoad;
             }

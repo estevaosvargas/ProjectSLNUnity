@@ -19,8 +19,9 @@ namespace DarckNet
         internal int PrefabID = 0;
         public long Owner;
         public int ViewID = 0;
-        public NetDeliveryMethod DeliveModo = NetDeliveryMethod.Unreliable;
         public IdMode IdMode = IdMode.AutomaticId;
+        public NetDeliveryMethod DefaultNetDeliveryMethod = NetDeliveryMethod.Unreliable;
+        public bool isMine { get { bool Mine = false; if (Network.Runing) { if (Owner == Network.MyPeer.UniqueIdentifier) { Mine = true; } else { Mine = false; } } else { Mine = false; } return Mine; } }
 
         [NonSerialized]
         internal Dictionary<int, CallFunc> mDict0 = new Dictionary<int, CallFunc>();
@@ -28,31 +29,6 @@ namespace DarckNet
         internal Dictionary<string, CallFunc> mDict1 = new Dictionary<string, CallFunc>();
         [NonSerialized]
         internal bool verifyd = false;
-
-        public bool isMine
-        {
-            get
-            {
-                bool Mine = false;
-
-                if (Network.Runing)
-                {
-                    if (Owner == Network.MyPeer.UniqueIdentifier)
-                    {
-                        Mine = true;
-                    }
-                    else
-                    {
-                        Mine = false;
-                    }
-                }
-                else
-                {
-                    Mine = false;
-                }
-                return Mine;
-            }
-        }
 
         void Awake()
         {
@@ -87,19 +63,20 @@ namespace DarckNet
             Owner = uniqui;
         }
 
+        #region RPC-spicified-NetDeliveryMethod
         /// <summary>
         /// Send RPC with RPCmode
         /// </summary>
         /// <param name="funcname"></param>
         /// <param name="Mode"></param>
         /// <param name="param"></param>
-        public void RPC(string funcname, RPCMode Mode, params object[] param)
+        public void RPC(string funcname, RPCMode Mode, NetDeliveryMethod DeliveryMethod, params object[] param)
         {
             if (Network.Ready)
             {
                 if (Network.NetworkViews.ContainsKey(ViewID))
                 {
-                    SendRPC(funcname, Mode, param);
+                    SendRPC(funcname, Mode, DeliveryMethod, param);
                 }
             }
         }
@@ -110,18 +87,56 @@ namespace DarckNet
         /// <param name="funcname"></param>
         /// <param name="player"></param>
         /// <param name="param"></param>
+        public void RPC(string funcname, NetConnection player, NetDeliveryMethod DeliveryMethod, params object[] param)
+        {
+            if (Network.Ready)
+            {
+                if (Network.NetworkViews.ContainsKey(ViewID))
+                {
+                    SendRPC(funcname, player, DeliveryMethod, param);
+                }
+            }
+        }
+        #endregion
+
+        #region RPC-NetDeliveryMethod-Default
+        /// <summary>
+        /// Send RPC with RPCmode and default NetDeliveryMethod
+        /// </summary>
+        /// <param name="funcname"></param>
+        /// <param name="Mode"></param>
+        /// <param name="param"></param>
+        public void RPC(string funcname, RPCMode Mode, params object[] param)
+        {
+            if (Network.Ready)
+            {
+                if (Network.NetworkViews.ContainsKey(ViewID))
+                {
+                    SendRPC(funcname, Mode, DefaultNetDeliveryMethod, param);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Send RPC to Specifique User(NetPeer), with a default NetDeliveryMethod
+        /// </summary>
+        /// <param name="funcname"></param>
+        /// <param name="player"></param>
+        /// <param name="param"></param>
         public void RPC(string funcname, NetConnection player, params object[] param)
         {
             if (Network.Ready)
             {
                 if (Network.NetworkViews.ContainsKey(ViewID))
                 {
-                    SendRPC(funcname, player, param);
+                    SendRPC(funcname, player, DefaultNetDeliveryMethod, param);
                 }
             }
         }
 
-        void SendRPC(string funcname, RPCMode Mode, params object[] param)
+        #endregion
+
+        void SendRPC(string funcname, RPCMode Mode, NetDeliveryMethod DeliveryMethod, params object[] param)
         {
             var om = Network.MyPeer.CreateMessage();
             if (Mode == RPCMode.All)
@@ -136,7 +151,7 @@ namespace DarckNet
 
                 if (Network.IsClient)
                 {
-                    Network.Client.SendMessage(om, DeliveModo);
+                    Network.Client.SendMessage(om, DeliveryMethod);
                 }
                 else
                 {
@@ -154,7 +169,7 @@ namespace DarckNet
 
                 if (Network.IsClient)
                 {
-                    Network.Client.SendMessage(om, DeliveModo);
+                    Network.Client.SendMessage(om, DeliveryMethod);
                 }
                 else
                 {
@@ -173,7 +188,7 @@ namespace DarckNet
 
                 if (Network.IsClient)
                 {
-                    Network.Client.SendMessage(om, DeliveModo);
+                    Network.Client.SendMessage(om, DeliveryMethod);
                 }
                 else
                 {
@@ -191,7 +206,7 @@ namespace DarckNet
 
                 if (Network.IsClient == true)
                 {
-                    Network.Client.SendMessage(om, DeliveModo);
+                    Network.Client.SendMessage(om, DeliveryMethod);
                 }
                 else
                 {
@@ -209,7 +224,7 @@ namespace DarckNet
 
                 if (Network.IsClient)
                 {
-                    Network.Client.SendMessage(om, DeliveModo);
+                    Network.Client.SendMessage(om, DeliveryMethod);
                 }
                 else
                 {
@@ -218,7 +233,7 @@ namespace DarckNet
             }
         }
 
-        void SendRPC(string funcname, NetConnection player, params object[] param)
+        void SendRPC(string funcname, NetConnection player, NetDeliveryMethod DeliveryMethod, params object[] param)
         {
             var om = Network.MyPeer.CreateMessage();
 
@@ -229,7 +244,7 @@ namespace DarckNet
 
             DoData(om, funcname, param);
 
-            Network.MyPeer.SendMessage(om, player, DeliveModo);
+            Network.MyPeer.SendMessage(om, player, DeliveryMethod);
 
             return;
         }
@@ -500,6 +515,11 @@ namespace DarckNet
 
     public static class NetBit
     {
+        /// <summary>
+        /// RPC Read Vector3
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns></returns>
         public static Vector3 ReadVector3(NetIncomingMessage msg)
         {
             Vector3 vec = new Vector3();
@@ -511,6 +531,11 @@ namespace DarckNet
             return vec;
         }
 
+        /// <summary>
+        /// RPC Read Vector2
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns></returns>
         public static Vector2 ReadVector2(NetIncomingMessage msg)
         {
             Vector2 vec = new Vector2();
@@ -521,6 +546,11 @@ namespace DarckNet
             return vec;
         }
 
+        /// <summary>
+        /// RPC Read Quaternion
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns></returns>
         public static Quaternion ReadQuaternion(NetIncomingMessage msg)
         {
             Quaternion vec = new Quaternion();

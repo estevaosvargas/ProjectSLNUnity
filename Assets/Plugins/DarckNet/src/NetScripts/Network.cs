@@ -24,7 +24,7 @@ namespace DarckNet
     public class Network
     {
         #region Vars
-        public static string NetVersion = "0.1";
+        public static string NetVersion = "V0.5";
         internal static NetPeer MyPeer;
         internal static NetConnection MyConnection;
         internal static NetServer Server;
@@ -60,7 +60,7 @@ namespace DarckNet
         {
             if (Client == null && Server == null)
             {
-                Debug.Log("DarckNet - " + NetVersion);
+                Debug.Log("DarckNet " + NetVersion);
 
                 NetDeliveryMode = NetDeliveryMethod.UnreliableSequenced;
 
@@ -145,7 +145,7 @@ namespace DarckNet
         {
             if (Server == null && Client == null)
             {
-                Debug.Log("DarckNet - " + NetVersion);
+                Debug.Log("DarckNet " + NetVersion);
                 NetDeliveryMode = NetDeliveryMethod.UnreliableSequenced;
 
                 NetPeerConfiguration config = new NetPeerConfiguration(NetConfig.AppIdentifier);
@@ -471,6 +471,11 @@ namespace DarckNet
 
                     if (IsClient)
                     {
+                        GameObject obj = GameObject.Instantiate(Object, position, rotation);
+                        NetworkViews.Add(viewid, obj.GetComponent<NetworkObj>());
+                        obj.GetComponent<NetworkObj>().SetID(viewid, Object.GetComponent<NetworkObj>().PrefabID, MyPeer.UniqueIdentifier);
+                        obj.GetComponent<NetworkObj>().Dimension = g;
+
                         Client.SendMessage(om, NetDeliveryMode);
                     }
                     else
@@ -677,7 +682,6 @@ namespace DarckNet
                                         neww.PrefabID = kvp.PrefabID;
                                         neww.Owner = kvp.Owner;
                                         neww.ViewID = kvp.ViewID;
-                                        neww.DeliveModo = kvp.DeliveModo;
                                         neww.IdMode = kvp.IdMode;
                                         neww.Dimension = kvp.Dimension;
 
@@ -943,6 +947,7 @@ namespace DarckNet
 
                 List<NetConnection> listanet = new List<NetConnection>(GetConnections(NetDimension[dimension].Players.ToArray()));
                 listanet.Remove(GetConnection(MyPeer.UniqueIdentifier));
+                listanet.Remove(GetConnection(inc.SenderConnection.RemoteUniqueIdentifier));
 
                 Server_SendToAll(om, listanet.ToArray(), NetDeliveryMode);
                 #endregion
@@ -1005,7 +1010,6 @@ namespace DarckNet
                     neww.PrefabID = kvp.PrefabID;
                     neww.Owner = kvp.Owner;
                     neww.ViewID = kvp.ViewID;
-                    neww.DeliveModo = kvp.DeliveModo;
                     neww.IdMode = kvp.IdMode;
                     neww.Dimension = kvp.Dimension;
 
@@ -1447,7 +1451,7 @@ namespace DarckNet
 
             DoData(om, obj);
 
-            Server.SendMessage(om, GetConnection(Net.Owner), Net.DeliveModo);
+            Server.SendMessage(om, GetConnection(Net.Owner), inc.DeliveryMethod);
         }
 
         internal static void RPC_ALLDimension(NetIncomingMessage inc)
@@ -1468,7 +1472,7 @@ namespace DarckNet
 
             DoData(om, obj);
 
-            Server.SendToAll(om, Net.DeliveModo);
+            Server.SendToAll(om, inc.DeliveryMethod);
         }
 
         internal static NetOutgoingMessage DoData(NetOutgoingMessage om, object[] param)
@@ -1579,7 +1583,7 @@ namespace DarckNet
 
             DoData(om, param);
 
-            Server.SendMessage(om, GetConnection(Net.Owner), Net.DeliveModo);
+            Server.SendMessage(om, GetConnection(Net.Owner), Net.DefaultNetDeliveryMethod);
         }
 
         internal static void RPC_ALLDimension(string funcname, int viewid, object[] param)
@@ -1595,7 +1599,7 @@ namespace DarckNet
 
             DoData(om, param);
 
-            Server.SendToAll(om, Net.DeliveModo);
+            Server.SendToAll(om, Net.DefaultNetDeliveryMethod);
         }
 
         internal static void RPC_Server(string funcname, int viewid, object[] param)
@@ -1698,7 +1702,6 @@ namespace DarckNet
         public int PrefabID = 0;
         public long Owner;
         public int ViewID = 0;
-        public NetDeliveryMethod DeliveModo;
         public IdMode IdMode;
 
         public float p_x;

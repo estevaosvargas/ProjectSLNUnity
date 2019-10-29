@@ -161,17 +161,6 @@ public static class Get
         return Color.white;
     }
 
-    public static bool TileOrder(Tile tile)
-    {
-        switch (tile.type)
-        {
-            case TypeBlock.Rock:
-                return true;
-            default:
-                return false;
-        }
-    }
-
     public static bool GetPlacerEntity(Placer placer)
     {
         switch (placer)
@@ -221,7 +210,7 @@ public enum TakeGO : byte
 
 public enum Placer : byte
 {
-    empty, BauWood, BauGold, BauDiamond, BauDark, CampTend, CampFire, MainBuild1, MainBuild2
+    empty, BauWood, BauGold, BauDiamond, BauDark, CampTend, CampFire, MainBuild1, MainBuild2, CityHall
 }
 
 public enum MaterialHitType: byte
