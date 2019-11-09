@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,10 @@ public class SpriteManager : MonoBehaviour
     Dictionary<string, Texture2D> Perlinimage;
     Dictionary<string, GameObject> Objects = new Dictionary<string, GameObject>();
     Dictionary<string, Sprite> Icons = new Dictionary<string, Sprite>();
+    Dictionary<string, Vector2[]> tileUVMap = new Dictionary<string, Vector2[]>();
+
+    public Texture2D terrainTiles;
+    public Texture2D transTiles;
 
     void Awake()
     {
@@ -18,7 +23,83 @@ public class SpriteManager : MonoBehaviour
         Perlinimage = new Dictionary<string, Texture2D>();
 
         LoadAssets();
+        LoadTileUvs();
         LoadSystems.LoadedSprites();
+    }
+
+    void LoadTileUvs()
+    {
+        Sprite[] sprites = Resources.LoadAll<Sprite>("Old/");
+        Sprite[] sprite_tra = Resources.LoadAll<Sprite>("Tiles/Trans/");
+
+        float imageWidth = terrainTiles.width;
+        float imageHeight = terrainTiles.height;
+
+        float Trans_imageWidth = transTiles.width;
+        float Trans_imageHeight = transTiles.height;
+
+        foreach (Sprite s in sprites)
+        {
+
+            Vector2[] uvs = new Vector2[4];
+
+            uvs[0] = new Vector2(s.rect.x / imageWidth, s.rect.y / imageHeight);
+            uvs[1] = new Vector2((s.rect.x + s.rect.width) / imageWidth, s.rect.y / imageHeight);
+            uvs[2] = new Vector2(s.rect.x / imageWidth, (s.rect.y + s.rect.height) / imageHeight);
+            uvs[3] = new Vector2((s.rect.x + s.rect.width) / imageWidth, (s.rect.y + s.rect.height) / imageHeight);
+
+            tileUVMap.Add(s.name, uvs);
+        }
+
+        foreach (Sprite s in sprite_tra)
+        {
+            Vector2[] uvs = new Vector2[4];
+
+            uvs[0] = new Vector2(s.rect.x / Trans_imageWidth, s.rect.y / Trans_imageHeight);
+            uvs[1] = new Vector2((s.rect.x + s.rect.width) / Trans_imageWidth, s.rect.y / Trans_imageHeight);
+            uvs[2] = new Vector2(s.rect.x / Trans_imageWidth, (s.rect.y + s.rect.height) / Trans_imageHeight);
+            uvs[3] = new Vector2((s.rect.x + s.rect.width) / Trans_imageWidth, (s.rect.y + s.rect.height) / Trans_imageHeight);
+
+            tileUVMap.Add(s.name, uvs);
+        }
+    }
+
+    public Vector2[] GetTileUVs(Tile tile)
+    {
+        string key = tile.type.ToString() + "_";
+
+        if (tileUVMap.ContainsKey(key) == true)
+        {
+
+            return tileUVMap[key];
+        }
+        else
+        {
+
+            Debug.LogError("There is no UV map for tile type: " + key);
+            return tileUVMap["Air_"];
+        }
+    }
+
+    public Vector2[] GetTransUVs(Tile tile)
+    {
+        string key = "None_";
+        if (tile.havetran)
+        {
+            key = tile.TileTran[0].ToString();
+        }
+
+        if (tileUVMap.ContainsKey(key) == true)
+        {
+
+            return tileUVMap[key];
+        }
+        else
+        {
+
+            Debug.LogError("There is no UV map for tile type: " + key);
+            return tileUVMap["None_"];
+        }
     }
 
     public GameObject GetPrefabbyname(string name)
@@ -148,12 +229,13 @@ public class SpriteManager : MonoBehaviour
         return null;
     }
 
-    public void GetTranssition(Tile tile, TileObj script)
+    public void GetTranssition(Tile tile)
     {
         Tile[] neighbors = tile.GetNeighboors(true);
 
         List<TransTypes> types = new List<TransTypes>();
         List<Sprite> Sprites = new List<Sprite>();
+        List<TransData> tiletrans = new List<TransData>();
 
         //0 cima
         //1 direita
@@ -294,7 +376,10 @@ public class SpriteManager : MonoBehaviour
                 {
                     if (tileSprites.ContainsKey(name))
                     {
-                        script.Tiles.Add(new TransData(tileSprites[name], types[i].type, types[i].TileBiome));
+                        if (!tiletrans.Contains(new TransData(name, types[i].type, types[i].TileBiome)))
+                        {
+                            tiletrans.Add(new TransData(name, types[i].type, types[i].TileBiome));
+                        }
                     }
                     else
                     {
@@ -307,6 +392,8 @@ public class SpriteManager : MonoBehaviour
 
             }
         }
+
+        tile.TileTran = tiletrans.ToArray();
     }
 
     public Sprite GetSprite(string spriteName)
@@ -475,13 +562,13 @@ public class SpriteManager : MonoBehaviour
 [System.Serializable]
 public class TransData
 {
-    public Sprite sprite;
+    public string Name;
     public TypeBlock type;
     public BiomeType Biome;
 
-    public TransData(Sprite Sprite, TypeBlock TileType, BiomeType biome)
+    public TransData(string name, TypeBlock TileType, BiomeType biome)
     {
-        sprite = Sprite;
+        Name = name;
         type = TileType;
         Biome = biome;
     }

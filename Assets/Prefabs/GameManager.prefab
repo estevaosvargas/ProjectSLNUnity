@@ -266,7 +266,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -36.775, y: 0.000017166138}
+  m_AnchoredPosition: {x: -33.06, y: 0.000017166138}
   m_SizeDelta: {x: 106.8, y: 23.54}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &203250677
@@ -308,7 +308,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Loading...
+  m_Text: Saving...
 --- !u!1 &1141773253
 GameObject:
   m_ObjectHideFlags: 0
@@ -2968,6 +2968,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3346ffc19fc2b9345b26cf08965f1f23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  terrainTiles: {fileID: 2800000, guid: 787d8f40acd2c164e9d943f5f87c4f7b, type: 3}
+  transTiles: {fileID: 2800000, guid: 59f4551b6d3113240adf8d536c2139e2, type: 3}
 --- !u!1 &1216783977680058
 GameObject:
   m_ObjectHideFlags: 0
@@ -9439,6 +9441,7 @@ GameObject:
   - component: {fileID: 2650117007733356137}
   - component: {fileID: 1423186613353470125}
   - component: {fileID: 7824570094453226856}
+  - component: {fileID: 798914937268027368}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -9506,7 +9509,10 @@ MonoBehaviour:
   SHOWDEBUG: 0
   Net: {fileID: 114377742362985650}
   t:
+    type: 0
     typeVariante: 0
+    PLACER_DATA: 0
+    typego: 0
     ConnecyToNightboors: 0
     IsColider: 0
     RenderLevel: 0
@@ -9620,6 +9626,9 @@ MonoBehaviour:
   - {fileID: 5965577152830102322, guid: 4e487a1d7286b914fb5b80b808c32e37, type: 3}
   - {fileID: 1459282729364594, guid: 7799e939b9f7eaa43a537b122f54276c, type: 3}
   - {fileID: 1268213067446220, guid: 12dc1e3603cd89d4ea54612ff682fcde, type: 3}
+  - {fileID: 1459282729364594, guid: 745b2d21031cb224d915748f54262248, type: 3}
+  - {fileID: 1459282729364594, guid: c773b0ce01424a04e9d6d36724021c5a, type: 3}
+  - {fileID: 1470094844478218, guid: 463cc467d5d7628438390fdabb34c341, type: 3}
 --- !u!114 &716656130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9757,6 +9766,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &798914937268027368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841280331661352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4cec97bce044ad4eba68caacbbc743d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1847473815282784
 GameObject:
   m_ObjectHideFlags: 0

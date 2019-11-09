@@ -22,6 +22,8 @@ public class WorldGenerator : DCallBack
     public Transform SlectedBlock;
     public WorldType CurrentWorld;
     public int Seed = 0;
+    public int Small_Seed = 0;
+    public int VillaPorcetage = 10;
     public Texture2D HeightTeste;
 
     [Header("TimeData")]
@@ -35,6 +37,8 @@ public class WorldGenerator : DCallBack
         chunkMap = new Dictionary<Vector3, Chunk>();
         ClientchunkMap = new Dictionary<Vector3, bool>();
 
+        Game.CityManager.Load();
+
         if (DarckNet.Network.IsServer)
         {
             DarckNet.Network.Instantiate(SUN, Vector3.zero, Quaternion.identity, World_ID);
@@ -46,12 +50,34 @@ public class WorldGenerator : DCallBack
     {
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
+            System.Random randvilla = new System.Random(Game.GameManager.Seed);
+
             Seed = Game.GameManager.Seed;
+            Small_Seed = randvilla.Next(-9999, 9999);
+
             Player = Game.GameManager.CurrentPlayer.MyObject.transform;
             Player.GetComponent<EntityPlayer>().World = this.transform;
             Cam.target = Game.GameManager.CurrentPlayer.MyObject.transform;
 
             UpdateFindChunk();
+        }
+    }
+
+    public void LoadNewChunks(Chunk current_chunk)
+    {
+        List<Chunk> chunks = new List<Chunk>();
+
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x, (int)current_chunk.transform.position.z + 10));//Cima
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x, (int)current_chunk.transform.position.z - 10));//Baixo
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x + 10, (int)current_chunk.transform.position.z));//Direita
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x - 10, (int)current_chunk.transform.position.z));//Esquerda
+
+        foreach (var item in chunks)
+        {
+            if (item != null)
+            {
+                item.RefreshChunkTile();
+            }
         }
     }
 

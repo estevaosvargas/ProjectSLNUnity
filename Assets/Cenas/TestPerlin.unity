@@ -268,17 +268,72 @@ PrefabInstance:
     - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
         type: 3}
       propertyPath: Types
-      value: 14
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
         type: 3}
       propertyPath: width
-      value: 10
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
         type: 3}
       propertyPath: height
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
+        type: 3}
+      propertyPath: frequency
+      value: 0.31
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
+        type: 3}
+      propertyPath: displacemt
+      value: 5.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
+        type: 3}
+      propertyPath: FildterMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
+        type: 3}
+      propertyPath: Quality
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
+        type: 3}
+      propertyPath: Offset
+      value: 95.83
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
+        type: 3}
+      propertyPath: persistence
+      value: 2.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
+        type: 3}
+      propertyPath: octaves
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
+        type: 3}
+      propertyPath: randomSeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
+        type: 3}
+      propertyPath: lacunarit
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
+        type: 3}
+      propertyPath: gain
+      value: 2.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
+        type: 3}
+      propertyPath: PosX
+      value: 55.22
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4f968adb33864c43ba46118349a7f02, type: 3}

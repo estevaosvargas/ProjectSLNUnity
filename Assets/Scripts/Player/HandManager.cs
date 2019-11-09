@@ -253,19 +253,7 @@ public class HandManager : MonoBehaviour
                     else
                     {
                         #region PlaceBlock EnterCave
-                        if (Game.GameManager.t.type == TypeBlock.RockHole || Game.GameManager.t.type == TypeBlock.RockHoleUp || Game.GameManager.t.type == TypeBlock.RockHoleDown)
-                        {
-                            if (Application.loadedLevel == 2)
-                            {
-                                //WorldManager.This.ChangeWorld("Map", Game.GameManager.t.x, Game.GameManager.t.y);
-                            }
-                            else
-                            {
-                                //WorldManager.This.ChangeWorld("Cave", Game.GameManager.t.x, Game.GameManager.t.y);
-                            }
-                            return;
-                        }
-                        else if (Game.GameManager.t.type == TypeBlock.LightBlockON)
+                        if (Game.GameManager.t.type == TypeBlock.LightBlockON)
                         {
                             
                             return;
@@ -280,7 +268,7 @@ public class HandManager : MonoBehaviour
                 else
                 {
                     #region PlaceBlock EnterCave
-                    if (Game.GameManager.t.type == TypeBlock.RockHole || Game.GameManager.t.type == TypeBlock.RockHoleUp || Game.GameManager.t.type == TypeBlock.RockHoleDown)
+                    if (Game.GameManager.t.type == TypeBlock.RockHole)
                     {
                         if (Application.loadedLevel == 2)
                         {

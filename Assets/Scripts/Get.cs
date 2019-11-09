@@ -14,14 +14,6 @@ public static class Get
         {
             return true;
         }
-        else if (t.type == TypeBlock.RockHoleUp)
-        {
-            return true;
-        }
-        else if (t.type == TypeBlock.RockHoleDown)
-        {
-            return true;
-        }
         else
         {
             return false;
@@ -189,8 +181,7 @@ public enum TypeBlock : byte
     Air, RockGround, RockHole,
     Grass, Water, GoldStone, IronStone,
     Rock, DirtGrass, Sand,
-    Bloco, Dirt, RockHoleUp, RockHoleDown,
-    DirtRoad, Lava, IceWater, Snow, LightBlockON,
+    Bloco, Dirt, DirtRoad, IceWater, Snow, LightBlockON,
     BeachSand
 }
 
@@ -205,7 +196,7 @@ public enum TakeGO : byte
     Pine, Oak,
     Bush, BigTree, BigTree2,
     Cactu, Cactu2, PalmTree,
-    PalmTree2, PineSnow, Weed01, WeedTall, WeedTall_Jungle, WeedTall_Snow, RockProp, Grass
+    PalmTree2, PineSnow, Weed01, WeedTall, WeedTall_Jungle, WeedTall_Snow, RockProp, Grass, RockWall
 }
 
 public enum Placer : byte

@@ -6,10 +6,10 @@ using System;
 [Serializable]
 public class Tile
 {
-    public TypeBlock type { get; private set; }
+    public TypeBlock type;
     public TypeVariante typeVariante;
-    public Placer PLACER_DATA { get; set; }
-    public TakeGO typego { get; set; }
+    public Placer PLACER_DATA;
+    public TakeGO typego;
 
     public bool ConnecyToNightboors = false;
     public bool IsColider = false;
@@ -22,6 +22,11 @@ public class Tile
 
     public BiomeType TileBiome;
 
+    [NonSerialized]
+    public TransData[] TileTran;
+    [NonSerialized]
+    public bool havetran = false;
+
     public bool Emessive = false;
     public bool OcupedByOther = false;
 
@@ -30,6 +35,9 @@ public class Tile
     public int Hora;
     public int Dia = 1;
     public int Mes = 1;
+
+    [NonSerialized]
+    public Vector3 CityPoint;
 
     /// <summary>
     /// If AI Can Walk.
@@ -141,7 +149,7 @@ public class Tile
         xCordee *= frequency;
         zCordee *= frequency;
 
-        float sample = Mathf.PerlinNoise(xCordee + Game.WorldGenerator.Seed, zCordee + Game.WorldGenerator.Seed) * amplitude / persistence;
+        float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.WorldGenerator.Seed, LibNoise.Unity.QualityMode.Low).GetValue(x, z, 0);
 
         if (Game.WorldGenerator.CurrentWorld == WorldType.Caves)
         {
@@ -150,15 +158,16 @@ public class Tile
         else if (Game.WorldGenerator.CurrentWorld == WorldType.Normal)
         {
             // normal 0.8f
-            if (sample > 0.5f)
+            
+            if (sample >= 50f)
             {
-                float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.005f, 1, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
+                float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 1, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
 
                 sample2 *= 10;
 
                 PerlinSetType(SetUpBiome(x, z, this, sample, sample2));
             }
-            else if (sample > 0.3f)
+            else if (sample > 0.01f)
             {
                 TileBiome = BiomeType.Bench;
                 PerlinSetType(Biome.Bench(x, z, this, sample));
@@ -212,71 +221,19 @@ public class Tile
                     DamageTypeSet(TypeBlock.RockGround);
                     break;
                 case TypeBlock.RockGround:
-                    DamageTypeSet(getcavetile(x, z));
+                    
                     break;
                 case TypeBlock.DirtGrass:
                     DamageTypeSet(TypeBlock.Dirt);
                     break;
                 case TypeBlock.Dirt:
-                    DamageTypeSet(getcavetile(x, z));
+                    
                     break;
                 default:
                     DamageTypeSet(TypeBlock.Air);
                     break;
             }
         }
-    }
-
-    TypeBlock getcavetile(int x, int y)
-    {
-        Color color = Game.SpriteManager.GetPerlinImage("Caves01").GetPixel(x + Game.WorldGenerator.Seed, y + Game.WorldGenerator.Seed);
-
-        if (Game.WorldGenerator.CurrentWorld == WorldType.Normal)
-        {
-            if (color.r == 1 && color.g == 0 && color.b == 0)
-            {
-                return TypeBlock.RockHoleDown;
-            }
-            else if (color.r == 1 && color.g == 1 && color.b == 1)
-            {
-                return TypeBlock.RockHoleDown;
-            }
-            else
-            {
-                return TypeBlock.RockGround;
-            }
-        }
-        else if (Game.WorldGenerator.CurrentWorld == WorldType.Caves)
-        {
-            if (color.r == 1 && color.g == 0 && color.b == 0)
-            {
-                return TypeBlock.RockHoleUp;
-            }
-            else if (color.r == 1 && color.g == 1 && color.b == 1)
-            {
-                return TypeBlock.RockHoleUp;
-            }
-            else
-            {
-                return TypeBlock.RockGround;
-            }
-        }
-        else
-        {
-            if (color.r == 1 && color.g == 0 && color.b == 0)
-            {
-                return TypeBlock.RockHole;
-            }
-            else if (color.r == 1 && color.g == 1 && color.b == 1)
-            {
-                return TypeBlock.RockHole;
-            }
-            else
-            {
-                return TypeBlock.RockGround;
-            }
-        }
-
     }
 
     //Place a gameobject on tile, and don't remove any thing on tile, object like chest,torch, or other things
@@ -330,7 +287,6 @@ public class Tile
         SetUpTile(this);
         DamageSetUp(this);
         SaveChunk();
-
         OnTileTypeChange(this);
         TileChunk.ThisChunk.TileTransitionChange(this);
 
@@ -341,7 +297,10 @@ public class Tile
         {
             neighbor[i].TileChunk.ThisChunk.TileTransitionChange(neighbor[i]);
             neighbor[i].OnTileTypeChange(neighbor[i]);
+            TileChunk.ThisChunk.RefreshChunkTile();
         }
+
+        TileChunk.ThisChunk.RefreshChunkTile();
     }
 
     public void PlaceBlockSet(TypeBlock type)
@@ -366,6 +325,8 @@ public class Tile
             neighbor[i].TileChunk.ThisChunk.TileTransitionChange(neighbor[i]);
             neighbor[i].OnTileTypeChange(neighbor[i]);
         }
+
+        //TileChunk.ThisChunk.RefreshChunk();
     }
 
     //Save all chunk
@@ -454,8 +415,8 @@ public class Tile
         else if ((int)sample2 == 6)
         {
             //sem nemhum
-            TileBiome = BiomeType.Montahas;
-            return Biome.Montanhas(x, z, this, sample);
+            TileBiome = BiomeType.Jungle;
+            return Biome.Jungle(x, z, this, sample);
         }
         else if ((int)sample2 == 7)
         {
@@ -466,8 +427,8 @@ public class Tile
         else if ((int)sample2 == -4)
         {
             //sem nemhum
-            TileBiome = BiomeType.Plain;
-            return Biome.Plaine(x, z, this, sample);
+            TileBiome = BiomeType.Desert;
+            return Biome.Desert(x, z, this, sample);
         }
         else
         {
@@ -548,22 +509,6 @@ public class Tile
                 tile.MaxHP = 100;
                 tile.RenderLevel = 0;
                 tile.CanWalk = true;
-                break;
-            case TypeBlock.RockHoleDown:
-                tile.ConnecyToNightboors = false;
-                tile.IsColider = true;
-                tile.HP = 100;
-                tile.MaxHP = 100;
-                tile.RenderLevel = 0;
-                tile.CanWalk = false;
-                break;
-            case TypeBlock.RockHoleUp:
-                tile.ConnecyToNightboors = false;
-                tile.IsColider = true;
-                tile.HP = 100;
-                tile.MaxHP = 100;
-                tile.RenderLevel = 0;
-                tile.CanWalk = false;
                 break;
             case TypeBlock.DirtGrass:
                 tile.ConnecyToNightboors = false;

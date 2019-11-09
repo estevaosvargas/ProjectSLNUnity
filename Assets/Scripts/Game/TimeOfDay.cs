@@ -51,7 +51,7 @@ public class TimeOfDay : MonoBehaviour
     {
         if (DarckNet.Network.IsServer || Game.GameManager.SinglePlayer)
         {
-            TimeH += TimePerDay * Time.deltaTime;
+            TimeH += 0.01f / TimePerDay * Time.deltaTime;
             time = TimeH * 24;
 
             DataTime.skytime = TimeH;

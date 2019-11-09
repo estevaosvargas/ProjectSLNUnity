@@ -1,24 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
 public class CityManager : MonoBehaviour
 {
-    public string CityName = "";
-    public string CityId = "";
-    public int Population = 0;
-    public int MaxPopulation = 10;
-    public int CityDistance = 30;
-    public CityLevel Level;
-    public CityStatus cityStatus;
-    public List<Vilanger> Vilangers = new List<Vilanger>();
-    public Chunk ThisChunk;
-    public List<CityVector2> OthersBuild = new List<CityVector2>();
+    public Dictionary<Vector3, City> CurrentCitysLoaded = new Dictionary<Vector3, City>();
+    
+    void Awake()
+    {
+        Game.CityManager = this;
+    }
 
     void Start()
     {
-        ComputCity();
+        //ComputCity();
     }
 
     void Update()
@@ -26,148 +24,46 @@ public class CityManager : MonoBehaviour
 
     }
 
-    public void Upgrade()
+    public void AddCity(Vector3 point, Vector3 CityHall, bool havehall)
     {
-
-    }
-
-    public void AddVilanger(Vilanger ai)
-    {
-        if (Population >= MaxPopulation)
+        if (!CurrentCitysLoaded.ContainsKey(point))
         {
-            Debug.Log("City Is Full!");
-        }
-        else
-        {
-            Vilangers.Add(ai);
-            Population += 1;
+            CurrentCitysLoaded.Add(point, new City(("Testing City " + point).GetHashCode().ToString(), ("Testing City " + point).GetHashCode().ToString(), 150, EconomicType.kingdom, point, CityHall, havehall));
+            Save();
         }
     }
 
-    public void RemoveVilanger(Vilanger ai)
+    public void Save()
     {
-        Vilangers.Remove(ai);
-        Population -= 1;
-    }
-
-    public void ChangeName(string name)
-    {
-        CityName = name;
-    }
-
-    public void OnDrawGizmos()
-    {
-        foreach (CityVector2 n in OthersBuild)
+        List<CitySave> citySaves = new List<CitySave>();
+        foreach (var itemcity in CurrentCitysLoaded.Values.ToArray())
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawCube(new Vector3(n.x, 0, n.z), Vector3.one);
+            citySaves.Add(new CitySave(itemcity.CityName, itemcity.CityId, itemcity.MaxPopulation, itemcity.economicType, itemcity.citypoint, itemcity.hallpos, itemcity.havehall));
         }
+
+        SaveWorld.SaveCity(citySaves.ToArray(), "citys");
     }
 
-    public void ComputCity()
+    public City GetCity(Vector3 cityPoint)
     {
-        for (int x = -CityDistance * 1; x < CityDistance* 1; x++)
+        if (CurrentCitysLoaded.ContainsKey(cityPoint))
         {
-            for (int z = -CityDistance * 1; z < CityDistance * 1; z++)
+            return CurrentCitysLoaded[cityPoint];
+        }
+
+        return null;
+    }
+
+    public void Load()
+    {
+        CitySave[] cityarray = SaveWorld.LoadCity("citys");
+
+        if (cityarray.Length > 0)
+        {
+            foreach (var itemcity in cityarray)
             {
-                Tile tile = Game.WorldGenerator.GetTileAt(x + (int)ThisChunk.transform.position.x, z + (int)ThisChunk.transform.position.z);
-                float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, Game.WorldGenerator.Seed, false).GetValue(x + (int)ThisChunk.transform.position.x, z + (int)ThisChunk.transform.position.z, 0);
-
-                if (tile != null)
-                {
-                    if ((int)sample2 == 2 || (int)sample2 == -2)
-                    {
-                        Color color = Game.WorldGenerator.HeightTeste.GetPixel(x + (int)ThisChunk.transform.position.x, z + (int)ThisChunk.transform.position.z);
-
-                        if (color == Game.Color("FF0000") || color == Game.Color("7F7F7F"))//Somthing Is On this tile
-                        {
-                            tile.PerlinSetType(TypeBlock.Dirt);
-                        }
-                        else if (color == Game.Color("FF0048"))//House Spawn Origin
-                        {
-                            tile.SetPlacer(Placer.MainBuild2);
-                            tile.PerlinSetType(TypeBlock.Dirt);
-                        }
-                        else if (color == Game.Color("FFD800"))//CityHall Spawn Origin
-                        {
-
-                        }
-                        else if (color == Game.Color("2D92FF"))//Spawn Chest(TesteOnly)
-                        {
-                            tile.SetPlacer(Placer.BauWood);
-                            tile.PerlinSetType(TypeBlock.Dirt);
-                        }
-                        else if (color == Game.Color("FFFFFF"))//Road
-                        {
-                            tile.PerlinSetType(TypeBlock.Dirt);
-                        }
-                        else
-                        {
-                            System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * ((int)ThisChunk.transform.position.x + (int)ThisChunk.transform.position.z));
-                            int randnum = (rand.Next(1, 30));
-
-                            if (randnum == 1)
-                            {
-                                if (tile.typego == TakeGO.empty && tile.z != 0)
-                                {
-                                    tile.typego = TakeGO.Weed01;
-                                }
-                                tile.PerlinSetType(TypeBlock.Grass);
-                            }
-                            else if (randnum == 2)
-                            {
-                                if (tile.typego == TakeGO.empty && tile.z != 0)
-                                {
-                                    tile.typego = TakeGO.RockProp;
-                                }
-                                tile.PerlinSetType(TypeBlock.Grass);
-                            }
-                            else if (randnum == 3)
-                            {
-                                if (tile.typego == TakeGO.empty && tile.z != 0)
-                                {
-                                    tile.typego = TakeGO.WeedTall;
-                                }
-                                tile.PerlinSetType(TypeBlock.Grass);
-                            }
-                            else if (randnum == 4)
-                            {
-                                if (tile.typego == TakeGO.empty && tile.z != 0)
-                                {
-                                    tile.typego = TakeGO.Pine;
-                                }
-                                tile.PerlinSetType(TypeBlock.Grass);
-                            }
-                            else if (randnum == 5)
-                            {
-                                if (tile.typego == TakeGO.empty && tile.z != 0)
-                                {
-                                    tile.typego = TakeGO.Oak;
-                                }
-                                tile.PerlinSetType(TypeBlock.Grass);
-                            }
-                            else if (randnum == 6)
-                            {
-                                tile.typeVariante = TypeVariante.GrassFL1;
-                                tile.PerlinSetType(TypeBlock.Grass);
-                            }
-                            else if (randnum == 7)
-                            {
-                                tile.typeVariante = TypeVariante.GrassFL2;
-                                tile.PerlinSetType(TypeBlock.Grass);
-                            }
-                            else if (randnum == 8)
-                            {
-                                tile.typeVariante = TypeVariante.GrassRC;
-                                tile.PerlinSetType(TypeBlock.Grass);
-                            }
-                            else
-                            {
-                                tile.PerlinSetType(TypeBlock.Grass);
-                            }
-                        }
-                    }
-                }
+                CurrentCitysLoaded.Add(new Vector3(itemcity.citypointX, itemcity.citypointY, 0), new City(itemcity.CityName, itemcity.CityId, itemcity.MaxPopulation, itemcity.economicType, new Vector3(itemcity.citypointX, itemcity.citypointY, 0), new Vector3(itemcity.hallposX, itemcity.hallposY, 0), itemcity.havehall));
+                Debug.Log(itemcity.CityId);
             }
         }
     }
@@ -189,18 +85,67 @@ public class CityStatus
 }
 
 [System.Serializable]
-public struct CityVector2
+public class City
 {
-    public int x;
-    public int z;
+    public string CityName = "";
+    public string CityId = "";
+    public int Population = 0;
+    public int MaxPopulation = 10;
+    public EconomicType economicType;
+    public CityStatus cityStatus;
+    public Vector3 citypoint;
+    public Vector3 hallpos;
+    public bool havehall;
 
-    public CityVector2(int _x, int _z)
+    [System.NonSerialized]
+    public List<Vilanger> Vilangers = new List<Vilanger>();
+
+    public City(string city_Name, string city_ID, int max_polupation, EconomicType economic_Type, Vector3 city_point, Vector3 hall_pos, bool have_hall)
     {
-        x = _x;
-        z = _z;
+        CityName = city_Name;
+        CityId = city_ID;
+        MaxPopulation = max_polupation;
+        economicType = economic_Type;
+        citypoint = city_point;
+        hallpos = hall_pos;
+        havehall = have_hall;
     }
 }
 
+[System.Serializable]
+public class CitySave
+{
+    public string CityName = "";
+    public string CityId = "";
+    public int Population = 0;
+    public int MaxPopulation = 10;
+    public EconomicType economicType;
+    public CityStatus cityStatus;
+
+    public int citypointX;
+    public int citypointY;
+
+    public int hallposX;
+    public int hallposY;
+
+    public bool havehall;
+
+    public CitySave(string city_Name, string city_ID, int max_polupation, EconomicType economic_Type, Vector3 city_point, Vector3 hall_pos, bool have_hall)
+    {
+        CityName = city_Name;
+        CityId = city_ID;
+        MaxPopulation = max_polupation;
+        economicType = economic_Type;
+
+        citypointX = (int)city_point.x;
+        citypointY = (int)city_point.y;
+
+        hallposX = (int)hall_pos.x;
+        hallposY = (int)hall_pos.y;
+
+        havehall = have_hall;
+    }
+}
 
 public enum CityLevel
 {

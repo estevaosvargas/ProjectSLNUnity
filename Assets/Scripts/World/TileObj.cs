@@ -25,12 +25,12 @@ public class TileObj : MonoBehaviour
             SpriteRenderer Render = TileGo.GetComponent<SpriteRenderer>();
 
             TileGo.transform.SetParent(this.transform, false);
-            TileGo.name = "Tile_Transition_" + Tiles[i].sprite.name;
+            //TileGo.name = "Tile_Transition_" + Tiles[i].sprite.name;
 
             TileGo.transform.localPosition = new Vector3(0, 0, 0);
 			TileGo.transform.Rotate(new Vector3(-0.1f, 0,0), Space.Self);
 
-            Render.sprite = Tiles[i].sprite;
+            //Render.sprite = Tiles[i].sprite;
 
             Render.color = Render.color * Get.ColorBiome(Tiles[i].Biome, Tiles[i].type);
 

@@ -8,97 +8,116 @@ public class DumbEntity : EntityLife
     public float damping = 1;
     public float Distance = 10;
     public bool RunAway = false;
-    public Rigidbody2D body;
+    public Rigidbody body;
     public Animator Anim;
-
+    private bool ISVISIBLE;
+    private Vector3 velocity;
+    private Vector3 prevPos;
 
     void Start()
     {
-        body = GetComponent<Rigidbody2D>();
+        body = GetComponent<Rigidbody>();
         Anim = GetComponent<Animator>();
 
         target = Game.WorldGenerator.Player;
     }
 
-    private Vector3 velocity;
-    private Vector3 prevPos;
-
     void FixedUpdate()
     {
-        velocity = (transform.position - prevPos) / Time.deltaTime;
-        prevPos = transform.position;
+        if (ISVISIBLE)
+        {
+            velocity = (transform.position - prevPos) / Time.deltaTime;
+            prevPos = transform.position;
+        }
     }
 
     void Update()
     {
-        float distances = Vector3.Distance(transform.position, target.position);
+        if (ISVISIBLE)
+        {
+            float distances = Vector3.Distance(transform.position, target.position);
 
-        var fwdDotProduct = Vector3.Dot(transform.forward, velocity);
-        var upDotProduct = Vector3.Dot(transform.up, velocity);
-        var rightDotProduct = Vector3.Dot(transform.right, velocity);
+            var fwdDotProduct = Vector3.Dot(transform.forward, velocity);
+            var upDotProduct = Vector3.Dot(transform.up, velocity);
+            var rightDotProduct = Vector3.Dot(transform.right, velocity);
 
-        Vector3 velocityVector = new Vector3(rightDotProduct, upDotProduct, fwdDotProduct);
+            Vector3 velocityVector = new Vector3(rightDotProduct * 2, upDotProduct * 2, fwdDotProduct * 2);
 
-        if (velocityVector.x >= 1f)
-        {
-            Anim.SetInteger("Walk", 1);
-            Anim.SetFloat("X", 0);
-        }
-        else if (velocityVector.x <= -1)
-        {
-            Anim.SetInteger("Walk", 1);
-            Anim.SetFloat("X", 180);
-        }
-        else if (velocityVector.y >= 1)
-        {
-            Anim.SetInteger("Walk", 1);
-            Anim.SetFloat("X", 90);
-        }
-        else if (velocityVector.y <= -1)
-        {
-            Anim.SetInteger("Walk", 1);
-            Anim.SetFloat("X", -90);
-        }
-        else
-        {
-            Anim.SetInteger("Walk", 0);
-        }
-
-        if (distances <= Distance)
-        {
-            GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.y;
-
-            if (distances <= 1)
+            if (velocityVector.x >= 1f)
             {
-                body.velocity = new Vector2(0, 0) * damping;
+                Anim.SetInteger("Walk", 1);
+                Anim.SetFloat("X", 0);
+            }
+            else if (velocityVector.x <= -1)
+            {
+                Anim.SetInteger("Walk", 1);
+                Anim.SetFloat("X", 180);
+            }
+            else if (velocityVector.z >= 1)
+            {
+                Anim.SetInteger("Walk", 1);
+                Anim.SetFloat("X", 90);
+            }
+            else if (velocityVector.z <= -1)
+            {
+                Anim.SetInteger("Walk", 1);
+                Anim.SetFloat("X", -90);
             }
             else
             {
-                if (RunAway == true)
-                {
-                    Vector3 displacement = target.position - transform.position;
-                    displacement = displacement.normalized;
+                Anim.SetInteger("Walk", 0);
+            }
 
-                    body.velocity = displacement * -damping;
+            if (distances <= Distance)
+            {
+                GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.y;
+
+                if (distances <= 1)
+                {
+                    body.velocity = new Vector3(0, 0, 0) * damping;
                 }
                 else
                 {
-                    Vector3 displacement = target.position - transform.position;
-                    displacement = displacement.normalized;
+                    if (RunAway == true)
+                    {
+                        Vector3 displacement = target.position - transform.position;
+                        displacement = displacement.normalized;
 
-                    body.velocity = displacement * damping;
+                        body.velocity = displacement * -damping;
+                    }
+                    else
+                    {
+                        Vector3 displacement = target.position - transform.position;
+                        displacement = displacement.normalized;
+
+                        body.velocity = displacement * damping;
+                    }
                 }
             }
+            else
+            {
+                body.velocity = new Vector3(0, 0, 0) * damping;
+            }
         }
-        else
-        {
-            body.velocity = new Vector2(0,0) * damping;
-        }
+    }
+
+    private void OnBecameVisible()
+    {
+        ISVISIBLE = true;
+        Anim.enabled = true;
+        Game.Entity_viewing.Add(this);
+    }
+
+    private void OnBecameInvisible()
+    {
+        ISVISIBLE = false;
+        Anim.enabled = false;
+        Game.Entity_viewing.Remove(this);
     }
 
     public override void OnDead()
     {
-        Destroy(this.gameObject);
+        DarckNet.Network.Destroy(this.gameObject);
         base.OnDead();
     }
 }

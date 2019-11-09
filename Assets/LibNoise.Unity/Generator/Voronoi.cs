@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace LibNoise.Unity.Generator
 {
@@ -149,6 +150,46 @@ namespace LibNoise.Unity.Generator
               (int)(Math.Floor(zc)), 0));
         }
 
+
+        public Vector3 GetPoint(double x, double y, double z)
+        {
+            x *= this.m_frequency;
+            y *= this.m_frequency;
+            z *= this.m_frequency;
+            int xi = (x > 0.0 ? (int)x : (int)x - 1);
+            int iy = (y > 0.0 ? (int)y : (int)y - 1);
+            int iz = (z > 0.0 ? (int)z : (int)z - 1);
+            double md = 2147483647.0;
+            double xc = 0;
+            double yc = 0;
+            double zc = 0;
+            for (int zcu = iz - 2; zcu <= iz + 2; zcu++)
+            {
+                for (int ycu = iy - 2; ycu <= iy + 2; ycu++)
+                {
+                    for (int xcu = xi - 2; xcu <= xi + 2; xcu++)
+                    {
+                        double xp = xcu + Utils.ValueNoise3D(xcu, ycu, zcu, this.m_seed);
+                        double yp = ycu + Utils.ValueNoise3D(xcu, ycu, zcu, this.m_seed + 1);
+                        double zp = zcu + Utils.ValueNoise3D(xcu, ycu, zcu, this.m_seed + 2);
+                        double xd = xp - x;
+                        double yd = yp - y;
+                        double zd = zp - z;
+                        double d = xd * xd + yd * yd + zd * zd;
+                        if (d < md)
+                        {
+                            md = d;
+                            xc = xp;
+                            yc = yp;
+                            zc = zp;
+                        }
+                    }
+                }
+            }
+           
+            Vector3 vec = new Vector3((float)xc, (float)yc, (float)zc);
+            return vec;
+        }
         #endregion
     }
 }

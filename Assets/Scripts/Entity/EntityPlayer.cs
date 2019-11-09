@@ -46,7 +46,6 @@ public class EntityPlayer : EntityLife
             SPRITERENDER = GetComponent<SpriteRenderer>();
             SPRITERENDERHAND = HandRoot.GetComponentInChildren<SpriteRenderer>();
             //Game.TileAnimations.StartTileAnimation();//disabel for now
-            transform.Rotate(new Vector3(3.6f, 0, 0), Space.Self);
 
             if (Game.WorldGenerator != null)
             {
@@ -90,7 +89,7 @@ public class EntityPlayer : EntityLife
             Tile tile = Game.WorldGenerator.GetTileAt(transform.position.x, transform.position.z);
             var main = FootPArticle.main;
 
-            NetStats.CurrentTile = tile.type;
+            NetStats.CurrentTile = tile;
             NetStats.CurrentBiome = tile.TileBiome;
 
             if (tile.type == TypeBlock.Water)
@@ -184,6 +183,11 @@ public class EntityPlayer : EntityLife
                     #region MyPlayerFunctions
                     if (Game.GameManager.MultiPlayer || Game.GameManager.SinglePlayer)
                     {
+                        if (Input.GetKeyDown(KeyCode.P))
+                        {
+
+                        }
+
                         Status.UpdateStatus();
                         mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
 
@@ -679,7 +683,7 @@ public class PlayerNetStats
     public bool swiming = false;
     public float angle = 0;
     public int HandLayer = 5;
-    public TypeBlock CurrentTile;
+    public Tile CurrentTile;
     public BiomeType CurrentBiome;
 
     public int Side = -1;

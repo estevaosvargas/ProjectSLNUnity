@@ -791,29 +791,29 @@ public class SaveWorld
     #endregion
 
     #region City
-    public static void SaveCity(CityManager info, string filename)
+    public static void SaveCity(CitySave[] info, string filename)
     {
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./") + "city./" + filename + ".city");
+        FileStream file = File.Create(Path.GetFullPath("Saves/" + Game.GameManager.WorldName + "/city/") + filename + ".city");
 
         bf.Serialize(file, info);
         file.Close();
     }
 
-    public static CityManager LoadCity(string filename)
+    public static CitySave[] LoadCity(string filename)
     {
-        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./") + "city./" + filename + ".data"))
+        if (File.Exists(Path.GetFullPath("Saves/" + Game.GameManager.WorldName + "/city/") + filename + ".city"))
         {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./") + "city./" + filename + ".city", FileMode.Open);
+            FileStream file = File.Open(Path.GetFullPath("Saves/" + Game.GameManager.WorldName + "/city/") + filename + ".city", FileMode.Open);
 
-            CityManager dataa = (CityManager)bf.Deserialize(file);
+            CitySave[] dataa = (CitySave[])bf.Deserialize(file);
             file.Close();
 
             return dataa;
         }
 
-        return null;
+        return new CitySave[0] { };
     }
     #endregion
 
@@ -1461,6 +1461,7 @@ public static class Game
     public static WorldGenerator WorldGenerator;
     public static SpriteManager SpriteManager;
     public static InventoryGUI InventoryGUI;
+    public static CityManager CityManager;
 
     public static List<Entity> Entity_viewing = new List<Entity>();
 

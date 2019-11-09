@@ -31,8 +31,8 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Seed, zCorde * noisefactor + Game.WorldGenerator.Seed);
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Small_Seed, zCorde * noisefactor + Game.WorldGenerator.Small_Seed);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.05f, 5, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
 
         //Debug.Log("village Chance : " + (int)sample2);
 
@@ -42,79 +42,148 @@ public static class Biome
         {
             Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
 
-            #region Villa
-            
-            if (color == Game.Color("FFD800"))//CityHall Spawn Origin
+            if (color == Game.Color("FF0000") || color == Game.Color("7F7F7F"))//Somthing Is On this tile
             {
-                tile.PLACER_DATA = Placer.CityHall;
                 return TypeBlock.Dirt;
+            }
+            else if (color == Game.Color("FF0048"))//House Spawn Origin
+            {
+                tile.PLACER_DATA = Placer.MainBuild2;
+                return TypeBlock.Grass;
+            }
+            else if (color == Game.Color("2D92FF"))//Spawn Chest(TesteOnly)
+            {
+                tile.PLACER_DATA = Placer.BauWood;
+                return TypeBlock.Grass;
+            }
+            else if (color == Game.Color("FFFFFF"))//Road
+            {
+                return TypeBlock.DirtRoad;
             }
             else
             {
-                System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
-                int randnum = (rand.Next(1, 30));
+                #region FloreestaVilla
+                if (perlin <= 0.15f)
+                {
+                    //Water
+                    return TypeBlock.Water;
+                }
+                else if (perlin > 0.15f && perlin < 0.2f)
+                {
+                    //Sand Bench
+                    return TypeBlock.BeachSand;
+                }
+                else if (perlin > 0.2f && perlin <= 0.7f)
+                {
+                    if (perlin > 0.2f && perlin < 0.6f)
+                    {
+                        //grass and bushs and trees
+                        System.Random rand = new System.Random(Game.WorldGenerator.Seed + x * z + (tile.TileChunk.x + tile.TileChunk.z));
+                        int randnum = (rand.Next(1, 20));
 
-                if (randnum == 1)
-                {
-                    if (tile.typego == TakeGO.empty && tile.z != 0)
-                    {
-                        tile.typego = TakeGO.Weed01;
+                        if (randnum == 1)
+                        {
+                            if (tile.typego == TakeGO.empty && tile.z != 0)
+                            {
+                                tile.typego = TakeGO.Weed01;
+                            }
+                            return TypeBlock.Grass;
+                        }
+                        else if (randnum == 2)
+                        {
+                            if (tile.typego == TakeGO.empty && tile.z != 0)
+                            {
+                                tile.typego = TakeGO.RockProp;
+                            }
+                            return TypeBlock.Grass;
+                        }
+                        else if (randnum == 3)
+                        {
+                            if (tile.typego == TakeGO.empty && tile.z != 0)
+                            {
+                                tile.typego = TakeGO.WeedTall;
+                            }
+                            return TypeBlock.Grass;
+                        }
+                        else if (randnum == 4)
+                        {
+                            if (tile.typego == TakeGO.empty && tile.z != 0)
+                            {
+                                tile.typego = TakeGO.Pine;
+                            }
+                            return TypeBlock.Grass;
+                        }
+                        else if (randnum == 5)
+                        {
+                            if (tile.typego == TakeGO.empty && tile.z != 0)
+                            {
+                                tile.typego = TakeGO.Oak;
+                            }
+                            return TypeBlock.Grass;
+                        }
+                        else if (randnum == 6)
+                        {
+                            tile.typeVariante = TypeVariante.GrassFL1;
+                            return TypeBlock.Grass;
+                        }
+                        else if (randnum == 7)
+                        {
+                            tile.typeVariante = TypeVariante.GrassFL2;
+                            return TypeBlock.Grass;
+                        }
+                        else if (randnum == 8)
+                        {
+                            tile.typeVariante = TypeVariante.GrassRC;
+                            return TypeBlock.Grass;
+                        }
+                        else
+                        {
+                            return TypeBlock.Grass;
+                        }
                     }
-                    return TypeBlock.Grass;
-                }
-                else if (randnum == 2)
-                {
-                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    else if (perlin > 0.6f && perlin < 0.605f)
                     {
-                        tile.typego = TakeGO.RockProp;
+                        //grass
+                        return TypeBlock.Grass;
                     }
-                    return TypeBlock.Grass;
-                }
-                else if (randnum == 3)
-                {
-                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    else if (perlin > 0.62f && perlin < 0.63f)
                     {
-                        tile.typego = TakeGO.WeedTall;
+                        //grass
+                        return TypeBlock.Grass;
                     }
-                    return TypeBlock.Grass;
-                }
-                else if (randnum == 4)
-                {
-                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    else
                     {
-                        tile.typego = TakeGO.Pine;
+                        //tall grass
+                        return TypeBlock.Grass;
                     }
-                    return TypeBlock.Grass;
+
                 }
-                else if (randnum == 5)
+                else if (perlin > 0.7f && perlin <= 0.8f)
                 {
-                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    if (perlin > 0.7f && perlin < 0.72f)
                     {
-                        tile.typego = TakeGO.Oak;
+                        //grama do pe do morro com arvores
+                        return TypeBlock.Rock;
                     }
-                    return TypeBlock.Grass;
-                }
-                else if (randnum == 6)
-                {
-                    tile.typeVariante = TypeVariante.GrassFL1;
-                    return TypeBlock.Grass;
-                }
-                else if (randnum == 7)
-                {
-                    tile.typeVariante = TypeVariante.GrassFL2;
-                    return TypeBlock.Grass;
-                }
-                else if (randnum == 8)
-                {
-                    tile.typeVariante = TypeVariante.GrassRC;
-                    return TypeBlock.Grass;
+                    else if (perlin > 0.72f && perlin < 0.74f)
+                    {
+                        //grama do pe do morro
+                        return TypeBlock.Rock;
+                    }
+                    else
+                    {
+                        //pe do morro
+                        return TypeBlock.Rock;
+                    }
+
                 }
                 else
                 {
-                    return TypeBlock.Grass;
+                    //topo do morro
+                    return TypeBlock.Rock;
                 }
+                #endregion
             }
-            #endregion
         }
         else
         {
@@ -218,16 +287,28 @@ public static class Biome
                 if (perlin > 0.7f && perlin < 0.72f)
                 {
                     //grama do pe do morro com arvores
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.RockWall;
+                    }
                     return TypeBlock.Rock;
                 }
                 else if (perlin > 0.72f && perlin < 0.74f)
                 {
                     //grama do pe do morro
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.RockWall;
+                    }
                     return TypeBlock.Rock;
                 }
                 else
                 {
                     //pe do morro
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.RockWall;
+                    }
                     return TypeBlock.Rock;
                 }
 
@@ -235,6 +316,10 @@ public static class Biome
             else
             {
                 //topo do morro
+                if (tile.typego == TakeGO.empty && tile.z != 0)
+                {
+                    tile.typego = TakeGO.RockWall;
+                }
                 return TypeBlock.Rock;
             }
         }
@@ -248,31 +333,24 @@ public static class Biome
 
         noisefactor = 0.1f;
 
-        float xCorde = (float)x / width * Scale + Game.WorldGenerator.Seed;
-        float zCorde = (float)z / height * Scale + Game.WorldGenerator.Seed;
+        float xCorde = (float)x / width * Scale + Game.WorldGenerator.Small_Seed;
+        float zCorde = (float)z / height * Scale + Game.WorldGenerator.Small_Seed;
 
         float perlin = Mathf.PerlinNoise(xCorde * noisefactor, zCorde * noisefactor);
 
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.05f, 5, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
 
-        if ((int)sample2 == 2 || (int)sample2 == -2)
+        if ((int)sample2 >= 2 || (int)sample2 == -2)
         {
             Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
 
-            #region Villa
-
             if (color == Game.Color("FF0000") || color == Game.Color("7F7F7F"))//Somthing Is On this tile
             {
-                return TypeBlock.Sand;
+                return TypeBlock.Dirt;
             }
             else if (color == Game.Color("FF0048"))//House Spawn Origin
             {
                 tile.PLACER_DATA = Placer.MainBuild2;
-                return TypeBlock.Sand;
-            }
-            else if (color == Game.Color("FFD800"))//CityHall Spawn Origin
-            {
-                tile.PLACER_DATA = Placer.CityHall;
                 return TypeBlock.Sand;
             }
             else if (color == Game.Color("2D92FF"))//Spawn Chest(TesteOnly)
@@ -286,29 +364,88 @@ public static class Biome
             }
             else
             {
-                System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
-                int randnum = (rand.Next(1, 20));
-
-                if (randnum == 1)
+                #region Desert
+                if (perlin >= 0.0f && perlin <= 0.15f)
                 {
-                    if (tile.typego == TakeGO.empty)
-                    {
-                        tile.typego = TakeGO.Cactu;
-                    }
-                    return TypeBlock.Sand;
+                    //Water
+                    return TypeBlock.Water;
                 }
-                else if (randnum == 5)
+                else if (perlin > 0.15f && perlin < 0.2f)
                 {
-                    if (tile.typego == TakeGO.empty)
-                    {
-                        tile.typego = TakeGO.Cactu2;
-                    }
-                    return TypeBlock.Sand;
+                    //Sand Bench
+                    return TypeBlock.BeachSand;
                 }
+                else if (perlin > 0.2f && perlin <= 0.7f)
+                {
+                    if (perlin > 0.2f && perlin < 0.6f)
+                    {
+                        //grass and bushs and trees
+                        System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                        int randnum = (rand.Next(1, 20));
 
-                return TypeBlock.Sand;
+                        if (randnum == 1)
+                        {
+                            if (tile.typego == TakeGO.empty)
+                            {
+                                tile.typego = TakeGO.Cactu;
+                            }
+                            return TypeBlock.Sand;
+                        }
+                        else if (randnum == 5)
+                        {
+                            if (tile.typego == TakeGO.empty)
+                            {
+                                tile.typego = TakeGO.Cactu2;
+                            }
+                            return TypeBlock.Sand;
+                        }
+
+                        return TypeBlock.Sand;
+
+                    }
+                    else if (perlin > 0.6f && perlin < 0.605f)
+                    {
+                        //grass
+                        return TypeBlock.Sand;
+                    }
+                    else if (perlin > 0.62f && perlin < 0.63f)
+                    {
+                        //grass
+                        return TypeBlock.Sand;
+                    }
+                    else
+                    {
+                        //tall grass
+                        return TypeBlock.Sand;
+                    }
+
+                }
+                else if (perlin > 0.7f && perlin <= 0.8f)
+                {
+                    if (perlin > 0.7f && perlin < 0.72f)
+                    {
+                        //grama do pe do morro com arvores
+                        return TypeBlock.Rock;
+                    }
+                    else if (perlin > 0.72f && perlin < 0.74f)
+                    {
+                        //grama do pe do morro
+                        return TypeBlock.Rock;
+                    }
+                    else
+                    {
+                        //pe do morro
+                        return TypeBlock.Rock;
+                    }
+
+                }
+                else
+                {
+                    //topo do morro
+                    return TypeBlock.Rock;
+                }
+                #endregion
             }
-            #endregion
         }
         else
         {
@@ -448,7 +585,7 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Seed, zCorde * noisefactor + Game.WorldGenerator.Seed);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Small_Seed, zCorde * noisefactor + Game.WorldGenerator.Small_Seed);
 
         if (perlin >= 0.0f && perlin <= 0.15f)
         {
@@ -548,15 +685,13 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Seed, zCorde * noisefactor + Game.WorldGenerator.Seed);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Small_Seed, zCorde * noisefactor + Game.WorldGenerator.Small_Seed);
 
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 5, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.05f, 5, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
 
-        if ((int)sample2 == 2 || (int)sample2 == -2)
+        if ((int)sample2 >= 2 || (int)sample2 == -2)
         {
             Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
-
-            #region Villa
 
             if (color == Game.Color("FF0000") || color == Game.Color("7F7F7F"))//Somthing Is On this tile
             {
@@ -565,17 +700,12 @@ public static class Biome
             else if (color == Game.Color("FF0048"))//House Spawn Origin
             {
                 tile.PLACER_DATA = Placer.MainBuild2;
-                return TypeBlock.Dirt;
-            }
-            else if (color == Game.Color("FFD800"))//CityHall Spawn Origin
-            {
-                tile.PLACER_DATA = Placer.CityHall;
-                return TypeBlock.Dirt;
+                return TypeBlock.Grass;
             }
             else if (color == Game.Color("2D92FF"))//Spawn Chest(TesteOnly)
             {
                 tile.PLACER_DATA = Placer.BauWood;
-                return TypeBlock.Dirt;
+                return TypeBlock.Grass;
             }
             else if (color == Game.Color("FFFFFF"))//Road
             {
@@ -583,30 +713,93 @@ public static class Biome
             }
             else
             {
-                System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
-                int randnum = (rand.Next(1, 20));
+                #region Normal
+                if (perlin >= 0.0f && perlin <= 0.15f)
+                {
+                    //Water
+                    return TypeBlock.Water;
+                }
+                else if (perlin > 0.15f && perlin < 0.2f)
+                {
+                    //Sand Bench
+                    return TypeBlock.BeachSand;
+                }
+                else if (perlin > 0.2f && perlin <= 0.7f)
+                {
+                    if (perlin > 0.2f && perlin < 0.6f)
+                    {
+                        //grass and bushs and trees
 
-                if (randnum == 1)
-                {
-                    tile.typeVariante = TypeVariante.GrassFL1;
-                    return TypeBlock.Grass;
+                        System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                        int randnum = (rand.Next(1, 20));
+
+                        if (randnum == 1)
+                        {
+                            tile.typeVariante = TypeVariante.GrassFL1;
+                            return TypeBlock.Grass;
+                        }
+                        else if (randnum == 3)
+                        {
+                            tile.typeVariante = TypeVariante.GrassFL2;
+                            return TypeBlock.Grass;
+                        }
+                        else if (randnum == 5)
+                        {
+                            tile.typeVariante = TypeVariante.GrassRC;
+                            return TypeBlock.Grass;
+                        }
+                        else
+                        {
+                            return TypeBlock.Grass;
+                        }
+                    }
+                    else if (perlin > 0.6f && perlin < 0.605f)
+                    {
+                        //grass
+                        return TypeBlock.Grass;
+                    }
+                    else if (perlin > 0.62f && perlin < 0.63f)
+                    {
+                        //grass
+                        return TypeBlock.Grass;
+                    }
+                    else
+                    {
+                        //tall grass
+                        return TypeBlock.Grass;
+                    }
+
                 }
-                else if (randnum == 3)
+                else if (perlin > 0.7f && perlin <= 0.8f)
                 {
-                    tile.typeVariante = TypeVariante.GrassFL2;
-                    return TypeBlock.Grass;
+                    if (perlin > 0.7f && perlin < 0.72f)
+                    {
+                        //grama do pe do morro com arvores
+                        return TypeBlock.Grass;
+                    }
+                    else if (perlin > 0.72f && perlin < 0.74f)
+                    {
+                        //grama do pe do morro
+                        return TypeBlock.Grass;
+                    }
+                    else
+                    {
+                        //pe do morro
+                        return TypeBlock.Grass;
+                    }
+
                 }
-                else if (randnum == 5)
+                else if (perlin > 1f)
                 {
-                    tile.typeVariante = TypeVariante.GrassRC;
+                    //topo do morro
                     return TypeBlock.Grass;
                 }
                 else
                 {
                     return TypeBlock.Grass;
                 }
+                #endregion
             }
-            #endregion
         }
         else
         {
@@ -711,7 +904,7 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Seed, zCorde * noisefactor + Game.WorldGenerator.Seed);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Small_Seed, zCorde * noisefactor + Game.WorldGenerator.Small_Seed);
 
         if (perlin >= 0.0f && perlin <= 0.15f)
         {
@@ -809,8 +1002,8 @@ public static class Biome
         float amplitude = 52.79f;
         int octaves = 184;
 
-        float xCordee = (float)octaves * x / width * Scale + Game.WorldGenerator.Seed;
-        float zCordee = (float)octaves * z / height * Scale + Game.WorldGenerator.Seed;
+        float xCordee = (float)octaves * x / width * Scale + Game.WorldGenerator.Small_Seed;
+        float zCordee = (float)octaves * z / height * Scale + Game.WorldGenerator.Small_Seed;
 
         // modify with frequency
         xCordee *= frequency;

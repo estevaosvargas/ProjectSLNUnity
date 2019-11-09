@@ -11,6 +11,7 @@ public class Debuginfo : MonoBehaviour
     public Text ChunksLoade;
     public Text Biome;
     public Text CurrentBlock;
+    public Text CurrentCity;
     public Text Position;
 
     void Start()
@@ -27,7 +28,19 @@ public class Debuginfo : MonoBehaviour
             EntityLoade.text = "Entity : " + Game.Entity_viewing.Count;
             ChunksLoade.text = "Chunks Loaded : " + Game.WorldGenerator.ChunksList.Count;
             Biome.text = "Biome : " + Game.GameManager.CurrentPlayer.MyPlayerMove.NetStats.CurrentBiome;
-            CurrentBlock.text = "Tile : " + Game.GameManager.CurrentPlayer.MyPlayerMove.NetStats.CurrentTile;
+            CurrentBlock.text = "Tile : " + Game.GameManager.CurrentPlayer.MyPlayerMove.NetStats.CurrentTile.type;
+
+            City currentcity = Game.CityManager.GetCity(Game.GameManager.CurrentPlayer.MyPlayerMove.NetStats.CurrentTile.CityPoint);
+
+            if (currentcity != null)
+            {
+                CurrentCity.text = "Current-City : " + currentcity.CityName + " : " + currentcity.economicType.ToString();
+            }
+            else
+            {
+                CurrentCity.text = "Current-City : None";
+            }
+
             Position.text = "X:" + Game.GameManager.CurrentPlayer.MyObject.transform.position.x + ", Y:" + Game.GameManager.CurrentPlayer.MyObject.transform.position.y + ", Z:" + Game.GameManager.CurrentPlayer.MyObject.transform.position.z;
         }
     }

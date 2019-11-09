@@ -30,8 +30,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1459282729364594}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.3009, y: 0.5747, z: 0}
-  m_LocalScale: {x: 1.1445475, y: 1.1479193, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1.854582, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -50,6 +50,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -116,8 +117,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b37bea61378e79a48b7908974b92dd98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraToLookAt: {fileID: 0}
-  smoth: 0.01
+  IsVisible: 0
+  PivotAxis: 7
+  TargetTransform: {fileID: 0}
+  SmotheY: 10
+  SmotheX: 5
+  SmotheZ: 10
 --- !u!114 &155474608623118998
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,5 +181,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Owner: 0
   ViewID: 0
-  DeliveModo: 1
   IdMode: 1
+  DefaultNetDeliveryMethod: 1

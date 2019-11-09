@@ -5,7 +5,7 @@ using LibNoise.Unity.Generator;
 
 public class NoisePreview : MonoBehaviour
 {
-    public enum PerlinTypes { Billow, BrownianMotion , Checker, Const, Cylinders, HeterogeneousMultiFractal, HybridMulti, Perlin, RiggedMultifractal, Spheres, Voronoi, UnityPerlin, turbulence, Terrace, PerlinRandomObject }
+    public enum PerlinTypes { Billow, BrownianMotion , Checker, Const, Cylinders, HeterogeneousMultiFractal, HybridMulti, Perlin, RiggedMultifractal, Spheres, Voronoi, UnityPerlin, turbulence, Terrace, SimplexNoise }
 
     public PerlinTypes Types;
     public FilterMode FildterMode = FilterMode.Bilinear;
@@ -14,10 +14,13 @@ public class NoisePreview : MonoBehaviour
     public int width = 256;
     public int height = 256;
 
+    public float PosX = 0;
+    public float PosY = 0;
+
     public float Scale = 20f;
     public float Offset = 100f;
     public float noisefactor = 0.1f;
-
+    public float smoth = 1;
     public double Power;
 
     public bool UseIamage = false;
@@ -95,7 +98,7 @@ public class NoisePreview : MonoBehaviour
         switch (Types)
         {
             case PerlinTypes.Billow:
-                sample = (float)new Billow(frequency, lacunarit, persistence, octaves, randomSeed, Quality).GetValue(x, y, 0);
+                sample = (float)new Billow(frequency, lacunarit, persistence, octaves, randomSeed, Quality).GetValue(x + PosX, y + PosY, 0);
                 break;
             case PerlinTypes.BrownianMotion:
                 sample = (float)new BrownianMotion(frequency, lacunarit, octaves, randomSeed, Quality).GetValue(x, y, 0);
@@ -116,7 +119,7 @@ public class NoisePreview : MonoBehaviour
                 sample = (float)new HybridMulti(frequency, lacunarit, octaves, persistence, randomSeed, Offset, gain, Quality).GetValue(x, y, 0);
                 break;
             case PerlinTypes.Perlin:
-                sample = (float)new Perlin(frequency, lacunarit, persistence, octaves, randomSeed, Quality).GetValue(x, y, 0);
+                sample = (float)new Perlin(frequency, lacunarit, persistence, octaves, randomSeed, Quality).GetValue(x + PosX, y + PosX, 0);
                 break;
             case PerlinTypes.RiggedMultifractal:
                 sample = (float)new RiggedMultifractal(frequency, lacunarit, octaves, randomSeed, Quality).GetValue(x, y, 0);
@@ -128,7 +131,10 @@ public class NoisePreview : MonoBehaviour
                 sample = (float)new Voronoi(frequency, displacemt, randomSeed, distancevo).GetValue(x + Offset, y + Offset, 0);
                 break;
             case PerlinTypes.UnityPerlin:
-                sample = Mathf.PerlinNoise(x + Offset, y + Offset);
+                float xCorde = (float)x / width * Scale;
+                float zCorde = (float)y / height * Scale;
+
+                sample = Mathf.PerlinNoise(xCorde * noisefactor * randomSeed, zCorde * noisefactor * randomSeed);
                 break;
             case PerlinTypes.turbulence:
                 sample = (float)new LibNoise.Unity.Operator.Turbulence().GetValue(x, y, 0);
@@ -136,8 +142,8 @@ public class NoisePreview : MonoBehaviour
             case PerlinTypes.Terrace:
                 sample = (float)new LibNoise.Unity.Operator.Terrace().GetValue(x, y, 0);
                 break;
-            case PerlinTypes.PerlinRandomObject:
-                sample = NextGaussian(mean, standard_deviation, min, max);
+            case PerlinTypes.SimplexNoise:
+                
                 break;
             default:
                 sample = (float)new Perlin(frequency, lacunarit, persistence, octaves, randomSeed, Quality).GetValue(x, y, 0);

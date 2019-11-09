@@ -35,14 +35,6 @@ public class CharListGUI : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            RenderList();
-        }
-    }
-
     public void RenderList()
     {
         ClearCanvas();
@@ -106,8 +98,21 @@ public class CharListGUI : MonoBehaviour
         {
             Game.ConsoleInGame.LoadingScreen_Show();
 
-            Input_WorldName.text = "World_" + Random.Range(-9999, 9999).GetHashCode();
-            Input_SeedName.text = Random.Range(-9999, 9999).ToString();
+            string seed_hash = Random.Range(-99999, 99999).GetHashCode().ToString();
+
+            if (Input_WorldName.text == string.Empty)
+            {
+                Input_WorldName.text = "World_" + seed_hash;
+            }
+
+            if (Input_SeedName.text == string.Empty)
+            {
+                Input_SeedName.text = seed_hash;
+            }
+            else
+            {
+                Input_SeedName.text = Input_SeedName.text.GetHashCode().ToString();
+            }
 
             characterDatas.Add(new CharacterLista(Random.Range(-9999, 9999).GetHashCode(), Input_UserName.text, Input_WorldName.text, Input_SeedName.text));
             Input_UserName.text = "";
