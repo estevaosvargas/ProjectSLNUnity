@@ -201,10 +201,15 @@ public enum TakeGO : byte
 
 public enum Placer : byte
 {
-    empty, BauWood, BauGold, BauDiamond, BauDark, CampTend, CampFire, MainBuild1, MainBuild2, CityHall
+    empty, BauWood, BauGold, BauDiamond, BauDark, CampTend, CampFire, MainBuild1, MainBuild2, CityHall, BlackSmith
 }
 
 public enum MaterialHitType: byte
 {
     none, Entity, all, Meet, Wood, Rock, Dirt
+}
+
+public enum NPCTasks
+{
+    none, GoGetTask ,CutWood, TakeItemOnGround, GoHome, EnterInBuild, MakeRoad, Defense, Build, Farm, Minig
 }

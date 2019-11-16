@@ -64,7 +64,7 @@ public class ConsoleInGame : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F1))
+        if (Input.GetKeyDown(KeyCode.F1) || Input.GetKeyDown(KeyCode.Joystick1Button6))
         {
             if (IsVisible != true)
             {

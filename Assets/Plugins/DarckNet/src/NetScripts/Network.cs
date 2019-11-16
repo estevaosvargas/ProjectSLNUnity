@@ -504,7 +504,7 @@ namespace DarckNet
             }
             else
             {
-                Debug.LogError("You still have not, finished connecting.");
+                Debug.LogError("You still have not, finished Connection.");
                 return null;
             }
         }
@@ -1769,6 +1769,68 @@ namespace DarckNet
     public class WorldList
     {
         public List<long> Players = new List<long>();
+    }
+
+    [Serializable]
+    public struct DataVector3
+    {
+        public float x;
+        public float y;
+        public float z;
+
+        public DataVector3(float X, float Y, float Z)
+        {
+            x = X;
+            y = Y;
+            z = Z;
+        }
+
+        public DataVector3(Vector3 vector)
+        {
+            x = vector.x;
+            y = vector.y;
+            z = vector.z;
+        }
+
+        /// <summary>
+        /// Tranfosrm the VectorData To unity Vector
+        /// </summary>
+        /// <returns></returns>
+        public Vector3 ToUnityVector()
+        {
+            return new Vector3(x, y, z);
+        }
+    }
+
+    [Serializable]
+    public struct DataVector3Int
+    {
+        public int x;
+        public int y;
+        public int z;
+
+        public DataVector3Int(float X, float Y, float Z)
+        {
+            x = (int)X;
+            y = (int)Y;
+            z = (int)Z;
+        }
+
+        public DataVector3Int(Vector3 vector)
+        {
+            x = (int)vector.x;
+            y = (int)vector.y;
+            z = (int)vector.z;
+        }
+
+        /// <summary>
+        /// Tranfosrm the VectorData To unity Vector
+        /// </summary>
+        /// <returns></returns>
+        public Vector3 ToUnityVector()
+        {
+            return new Vector3(x, y, z);
+        }
     }
 }
 

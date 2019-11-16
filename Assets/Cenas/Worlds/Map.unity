@@ -188,6 +188,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1015959465718836418, guid: 300af818a0f7e8f4b81ad3859be9cda0,
+        type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0.12682448
+      objectReference: {fileID: 0}
+    - target: {fileID: 1015959465718836418, guid: 300af818a0f7e8f4b81ad3859be9cda0,
+        type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0.26380783
+      objectReference: {fileID: 0}
+    - target: {fileID: 1015959465718836418, guid: 300af818a0f7e8f4b81ad3859be9cda0,
+        type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0.4716981
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 300af818a0f7e8f4b81ad3859be9cda0, type: 3}
 --- !u!114 &804721776 stripped
@@ -229,11 +244,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 7109bcf92e713b94abfebed4320497a6, type: 3}
+  m_audioClip: {fileID: 8300000, guid: b2cbdc4169302c3419a87b27d2f3b539, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.182
+  m_Volume: 0.107
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

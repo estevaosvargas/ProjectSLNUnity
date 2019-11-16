@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4000245564821553288}
   - component: {fileID: 2485853385620259032}
-  - component: {fileID: -8181468056300607805}
+  - component: {fileID: 9168702653386995111}
   m_Layer: 0
   m_Name: MainBuild2
   m_TagString: Untagged
@@ -49,7 +49,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 5.9873743, y: 4.8399653, z: 3.9410355}
   m_Center: {x: 2.9934106, y: 2.477452, z: 1.7746347}
---- !u!114 &-8181468056300607805
+--- !u!114 &9168702653386995111
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -58,11 +58,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 4005605721611262516}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5c030e930a6c3e408bfaa75c4bef1f7, type: 3}
+  m_Script: {fileID: 11500000, guid: 39d8506b3eb617546ad8f27b9e694d31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ThisCity: {fileID: 0}
+  BuildId: 
   citypoint: {x: 0, y: 0, z: 0}
+  LivingEntity: []
+  EntitysSpawned: []
+  SpawnPosition: {x: 1.485, y: 0, z: -0.697}
+  FamilyHouse: 0
+  HaveFather: 0
+  HaveMother: 0
 --- !u!1 &4005610715370259230
 GameObject:
   m_ObjectHideFlags: 0
@@ -4985,11 +4991,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4000245564821553288}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: 29553904efa37814390a5703b52b3965,
-        type: 3}
-      propertyPath: m_Name
-      value: Human_Villanger_house01
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 29553904efa37814390a5703b52b3965,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5059,6 +5060,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 86.586
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 29553904efa37814390a5703b52b3965,
+        type: 3}
+      propertyPath: m_Name
+      value: Human_Villanger_house01
       objectReference: {fileID: 0}
     - target: {fileID: -1504981713932161579, guid: 29553904efa37814390a5703b52b3965,
         type: 3}

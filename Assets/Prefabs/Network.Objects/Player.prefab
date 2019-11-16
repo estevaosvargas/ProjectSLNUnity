@@ -46,6 +46,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -78,7 +79,7 @@ SpriteRenderer:
   m_Size: {x: 0.54, y: 1.44}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &95925241092886188
@@ -207,6 +208,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -4949,6 +4951,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -5093,6 +5096,7 @@ GameObject:
   - component: {fileID: 114161712818232822}
   - component: {fileID: 114067372861037966}
   - component: {fileID: 95241139421231152}
+  - component: {fileID: 53817294041878599}
   - component: {fileID: 114066613193702464}
   - component: {fileID: 8238467790666831973}
   - component: {fileID: 4404721391609997342}
@@ -5135,6 +5139,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -5159,8 +5164,9 @@ SpriteRenderer:
   m_SortingLayerID: 660810391
   m_SortingLayer: 1
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 3fee1b456a31145079dfa677bd981ed4, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 8139349289810294980, guid: ff45cb387ae6fdd49b8b413784658831,
+    type: 3}
+  m_Color: {r: 0.8301887, g: 0.6758549, b: 0.512994, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -5313,7 +5319,21 @@ MonoBehaviour:
     swiming: 0
     angle: 0
     HandLayer: 5
-    CurrentTile: 0
+    CurrentTile:
+      type: 0
+      typeVariante: 0
+      PLACER_DATA: 0
+      typego: 0
+      ConnecyToNightboors: 0
+      IsColider: 0
+      RenderLevel: 0
+      TileBiome: 0
+      Emessive: 0
+      OcupedByOther: 0
+      Hora: 0
+      Dia: 1
+      Mes: 1
+      HP: 100
     CurrentBiome: 0
     Side: -1
   FootPArticle: {fileID: 198870550756704852}
@@ -5393,6 +5413,27 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &53817294041878599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1915398696615718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103d4f6b74f774f44b7c5ec28a808e82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Render: {fileID: 212816658032859936}
+  SkinColor:
+    NormalColor: {r: 0, g: 0, b: 0, a: 0}
+    LightColor: {r: 0, g: 0, b: 0, a: 0}
+    DarkColor: {r: 0, g: 0, b: 0, a: 0}
+  EyesColor:
+    NormalColor: {r: 0, g: 0, b: 0, a: 0}
+    LightColor: {r: 0, g: 0, b: 0, a: 0}
+    DarkColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &114066613193702464
 MonoBehaviour:
   m_ObjectHideFlags: 0

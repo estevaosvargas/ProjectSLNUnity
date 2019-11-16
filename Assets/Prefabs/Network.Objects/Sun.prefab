@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TimeH: 0.7
-  TimePerDay: 15
+  TimePerDay: 20
   LightColor:
     serializedVersion: 2
     key0: {r: 0.08627451, g: 0.121568635, b: 0.28627452, a: 1}

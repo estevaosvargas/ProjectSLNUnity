@@ -43,6 +43,9 @@ public class GameManager : UIElements
     public static bool Playing = false;
     public bool SinglePlayer = false;
     public bool MultiPlayer = false;
+
+    public CustomizationCharacter charcustom;
+
     public MousePngs MousePointer;
     public static MouseType Mtype = MouseType.none;
     public GameObject DMPOP;
@@ -63,6 +66,8 @@ public class GameManager : UIElements
 
     void Awake()
     {
+        Application.targetFrameRate = 60;
+
         Game.GameManager = this;
         DontDestroyOnLoad(this.gameObject);
         Client.IP = "127.0.0.1";
@@ -83,7 +88,6 @@ public class GameManager : UIElements
         }
 #endif
         AudioSourceGlobal = GetComponent<AudioSource>();
-        Application.targetFrameRate = 100;
         Game.AudioManager.LoadAudio();
 		ItchAPi.StartItchApi();
 
@@ -266,8 +270,18 @@ public class GameManager : UIElements
         }
         #endregion
 
+        
+
         if (Playing)
         {
+            if (!Application.isFocused)
+            {
+                if (Game.MenuManager.CheckifEnable("InGameMenu") == false)
+                {
+                    Game.MenuManager.OpenMenuName("InGameMenu");
+                }
+            }
+
             if (LastMouseX != (int)Input.mousePosition.x || LastMouseY != (int)Input.mousePosition.y)
             {
                 Ray rayy = Camera.main.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y + mouseplus, Input.mousePosition.z));
@@ -1445,6 +1459,18 @@ public class AudioManager
     }
 }
 
+[System.Serializable]
+public class CustomizationCharacter
+{
+    public List<Sprite> CharSprites = new List<Sprite>();
+
+    public CharColorStruc[] Skin;
+    public CharColorStruc[] Eyes;
+
+    public CharColorStruc CurrentSkinColor;
+    public CharColorStruc CurrentEyesColor;
+}
+
 /// <summary>
 /// Use to get instance, of the scripts
 /// </summary>
@@ -1470,6 +1496,15 @@ public static class Game
     {
         ColorUtility.TryParseHtmlString("#" + Hex, out Color color);
         return color;
+    }
+
+    public static int UniqueID(int Length)
+    {
+        DateTime epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        int currentEpochTime = (int)(DateTime.UtcNow - epochStart).TotalSeconds;
+        int z1 = UnityEngine.Random.Range(0, 1000000);
+        int z2 = UnityEngine.Random.Range(0, 1000);
+        return (currentEpochTime / z1 + z2 * Length);
     }
 
     public static void Print(string Text, bool is_command, int size = 14)

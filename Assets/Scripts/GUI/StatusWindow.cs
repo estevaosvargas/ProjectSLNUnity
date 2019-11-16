@@ -97,7 +97,7 @@ public class StatusWindow : MonoBehaviour
         GameObject Link_Text = GameObject.Instantiate(LinkText, Vector3.zero, Quaternion.identity);
         Link_Text.GetComponent<TMPro.TextMeshProUGUI>().text = text;
         Link_Text.GetComponent<GlobalButtonClick>().pageid = pageid;
-        Link_Text.transform.SetParent(Root1.gameObject.transform);
+        Link_Text.transform.SetParent(Root1.gameObject.transform, false);
     }
 
     public void DrawnList02_Link(string text, int pageid)
@@ -105,21 +105,21 @@ public class StatusWindow : MonoBehaviour
         GameObject Link_Text = GameObject.Instantiate(LinkText, Vector3.zero, Quaternion.identity);
         Link_Text.GetComponent<TMPro.TextMeshProUGUI>().text = text;
         Link_Text.GetComponent<GlobalButtonClick>().pageid = pageid;
-        Link_Text.transform.SetParent(Root2.gameObject.transform);
+        Link_Text.transform.SetParent(Root2.gameObject.transform, false);
     }
 
     public void DrawnList01(string text)
     {
         GameObject Skill_Text = GameObject.Instantiate(SkillText, Vector3.zero, Quaternion.identity);
         Skill_Text.GetComponent<Text>().text = text;
-        Skill_Text.transform.SetParent(Root1.gameObject.transform);
+        Skill_Text.transform.SetParent(Root1.gameObject.transform, false);
     }
 
     public void DrawnList02(string text)
     {
         GameObject Skill_Text = GameObject.Instantiate(SkillText, Vector3.zero, Quaternion.identity);
         Skill_Text.GetComponent<Text>().text = text;
-        Skill_Text.transform.SetParent(Root2.gameObject.transform);
+        Skill_Text.transform.SetParent(Root2.gameObject.transform, false);
     }
 
     public void ClearCanvas()

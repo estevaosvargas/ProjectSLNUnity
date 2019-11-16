@@ -203,6 +203,7 @@ public class Tile
             switch (type)
             {
                 case TypeBlock.Grass:
+                    if (typeVariante != TypeVariante.none) { typeVariante = TypeVariante.none; }
                     DamageTypeSet(TypeBlock.DirtGrass);
                     break;
                 case TypeBlock.Water:
@@ -468,7 +469,7 @@ public class Tile
                 tile.HP = 100;
                 tile.MaxHP = 100;
                 tile.RenderLevel = 1;
-                tile.CanWalk = true;
+                tile.CanWalk = false;
                 break;
             case TypeBlock.Water:
                 tile.ConnecyToNightboors = false;
@@ -524,6 +525,14 @@ public class Tile
                 tile.HP = 100;
                 tile.MaxHP = 100;
                 tile.RenderLevel = 0;
+                tile.CanWalk = true;
+                break;
+            case TypeBlock.DirtRoad:
+                tile.ConnecyToNightboors = false;
+                tile.IsColider = false;
+                tile.HP = 100;
+                tile.MaxHP = 100;
+                tile.RenderLevel = 2;
                 tile.CanWalk = true;
                 break;
             default:

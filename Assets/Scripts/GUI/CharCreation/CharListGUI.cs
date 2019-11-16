@@ -17,6 +17,8 @@ public class CharListGUI : MonoBehaviour
     public InputField Input_WorldName;
     public InputField Input_SeedName;
     public Button Button_CharCreate;
+    public Sprite CharCurretn;
+    public RawImage CharPreview;
     [Header("OpenClose")]
     public GameObject CharCreatorWindow;
     public GameObject CharListWindow;
@@ -171,6 +173,82 @@ public class CharListGUI : MonoBehaviour
         SaveWorld.SaveChars(characterDatas.ToArray());
     }
 
+    public void ChangeEyesColor(int index)
+    {
+        Game.GameManager.charcustom.CurrentEyesColor = Game.GameManager.charcustom.Eyes[index];
+        RefreshAtlas(Resources.LoadAll<Sprite>("Character/HumanChar"));
+    }
+
+    public void ChangeSkinColor(int index)
+    {
+        Game.GameManager.charcustom.CurrentSkinColor = Game.GameManager.charcustom.Skin[index];
+        RefreshAtlas(Resources.LoadAll<Sprite>("Character/HumanChar"));
+    }
+
+    public void RefreshAtlas(Sprite[] AnimBase)
+    {
+        Game.GameManager.charcustom.CharSprites.Clear();
+
+        foreach (var sprite in AnimBase)
+        {
+            Game.GameManager.charcustom.CharSprites.Add(sprite);
+        }
+
+        /*foreach (var sprite in Game.GameManager.charcustom.CharSprites)
+        {
+            for (int x = 0; x < sprite.texture.width; x++)
+            {
+                for (int y = 0; y < sprite.texture.height; y++)
+                {
+                    Color color = sprite.texture.GetPixel(x, y);
+
+                    if (color == Game.Color("00FF04"))//Olhos
+                    {
+                        sprite.texture.SetPixel(x, y, Game.GameManager.charcustom.CurrentEyesColor.NormalColor);
+                    }
+                    else if (color == Game.Color("009605"))//Skin
+                    {
+                        sprite.texture.SetPixel(x, y, Game.GameManager.charcustom.CurrentSkinColor.NormalColor);
+                    }
+                    else if (color == Game.Color("00AF05") || color == Game.Color("AD009E"))//Torso
+                    {
+                        sprite.texture.SetPixel(x, y, Game.GameManager.charcustom.CurrentSkinColor.DarkColor);
+                    }
+                    else if (color == Game.Color("007001"))//Nariz
+                    {
+                        sprite.texture.SetPixel(x, y, Game.GameManager.charcustom.CurrentSkinColor.DarkColor);
+                    }
+                    else if (color == Game.Color("E000CD"))//skinWite
+                    {
+                        sprite.texture.SetPixel(x, y, Game.GameManager.charcustom.CurrentSkinColor.LightColor);
+                    }
+                    else
+                    {
+                        sprite.texture.SetPixel(x, y, color);
+                    }
+                }
+            }
+            sprite.texture.Apply();
+        }*/
+    }
+
+    public static Texture2D textureFromSprite(Sprite sprite)
+    {
+        if (sprite.rect.width != sprite.texture.width)
+        {
+            Texture2D newText = new Texture2D((int)sprite.rect.width, (int)sprite.rect.height);
+            Color[] newColors = sprite.texture.GetPixels((int)sprite.textureRect.x,
+                                                         (int)sprite.textureRect.y,
+                                                         (int)sprite.textureRect.width,
+                                                         (int)sprite.textureRect.height);
+            newText.SetPixels(newColors);
+            newText.Apply();
+            return newText;
+        }
+        else
+            return sprite.texture;
+    }
+
     #region InfoGeral
     public static void SaveInfo(WorldList[] info)
     {
@@ -218,5 +296,19 @@ public class CharacterLista
         NAME = name_char;
         WorldName = world_name;
         Seed = seed;
+    }
+}
+
+[System.Serializable]
+public struct CharColorStruc
+{
+    public Color NormalColor;
+    public Color LightColor;
+    public Color DarkColor;
+
+
+    public string GetData()
+    {
+        return "Soon";
     }
 }

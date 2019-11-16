@@ -208,7 +208,7 @@ public class HandManager : MonoBehaviour
                 }
             }
 
-            if (Input.GetKey(KeyCode.Mouse0))
+            if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Joystick1Button5))
             {
                 if (Game.GameManager.hit.collider != null)
                 {
@@ -242,7 +242,7 @@ public class HandManager : MonoBehaviour
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.Mouse1))
+            if (Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.Joystick1Button4))
             {
                 if (Game.GameManager.hit.collider != null)
                 {
@@ -308,7 +308,7 @@ public class HandManager : MonoBehaviour
                 }
             }
 
-            if (Input.GetKey(KeyCode.Mouse0))
+            if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Joystick1Button5))
             {
                 if (Game.GameManager.hit.collider != null)
                 {

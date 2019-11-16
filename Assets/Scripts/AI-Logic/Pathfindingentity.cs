@@ -79,28 +79,28 @@ public class Pathfindingentity : EntityLife
 
     IEnumerator FollowPath()
     {
-        int currentWaypointX = (int)path[0].x;
-        int currentWaypointZ = (int)path[0].z;
+        float currentWaypointX = path[0].x;
+        float currentWaypointZ = path[0].z;
 
         bool follow = true;
         int targetIndex = 0;
         while (follow)
         {
-            if (new Vector3((int)transform.position.x, 0, (int)transform.position.z) == new Vector3(currentWaypointX, 0, currentWaypointZ))
+            if (new Vector3(transform.position.x, 0, transform.position.z) == new Vector3(currentWaypointX, 0, currentWaypointZ))
             {
                 targetIndex++;
                 if (targetIndex >= path.Length)
                 {
                     yield break;
                 }
-                currentWaypointX = (int)path[targetIndex].x;
-                currentWaypointZ = (int)path[targetIndex].z;
+                currentWaypointX = path[targetIndex].x;
+                currentWaypointZ = path[targetIndex].z;
             }
 
             transform.position = Vector3.MoveTowards(transform.position, new Vector3(currentWaypointX, 0, currentWaypointZ), speed * Time.deltaTime);
             yield return null;
 
-            if (new Vector3((int)transform.position.x, 0, (int)transform.position.z) == Targetnode)
+            if (new Vector3(transform.position.x, 0, transform.position.z) == Targetnode)
             {
                 follow = false;
             }
@@ -231,7 +231,7 @@ public class Pathfindingentity : EntityLife
 
         for (int i = 1; i < path.Count; i++)
         {
-            waypoints.Add(path[i].worldPosition + new Vector3(1, 0, 1));
+            waypoints.Add(path[i].worldPosition + new Vector3(0.5f, 0, 0.5f));
             /*Vector2 directionNew = new Vector2(path[i - 1].worldPosition.x - path[i].worldPosition.x, path[i - 1].worldPosition.y - path[i].worldPosition.y);
             if (directionNew != directionOld)
             {

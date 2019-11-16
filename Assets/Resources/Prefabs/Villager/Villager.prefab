@@ -143,14 +143,25 @@ MonoBehaviour:
   target: {x: 0, y: 0, z: 0}
   speed: 1
   HaveTarget: 0
-  Name: 
-  Type: 0
   LastPosition: {x: 0, y: 0}
   Cuerrent_Chunk: {fileID: 0}
   damping: 1
   RunAway: 0
   direction: 0
   ISVISIBLE: 0
+  Status:
+    Name: 
+    Citzen_Id: 
+    LivingHouseId: 
+    Age: 0
+    Sexual: 0
+    Family_Postiton: 0
+    Vocation: 0
+    Agility: 0
+    Tolerance: 0
+    IQ: 0
+    Luck: 0
+    Charisma: 0
   X: 0
   Z: 0
 --- !u!136 &5531139975782748323

@@ -114,6 +114,7 @@ MonoBehaviour:
   Num: {fileID: 114596075058567186}
   Empty: 1
   InveGUI: {fileID: 0}
+  SlotItemType: 0
   IsContainer: 0
 --- !u!114 &-329679064023447097
 MonoBehaviour:

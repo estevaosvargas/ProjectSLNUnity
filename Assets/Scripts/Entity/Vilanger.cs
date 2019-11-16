@@ -10,8 +10,6 @@ public class Vilanger : Pathfindingentity
     [System.NonSerialized] public Animator Anim;
     [System.NonSerialized] public float Distance = 10;
 
-    public string Name = "";
-    public VilagerVocation Type = VilagerVocation.none;
     public Vector2 LastPosition;
     private SpriteRenderer Render;
     public Chunk Cuerrent_Chunk;
@@ -19,25 +17,10 @@ public class Vilanger : Pathfindingentity
     public float damping = 1;
     public bool RunAway = false;
     public int direction = 0;
-    public bool ISVISIBLE = false;    
+    public bool ISVISIBLE = false;
 
-    public void Born(string name, Chunk CurrentChunk)
-    {
-        Net = GetComponent<NetWorkView>();
-        Cuerrent_Chunk = CurrentChunk;
-        GetComponent<SpriteRenderer>().color = new Color(Random.value, Random.value, Random.value, 1);
-        GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.z;
-        //transform.position = new Vector3(transform.position.x, transform.position.y, 0.05f);
-        Name = name;
-        Type = VilagerVocation.none;
-		transform.Rotate(new Vector3(-87.839f, 0,0), Space.Self);
-
-
-        if (DarckNet.Network.IsServer)
-        {
-            Net.RPC("RPC_BORN", DarckNet.RPCMode.AllNoOwner, name);
-        }
-    }
+    public VillangerStaus Status;
+    public NPCTASK CurrentTask = new NPCTASK(NPCTasks.none, Vector3.zero);
 
     public void GetVocation()
     {
@@ -57,6 +40,19 @@ public class Vilanger : Pathfindingentity
         body = GetComponent<Rigidbody2D>();
         Anim = GetComponent<Animator>();
         Render = GetComponent<SpriteRenderer>();
+
+        Net = GetComponent<NetWorkView>();
+        Cuerrent_Chunk = Game.WorldGenerator.GetChunkAt((int)transform.position.x, (int)transform.position.z);
+
+        GetComponent<SpriteRenderer>().color = new Color(Random.value, Random.value, Random.value, 1);
+        GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.z;
+        //transform.position = new Vector3(transform.position.x, transform.position.y, 0.05f);
+
+        transform.Rotate(new Vector3(-87.839f, 0, 0), Space.Self);
+
+        CurrentTask.this_task = NPCTasks.GoGetTask;
+        CurrentTask.TaskPosition = new Vector3(Game.CityManager.GetCity(Status.currentcity).hallpos.x, 0, Game.CityManager.GetCity(Status.currentcity).hallpos.z);
+        Run(new Vector3(CurrentTask.TaskPosition.x + 1, 0, CurrentTask.TaskPosition.z - 1));
     }
 
     internal void GetNewPostion()
@@ -69,17 +65,23 @@ public class Vilanger : Pathfindingentity
 
     public override void Updateoverride()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            
+        }
+
         if (DarckNet.Network.IsServer || Game.GameManager.SinglePlayer)
         {
-            if (transform.position == target)
+            if (new Vector3((int)transform.position.x, (int)transform.position.y, (int)transform.position.z) == new Vector3((int)target.x, (int)target.y , (int)target.z))
             {
                 if (HaveTarget)
                 {
+                    Game.CityManager.WantInteract(Status.currentcity, CurrentTask.TaskPosition, CurrentTask.this_task);
                     Stop();
                 }
             }
 
-            if (transform.position.x != X || transform.position.z != Z)
+            if ((int)transform.position.x != X || (int)transform.position.z != Z)
             {
                 Chunk chunk = Game.WorldGenerator.GetChunkAt((int)transform.position.x, (int)transform.position.z);
 
@@ -98,6 +100,8 @@ public class Vilanger : Pathfindingentity
             }
             X = (int)transform.position.x;
             Z = (int)transform.position.z;
+
+            BrainNetwork();
         }
         else if (DarckNet.Network.IsClient || Game.GameManager.SinglePlayer)
         {
@@ -143,6 +147,11 @@ public class Vilanger : Pathfindingentity
         }
     }
 
+    void BrainNetwork()
+    {
+        
+    }
+
     public void FootPrintRight()
     {
         
@@ -185,8 +194,7 @@ public class Vilanger : Pathfindingentity
         GetComponent<SpriteRenderer>().color = new Color(Random.value, Random.value, Random.value, 1);
         GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.z;
         //transform.position = new Vector3(transform.position.x, transform.position.y, 0.05f);
-        Name = name;
-        Type = VilagerVocation.none;
+
         transform.Rotate(new Vector3(-87.839f, 0, 0), Space.Self);
     }
 }

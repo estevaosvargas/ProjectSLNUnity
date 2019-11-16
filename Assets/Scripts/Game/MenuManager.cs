@@ -166,7 +166,7 @@ public class MenuManager : Menus
             {
                 if (!MouselockFake.ConsoleIsOpen)
                 {
-                    if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.I))
+                    if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.Joystick1Button3))
                     {
                         if (CheckifEnable("Inventory") == true)
                         {
@@ -182,7 +182,7 @@ public class MenuManager : Menus
                         }
                     }
 
-                    if (Input.GetKeyDown(KeyCode.Escape))
+                    if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Joystick1Button7))
                     {
                         if (CheckifEnable("InGameMenu") == true)
                         {
@@ -197,7 +197,7 @@ public class MenuManager : Menus
                     }
 
                     //Player StatusMenu
-                    if (GameInput.STATUSButtonDown())
+                    if (GameInput.STATUSButtonDown() || Input.GetKeyDown(KeyCode.Joystick1Button2))
                     {
                         if (CheckifEnable("Status") == true)
                         {

@@ -46,6 +46,21 @@ public class Chunk : MonoBehaviour
             MakeChunk();
     }
 
+    private void OnDrawGizmos()
+    {
+        if (Game.GameManager.SHOWDEBUG)
+        {
+            foreach (var tilecity in tilelist)
+            {
+                if (Game.CityManager.GetCity(tilecity.CityPoint) != null)
+                {
+                    Gizmos.color = Color.blue;
+                    Gizmos.DrawCube(new Vector3(tilecity.x + 0.5f, tilecity.y, tilecity.z + 0.5f), Vector3.one);
+                }
+            }
+        }
+    }
+
     void Start()
     {
         if (Game.GameManager.SinglePlayer)
@@ -133,7 +148,7 @@ public class Chunk : MonoBehaviour
                     tiles[i, j].TileChunk = new ChunkInfo((int)transform.position.x, (int)transform.position.z, this); 
                 }
 
-                Vector3 point = new LibNoise.Unity.Generator.Voronoi(0.01f, 5, Game.WorldGenerator.Seed, false).GetPoint(tiles[i, j].x, tiles[i, j].z, 0);
+                Vector3 point = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.WorldGenerator.Seed, false).GetPoint(tiles[i, j].x, tiles[i, j].z, 0);
 
                 tiles[i, j].CityPoint = new Vector3((int)point.x, (int)point.y, 0);
 
@@ -155,7 +170,7 @@ public class Chunk : MonoBehaviour
 
                 if (tiles[i, j].CanWalk)
                 {
-                    if (Random.Range(1, 125) > 120)
+                    if (Random.Range(1, 125) > 123)
                     {
                         SpawnNetWorkObject(tiles[i, j]);
                     }
@@ -205,6 +220,7 @@ public class Chunk : MonoBehaviour
 
         MeshFilter filter = meshGO.AddComponent<MeshFilter>();
         MeshRenderer render = meshGO.AddComponent<MeshRenderer>();
+        MeshCollider mMeshcollider = meshGO.AddComponent<MeshCollider>();
         render.material = DefaultTileMaterial;
 
         Mesh mesh = filter.mesh;
@@ -215,17 +231,19 @@ public class Chunk : MonoBehaviour
 
         mesh.RecalculateNormals();
 
+        mMeshcollider.sharedMesh = mesh;
+
         MeshTile = meshGO;
     }
 
     private void SpawnNetWorkObject(Tile tile)
     {
-        GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/Villager/Villager"), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity, Game.WorldGenerator.World_ID);
+        /*GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/Villager/Villager"), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity, Game.WorldGenerator.World_ID);
         Entitys.Add(obj.GetComponent<Vilanger>());
-        obj.GetComponent<Vilanger>().Born("VillagerTeste", this);
+        obj.GetComponent<Vilanger>().Born("VillagerTeste", this);*/
 
-        /*GameObject obj3 = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/Mobs/Slime"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
-        Entitys.Add(obj3.GetComponent<EntityLife>());*/
+        GameObject obj3 = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/Mobs/Slime"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
+        Entitys.Add(obj3.GetComponent<EntityLife>());
     }
 
     public void OnTileTypeChange(Tile tile)
@@ -378,53 +396,19 @@ public class Chunk : MonoBehaviour
         {
             if (tile.PLACER_DATA != Placer.empty)
             {
-                Vector3 point = new LibNoise.Unity.Generator.Voronoi(0.01f, 5, Game.WorldGenerator.Seed, false).GetPoint(tile.x, tile.z, 0);
-                System.Random rand = new System.Random(Game.WorldGenerator.Seed + tile.x * tile.z + ((int)transform.position.x + (int)transform.position.z));
+                Game.CityManager.AddCity(new Vector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0), Vector3.zero, false);
+                Game.CityManager.SetUpCityTile(tile, this);
 
-                if (rand.Next(1, 100) >= 95)
+                GameObject PLACER_OBJ = Instantiate(Game.SpriteManager.Getplacerbyname(tile.PLACER_DATA.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
+                PLACER_OBJ.transform.SetParent(this.transform, true);
+                tile.ObjThis = PLACER_OBJ;
+
+                if (PLACER_OBJ.GetComponent<CityBase>())
                 {
-                    if (!Game.CityManager.CurrentCitysLoaded.ContainsKey(new Vector3((int)point.x, (int)point.y, 0)))
-                    {
-                        if (Game.CityManager.CurrentCitysLoaded[new Vector3((int)point.x, (int)point.y, 0)].havehall == false)
-                        {
-                            tile.PLACER_DATA = Placer.CityHall;
-                        }
-
-                        GameObject PLACER_OBJ = Instantiate(Game.SpriteManager.Getplacerbyname(tile.PLACER_DATA.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
-                        PLACER_OBJ.transform.SetParent(this.transform, true);
-                        tile.ObjThis = PLACER_OBJ;
-
-                        if (PLACER_OBJ.GetComponent<CityBase>())
-                        {
-                            PLACER_OBJ.GetComponent<CityBase>().citypoint = new Vector3((int)point.x, (int)point.y, 0);
-                            Debug.Log("Add a CityHall");
-                            Game.CityManager.AddCity(new Vector3((int)point.x, (int)point.y, 0), new Vector3(tile.x, tile.y, tile.z), true);
-                        }
-                    }
-                    else
-                    {
-                        GameObject PLACER_OBJ = Instantiate(Game.SpriteManager.Getplacerbyname(tile.PLACER_DATA.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
-                        PLACER_OBJ.transform.SetParent(this.transform, true);
-                        tile.ObjThis = PLACER_OBJ;
-
-                        if (PLACER_OBJ.GetComponent<CityBase>())
-                        {
-                            PLACER_OBJ.GetComponent<CityBase>().citypoint = new Vector3((int)point.x, (int)point.y, 0);
-                            Game.CityManager.AddCity(new Vector3((int)point.x, (int)point.y, 0), Vector3.zero, false);
-                        }
-                    }
-                }
-                else
-                {
-                    GameObject PLACER_OBJ = Instantiate(Game.SpriteManager.Getplacerbyname(tile.PLACER_DATA.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
-                    PLACER_OBJ.transform.SetParent(this.transform, true);
-                    tile.ObjThis = PLACER_OBJ;
-
-                    if (PLACER_OBJ.GetComponent<CityBase>())
-                    {
-                        PLACER_OBJ.GetComponent<CityBase>().citypoint = new Vector3((int)point.x, (int)point.y, 0);
-                        Game.CityManager.AddCity(new Vector3((int)point.x, (int)point.y, 0), Vector3.zero, false);
-                    }
+                    City Currentcitty = Game.CityManager.CurrentCitysLoaded[new Vector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0)];
+                    Currentcitty.CityBuildings.Add(new Vector3(tile.x, tile.y, tile.z),PLACER_OBJ.GetComponent<CityBase>());
+                    PLACER_OBJ.GetComponent<CityBase>().BuildId = (new Vector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0).GetHashCode() + (tile.x + tile.z).GetHashCode()).ToString();
+                    PLACER_OBJ.GetComponent<CityBase>().citypoint = new Vector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0);
                 }
             }
         }
@@ -546,7 +530,7 @@ public class Chunk : MonoBehaviour
             {
                 if (ai.GetComponent<Vilanger>())
                 {
-                    ai.GetComponent<Vilanger>().GetNewPostion();
+                    //ai.GetComponent<Vilanger>().GetNewPostion();
                 }
             }
         }

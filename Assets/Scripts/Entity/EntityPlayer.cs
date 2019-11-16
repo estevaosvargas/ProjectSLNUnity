@@ -28,7 +28,6 @@ public class EntityPlayer : EntityLife
 
     protected SpriteRenderer SPRITERENDER;
     protected SpriteRenderer SPRITERENDERHAND;
-    private Vector3 mousePos;
     private Vector3 lastposition;
     private int LastPostitionIntX;
     private int LastPostitionIntZ;
@@ -183,29 +182,24 @@ public class EntityPlayer : EntityLife
                     #region MyPlayerFunctions
                     if (Game.GameManager.MultiPlayer || Game.GameManager.SinglePlayer)
                     {
-                        if (Input.GetKeyDown(KeyCode.P))
-                        {
-
-                        }
-
                         Status.UpdateStatus();
-                        mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
-
-                        Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxis("Horizontal"), 0, CrossPlatformInputManager.GetAxis("Vertical"));
+                        Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxisRaw("Horizontal"), 0, CrossPlatformInputManager.GetAxisRaw("Vertical"));
 
                         body.velocity = movement.normalized * Speed;
                         SPRITERENDER.sortingOrder = -(int)transform.position.z;
 
                         if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
                         {
-                            Vector3 lookPos = Camera.main.ScreenToWorldPoint(mousePos);
+                            Vector3 lookPos = new Vector3(Game.GameManager.mouseX, Game.GameManager.mouseY, Game.GameManager.mouseZ);
                             lookPos = lookPos - transform.position;
 
-                            float angle = Mathf.Atan2(lookPos.y, lookPos.x) * Mathf.Rad2Deg;
-                            //Vector.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                            float angle = Mathf.Atan2(lookPos.z, lookPos.x) * Mathf.Rad2Deg;
                             NetStats.angle = (int)angle;
 
-                            Anim.SetFloat("X", (int)angle);
+                            Vector3 vecnor = lookPos.normalized;
+
+                            Anim.SetFloat("X", vecnor.x);
+                            Anim.SetFloat("Y", vecnor.z);
                         }
 
                         #region UpDateOnMove
@@ -237,38 +231,46 @@ public class EntityPlayer : EntityLife
                             SPRITERENDERHAND.sortingOrder = NetStats.HandLayer;
                         }
 
-                        if (Input.GetAxis("Horizontal") >= 0.1f)
+                        if (Input.GetAxis("Horizontal") > 0f)
                         {
                             Direita();
                             Anim.SetInteger("Walk", 1);
-                            Anim.SetFloat("X", 0);
+
+                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
 
                             NetStats.walking = true;
                             NetStats.Side = 0;
                         }
-                        else if (Input.GetAxis("Horizontal") <= -0.1f)
+                        else if (Input.GetAxis("Horizontal")  < 0f)
                         {
                             Esquerda();
                             Anim.SetInteger("Walk", 1);
-                            Anim.SetFloat("X", 180);
+
+                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
 
                             NetStats.walking = true;
                             NetStats.Side = 1;
                         }
-                        else if (Input.GetAxis("Vertical") >= 0.1f)
+                        else if (Input.GetAxis("Vertical") > 0)
                         {
                             Cima();
                             Anim.SetInteger("Walk", 1);
-                            Anim.SetFloat("X", 90);
+
+                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
 
                             NetStats.walking = true;
                             NetStats.Side = 2;
                         }
-                        else if (Input.GetAxis("Vertical") <= -0.1f)
+                        else if (Input.GetAxis("Vertical") < 0)
                         {
                             Baixo();
                             Anim.SetInteger("Walk", 1);
-                            Anim.SetFloat("X", -90);
+
+                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
 
                             NetStats.walking = true;
                             NetStats.Side = 3;
@@ -403,6 +405,8 @@ public class EntityPlayer : EntityLife
         Game.MenuManager.LifeBar.RefreshBar(HP);
         base.FinishCura();
     }
+
+
 
     public bool IsOnWater(int x, int y)
     {

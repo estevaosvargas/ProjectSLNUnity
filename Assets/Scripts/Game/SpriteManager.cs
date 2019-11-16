@@ -68,6 +68,11 @@ public class SpriteManager : MonoBehaviour
     {
         string key = tile.type.ToString() + "_";
 
+        if (tile.typeVariante != TypeVariante.none)
+        {
+            key = tile.typeVariante.ToString();
+        }
+
         if (tileUVMap.ContainsKey(key) == true)
         {
 
@@ -374,16 +379,9 @@ public class SpriteManager : MonoBehaviour
 
                 if (name != "")
                 {
-                    if (tileSprites.ContainsKey(name))
+                    if (!tiletrans.Contains(new TransData(name, types[i].type, types[i].TileBiome)))
                     {
-                        if (!tiletrans.Contains(new TransData(name, types[i].type, types[i].TileBiome)))
-                        {
-                            tiletrans.Add(new TransData(name, types[i].type, types[i].TileBiome));
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogError("Nao Encontrado Esse Sprite : " + name);
+                        tiletrans.Add(new TransData(name, types[i].type, types[i].TileBiome));
                     }
                 }
             }

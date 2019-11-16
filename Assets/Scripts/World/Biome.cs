@@ -32,13 +32,13 @@ public static class Biome
         float zCorde = (float)z / height * Scale;
 
         float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Small_Seed, zCorde * noisefactor + Game.WorldGenerator.Small_Seed);
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.05f, 5, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
 
         //Debug.Log("village Chance : " + (int)sample2);
 
         //sample2 *= 10;
 
-        if ((int)sample2 == 2 || (int)sample2 == -2)
+        if ((int)sample2 == 1)
         {
             Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
 
@@ -49,12 +49,17 @@ public static class Biome
             else if (color == Game.Color("FF0048"))//House Spawn Origin
             {
                 tile.PLACER_DATA = Placer.MainBuild2;
-                return TypeBlock.Grass;
+                return TypeBlock.Dirt;
             }
             else if (color == Game.Color("2D92FF"))//Spawn Chest(TesteOnly)
             {
                 tile.PLACER_DATA = Placer.BauWood;
-                return TypeBlock.Grass;
+                return TypeBlock.Dirt;
+            }
+            else if (color == Game.Color("303030"))//Spawn BlackSmith
+            {
+                tile.PLACER_DATA = Placer.BlackSmith;
+                return TypeBlock.Dirt;
             }
             else if (color == Game.Color("FFFFFF"))//Road
             {
@@ -338,9 +343,9 @@ public static class Biome
 
         float perlin = Mathf.PerlinNoise(xCorde * noisefactor, zCorde * noisefactor);
 
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.05f, 5, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
 
-        if ((int)sample2 >= 2 || (int)sample2 == -2)
+        if ((int)sample2 == 1)
         {
             Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
 
@@ -687,9 +692,9 @@ public static class Biome
 
         float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Small_Seed, zCorde * noisefactor + Game.WorldGenerator.Small_Seed);
 
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.05f, 5, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
 
-        if ((int)sample2 >= 2 || (int)sample2 == -2)
+        if ((int)sample2 == 1)
         {
             Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
 

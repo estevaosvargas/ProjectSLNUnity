@@ -102,7 +102,7 @@ public class InventoryGUI : MonoBehaviour {
         obj.name = "Slot: " + index;
         obj.GetComponent<Slots>().SetSlot(index, qunty, item, true);
         obj.GetComponent<Slots>().InveGUI = this;
-        obj.transform.SetParent(ContRoot.gameObject.transform);
+        obj.transform.SetParent(ContRoot.gameObject.transform, false);
         Container_Slots.Add(obj.GetComponent<Slots>());
     }
 
@@ -117,7 +117,7 @@ public class InventoryGUI : MonoBehaviour {
             obj.GetComponent<Slots>().SlotItemType = ItemType.Armor;
             Inve.ItemList[index].ItemType = ItemType.Armor;
             Player_Slots.Add(obj.GetComponent<Slots>());
-            obj.transform.SetParent(ArmorRoot.gameObject.transform);
+            obj.transform.SetParent(ArmorRoot.gameObject.transform, false);
         }
         else if (index >= NumSlot -12 && index <= NumSlot -6)
         {
@@ -129,7 +129,7 @@ public class InventoryGUI : MonoBehaviour {
             Inve.ItemList[index].ItemType = ItemType.none;
             Player_Slots.Add(obj.GetComponent<Slots>());
             obj.GetComponent<HotSlot>().SetSlot(hotba);
-            obj.transform.SetParent(HotRoot.gameObject.transform);
+            obj.transform.SetParent(HotRoot.gameObject.transform, false);
             hotba++;
         }
         else
@@ -144,7 +144,7 @@ public class InventoryGUI : MonoBehaviour {
             Inve.ItemList[index].ItemType = ItemType.none;
             Player_Slots.Add(obj.GetComponent<Slots>());
 
-            obj.transform.SetParent(InveRoot.gameObject.transform);
+            obj.transform.SetParent(InveRoot.gameObject.transform, false);
         }
     }
 
