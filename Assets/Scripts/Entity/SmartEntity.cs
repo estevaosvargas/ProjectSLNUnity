@@ -53,7 +53,7 @@ public class SmartEntity : Pathfindingentity
 
     internal void GetNewPostion()
     {
-        Run(new Vector3(Random.Range(transform.position.x - 10, transform.position.x + 10), Random.Range(transform.position.y - 10, transform.position.y + 10), transform.position.z));
+        Go(new Vector3(Random.Range(transform.position.x - 10, transform.position.x + 10), Random.Range(transform.position.y - 10, transform.position.y + 10), transform.position.z));
     }
 
     public override void Updateoverride()

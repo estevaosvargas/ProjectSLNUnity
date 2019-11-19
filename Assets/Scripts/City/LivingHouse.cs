@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class LivingHouse : CityBase
 {
-    public List<VillangerStaus> LivingEntity = new List<VillangerStaus>();
-    public List<Entity> EntitysSpawned = new List<Entity>();
     public Vector3 SpawnPosition;
     public bool FamilyHouse;
     public bool HaveFather;
@@ -13,64 +11,107 @@ public class LivingHouse : CityBase
 
     void Start()
     {
-        SpawnPosition = new Vector3(SpawnPosition.x + transform.position.x, SpawnPosition.y+ transform.position.y, SpawnPosition.z + transform.position.z);
+    }
+
+    public override void NewBuild()
+    {
+        Debug.Log("NewHouse : " + BuildId);
+
+        City currentcity = Game.CityManager.GetCity(citypoint.ToUnityVector());
+        SpawnPosition = new Vector3(SpawnPosition.x + transform.position.x, SpawnPosition.y + transform.position.y, SpawnPosition.z + transform.position.z);
         int amount_entity = Random.Range(1, 5);
         FamilyHouse = System.Convert.ToBoolean(Random.Range(0, 2));
 
         for (int i = 0; i < amount_entity; i++)
         {
-            if (FamilyHouse && amount_entity > 1)
+            string CitzentId = Game.UniqueID(2).GetHashCode().ToString();
+
+            if (currentcity != null)
             {
-                if (!HaveFather)
+                if (!currentcity.LivingEntity.ContainsKey(CitzentId))
                 {
-                    HaveFather = true;
-                    SexualType sex_type = SexualType.Man;
-                    LivingEntity.Add(new VillangerStaus(GetPersonName(sex_type), Game.UniqueID(2).GetHashCode().ToString(), BuildId, citypoint,Random.Range(28, 55), sex_type, FamilyPostiton.Father, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100), Random.Range(1, 100), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100)));
-                }
-                else if (!HaveMother)
-                {
-                    HaveMother = true;
-                    SexualType sex_type = SexualType.Woman;
-                    LivingEntity.Add(new VillangerStaus(GetPersonName(sex_type), Game.UniqueID(2).GetHashCode().ToString(), BuildId, citypoint, Random.Range(28, 55), sex_type, FamilyPostiton.Mother, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100), Random.Range(1, 100), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100)));
-                }
-                else
-                {
-                    int age = Random.Range(18, 80);
-                    SexualType sex_type = (SexualType)Random.Range(0, 3);
-                    FamilyPostiton familyPostiton = FamilyPostiton.none;
-
-                    if (age >= 65)
+                    if (FamilyHouse && amount_entity > 1)
                     {
-                        sex_type = (SexualType)Random.Range(1, 3);
+                        if (!HaveFather)
+                        {
+                            HaveFather = true;
+                            SexualType sex_type = SexualType.Man;
+                            currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, Random.Range(28, 55), sex_type, FamilyPostiton.Father, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100), Random.Range(1, 100), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100)));
+                        }
+                        else if (!HaveMother)
+                        {
+                            HaveMother = true;
+                            SexualType sex_type = SexualType.Woman;
+                            currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, Random.Range(28, 55), sex_type, FamilyPostiton.Mother, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100), Random.Range(1, 100), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100)));
+                        }
+                        else
+                        {
+                            int age = Random.Range(18, 80);
+                            SexualType sex_type = (SexualType)Random.Range(0, 3);
+                            FamilyPostiton familyPostiton = FamilyPostiton.none;
 
-                        if (sex_type == SexualType.Man)
-                        {
-                            familyPostiton = FamilyPostiton.GrandFather;
+                            if (age >= 65)
+                            {
+                                sex_type = (SexualType)Random.Range(1, 3);
+
+                                if (sex_type == SexualType.Man)
+                                {
+                                    familyPostiton = FamilyPostiton.GrandFather;
+                                }
+                                else if (sex_type == SexualType.Woman)
+                                {
+                                    familyPostiton = FamilyPostiton.GrandMother;
+                                }
+                                currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, age, sex_type, familyPostiton, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100 / age), Random.Range(1, 100 / age), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100 * age)));
+                            }
+                            else if (age <= 25)
+                            {
+                                familyPostiton = FamilyPostiton.Son;
+                                currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, age, sex_type, familyPostiton, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100 / age), Random.Range(1, 100 / age), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100 * age)));
+                            }
                         }
-                        else if (sex_type == SexualType.Woman)
-                        {
-                            familyPostiton = FamilyPostiton.GrandMother;
-                        }
-                        LivingEntity.Add(new VillangerStaus(GetPersonName(sex_type), Game.UniqueID(2).GetHashCode().ToString(), BuildId, citypoint, age, sex_type, familyPostiton, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100 / age), Random.Range(1, 100 / age), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100 * age)));
                     }
-                    else if (age <= 25)
+                    else
                     {
-                        familyPostiton = FamilyPostiton.Son;
-                        LivingEntity.Add(new VillangerStaus(GetPersonName(sex_type), Game.UniqueID(2).GetHashCode().ToString(), BuildId, citypoint, age, sex_type, familyPostiton, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100 / age), Random.Range(1, 100 / age), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100 * age)));
+                        int age = Random.Range(18, 80);
+                        SexualType sex_type = (SexualType)Random.Range(0, 3);
+                        FamilyPostiton familyPostiton = FamilyPostiton.none;
+
+                        currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, age, sex_type, familyPostiton, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100 / age), Random.Range(1, 100 / age), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100 * age)));
+                    }
+
+                    if (currentcity.LivingEntity.ContainsKey(CitzentId))//Cehck again the entity is sucessed add to city list
+                    {
+                        Game.CityManager.SpawnNewEntity(currentcity.LivingEntity[CitzentId], SpawnPosition);
+                        currentcity.LivingEntity[CitzentId].IsOutSide = true;
                     }
                 }
             }
-            else
-            {
-                int age = Random.Range(18, 80);
-                SexualType sex_type = (SexualType)Random.Range(0, 3);
-                FamilyPostiton familyPostiton = FamilyPostiton.none;
-
-                LivingEntity.Add(new VillangerStaus(GetPersonName(sex_type), Game.UniqueID(2).GetHashCode().ToString(), BuildId, citypoint, age, sex_type, familyPostiton, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100 / age), Random.Range(1, 100 / age), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100 * age)));
-            }
-
-            SpawnNewEntity(LivingEntity[LivingEntity.Count - 1]);
         }
+        base.NewBuild();
+    }
+
+    public override void LoadBuild()
+    {
+        City currentcity = Game.CityManager.GetCity(citypoint.ToUnityVector());
+        SpawnPosition = new Vector3(SpawnPosition.x + transform.position.x, SpawnPosition.y + transform.position.y, SpawnPosition.z + transform.position.z);
+        foreach (var entity in currentcity.LivingEntity.Values)
+        {
+            if (entity.LivingHouseId == BuildId)
+            {
+                Game.CityManager.SpawnNewEntity(entity, entity.WorldPostion.ToUnityVector());
+                currentcity.LivingEntity[entity.Citzen_Id].IsOutSide = true;
+            }
+        }
+        base.LoadBuild();
+    }
+
+    public override void WantInteract(Entity entity)
+    {
+        Vilanger citzen = entity.GetComponent<Vilanger>();
+
+        Game.CityManager.RemoveEntityFromWorld(citzen.Status.currentcity.ToUnityVector(), citzen.Status.Citzen_Id, citzen.gameObject);
+        base.WantInteract(entity);
     }
 
     private string GetPersonName(SexualType sex_type)
@@ -93,20 +134,5 @@ public class LivingHouse : CityBase
         }
 
         return Name_ready;
-    }
-
-    public void SpawnNewEntity(VillangerStaus status)
-    {
-        GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/Villager/Villager"), new Vector3(SpawnPosition.x, SpawnPosition.y, SpawnPosition.z), Quaternion.identity, Game.WorldGenerator.World_ID);
-        EntitysSpawned.Add(obj.GetComponent<Vilanger>());
-        obj.GetComponent<Vilanger>().Status = status;
-    }
-
-    private void OnDestroy()
-    {
-        foreach (var entity in EntitysSpawned)
-        {
-            DarckNet.Network.Destroy(entity.gameObject);
-        }
     }
 }

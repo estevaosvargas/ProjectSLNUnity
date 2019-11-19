@@ -54,6 +54,7 @@ public class GameManager : UIElements
     public NetWorkView Net;
     public static List<DCallBack> CallBacks = new List<DCallBack>();
     public static AudioSource AudioSourceGlobal;
+    public float SaveUpdateTime = 5;
     public Tile t;
     public Ray ray;
     public RaycastHit hit;
@@ -63,6 +64,7 @@ public class GameManager : UIElements
     public float mouseplus = 1;
     private int LastMouseX;
     private int LastMouseY;
+    private float timetemp;
 
     void Awake()
     {
@@ -148,6 +150,7 @@ public class GameManager : UIElements
 
         SinglePlayer = true;
         Playing = true;
+        DarckNet.NetConfig.DedicatedServer = false;
         DarckNet.Network.Create("127.0.0.1", 25000, 1);
     }
 
@@ -270,7 +273,11 @@ public class GameManager : UIElements
         }
         #endregion
 
-        
+        if (Time.time > timetemp + SaveUpdateTime)
+        {
+            Game.CityManager.Save();
+            timetemp = Time.time;
+        }
 
         if (Playing)
         {
@@ -695,25 +702,6 @@ public class PlayerInfo : MonoBehaviour
     public WorldType CurrentWorld = WorldType.Normal;
     public Transform PlayerRoot;
     public Lidgren.Network.NetConnection Peer;
-}
-
-public class DCFMath
-{
-    public static float PingPong(float minimalvalue, float maxvalue, float time)
-    {
-        float value = 0;
-
-        if (value >= maxvalue)
-        {
-            value -= time;
-        }
-        else if (value <= minimalvalue)
-        {
-            value += time;
-        }
-
-        return value;
-    }
 }
 
 public static class MouselockFake

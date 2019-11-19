@@ -28,7 +28,7 @@ public class Pathfindingentity : EntityLife
         }*/
     }
 
-    public void Run(Vector3 Target)
+    public void Go(Vector3 Target)
     {
         target = Target;
         HaveTarget = true;
@@ -218,6 +218,7 @@ public class Pathfindingentity : EntityLife
             path.Add(currentNode);
             currentNode = currentNode.parent;
         }
+
         Vector3[] waypoints = SimplifyPath(path);
         Array.Reverse(waypoints);
         return waypoints;
@@ -229,9 +230,10 @@ public class Pathfindingentity : EntityLife
         List<Vector3> waypoints = new List<Vector3>();
         Vector2 directionOld = Vector2.zero;
 
-        for (int i = 1; i < path.Count; i++)
+        for (int i = 0; i < path.Count; i++)
         {
-            waypoints.Add(path[i].worldPosition + new Vector3(0.5f, 0, 0.5f));
+            //waypoints.Add(path[i].worldPosition + new Vector3(0.5f, 0, 0.5f));
+            waypoints.Add(path[i].worldPosition);
             /*Vector2 directionNew = new Vector2(path[i - 1].worldPosition.x - path[i].worldPosition.x, path[i - 1].worldPosition.y - path[i].worldPosition.y);
             if (directionNew != directionOld)
             {

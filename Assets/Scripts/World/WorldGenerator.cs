@@ -159,14 +159,6 @@ public class WorldGenerator : DCallBack
                 }
             }
         }
-
-        /*for (int i = xPos - Chunk.Size; i < xPos + (2 * Chunk.Size); i += Chunk.Size)
-        {
-            for (int j = yPos - Chunk.Size; j < yPos + (2 * Chunk.Size); j += Chunk.Size)
-            {
-                MakeChunkAt(i, j);
-            }
-        }*/
     }
 
     void MakeChunkAt(int x, int z)

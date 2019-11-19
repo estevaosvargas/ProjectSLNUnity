@@ -2,12 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DarckNet;
 using UnityEngine;
 
 [System.Serializable]
 public class CityManager : MonoBehaviour
 {
     public Dictionary<Vector3, City> CurrentCitysLoaded = new Dictionary<Vector3, City>();
+    public List<Entity> EntitysSpawned = new List<Entity>();
 
     void Awake()
     {
@@ -16,12 +18,12 @@ public class CityManager : MonoBehaviour
 
     void Start()
     {
-        //ComputCity();
+        
     }
 
     void Update()
     {
-
+        
     }
 
     public void AddCity(Vector3 point, Vector3 CityHall, bool havehall)
@@ -31,17 +33,6 @@ public class CityManager : MonoBehaviour
             CurrentCitysLoaded.Add(point, new City(("Testing City " + point).GetHashCode().ToString(), ("Testing City " + point).GetHashCode().ToString(), 150, (EconomicType)UnityEngine.Random.Range(0, 5), new DarckNet.DataVector3(point), new DarckNet.DataVector3(CityHall)));
             Save();
         }
-    }
-
-    public void Save()
-    {
-        List<CitySave> citySaves = new List<CitySave>();
-        foreach (var itemcity in CurrentCitysLoaded.Values.ToArray())
-        {
-            citySaves.Add(new CitySave(itemcity.CityName, itemcity.CityId, itemcity.MaxPopulation, itemcity.economicType, itemcity.citypoint, itemcity.hallpos, itemcity.havehall, itemcity.haveblack));
-        }
-
-        SaveWorld.SaveCity(citySaves.ToArray(), "citys");
     }
 
     public City GetCity(Vector3 cityPoint)
@@ -54,37 +45,86 @@ public class CityManager : MonoBehaviour
         return null;
     }
 
-    public void Load()
-    {
-        CitySave[] cityarray = SaveWorld.LoadCity("citys");
-
-        if (cityarray.Length > 0)
-        {
-            foreach (var itemcity in cityarray)
-            {
-                CurrentCitysLoaded.Add(new Vector3(itemcity.citypoint.x, itemcity.citypoint.y, 0), new City(itemcity.CityName, itemcity.CityId, itemcity.MaxPopulation, itemcity.economicType, itemcity.citypoint, itemcity.hallpos, itemcity.havehall, itemcity.haveblack));
-                Debug.Log(itemcity.CityId);
-            }
-        }
-    }
-
-    public void WantInteract(Vector3 city, Vector3 interaction, NPCTasks task)
+    public CityBase GetBuild(Vector3 city, string buildid)
     {
         City current_city = GetCity(city);
         CityBase build = null;
 
-        if (current_city.CityBuildings.TryGetValue(interaction, out build))
+        if (current_city.CityBuildings.TryGetValue(buildid, out build))
         {
-            switch (task)
+            return build;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public void WantInteract(Vector3 city, NPCTASK tasks, Vilanger entity)
+    {
+        City current_city = GetCity(city);
+        CityBase build = null;
+        string buildid = ((int)city.x + (int)city.y * (int)tasks.TaskPosition.x + (int)tasks.TaskPosition.z).ToString();
+
+        if (current_city.CityBuildings.TryGetValue(buildid, out build))
+        {
+            switch (tasks.this_task)
             {
                 case NPCTasks.GoGetTask:
-                    //build.GetComponent<CityHall>();
+                    build.WantInteract(entity);
+                    break;
+                case NPCTasks.GoHome:
+                    build.WantInteract(entity);
+                    break;
+                case NPCTasks.EnterInBuild:
+                    build.WantInteract(entity);
                     break;
             }
         }
         else
         {
-            Debug.LogError("Uhmm somthing is not right, we dont found your location...");
+            Debug.LogError("Uhmm somthing is not right, we dont found your location... : " + tasks.TaskPosition.ToString());
+        }
+    }
+
+    public void UpdatePositionStaus(Vector3 position, Vector3 city, string citzenid)
+    {
+        City currentcity = GetCity(city);
+        currentcity.LivingEntity[citzenid].WorldPostion = new DarckNet.DataVector3(position);
+    }
+
+    public void SpawnNewEntity(CitzenCredential status, Vector3 Position)
+    {
+        GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/Villager/Villager"), Position, Quaternion.identity, Game.WorldGenerator.World_ID);
+        EntitysSpawned.Add(obj.GetComponent<Vilanger>());
+        obj.GetComponent<Vilanger>().Status = status;
+
+        status.IsOutSide = true;
+        status.WorldPostion = new DarckNet.DataVector3(Position);
+       //Save();
+    }
+
+    /// <summary>
+    /// Remove a Entity from world.
+    /// </summary>
+    /// <param name="city"></param>
+    /// <param name="citzen_Id"></param>
+    /// <param name="obj_entity"></param>
+    /// <returns></returns>
+    public bool RemoveEntityFromWorld(Vector3 city, string citzen_Id, GameObject obj_entity)
+    {
+        City currentcity = GetCity(city);
+
+        if (currentcity.LivingEntity.TryGetValue(citzen_Id, out CitzenCredential entity))
+        {
+            entity.IsOutSide = false;
+            DarckNet.Network.Destroy(obj_entity);
+            return true;
+        }
+        else
+        {
+            Debug.LogError("Sorry this entity isnt in world!");
+            return false;
         }
     }
 
@@ -106,6 +146,36 @@ public class CityManager : MonoBehaviour
             Currentcitty.haveblack = true;
         }
     }
+
+    #region Save/Load
+    public void Save()
+    {
+        if (DarckNet.Network.IsServer || Game.GameManager.SinglePlayer)
+        {
+            List<CitySave> citySaves = new List<CitySave>();
+            foreach (var itemcity in CurrentCitysLoaded.Values.ToArray())
+            {
+                citySaves.Add(new CitySave(itemcity.CityName, itemcity.CityId, itemcity.MaxPopulation, itemcity.economicType, itemcity.citypoint, itemcity.LivingEntity.Values.ToArray(), CityBaseSerialization.CityBase(itemcity.CityBuildings.Values.ToArray())));
+            }
+
+            SaveWorld.SaveCity(citySaves.ToArray(), "citys");
+        }
+    }
+
+    public void Load()
+    {
+        CitySave[] cityarray = SaveWorld.LoadCity("citys");
+
+        if (cityarray.Length > 0)
+        {
+            foreach (var itemcity in cityarray)
+            {
+                CurrentCitysLoaded.Add(new Vector3(itemcity.citypoint.x, itemcity.citypoint.y, 0), new City(itemcity.CityName, itemcity.CityId, itemcity.MaxPopulation, itemcity.economicType, itemcity.citypoint, itemcity.LivingEntity, itemcity.buildbase));
+                Debug.Log(itemcity.CityId);
+            }
+        }
+    }
+    #endregion
 }
 
 [System.Serializable]
@@ -132,15 +202,15 @@ public class City
     public int MaxPopulation = 10;
     public EconomicType economicType;
     public CityStatus cityStatus;
-    public Dictionary<Vector3, CityBase> CityBuildings = new Dictionary<Vector3, CityBase>();
+
+    public Dictionary<string, CityBase> CityBuildings = new Dictionary<string, CityBase>();
+    public Dictionary<string, CitzenCredential> LivingEntity = new Dictionary<string, CitzenCredential>();
+
     public DarckNet.DataVector3 citypoint;
     public DarckNet.DataVector3 hallpos;
     public DarckNet.DataVector3 blackpos;
     public bool havehall;
     public bool haveblack;
-
-    [System.NonSerialized]
-    public List<Vilanger> Vilangers = new List<Vilanger>();
 
     public City(string city_Name, string city_ID, int max_polupation, EconomicType economic_Type, DarckNet.DataVector3 city_point, DarckNet.DataVector3 hall_pos, bool _havehall, bool _haveblack)
     {
@@ -163,6 +233,33 @@ public class City
         citypoint = city_point;
         hallpos = hall_pos;
     }
+    /// <summary>
+    /// Used for loading save files
+    /// </summary>
+    /// <param name="city_Name"></param>
+    /// <param name="city_ID"></param>
+    /// <param name="max_polupation"></param>
+    /// <param name="economic_Type"></param>
+    /// <param name="city_point"></param>
+    /// <param name="livingentitys"></param>
+    public City(string city_Name, string city_ID, int max_polupation, EconomicType economic_Type, DarckNet.DataVector3 city_point, CitzenCredential[] livingentitys, CityBaseSerialization[] _citybases)
+    {
+        CityName = city_Name;
+        CityId = city_ID;
+        MaxPopulation = max_polupation;
+        economicType = economic_Type;
+        citypoint = city_point;
+
+        foreach (var Citzen in livingentitys)
+        {
+            LivingEntity.Add(Citzen.Citzen_Id, Citzen);
+        }
+
+        foreach (var build in _citybases)
+        {
+            CityBuildings.Add(build.BuildId, null);
+        }
+    }
 }
 
 [System.Serializable]
@@ -175,13 +272,13 @@ public class CitySave
     public EconomicType economicType;
     public CityStatus cityStatus;
 
+    public CitzenCredential[] LivingEntity;
+    public CityBaseSerialization[] buildbase;
+
     public DarckNet.DataVector3 citypoint;
     public DarckNet.DataVector3 hallpos;
 
-    public bool havehall;
-    public bool haveblack;
-
-    public CitySave(string city_Name, string city_ID, int max_polupation, EconomicType economic_Type, DarckNet.DataVector3 city_point, DarckNet.DataVector3 hall_pos, bool have_hall, bool have_black)
+    public CitySave(string city_Name, string city_ID, int max_polupation, EconomicType economic_Type, DarckNet.DataVector3 city_point, CitzenCredential[] _LivingEntity, CityBaseSerialization[] _buildbase)
     {
         CityName = city_Name;
         CityId = city_ID;
@@ -190,15 +287,13 @@ public class CitySave
 
         citypoint = city_point;
 
-        hallpos = hall_pos;
-
-        havehall = have_hall;
-        haveblack = have_black;
+        LivingEntity = _LivingEntity;
+        buildbase = _buildbase;
     }
 }
 
-[Serializable]
-public struct VillangerStaus
+[System.Serializable]
+public class CitzenCredential
 {
     public string Name;
     public string Citzen_Id;
@@ -213,9 +308,12 @@ public struct VillangerStaus
     public int IQ;//inteligence of the cahr
     public int Luck;//the luck of the char
     public int Charisma;//social factor of char
-    internal Vector3 currentcity;
+    public DarckNet.DataVector3 currentcity;
 
-    public VillangerStaus(string _Name, string _Citzen_Id, string _LivingHouseId, Vector3 _currentcity, int _Age, SexualType _Sexual, FamilyPostiton _Family_Postiton, VilagerVocation _Vocation, int _Agility, int _Tolerance, int _IQ, int _Luck, int _Charisma)
+    public bool IsOutSide;//Check if the entity is spawned on world
+    public DarckNet.DataVector3 WorldPostion;//Position on world
+
+    public CitzenCredential(string _Name, string _Citzen_Id, string _LivingHouseId, DarckNet.DataVector3 _currentcity, int _Age, SexualType _Sexual, FamilyPostiton _Family_Postiton, VilagerVocation _Vocation, int _Agility, int _Tolerance, int _IQ, int _Luck, int _Charisma)
     {
         Name = _Name;
         Citzen_Id = _Citzen_Id;
@@ -230,6 +328,19 @@ public struct VillangerStaus
         LivingHouseId = _LivingHouseId;
         Vocation = _Vocation;
         currentcity = _currentcity;
+        IsOutSide = false;
+        WorldPostion = DarckNet.DataVector3.zero;
+    }
+
+    public void UpdateWorldValues(bool isoutside, DarckNet.DataVector3 _WorldPostion)
+    {
+        IsOutSide = isoutside;
+        WorldPostion = _WorldPostion;
+    }
+
+    public void UpdateWorldPosition(DarckNet.DataVector3 _WorldPostion)
+    {
+        WorldPostion = _WorldPostion;
     }
 }
 
@@ -244,88 +355,4 @@ public struct NPCTASK
         this_task = tasks;
         TaskPosition = pos;
     }
-}
-
-public class TaskBase
-{
-    
-}
-
-public enum CityLevel
-{
-    Camp, Level0, Level1, Level2, Level3, Level4, Level5, Level6, Level7
-}
-
-public enum CityType
-{
-    none, Camp, farm, bigfarm, smalltown, bigtown, portcity, turistcity
-}
-
-public enum VilagerVocation
-{
-    none, Guerreiro, Fazendeiro, açogueiro, lenhador, medico, engenheiro, bibliotecario, padre, guarda, mineiro, marinheiro, Vendedor, ferreiro
-    ,padeiro, aventureiro, cientista, alquimista
-}
-
-public enum EconomicType
-{
-    kingdom, feudal, villanger, Capitalism, Comunumism
-}
-
-public enum SexualType
-{
-    Others, Man, Woman
-}
-
-public enum FirstCityName
-{
-    Dragon, Kilkenny, Eelry, Beckinsdale, Leefside, Azmar, Braedwardith, Ramshorn, Forstford, Aylesbury, Mountmend, Stawford
-}
-
-public enum SecondCityName
-{
-    Vally, Orrinshire, Wimborne, Panshaw, Holbeck, Hythe, Cromer, Gormsey, Wingston, Hempholme, Jedburgh, RedHawk, 
-}
-
-public enum FamilyPostiton
-{
-    none,Father, Mother, Son, GrandFather, GrandMother
-}
-
-public enum MaleHumanNames//14
-{
-    DarinHailey, GermanHarrison, WallyLee, RistonTownsend, LatimerDavenport,
-    DeonteThorp,
-    ThoraldNetley,
-    JarvNetley,
-    KristopherClifford,
-    SiddelHuxley,
-    TreDalton,
-    FaraltAllerton,
-    FidelisSwet,
-    DacianSwett,
-}
-
-public enum FemaleHumanNames//20
-{
-    BerdineGale,
-    KatarinaRylan,
-    TatBrooks,
-    JoyanneCamden,
-    AyanaRodney,
-    SavannaOakley,
-    AdileneRoscoe,
-    HerthaStratford,
-    ChaunteHuckabee,
-    RudelleHarrison,
-    HarrietteWard,
-    GesaHome,
-    AmiteeBirkenhead,
-    JulianneDenholm,
-    GwendolynLincoln,
-    CecilleFarnham,
-    TanyaOldham,
-    AshtynPaddle,
-    FloridaAlden,
-    HanneAppleton
 }

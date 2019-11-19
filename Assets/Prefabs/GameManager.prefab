@@ -9322,6 +9322,7 @@ MonoBehaviour:
   SinglePlayer: 0
   MultiPlayer: 0
   charcustom:
+    CharSprites: []
     Skin:
     - NormalColor: {r: 0.95294124, g: 0.7137255, b: 0.3372549, a: 1}
       LightColor: {r: 0.9528302, g: 0.7450248, b: 0.4179868, a: 1}
@@ -9389,6 +9390,7 @@ MonoBehaviour:
   DMPOP: {fileID: 1688708577339544, guid: a40b26a8a2771094eb9831144543b0ce, type: 3}
   SHOWDEBUG: 0
   Net: {fileID: 114377742362985650}
+  SaveUpdateTime: 30
   t:
     type: 0
     typeVariante: 0
@@ -9659,6 +9661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4cec97bce044ad4eba68caacbbc743d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EntitysSpawned: []
 --- !u!1 &1847473815282784
 GameObject:
   m_ObjectHideFlags: 0

@@ -36,12 +36,12 @@ namespace DarckNet
         internal static List<DarckMonoBehaviour> Events = new List<DarckMonoBehaviour>();
         internal static NetworkPrefabs PregabsList;
         internal static NetDeliveryMethod NetDeliveryMode = NetDeliveryMethod.UnreliableSequenced;
-        internal static bool Runing = false;
         internal static bool onconnectbool = false;
         internal static bool onstartserverbool = false;
         private static bool _ISSERVER = false;
         private static bool _ISCLIENT = false;
         public static bool ServerSinglePlayer = false;
+        public static bool Runing { get; private set; }
         public static bool IsServer { get { return _ISSERVER; }}
         public static bool IsClient { get { return _ISCLIENT; }}
         public static bool Ready { get; private set; }
@@ -80,16 +80,11 @@ namespace DarckNet
                 config.AcceptIncomingConnections = NetConfig.AcceptConnection;
                 config.NetworkThreadName = "DarckNet - Server";
 
-                config.m_port = port;
+                config.Port = port;
                 config.BroadcastAddress = new IPAddress(ipe);
 
                 NetServer peer = new NetServer(config);
                 peer.Start(); // needed for initialization
-
-                if (config.EnableUPnP == true)
-                {
-                    peer.UPnP.ForwardPort(port, "Darcknetwork. UnityGame, Server");
-                }
 
                 if (peer.Status == NetPeerStatus.Running)
                 {
@@ -1771,12 +1766,18 @@ namespace DarckNet
         public List<long> Players = new List<long>();
     }
 
+    /// <summary>
+    /// Used For Store Vector data, compatible with serialization
+    /// </summary>
     [Serializable]
     public struct DataVector3
     {
         public float x;
         public float y;
         public float z;
+
+        public static DataVector3 zero { get { return new DataVector3(0, 0, 0); } }
+        public static DataVector3 one { get { return new DataVector3(1, 1, 1); } }
 
         public DataVector3(float X, float Y, float Z)
         {
@@ -1832,106 +1833,107 @@ namespace DarckNet
             return new Vector3(x, y, z);
         }
     }
-}
 
-public enum DataType : byte
-{
-    RPC = 0,
-    Destroy = 1,
-    Destroy_Player = 2,
-    Instantiate = 3,
-    Instantiate_Pool = 4,
-    EnterInWorld = 5,
-    CloseConnection = 6,
-    ChangeDimension = 7,
-    Instantiate_PoolD = 8,
-    ExitDimension = 9,
+    public static class NetConfig
+    {
+        public static string SecretKey = "secret";
+        public static int DefaultOutgoingMessageCapacity = 99999;
+        public static int SendBufferSize = 131071;
+        public static float ConnectionTimeout = 50;
+        public static bool AcceptConnection = true;
+        public static string AppIdentifier = "UnityGame";
+        /// <summary>
+        /// TiketRate is the milliseconds to Thread stop and continue. 15 is Recommended
+        /// </summary>
+        public static int TiketRate = 15;
+        /// <summary>
+        /// If is true Unat is false, if is false Unat is true.
+        /// </summary>
+        public static bool DedicatedServer = false;
+    }
 
-    RPC_All = 10,
-    RPC_AllOwner = 11,
-    RPC_Owner = 12,
-    RPC_ALLDimension = 13,
+    namespace CompressString
+    {
+        internal static class StringCompressor
+        {
+            /// <summary>
+            /// Compresses the string.
+            /// </summary>
+            /// <param name="text">The text.</param>
+            /// <returns></returns>
+            public static string CompressString(string text)
+            {
+                byte[] buffer = Encoding.UTF8.GetBytes(text);
+                var memoryStream = new MemoryStream();
+                using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+                {
+                    gZipStream.Write(buffer, 0, buffer.Length);
+                }
 
-    ServerStop = 14,
-    RequestStartData = 15
+                memoryStream.Position = 0;
+
+                var compressedData = new byte[memoryStream.Length];
+                memoryStream.Read(compressedData, 0, compressedData.Length);
+
+                var gZipBuffer = new byte[compressedData.Length + 4];
+                Buffer.BlockCopy(compressedData, 0, gZipBuffer, 4, compressedData.Length);
+                Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gZipBuffer, 0, 4);
+                return Convert.ToBase64String(gZipBuffer);
+            }
+
+            /// <summary>
+            /// Decompresses the string.
+            /// </summary>
+            /// <param name="compressedText">The compressed text.</param>
+            /// <returns></returns>
+            public static string DecompressString(string compressedText)
+            {
+                byte[] gZipBuffer = Convert.FromBase64String(compressedText);
+                using (var memoryStream = new MemoryStream())
+                {
+                    int dataLength = BitConverter.ToInt32(gZipBuffer, 0);
+                    memoryStream.Write(gZipBuffer, 4, gZipBuffer.Length - 4);
+
+                    var buffer = new byte[dataLength];
+
+                    memoryStream.Position = 0;
+                    using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
+                    {
+                        gZipStream.Read(buffer, 0, buffer.Length);
+                    }
+
+                    return Encoding.UTF8.GetString(buffer);
+                }
+            }
+        }
+    }
+
+    public enum DataType : byte
+    {
+        RPC = 0,
+        Destroy = 1,
+        Destroy_Player = 2,
+        Instantiate = 3,
+        Instantiate_Pool = 4,
+        EnterInWorld = 5,
+        CloseConnection = 6,
+        ChangeDimension = 7,
+        Instantiate_PoolD = 8,
+        ExitDimension = 9,
+
+        RPC_All = 10,
+        RPC_AllOwner = 11,
+        RPC_Owner = 12,
+        RPC_ALLDimension = 13,
+
+        ServerStop = 14,
+        RequestStartData = 15
+    }
+
 }
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public sealed class RPC : Attribute
 {
 
-}
-
-public static class NetConfig
-{
-    public static string SecretKey = "secret";
-    public static int DefaultOutgoingMessageCapacity = 99999;
-    public static int SendBufferSize = 131071;
-    public static float ConnectionTimeout = 50;
-    public static bool AcceptConnection = true;
-    public static string AppIdentifier = "UnityGame";
-    /// <summary>
-    /// TiketRate is the milliseconds to Thread stop and continue. 15 is Recommended
-    /// </summary>
-    public static int TiketRate = 15;
-    /// <summary>
-    /// If is true Unat is false, if is false Unat is true.
-    /// </summary>
-    public static bool DedicatedServer = false;
-}
-
-namespace CompressString
-{
-    internal static class StringCompressor
-    {
-        /// <summary>
-        /// Compresses the string.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        /// <returns></returns>
-        public static string CompressString(string text)
-        {
-            byte[] buffer = Encoding.UTF8.GetBytes(text);
-            var memoryStream = new MemoryStream();
-            using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
-            {
-                gZipStream.Write(buffer, 0, buffer.Length);
-            }
-
-            memoryStream.Position = 0;
-
-            var compressedData = new byte[memoryStream.Length];
-            memoryStream.Read(compressedData, 0, compressedData.Length);
-
-            var gZipBuffer = new byte[compressedData.Length + 4];
-            Buffer.BlockCopy(compressedData, 0, gZipBuffer, 4, compressedData.Length);
-            Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gZipBuffer, 0, 4);
-            return Convert.ToBase64String(gZipBuffer);
-        }
-
-        /// <summary>
-        /// Decompresses the string.
-        /// </summary>
-        /// <param name="compressedText">The compressed text.</param>
-        /// <returns></returns>
-        public static string DecompressString(string compressedText)
-        {
-            byte[] gZipBuffer = Convert.FromBase64String(compressedText);
-            using (var memoryStream = new MemoryStream())
-            {
-                int dataLength = BitConverter.ToInt32(gZipBuffer, 0);
-                memoryStream.Write(gZipBuffer, 4, gZipBuffer.Length - 4);
-
-                var buffer = new byte[dataLength];
-
-                memoryStream.Position = 0;
-                using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
-                {
-                    gZipStream.Read(buffer, 0, buffer.Length);
-                }
-
-                return Encoding.UTF8.GetString(buffer);
-            }
-        }
-    }
 }

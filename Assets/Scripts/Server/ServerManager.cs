@@ -61,7 +61,7 @@ public class ServerManager : DarckNet.DarckMonoBehaviour
 
     public override void PlayerApproval(string data, NetConnection Player_Sender)
     {
-        if (data == NetConfig.SecretKey)
+        if (data == DarckNet.NetConfig.SecretKey)
         {
             Player_Sender.Approve();
         }

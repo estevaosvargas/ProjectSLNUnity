@@ -405,10 +405,22 @@ public class Chunk : MonoBehaviour
 
                 if (PLACER_OBJ.GetComponent<CityBase>())
                 {
+                    string buildid = ((int)tile.CityPoint.x + (int)tile.CityPoint.y * tile.x + tile.z).ToString();
                     City Currentcitty = Game.CityManager.CurrentCitysLoaded[new Vector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0)];
-                    Currentcitty.CityBuildings.Add(new Vector3(tile.x, tile.y, tile.z),PLACER_OBJ.GetComponent<CityBase>());
-                    PLACER_OBJ.GetComponent<CityBase>().BuildId = (new Vector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0).GetHashCode() + (tile.x + tile.z).GetHashCode()).ToString();
-                    PLACER_OBJ.GetComponent<CityBase>().citypoint = new Vector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0);
+
+                    PLACER_OBJ.GetComponent<CityBase>().BuildId = buildid;
+                    PLACER_OBJ.GetComponent<CityBase>().citypoint = new DarckNet.DataVector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0);
+
+                    if (!Currentcitty.CityBuildings.ContainsKey(buildid))
+                    {
+                        Currentcitty.CityBuildings.Add(buildid, PLACER_OBJ.GetComponent<CityBase>());
+                        PLACER_OBJ.GetComponent<CityBase>().NewBuild();
+                    }
+                    else
+                    {
+                        Currentcitty.CityBuildings[buildid] = PLACER_OBJ.GetComponent<CityBase>();
+                        PLACER_OBJ.GetComponent<CityBase>().LoadBuild();
+                    }
                 }
             }
         }
@@ -530,7 +542,7 @@ public class Chunk : MonoBehaviour
             {
                 if (ai.GetComponent<Vilanger>())
                 {
-                    //ai.GetComponent<Vilanger>().GetNewPostion();
+                    ai.GetComponent<Vilanger>().UpdateSituation();
                 }
             }
         }

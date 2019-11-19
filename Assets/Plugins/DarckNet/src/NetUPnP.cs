@@ -171,7 +171,10 @@ namespace Lidgren.Network
         public bool ForwardPort(int externalPort, string description, int internalPort = 0)
         {
             if (!CheckAvailability())
+            {
+                UnityEngine.Debug.Log("UPnP Status : " + m_status.ToString());
                 return false;
+            }
 
             IPAddress mask;
             var client = NetUtility.GetMyAddress(out mask);

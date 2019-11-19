@@ -211,5 +211,85 @@ public enum MaterialHitType: byte
 
 public enum NPCTasks
 {
-    none, GoGetTask ,CutWood, TakeItemOnGround, GoHome, EnterInBuild, MakeRoad, Defense, Build, Farm, Minig
+    none, GoGetTask ,CutWood, TakeItemOnGround, GoHome, EnterInBuild, MakeRoad, Defense, Build, Farm, Minig,
+    BlackSmith
+}
+
+public enum CityLevel
+{
+    Camp, Level0, Level1, Level2, Level3, Level4, Level5, Level6, Level7
+}
+
+public enum CityType
+{
+    none, Camp, farm, bigfarm, smalltown, bigtown, portcity, turistcity
+}
+
+public enum VilagerVocation
+{
+    none, Guerreiro, Fazendeiro, açogueiro, lenhador, medico, engenheiro, bibliotecario, padre, guarda, mineiro, marinheiro, Vendedor, ferreiro
+    , padeiro, aventureiro, cientista, alquimista
+}
+
+public enum EconomicType
+{
+    kingdom, feudal, villanger, Capitalism, Comunumism
+}
+
+public enum SexualType
+{
+    Others, Man, Woman
+}
+
+public enum FirstCityName
+{
+    Dragon, Kilkenny, Eelry, Beckinsdale, Leefside, Azmar, Braedwardith, Ramshorn, Forstford, Aylesbury, Mountmend, Stawford
+}
+
+public enum SecondCityName
+{
+    Vally, Orrinshire, Wimborne, Panshaw, Holbeck, Hythe, Cromer, Gormsey, Wingston, Hempholme, Jedburgh, RedHawk,
+}
+
+public enum FamilyPostiton
+{
+    none, Father, Mother, Son, GrandFather, GrandMother
+}
+
+public enum MaleHumanNames//14
+{
+    DarinHailey, GermanHarrison, WallyLee, RistonTownsend, LatimerDavenport,
+    DeonteThorp,
+    ThoraldNetley,
+    JarvNetley,
+    KristopherClifford,
+    SiddelHuxley,
+    TreDalton,
+    FaraltAllerton,
+    FidelisSwet,
+    DacianSwett,
+}
+
+public enum FemaleHumanNames//20
+{
+    BerdineGale,
+    KatarinaRylan,
+    TatBrooks,
+    JoyanneCamden,
+    AyanaRodney,
+    SavannaOakley,
+    AdileneRoscoe,
+    HerthaStratford,
+    ChaunteHuckabee,
+    RudelleHarrison,
+    HarrietteWard,
+    GesaHome,
+    AmiteeBirkenhead,
+    JulianneDenholm,
+    GwendolynLincoln,
+    CecilleFarnham,
+    TanyaOldham,
+    AshtynPaddle,
+    FloridaAlden,
+    HanneAppleton
 }
