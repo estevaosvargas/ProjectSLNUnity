@@ -10,7 +10,15 @@ public class CityBase : MonoBehaviour
 
     private void OnDestroy()
     {
-        Game.CityManager.GetCity(citypoint.ToUnityVector()).CityBuildings.Remove(BuildId);
+        City currentcity = Game.CityManager.GetCity(citypoint.ToUnityVector());
+        currentcity.CityBuildings.Remove(BuildId);
+
+        if (currentcity.CityBuildings.Count <= 0)
+        {
+            currentcity.IsLoaded = false;
+            Debug.Log("This City : " + citypoint.ToString() + "Is not more loaded!");
+        }
+
         Debug.Log("This Build : " + BuildId + " Are Removed form city build list");
     }
 

@@ -21,8 +21,8 @@ public class Vilanger : Pathfindingentity
     public int X;
     public int Z;
 
-    public CitzenCredential Status;
-    public NPCTASK CurrentTask = new NPCTASK(NPCTasks.none, Vector3.zero);
+    public string ID;
+    public Vector3 CurrentCity;
 
     public void GetVocation()
     {
@@ -54,13 +54,13 @@ public class Vilanger : Pathfindingentity
 
     public void SetNewTask(NPCTASK newtask)
     {
-        CurrentTask = newtask;
-        Go(CurrentTask.TaskPosition);
+        Status = Game.CityManager.UpdateEntityTask(newtask, Status.currentcity.ToUnityVector(), Status.Citzen_Id);
+        Go(Status.CurrentTask.TaskPosition.ToUnityVector() + new Vector3(+1, 0 ,-1));
     }
 
     public void SetNoneJob()
     {
-        CurrentTask = new NPCTASK(NPCTasks.none, Vector3.zero);
+        Game.CityManager.UpdateEntityTask(new NPCTASK(NPCTasks.none, DarckNet.DataVector3.zero), Status.currentcity.ToUnityVector(), Status.Citzen_Id);
         GetNewPostion();
     }
 
@@ -77,7 +77,7 @@ public class Vilanger : Pathfindingentity
             {
                 if (HaveTarget)
                 {
-                    Game.CityManager.WantInteract(Status.currentcity.ToUnityVector(), CurrentTask, this);
+                    Game.CityManager.WantInteract(CurrentCity, ID, this);
                     Stop();
                 }
             }
@@ -86,7 +86,7 @@ public class Vilanger : Pathfindingentity
             {
                 Chunk chunk = Game.WorldGenerator.GetChunkAt((int)transform.position.x, (int)transform.position.z);
 
-                Game.CityManager.UpdatePositionStaus(transform.position, Status.currentcity.ToUnityVector(), Status.Citzen_Id);
+                Game.CityManager.UpdatePositionStaus(transform.position, CurrentCity, ID);
 
                 if (chunk != null)
                 {
@@ -145,49 +145,6 @@ public class Vilanger : Pathfindingentity
                 }
             }
 
-        }
-    }
-
-    public void UpdateSituation()
-    {
-        if (CurrentTask.this_task == NPCTasks.none)
-        {
-            if (!Game.TimeOfDay.IsDay)
-            {
-                CityBase build = Game.CityManager.GetBuild(Status.currentcity.ToUnityVector(), Status.LivingHouseId);
-                
-                if (build != null)
-                {
-                    CurrentTask = new NPCTASK(NPCTasks.GoHome, build.transform.position);
-                    Go(CurrentTask.TaskPosition + new Vector3(+1, 0, -1));
-                }
-                else
-                {
-                    Game.CityManager.RemoveEntityFromWorld(Status.currentcity.ToUnityVector(), Status.Citzen_Id, this.gameObject);
-                }
-            }
-            else
-            {
-                GetNewPostion();
-            }
-        }
-        else
-        {
-            if (!Game.TimeOfDay.IsDay)
-            {
-                CityBase build = Game.CityManager.GetBuild(Status.currentcity.ToUnityVector(), Status.LivingHouseId);
-
-                if (build != null)
-                {
-                    CurrentTask = new NPCTASK(NPCTasks.GoHome, build.transform.position);
-                    Go(CurrentTask.TaskPosition + new Vector3(+1, 0, -1));
-                    Debug.Log(CurrentTask.this_task.ToString());
-                }
-                else
-                {
-                    Game.CityManager.RemoveEntityFromWorld(Status.currentcity.ToUnityVector(), Status.Citzen_Id, this.gameObject);
-                }
-            }
         }
     }
 

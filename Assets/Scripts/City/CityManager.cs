@@ -2,15 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DarckNet;
 using UnityEngine;
 
 [System.Serializable]
 public class CityManager : MonoBehaviour
 {
     public Dictionary<Vector3, City> CurrentCitysLoaded = new Dictionary<Vector3, City>();
-    public List<Entity> EntitysSpawned = new List<Entity>();
-
+    public Dictionary<string,GameObject> EntitysSpawned = new Dictionary<string, GameObject>();
+    private float TimeTemp;
+    public float TimeUpdate = 10;
     void Awake()
     {
         Game.CityManager = this;
@@ -23,7 +23,59 @@ public class CityManager : MonoBehaviour
 
     void Update()
     {
-        
+        if (Time.time > TimeTemp + TimeUpdate)
+        {
+            foreach (var city in CurrentCitysLoaded.Values)
+            {
+                if (city.IsLoaded)
+                {
+                    foreach (var entity in city.LivingEntity.Values)
+                    {
+                        GameObject EntityWorldObject = GetCitzenObject(entity.Citzen_Id);
+
+                        if (entity.CurrentTask.this_task != NPCTasks.none)
+                        {
+                            if (!Game.TimeOfDay.IsDay)
+                            {
+                                CityBase build = Game.CityManager.GetBuild(entity.currentcity.ToUnityVector(), entity.LivingHouseId);
+
+                                if (build != null)
+                                {
+                                    Game.CityManager.UpdateEntityTask(new NPCTASK(NPCTasks.GoHome, new DarckNet.DataVector3(build.transform.position)), entity.currentcity.ToUnityVector(), entity.Citzen_Id);
+                                    EntityWorldObject.GetComponent<Vilanger>().Go(entity.CurrentTask.TaskPosition.ToUnityVector() + new Vector3(+1, 0, -1));
+                                }
+                                else
+                                {
+                                    Game.CityManager.RemoveEntityFromWorld(entity.currentcity.ToUnityVector(), entity.Citzen_Id, this.gameObject);
+                                }
+                            }
+                            else if (Game.TimeOfDay.IsDay)//If is day all entity exit to go work
+                            {
+                                if (!entity.IsOutSide)
+                                {
+                                    CityBase build = GetBuild(city.citypoint.ToUnityVector(), entity.LivingHouseId);
+
+                                    if (build != null)
+                                    {
+                                        entity.CurrentTask = new NPCTASK(NPCTasks.GoGetTask, city.hallpos);//When npc exit of house, after night, is need get new job
+                                        GameObject obj = SpawnNewEntity(entity, build.transform.position + new Vector3(+1, 0, -1));
+                                        obj.GetComponent<Vilanger>().Go(entity.CurrentTask.TaskPosition.ToUnityVector() + new Vector3(+1, 0 - 1));
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (Game.TimeOfDay.IsDay)
+                            {
+                                EntityWorldObject.GetComponent<Vilanger>().GetNewPostion();
+                            }
+                        }
+                    }
+                }
+            }
+            TimeTemp = Time.time;
+        }
     }
 
     public void AddCity(Vector3 point, Vector3 CityHall, bool havehall)
@@ -37,11 +89,10 @@ public class CityManager : MonoBehaviour
 
     public City GetCity(Vector3 cityPoint)
     {
-        if (CurrentCitysLoaded.ContainsKey(cityPoint))
+        if (CurrentCitysLoaded.TryGetValue(cityPoint, out City city))
         {
-            return CurrentCitysLoaded[cityPoint];
+            return city;
         }
-
         return null;
     }
 
@@ -60,15 +111,29 @@ public class CityManager : MonoBehaviour
         }
     }
 
-    public void WantInteract(Vector3 city, NPCTASK tasks, Vilanger entity)
+    public GameObject GetCitzenObject(string citzen_id)
+    {
+        if (EntitysSpawned.TryGetValue(citzen_id, out GameObject obj))
+        {
+            return obj;
+        }
+        else
+        {
+            Debug.LogError("Sorry This Npc isnt spawned on world");
+            return null;
+        }
+    }
+
+    public void WantInteract(Vector3 city, string citzen_id, Vilanger entity)
     {
         City current_city = GetCity(city);
+        CitzenCredential citzen = GetCitzenInfo(citzen_id, current_city);
         CityBase build = null;
-        string buildid = ((int)city.x + (int)city.y * (int)tasks.TaskPosition.x + (int)tasks.TaskPosition.z).ToString();
+        string buildid = ((int)city.x + (int)city.y * (int)citzen.CurrentTask.TaskPosition.x + (int)citzen.CurrentTask.TaskPosition.z).ToString();
 
         if (current_city.CityBuildings.TryGetValue(buildid, out build))
         {
-            switch (tasks.this_task)
+            switch (citzen.CurrentTask.this_task)
             {
                 case NPCTasks.GoGetTask:
                     build.WantInteract(entity);
@@ -83,25 +148,47 @@ public class CityManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Uhmm somthing is not right, we dont found your location... : " + tasks.TaskPosition.ToString());
+            Debug.LogError("Uhmm somthing is not right, we dont found your location... : " + citzen.CurrentTask.TaskPosition.ToString());
         }
     }
 
-    public void UpdatePositionStaus(Vector3 position, Vector3 city, string citzenid)
-    {
-        City currentcity = GetCity(city);
-        currentcity.LivingEntity[citzenid].WorldPostion = new DarckNet.DataVector3(position);
-    }
-
-    public void SpawnNewEntity(CitzenCredential status, Vector3 Position)
+    public GameObject SpawnNewEntity(CitzenCredential status, Vector3 Position)
     {
         GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/Villager/Villager"), Position, Quaternion.identity, Game.WorldGenerator.World_ID);
-        EntitysSpawned.Add(obj.GetComponent<Vilanger>());
-        obj.GetComponent<Vilanger>().Status = status;
+        EntitysSpawned.Add(status.Citzen_Id, obj);
+        obj.GetComponent<Vilanger>().ID = status.Citzen_Id;
+        obj.GetComponent<Vilanger>().CurrentCity = status.currentcity.ToUnityVector();
 
         status.IsOutSide = true;
         status.WorldPostion = new DarckNet.DataVector3(Position);
-       //Save();
+        return obj;
+    }
+
+    /// <summary>
+    /// Tile Spawn Entitys, if a entity is outside of his house the tile spawn him
+    /// </summary>
+    /// <param name="city_point"></param>
+    /// <param name="Tile"></param>
+    public void Tile_SpawnNewEntity(Vector3 city_point, Tile Tile)
+    {
+        City current_city = GetCity(city_point);
+
+        if (current_city != null)
+        {
+            Vector3 TilePosition = new Vector3(Tile.x, Tile.y, Tile.z);
+
+            foreach (var entitys in current_city.LivingEntity.Values)
+            {
+                if (entitys.IsOutSide)
+                {
+                    if (entitys.WorldPostion.Equals(TilePosition))
+                    {
+                        SpawnNewEntity(entitys, TilePosition);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -118,6 +205,7 @@ public class CityManager : MonoBehaviour
         if (currentcity.LivingEntity.TryGetValue(citzen_Id, out CitzenCredential entity))
         {
             entity.IsOutSide = false;
+            EntitysSpawned.Remove(citzen_Id);
             DarckNet.Network.Destroy(obj_entity);
             return true;
         }
@@ -146,6 +234,46 @@ public class CityManager : MonoBehaviour
             Currentcitty.haveblack = true;
         }
     }
+
+    #region CityDataBase/Manager
+    public CitzenCredential GetCitzenInfo(string citzen_id, Vector3 city)
+    {
+        City currentcity = GetCity(city);
+
+        if (currentcity != null)
+        {
+            if (currentcity.LivingEntity.TryGetValue(citzen_id, out CitzenCredential entity))
+            {
+                return entity;
+            }
+        }
+        return null;
+    }
+
+    public CitzenCredential GetCitzenInfo(string citzen_id, City city)
+    {
+        if (city.LivingEntity.TryGetValue(citzen_id, out CitzenCredential entity))
+        {
+            return entity;
+        }
+
+        return null;
+    }
+
+    public void UpdatePositionStaus(Vector3 position, Vector3 city, string citzenid)
+    {
+        City currentcity = GetCity(city);
+        currentcity.LivingEntity[citzenid].WorldPostion = new DarckNet.DataVector3((int)position.x, (int)position.y, (int)position.z);
+    }
+
+    public CitzenCredential UpdateEntityTask(NPCTASK taks, Vector3 city, string citzenid)
+    {
+        City currentcity = GetCity(city);
+        currentcity.LivingEntity[citzenid].CurrentTask = taks;
+
+        return currentcity.LivingEntity[citzenid];
+    }
+    #endregion
 
     #region Save/Load
     public void Save()
@@ -211,6 +339,8 @@ public class City
     public DarckNet.DataVector3 blackpos;
     public bool havehall;
     public bool haveblack;
+
+    public bool IsLoaded;
 
     public City(string city_Name, string city_ID, int max_polupation, EconomicType economic_Type, DarckNet.DataVector3 city_point, DarckNet.DataVector3 hall_pos, bool _havehall, bool _haveblack)
     {
@@ -310,10 +440,12 @@ public class CitzenCredential
     public int Charisma;//social factor of char
     public DarckNet.DataVector3 currentcity;
 
+    public NPCTASK CurrentTask = new NPCTASK(NPCTasks.none, DarckNet.DataVector3.zero);
+
     public bool IsOutSide;//Check if the entity is spawned on world
     public DarckNet.DataVector3 WorldPostion;//Position on world
 
-    public CitzenCredential(string _Name, string _Citzen_Id, string _LivingHouseId, DarckNet.DataVector3 _currentcity, int _Age, SexualType _Sexual, FamilyPostiton _Family_Postiton, VilagerVocation _Vocation, int _Agility, int _Tolerance, int _IQ, int _Luck, int _Charisma)
+    public CitzenCredential(string _Name, string _Citzen_Id, string _LivingHouseId, DarckNet.DataVector3 _currentcity, int _Age, SexualType _Sexual, FamilyPostiton _Family_Postiton, VilagerVocation _Vocation, int _Agility, int _Tolerance, int _IQ, int _Luck, int _Charisma, NPCTASK nPCTASK)
     {
         Name = _Name;
         Citzen_Id = _Citzen_Id;
@@ -330,6 +462,7 @@ public class CitzenCredential
         currentcity = _currentcity;
         IsOutSide = false;
         WorldPostion = DarckNet.DataVector3.zero;
+        CurrentTask = nPCTASK;
     }
 
     public void UpdateWorldValues(bool isoutside, DarckNet.DataVector3 _WorldPostion)
@@ -344,13 +477,14 @@ public class CitzenCredential
     }
 }
 
+[System.Serializable]
 public struct NPCTASK
 {
     public NPCTasks this_task;
-    public Vector3 TaskPosition;
+    public DarckNet.DataVector3 TaskPosition;
     
 
-    public NPCTASK(NPCTasks tasks, Vector3 pos)
+    public NPCTASK(NPCTasks tasks, DarckNet.DataVector3 pos)
     {
         this_task = tasks;
         TaskPosition = pos;

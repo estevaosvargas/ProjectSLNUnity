@@ -12,12 +12,14 @@ public class CityHall : CityBase
     public override void WantInteract(Entity entity)
     {
         Vilanger citzen = entity.GetComponent<Vilanger>();
-        City CurrentCity = Game.CityManager.GetCity(citzen.Status.currentcity.ToUnityVector());
+        City CurrentCity = Game.CityManager.GetCity(citzen.CurrentCity);
 
-        switch (citzen.Status.Vocation)
+        CitzenCredential status = Game.CityManager.GetCitzenInfo(citzen.ID, CurrentCity);
+
+        switch (status.Vocation)
         {
             case VilagerVocation.ferreiro:
-                citzen.SetNewTask(new NPCTASK(NPCTasks.BlackSmith, CurrentCity.blackpos.ToUnityVector()));
+                citzen.SetNewTask(new NPCTASK(NPCTasks.BlackSmith, CurrentCity.blackpos));
                 break;
             default:
                 citzen.SetNoneJob();

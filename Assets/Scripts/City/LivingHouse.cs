@@ -36,13 +36,13 @@ public class LivingHouse : CityBase
                         {
                             HaveFather = true;
                             SexualType sex_type = SexualType.Man;
-                            currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, Random.Range(28, 55), sex_type, FamilyPostiton.Father, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100), Random.Range(1, 100), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100)));
+                            currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, Random.Range(28, 55), sex_type, FamilyPostiton.Father, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100), Random.Range(1, 100), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100), new NPCTASK(NPCTasks.none, DarckNet.DataVector3.zero)));
                         }
                         else if (!HaveMother)
                         {
                             HaveMother = true;
                             SexualType sex_type = SexualType.Woman;
-                            currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, Random.Range(28, 55), sex_type, FamilyPostiton.Mother, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100), Random.Range(1, 100), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100)));
+                            currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, Random.Range(28, 55), sex_type, FamilyPostiton.Mother, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100), Random.Range(1, 100), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100), new NPCTASK(NPCTasks.none, DarckNet.DataVector3.zero)));
                         }
                         else
                         {
@@ -62,12 +62,12 @@ public class LivingHouse : CityBase
                                 {
                                     familyPostiton = FamilyPostiton.GrandMother;
                                 }
-                                currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, age, sex_type, familyPostiton, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100 / age), Random.Range(1, 100 / age), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100 * age)));
+                                currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, age, sex_type, familyPostiton, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100 / age), Random.Range(1, 100 / age), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100 * age), new NPCTASK(NPCTasks.none, DarckNet.DataVector3.zero)));
                             }
                             else if (age <= 25)
                             {
                                 familyPostiton = FamilyPostiton.Son;
-                                currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, age, sex_type, familyPostiton, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100 / age), Random.Range(1, 100 / age), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100 * age)));
+                                currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, age, sex_type, familyPostiton, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100 / age), Random.Range(1, 100 / age), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100 * age), new NPCTASK(NPCTasks.none, DarckNet.DataVector3.zero)));
                             }
                         }
                     }
@@ -77,13 +77,16 @@ public class LivingHouse : CityBase
                         SexualType sex_type = (SexualType)Random.Range(0, 3);
                         FamilyPostiton familyPostiton = FamilyPostiton.none;
 
-                        currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, age, sex_type, familyPostiton, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100 / age), Random.Range(1, 100 / age), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100 * age)));
+                        currentcity.LivingEntity.Add(CitzentId, new CitzenCredential(GetPersonName(sex_type), CitzentId, BuildId, citypoint, age, sex_type, familyPostiton, (VilagerVocation)Random.Range(1, 18), Random.Range(1, 100 / age), Random.Range(1, 100 / age), Random.Range(80, 200), Random.Range(1, 100), Random.Range(1, 100 * age), new NPCTASK(NPCTasks.none, DarckNet.DataVector3.zero)));
                     }
 
                     if (currentcity.LivingEntity.ContainsKey(CitzentId))//Cehck again the entity is sucessed add to city list
                     {
-                        Game.CityManager.SpawnNewEntity(currentcity.LivingEntity[CitzentId], SpawnPosition);
+                        GameObject obj = Game.CityManager.SpawnNewEntity(currentcity.LivingEntity[CitzentId], SpawnPosition);
                         currentcity.LivingEntity[CitzentId].IsOutSide = true;
+
+                        currentcity.LivingEntity[CitzentId].CurrentTask = new NPCTASK(NPCTasks.GoGetTask, currentcity.hallpos);
+                        obj.GetComponent<Vilanger>().Go(currentcity.hallpos.ToUnityVector() + new Vector3(+1, 0, -1));
                     }
                 }
             }
@@ -99,8 +102,11 @@ public class LivingHouse : CityBase
         {
             if (entity.LivingHouseId == BuildId)
             {
-                Game.CityManager.SpawnNewEntity(entity, entity.WorldPostion.ToUnityVector());
-                currentcity.LivingEntity[entity.Citzen_Id].IsOutSide = true;
+                if (entity.IsOutSide)
+                {
+                    GameObject obj = Game.CityManager.SpawnNewEntity(entity, entity.WorldPostion.ToUnityVector());
+                    currentcity.LivingEntity[entity.Citzen_Id].IsOutSide = true;
+                }
             }
         }
         base.LoadBuild();
@@ -110,7 +116,7 @@ public class LivingHouse : CityBase
     {
         Vilanger citzen = entity.GetComponent<Vilanger>();
 
-        Game.CityManager.RemoveEntityFromWorld(citzen.Status.currentcity.ToUnityVector(), citzen.Status.Citzen_Id, citzen.gameObject);
+        Game.CityManager.RemoveEntityFromWorld(citzen.CurrentCity, citzen.ID, citzen.gameObject);
         base.WantInteract(entity);
     }
 

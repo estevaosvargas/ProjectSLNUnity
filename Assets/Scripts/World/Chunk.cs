@@ -152,14 +152,12 @@ public class Chunk : MonoBehaviour
 
                 tiles[i, j].CityPoint = new Vector3((int)point.x, (int)point.y, 0);
 
+                Game.CityManager.Tile_SpawnNewEntity(tiles[i, j].CityPoint, tiles[i, j]);//Spawn the vilangers, in world, out side the buildings
+
                 tiles[i, j].SetUpTile(tiles[i, j]);
                 tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
 
-                if (Game.GameManager.SinglePlayer || DarckNet.Network.IsClient)
-                {
-                    
-                }
-                else
+                if (!Game.GameManager.SinglePlayer || !DarckNet.Network.IsClient)
                 {
                     tiles[i, j].IsServerTile = true;
                 }
@@ -408,6 +406,8 @@ public class Chunk : MonoBehaviour
                     string buildid = ((int)tile.CityPoint.x + (int)tile.CityPoint.y * tile.x + tile.z).ToString();
                     City Currentcitty = Game.CityManager.CurrentCitysLoaded[new Vector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0)];
 
+                    Currentcitty.IsLoaded = true;
+
                     PLACER_OBJ.GetComponent<CityBase>().BuildId = buildid;
                     PLACER_OBJ.GetComponent<CityBase>().citypoint = new DarckNet.DataVector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0);
 
@@ -542,7 +542,7 @@ public class Chunk : MonoBehaviour
             {
                 if (ai.GetComponent<Vilanger>())
                 {
-                    ai.GetComponent<Vilanger>().UpdateSituation();
+                    
                 }
             }
         }
