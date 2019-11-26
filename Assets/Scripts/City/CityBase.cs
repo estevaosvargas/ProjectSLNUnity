@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CityBase : MonoBehaviour
 {
     public string BuildId;
-    public DarckNet.DataVector3 citypoint;
+    public DataVector3 citypoint;
+    public DataVector3 BuildPosition;
+    public Placer BuildType = Placer.empty;
 
     private void OnDestroy()
     {
         City currentcity = Game.CityManager.GetCity(citypoint.ToUnityVector());
-        currentcity.CityBuildings.Remove(BuildId);
+        currentcity.CityBuildings[BuildId].Temp_objc = null;
 
-        if (currentcity.CityBuildings.Count <= 0)
-        {
-            currentcity.IsLoaded = false;
-            Debug.Log("This City : " + citypoint.ToString() + "Is not more loaded!");
-        }
+        Game.CityManager.UnloadCity(currentcity, BuildId);
 
         Debug.Log("This Build : " + BuildId + " Are Removed form city build list");
     }
@@ -42,12 +41,19 @@ public class CityBase : MonoBehaviour
 public class CityBaseSerialization
 {
     public string BuildId;
-    public DarckNet.DataVector3 citypoint;
+    public DataVector3 citypoint;
+    public DataVector3 BuildPosition;
+    public Placer BuildType = Placer.empty;
 
-    public CityBaseSerialization(string _BuildId, DarckNet.DataVector3 _citypoint)
+    [NonSerialized]
+    public CityBase Temp_objc;
+
+    public CityBaseSerialization(string _BuildId, DataVector3 _citypoint, DataVector3 _BuildPosition, Placer _BuildType)
     {
         BuildId = _BuildId;
         citypoint = _citypoint;
+        BuildPosition = _BuildPosition;
+        BuildType = _BuildType;
     }
 
     public static CityBaseSerialization[] CityBase(CityBase[] cityBase)
@@ -57,12 +63,8 @@ public class CityBaseSerialization
         {
             foreach (var serial in cityBase)
             {
-                cityserial.Add(new CityBaseSerialization(serial.BuildId, serial.citypoint));
+                cityserial.Add(new CityBaseSerialization(serial.BuildId, serial.citypoint, new DataVector3(serial.transform.position), serial.BuildType));
             }
-        }
-        else
-        {
-            
         }
 
         return cityserial.ToArray();

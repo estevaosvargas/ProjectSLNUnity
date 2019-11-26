@@ -275,7 +275,7 @@ public class GameManager : UIElements
 
         if (Time.time > timetemp + SaveUpdateTime)
         {
-            Game.CityManager.Save();
+            
             timetemp = Time.time;
         }
 

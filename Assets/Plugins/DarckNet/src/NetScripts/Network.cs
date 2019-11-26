@@ -1766,74 +1766,6 @@ namespace DarckNet
         public List<long> Players = new List<long>();
     }
 
-    /// <summary>
-    /// Used For Store Vector data, compatible with serialization
-    /// </summary>
-    [Serializable]
-    public struct DataVector3
-    {
-        public float x;
-        public float y;
-        public float z;
-
-        public static DataVector3 zero { get { return new DataVector3(0, 0, 0); } }
-        public static DataVector3 one { get { return new DataVector3(1, 1, 1); } }
-
-        public DataVector3(float X, float Y, float Z)
-        {
-            x = X;
-            y = Y;
-            z = Z;
-        }
-
-        public DataVector3(Vector3 vector)
-        {
-            x = vector.x;
-            y = vector.y;
-            z = vector.z;
-        }
-
-        /// <summary>
-        /// Tranfosrm the VectorData To unity Vector
-        /// </summary>
-        /// <returns></returns>
-        public Vector3 ToUnityVector()
-        {
-            return new Vector3(x, y, z);
-        }
-    }
-
-    [Serializable]
-    public struct DataVector3Int
-    {
-        public int x;
-        public int y;
-        public int z;
-
-        public DataVector3Int(float X, float Y, float Z)
-        {
-            x = (int)X;
-            y = (int)Y;
-            z = (int)Z;
-        }
-
-        public DataVector3Int(Vector3 vector)
-        {
-            x = (int)vector.x;
-            y = (int)vector.y;
-            z = (int)vector.z;
-        }
-
-        /// <summary>
-        /// Tranfosrm the VectorData To unity Vector
-        /// </summary>
-        /// <returns></returns>
-        public Vector3 ToUnityVector()
-        {
-            return new Vector3(x, y, z);
-        }
-    }
-
     public static class NetConfig
     {
         public static string SecretKey = "secret";
@@ -1930,6 +1862,83 @@ namespace DarckNet
         RequestStartData = 15
     }
 
+}
+
+/// <summary>
+/// Used For Store Vector data, compatible with serialization
+/// </summary>
+[Serializable]
+public struct DataVector3
+{
+    public float x;
+    public float y;
+    public float z;
+
+    public static DataVector3 zero { get { return new DataVector3(0, 0, 0); } }
+    public static DataVector3 one { get { return new DataVector3(1, 1, 1); } }
+
+    public DataVector3(float X, float Y, float Z)
+    {
+        x = X;
+        y = Y;
+        z = Z;
+    }
+
+    public DataVector3(Vector3 vector)
+    {
+        x = vector.x;
+        y = vector.y;
+        z = vector.z;
+    }
+
+    /// <summary>
+    /// Tranfosrm the VectorData To unity Vector
+    /// </summary>
+    /// <returns></returns>
+    public Vector3 ToUnityVector()
+    {
+        return new Vector3(x, y, z);
+    }
+
+    /// <summary>
+    /// Get Vector3Data formated in string
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "DataVector3 (" + x + ", " + y + ", " + z + ")";
+    }
+}
+
+[Serializable]
+public struct DataVector3Int
+{
+    public int x;
+    public int y;
+    public int z;
+
+    public DataVector3Int(float X, float Y, float Z)
+    {
+        x = (int)X;
+        y = (int)Y;
+        z = (int)Z;
+    }
+
+    public DataVector3Int(Vector3 vector)
+    {
+        x = (int)vector.x;
+        y = (int)vector.y;
+        z = (int)vector.z;
+    }
+
+    /// <summary>
+    /// Tranfosrm the VectorData To unity Vector
+    /// </summary>
+    /// <returns></returns>
+    public Vector3 ToUnityVector()
+    {
+        return new Vector3(x, y, z);
+    }
 }
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]

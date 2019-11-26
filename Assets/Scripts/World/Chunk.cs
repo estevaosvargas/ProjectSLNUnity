@@ -35,6 +35,8 @@ public class Chunk : MonoBehaviour
     private float timetemp2 = 0;
     public float TimeUpdate = 10;
 
+    public bool HaveAnyBuild = false;
+
     public Material DefaultTileMaterial;
     public Material DefaultTransMaterial;
 
@@ -76,6 +78,11 @@ public class Chunk : MonoBehaviour
             GenerateTilesLayer(tiles);
 
             Game.WorldGenerator.LoadNewChunks(this);
+
+            if (HaveAnyBuild)
+            {
+                SaveChunk();
+            }
         }
         else if (DarckNet.Network.IsServer)
         {
@@ -117,6 +124,11 @@ public class Chunk : MonoBehaviour
                     }
                     #endregion
                 }
+            }
+
+            if (HaveAnyBuild)
+            {
+                SaveChunk();
             }
         }
     }
@@ -372,6 +384,14 @@ public class Chunk : MonoBehaviour
             }
         }
 
+        foreach (var ai in Entitys.ToArray())
+        {
+            if (ai != null)
+            {
+                DarckNet.Network.Destroy(ai.gameObject);
+            }
+        }
+
         Game.WorldGenerator.ChunksList.Remove(this);
     }
 
@@ -395,7 +415,9 @@ public class Chunk : MonoBehaviour
             if (tile.PLACER_DATA != Placer.empty)
             {
                 Game.CityManager.AddCity(new Vector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0), Vector3.zero, false);
-                Game.CityManager.SetUpCityTile(tile, this);
+                string buildid = ((int)tile.CityPoint.x + (int)tile.CityPoint.y * tile.x + tile.z).ToString();
+
+                Game.CityManager.SetUpCityTile(tile, this, buildid);
 
                 GameObject PLACER_OBJ = Instantiate(Game.SpriteManager.Getplacerbyname(tile.PLACER_DATA.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
                 PLACER_OBJ.transform.SetParent(this.transform, true);
@@ -403,24 +425,27 @@ public class Chunk : MonoBehaviour
 
                 if (PLACER_OBJ.GetComponent<CityBase>())
                 {
-                    string buildid = ((int)tile.CityPoint.x + (int)tile.CityPoint.y * tile.x + tile.z).ToString();
                     City Currentcitty = Game.CityManager.CurrentCitysLoaded[new Vector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0)];
 
                     Currentcitty.IsLoaded = true;
 
                     PLACER_OBJ.GetComponent<CityBase>().BuildId = buildid;
-                    PLACER_OBJ.GetComponent<CityBase>().citypoint = new DarckNet.DataVector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0);
+                    PLACER_OBJ.GetComponent<CityBase>().citypoint = new DataVector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0);
 
                     if (!Currentcitty.CityBuildings.ContainsKey(buildid))
                     {
-                        Currentcitty.CityBuildings.Add(buildid, PLACER_OBJ.GetComponent<CityBase>());
+                        Currentcitty.CityBuildings.Add(buildid, new CityBaseSerialization(buildid, new DataVector3(tile.CityPoint), new DataVector3(tile.x, tile.y, tile.z), tile.PLACER_DATA));
+                        Currentcitty.CityBuildings[buildid].Temp_objc = PLACER_OBJ.GetComponent<CityBase>();
                         PLACER_OBJ.GetComponent<CityBase>().NewBuild();
                     }
                     else
                     {
-                        Currentcitty.CityBuildings[buildid] = PLACER_OBJ.GetComponent<CityBase>();
+                        Currentcitty.CityBuildings[buildid].Temp_objc = PLACER_OBJ.GetComponent<CityBase>();
+                        Currentcitty.CityBuildings[buildid].BuildType = tile.PLACER_DATA;
                         PLACER_OBJ.GetComponent<CityBase>().LoadBuild();
                     }
+
+                    HaveAnyBuild = true;
                 }
             }
         }
@@ -536,17 +561,6 @@ public class Chunk : MonoBehaviour
 
     public void UpdateChunk()
     {
-        foreach (var ai in Entitys.ToArray())
-        {
-            if (ai != null)
-            {
-                if (ai.GetComponent<Vilanger>())
-                {
-                    
-                }
-            }
-        }
-
         for (int i = 0; i < Size; i++)
         {
             for (int j = 0; j < Size; j++)

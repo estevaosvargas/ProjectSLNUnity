@@ -225,6 +225,13 @@ public enum CityType
     none, Camp, farm, bigfarm, smalltown, bigtown, portcity, turistcity
 }
 
+public enum BuildType
+{
+    none, LivingHouse, Market, Port, Wall, WatchTower,
+    ArchTower, BlackSmith, Church, Padeiro, Lenhador,
+    BlackMarket, WaterBuild, Açogeuiro, Celeiro, CityHall
+}
+
 public enum VilagerVocation
 {
     none, Guerreiro, Fazendeiro, açogueiro, lenhador, medico, engenheiro, bibliotecario, padre, guarda, mineiro, marinheiro, Vendedor, ferreiro

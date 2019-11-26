@@ -54,13 +54,13 @@ public class Vilanger : Pathfindingentity
 
     public void SetNewTask(NPCTASK newtask)
     {
-        Status = Game.CityManager.UpdateEntityTask(newtask, Status.currentcity.ToUnityVector(), Status.Citzen_Id);
-        Go(Status.CurrentTask.TaskPosition.ToUnityVector() + new Vector3(+1, 0 ,-1));
+        //Status = Game.CityManager.UpdateEntityTask(newtask, Status.currentcity.ToUnityVector(), Status.Citzen_Id);
+        //Go(Status.CurrentTask.TaskPosition.ToUnityVector() + new Vector3(+1, 0 ,-1));
     }
 
     public void SetNoneJob()
     {
-        Game.CityManager.UpdateEntityTask(new NPCTASK(NPCTasks.none, DarckNet.DataVector3.zero), Status.currentcity.ToUnityVector(), Status.Citzen_Id);
+        //Game.CityManager.UpdateEntityTask(new NPCTASK(NPCTasks.none, DarckNet.DataVector3.zero), Status.currentcity.ToUnityVector(), Status.Citzen_Id);
         GetNewPostion();
     }
 
@@ -176,6 +176,11 @@ public class Vilanger : Pathfindingentity
         ISVISIBLE = false;
         Anim.enabled = false;
         Game.Entity_viewing.Remove(this);
+    }
+
+    private void OnDestroy()
+    {
+        Game.CityManager.EntitysSpawned.Remove(ID);
     }
 
     [RPC]

@@ -20,8 +20,3 @@ public class VillagerBuild : MonoBehaviour
 
     }
 }
-
-public enum BuildType
-{
-    none, House, Market, Port, Wall, WatchTwoer, AttkTwoer, Smith, Igreja, Padeiro, Lenhador, BlackMarket, WaterBuild, Açogeuiro, Celeiro
-}

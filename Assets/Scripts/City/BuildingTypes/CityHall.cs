@@ -19,7 +19,7 @@ public class CityHall : CityBase
         switch (status.Vocation)
         {
             case VilagerVocation.ferreiro:
-                citzen.SetNewTask(new NPCTASK(NPCTasks.BlackSmith, CurrentCity.blackpos));
+                //citzen.SetNewTask(new NPCTASK(NPCTasks.BlackSmith, Game.CityManager.GetBuildType(CurrentCity, BuildType.CityHall)));
                 break;
             default:
                 citzen.SetNoneJob();
