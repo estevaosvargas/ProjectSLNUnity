@@ -42,6 +42,8 @@ public static class Biome
         {
             Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
 
+            tile.OwnedByCity = true;
+
             if (color == Game.Color("FF0000") || color == Game.Color("7F7F7F"))//Somthing Is On this tile
             {
                 return TypeBlock.Dirt;
@@ -348,6 +350,8 @@ public static class Biome
         if ((int)sample2 == 1)
         {
             Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
+
+            tile.OwnedByCity = true;
 
             if (color == Game.Color("FF0000") || color == Game.Color("7F7F7F"))//Somthing Is On this tile
             {
@@ -697,6 +701,8 @@ public static class Biome
         if ((int)sample2 == 1)
         {
             Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
+
+            tile.OwnedByCity = true;
 
             if (color == Game.Color("FF0000") || color == Game.Color("7F7F7F"))//Somthing Is On this tile
             {

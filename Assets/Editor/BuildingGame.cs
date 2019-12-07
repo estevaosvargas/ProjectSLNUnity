@@ -70,7 +70,19 @@ public class BuildingGame : MonoBehaviour {
     [MenuItem("BuildClient/ClientLinux", false, 3)]
     private static void NewMenuOption3()
     {
-        Debug.Log("Client Version For Linux is not Ready");
+        //chanageClient();
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown-Linux-64/ProjectEvilyn.exe", BuildTarget.StandaloneLinux64, BuildOptions.None);
+        BuildSummary summary = report.summary;
+
+        if (summary.result == BuildResult.Succeeded)
+        {
+            Debug.Log("Build succeeded: " + summary.totalSize + " bytes" + " | Type: StandaloneLinux64");
+        }
+
+        if (summary.result == BuildResult.Failed)
+        {
+            Debug.Log("Build failed");
+        }
     }
 
     [MenuItem("BuildClient/ClientAndroid", false, 3)]

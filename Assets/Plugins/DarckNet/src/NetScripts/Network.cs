@@ -10,6 +10,7 @@ using System.IO.Compression;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Net.Sockets;
 
 namespace DarckNet
 {
@@ -512,6 +513,19 @@ namespace DarckNet
         public static void Destroy(GameObject Object, float time)
         {
             Destroy(Object);
+        }
+
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new System.Exception("No network adapters with an IPv4 address in the system!");
         }
 
         /// <summary>

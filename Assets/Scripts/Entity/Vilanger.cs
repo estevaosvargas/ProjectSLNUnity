@@ -10,13 +10,14 @@ public class Vilanger : Pathfindingentity
     [System.NonSerialized] public Animator Anim;
     [System.NonSerialized] public float Distance = 10;
     public Vector2 LastPosition;
-    private SpriteRenderer Render;
     public Chunk Cuerrent_Chunk;
     private Vector3 velocity;
     public float damping = 1;
     public bool RunAway = false;
     public int direction = 0;
     public bool ISVISIBLE = false;
+
+    public MeshRenderer meshRenderer;
 
     public int X;
     public int Z;
@@ -41,14 +42,13 @@ public class Vilanger : Pathfindingentity
     {
         body = GetComponent<Rigidbody2D>();
         Anim = GetComponent<Animator>();
-        Render = GetComponent<SpriteRenderer>();
 
         Net = GetComponent<NetWorkView>();
         Cuerrent_Chunk = Game.WorldGenerator.GetChunkAt((int)transform.position.x, (int)transform.position.z);
         Cuerrent_Chunk.Entitys.Add(this);
 
-        GetComponent<SpriteRenderer>().color = new Color(Random.value, Random.value, Random.value, 1);
-        GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.z;
+        GetComponent<MeshRenderer>().material.color = new Color(Random.value, Random.value, Random.value, 1);
+        GetComponent<MeshRenderer>().sortingOrder = -(int)transform.position.z;
         //transform.position = new Vector3(transform.position.x, transform.position.y, 0.05f);
     }
 
@@ -111,32 +111,50 @@ public class Vilanger : Pathfindingentity
                 var fwdDotProduct = Vector3.Dot(transform.forward, velocity);
                 var upDotProduct = Vector3.Dot(transform.up, velocity);
                 var rightDotProduct = Vector3.Dot(transform.right, velocity);
-                Render.sortingOrder = -(int)transform.position.z;
 
-                Vector3 velocityVector = new Vector3(rightDotProduct, upDotProduct, fwdDotProduct);
+                Vector3 velocityVector = new Vector3(rightDotProduct * 2, upDotProduct * 2, fwdDotProduct * 2);
 
                 if (velocityVector.x >= 1f)
                 {
                     Anim.SetInteger("Walk", 1);
-                    Anim.SetFloat("X", 0);
+
+                    Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                    Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                    transform.LookAt(new Vector3(transform.position.x + velocityVector.x, 0, transform.position.z + velocityVector.z));
+
                     direction = 0;
                 }
                 else if (velocityVector.x <= -1)
                 {
                     Anim.SetInteger("Walk", 1);
-                    Anim.SetFloat("X", 180);
+
+                    Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                    Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                    transform.LookAt(new Vector3(transform.position.x + velocityVector.x, 0, transform.position.z + velocityVector.z));
+
                     direction = 3;
                 }
                 else if (velocityVector.z >= 1)
                 {
                     Anim.SetInteger("Walk", 1);
-                    Anim.SetFloat("X", 90);
-                    direction = 1;
+
+                    Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                    Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                    transform.LookAt(new Vector3(transform.position.x + velocityVector.x, 0, transform.position.z + velocityVector.z));
+
                 }
                 else if (velocityVector.z <= -1)
                 {
                     Anim.SetInteger("Walk", 1);
-                    Anim.SetFloat("X", -90);
+
+                    Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                    Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                    transform.LookAt(new Vector3(transform.position.x + velocityVector.x, 0, transform.position.z + velocityVector.z));
+
                     direction = 2;
                 }
                 else
@@ -192,8 +210,8 @@ public class Vilanger : Pathfindingentity
     [RPC]
     void RPC_BORN(string name)
     {
-        GetComponent<SpriteRenderer>().color = new Color(Random.value, Random.value, Random.value, 1);
-        GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.z;
+        GetComponent<MeshRenderer>().material.color = new Color(Random.value, Random.value, Random.value, 1);
+        GetComponent<MeshRenderer>().sortingOrder = -(int)transform.position.z;
         //transform.position = new Vector3(transform.position.x, transform.position.y, 0.05f);
 
         transform.Rotate(new Vector3(-87.839f, 0, 0), Space.Self);

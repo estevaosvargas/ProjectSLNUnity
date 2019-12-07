@@ -34,7 +34,7 @@ namespace Lidgren.Network
 				{
 					return null;
 				}
-				return IPAddress.Parse(UnityEngine.Network.player.externalIP);
+				return IPAddress.Parse(DarckNet.Network.GetLocalIPAddress());
 			}
 			catch // Catch Access Denied errors
 			{

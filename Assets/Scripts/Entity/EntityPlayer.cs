@@ -26,8 +26,7 @@ public class EntityPlayer : EntityLife
     public int FootParticleCount = 1;
     public int pathsize = 20;
 
-    protected SpriteRenderer SPRITERENDER;
-    protected SpriteRenderer SPRITERENDERHAND;
+
     private Vector3 lastposition;
     private int LastPostitionIntX;
     private int LastPostitionIntZ;
@@ -42,8 +41,6 @@ public class EntityPlayer : EntityLife
 
         if (Net.isMine)
         {
-            SPRITERENDER = GetComponent<SpriteRenderer>();
-            SPRITERENDERHAND = HandRoot.GetComponentInChildren<SpriteRenderer>();
             //Game.TileAnimations.StartTileAnimation();//disabel for now
 
             if (Game.WorldGenerator != null)
@@ -136,41 +133,6 @@ public class EntityPlayer : EntityLife
         }
     }
 
-    #region DirectionsMethods
-    public void Direita()
-    {
-        if (NetStats.swiming == false)
-        {
-            NetStats.handhide = false;
-            NetStats.HandLayer = SPRITERENDER.sortingOrder;
-        }
-    }
-    public void Esquerda()
-    {
-        if (NetStats.swiming == false)
-        {
-            NetStats.HandLayer = SPRITERENDER.sortingOrder - 1;
-            NetStats.handhide = false;
-        }
-    }
-    public void Cima()
-    {
-        if (NetStats.swiming == false)
-        {
-            NetStats.handhide = true;
-            NetStats.HandLayer = SPRITERENDER.sortingOrder;
-        }
-    }
-    public void Baixo()
-    {
-        if (NetStats.swiming == false)
-        {
-            NetStats.handhide = false;
-            NetStats.HandLayer = SPRITERENDER.sortingOrder;
-        }
-    }
-    #endregion
-
     void Update()
     {
         if (IsVisible)//Do the Client Update, and Server.
@@ -186,7 +148,6 @@ public class EntityPlayer : EntityLife
                         Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxisRaw("Horizontal"), 0, CrossPlatformInputManager.GetAxisRaw("Vertical"));
 
                         body.velocity = movement.normalized * Speed;
-                        SPRITERENDER.sortingOrder = -(int)transform.position.z;
 
                         if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
                         {
@@ -226,51 +187,51 @@ public class EntityPlayer : EntityLife
                             HandRoot.gameObject.SetActive(true);
                         }
 
-                        if (SPRITERENDERHAND)
-                        {
-                            SPRITERENDERHAND.sortingOrder = NetStats.HandLayer;
-                        }
-
                         if (Input.GetAxis("Horizontal") > 0f)
                         {
-                            Direita();
                             Anim.SetInteger("Walk", 1);
 
                             Anim.SetFloat("X", Input.GetAxis("Horizontal"));
                             Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                            transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
 
                             NetStats.walking = true;
                             NetStats.Side = 0;
                         }
                         else if (Input.GetAxis("Horizontal")  < 0f)
                         {
-                            Esquerda();
                             Anim.SetInteger("Walk", 1);
 
                             Anim.SetFloat("X", Input.GetAxis("Horizontal"));
                             Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                            transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
+
 
                             NetStats.walking = true;
                             NetStats.Side = 1;
                         }
                         else if (Input.GetAxis("Vertical") > 0)
                         {
-                            Cima();
                             Anim.SetInteger("Walk", 1);
 
                             Anim.SetFloat("X", Input.GetAxis("Horizontal"));
                             Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                            transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
 
                             NetStats.walking = true;
                             NetStats.Side = 2;
                         }
                         else if (Input.GetAxis("Vertical") < 0)
                         {
-                            Baixo();
                             Anim.SetInteger("Walk", 1);
 
                             Anim.SetFloat("X", Input.GetAxis("Horizontal"));
                             Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                            transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
 
                             NetStats.walking = true;
                             NetStats.Side = 3;

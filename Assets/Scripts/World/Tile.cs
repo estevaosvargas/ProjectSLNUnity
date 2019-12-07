@@ -39,6 +39,9 @@ public class Tile
     [NonSerialized]
     public Vector3 CityPoint;
 
+    [NonSerialized]
+    public bool OwnedByCity;
+
     /// <summary>
     /// If AI Can Walk.
     /// </summary>
@@ -248,7 +251,7 @@ public class Tile
         PLACER_DATA = type;
         Vector3 vec = Get.PlacerData(type);
 
-        for (int xx = 0; xx < (int)vec.x; xx++)
+        /*for (int xx = 0; xx < (int)vec.x; xx++)
         {
             for (int zz = 0; zz < (int)vec.z; zz++)
             {
@@ -256,7 +259,8 @@ public class Tile
 
                 tile_other.OcupedByOther = true;
             }
-        }
+        }*/
+
         if (Get.GetPlacerEntity(PLACER_DATA))
         {
             GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.Getplacerbyname(PLACER_DATA.ToString()), new Vector3(x, y, z), Quaternion.identity, Game.WorldGenerator.World_ID);

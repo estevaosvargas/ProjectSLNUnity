@@ -1476,6 +1476,7 @@ public static class Game
     public static SpriteManager SpriteManager;
     public static InventoryGUI InventoryGUI;
     public static CityManager CityManager;
+    public static NPCConvercetion NPCTALK;
 
     public static List<Entity> Entity_viewing = new List<Entity>();
 
