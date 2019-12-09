@@ -378,7 +378,7 @@ public class GameManager : UIElements
     [RPC]
     void ChunkData(Vector2 pos, string data)
     {
-        TileSave[] tile = SaveWorld.DeserializeString(data);
+        TileSave[] tile = SaveWorld.DeserializeString<TileSave>(data);
 
         Game.WorldGenerator.ClientMakeChunkAt((int)pos.x, (int)pos.y, tile);
     }
@@ -745,7 +745,7 @@ public class SaveWorld
         }
     }
 
-    public static string SerializeDataToString(TileSave[] staticOptions)
+    public static string SerializeDataToString<T>(T[] staticOptions)
     {
         string playerToJason = CompressString.StringCompressor.CompressString(JsonHelper.ToJson(staticOptions));
 
@@ -754,13 +754,13 @@ public class SaveWorld
         return playerToJason;
     }
 
-    public static TileSave[] DeserializeString(string data)
+    public static T[] DeserializeString<T>(string data)
     {
         string datadescompres = CompressString.StringCompressor.DecompressString(data);
 
         //Debug.Log("Tamanho : " + datadescompres);
 
-        TileSave[] tiles = JsonHelper.FromJson<TileSave>(datadescompres);
+        T[] tiles = JsonHelper.FromJson<T>(datadescompres);
 
         return tiles;
     }
