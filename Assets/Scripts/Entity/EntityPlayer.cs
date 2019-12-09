@@ -126,7 +126,7 @@ public class EntityPlayer : EntityLife
                 main.startColor = Color.white;
             }
         }
-
+        
         if (MiniMapManager.manager)
         {
             //MiniMapManager.manager.UpdateMap();
@@ -255,7 +255,7 @@ public class EntityPlayer : EntityLife
             }
             else///Server Update
             {
-
+                
             }
         }
     }

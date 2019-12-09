@@ -91,14 +91,18 @@ MonoBehaviour:
   IsAlive: 0
   LastAttacker: 
   target: {x: 0, y: 0, z: 0}
-  speed: 1
+  speed: 2
   HaveTarget: 0
+  CurrentPoint: {x: 0, y: 0, z: 0}
+  Following: 0
   LastPosition: {x: 0, y: 0}
   Cuerrent_Chunk: {fileID: 0}
   damping: 1
   RunAway: 0
   direction: 0
-  ISVISIBLE: 0
+  ISVISIBLE: 1
+  velocityVector: {x: 0, y: 0, z: 0}
+  meshRenderer: {fileID: 1267874643698157628}
   X: 0
   Z: 0
   ID: 
@@ -2707,10 +2711,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4283254774385208772}
     m_Modifications:
-    - target: {fileID: 1074234140496492, guid: f10dd878fdf6a4c48b1a22672db21929, type: 3}
-      propertyPath: m_Name
-      value: PT_Medieval_Waraxe_01
-      objectReference: {fileID: 0}
     - target: {fileID: 4017193373314964, guid: f10dd878fdf6a4c48b1a22672db21929, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.011
@@ -2754,6 +2754,10 @@ PrefabInstance:
     - target: {fileID: 4017193373314964, guid: f10dd878fdf6a4c48b1a22672db21929, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -89.969
+      objectReference: {fileID: 0}
+    - target: {fileID: 1074234140496492, guid: f10dd878fdf6a4c48b1a22672db21929, type: 3}
+      propertyPath: m_Name
+      value: PT_Medieval_Waraxe_01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f10dd878fdf6a4c48b1a22672db21929, type: 3}

@@ -92,12 +92,12 @@ public class GameManager : UIElements
         AudioSourceGlobal = GetComponent<AudioSource>();
         Game.AudioManager.LoadAudio();
 		ItchAPi.StartItchApi();
-
+        
         if (!Directory.Exists(Path.GetFullPath("Saves./")))
         {
             Directory.CreateDirectory(Path.GetFullPath("Saves./"));
         }
-
+        
         WorldInfo info = SaveWorld.LoadInfo("World");
         if (info != null)
         {
@@ -122,7 +122,7 @@ public class GameManager : UIElements
     public void SetUpSinglePlayer(string seed)
     {
         SaveWorld.CreateDerectorys();
-
+        
         if (seed != "")
         {
             Seed = int.Parse(seed);

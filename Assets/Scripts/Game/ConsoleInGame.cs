@@ -247,9 +247,9 @@ public class ConsoleInGame : MonoBehaviour
             #region Comand
             if (value.Length == 2)
             {
-                Game.TimeOfDay.TimeH = float.Parse(value[1]) / 24;
+                Game.TimeOfDay.timeOfDay = float.Parse(value[1]);
                 Game.TimeOfDay.LastUpdateTime();
-                AddInRoolGUI("Time Set for : " + Game.TimeOfDay.TimeH, true, Color.white);
+                AddInRoolGUI("Time Set for : " + Game.TimeOfDay.timeOfDay, true, Color.white);
             }
             else
             {

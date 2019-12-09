@@ -14,6 +14,8 @@ public class Pathfindingentity : EntityLife
     public float speed = 20;
     public bool HaveTarget = false;
     Vector3[] path = new Vector3[0] { };
+    public Vector3 CurrentPoint;
+    public bool Following;
     Vector3 Targetnode;
 
     public void OnDrawGizmos()
@@ -83,6 +85,7 @@ public class Pathfindingentity : EntityLife
         float currentWaypointZ = path[0].z;
 
         bool follow = true;
+        Following = true;
         int targetIndex = 0;
         while (follow)
         {
@@ -96,13 +99,14 @@ public class Pathfindingentity : EntityLife
                 currentWaypointX = path[targetIndex].x;
                 currentWaypointZ = path[targetIndex].z;
             }
-
+            CurrentPoint = new Vector3(currentWaypointX, 0, currentWaypointZ);
             transform.position = Vector3.MoveTowards(transform.position, new Vector3(currentWaypointX, 0, currentWaypointZ), speed * Time.deltaTime);
             yield return null;
 
             if (new Vector3(transform.position.x, 0, transform.position.z) == Targetnode)
             {
                 follow = false;
+                Following = false;
             }
         }
     }

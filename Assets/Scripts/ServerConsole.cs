@@ -46,9 +46,9 @@ public class ServerConsole : MonoBehaviour
         if (string.Equals(textarray[0], "SetTime", StringComparison.OrdinalIgnoreCase))
         {
             #region Comand
-            Game.TimeOfDay.TimeH = float.Parse(textarray[1]) / 24;
+            Game.TimeOfDay.timeOfDay = float.Parse(textarray[1]);
             Game.TimeOfDay.LastUpdateTime();
-            Debug.Log("Time Set for : " + Game.TimeOfDay.TimeH);
+            Debug.Log("Time Set for : " + Game.TimeOfDay.timeOfDay);
             #endregion
         }
         else if (string.Equals(textarray[0], "Stop", StringComparison.OrdinalIgnoreCase))
