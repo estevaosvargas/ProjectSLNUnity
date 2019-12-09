@@ -35,68 +35,71 @@ public class DumbEntity : EntityLife
     {
         if (ISVISIBLE)
         {
-            float distances = Vector3.Distance(transform.position, target.position);
+            if (target)
+            {
+                float distances = Vector3.Distance(transform.position, target.position);
 
-            var fwdDotProduct = Vector3.Dot(transform.forward, velocity);
-            var upDotProduct = Vector3.Dot(transform.up, velocity);
-            var rightDotProduct = Vector3.Dot(transform.right, velocity);
+                var fwdDotProduct = Vector3.Dot(transform.forward, velocity);
+                var upDotProduct = Vector3.Dot(transform.up, velocity);
+                var rightDotProduct = Vector3.Dot(transform.right, velocity);
 
-            Vector3 velocityVector = new Vector3(rightDotProduct * 2, upDotProduct * 2, fwdDotProduct * 2);
+                Vector3 velocityVector = new Vector3(rightDotProduct * 2, upDotProduct * 2, fwdDotProduct * 2);
 
-            if (velocityVector.x >= 1f)
-            {
-                Anim.SetInteger("Walk", 1);
-                Anim.SetFloat("X", 0);
-            }
-            else if (velocityVector.x <= -1)
-            {
-                Anim.SetInteger("Walk", 1);
-                Anim.SetFloat("X", 180);
-            }
-            else if (velocityVector.z >= 1)
-            {
-                Anim.SetInteger("Walk", 1);
-                Anim.SetFloat("X", 90);
-            }
-            else if (velocityVector.z <= -1)
-            {
-                Anim.SetInteger("Walk", 1);
-                Anim.SetFloat("X", -90);
-            }
-            else
-            {
-                Anim.SetInteger("Walk", 0);
-            }
-
-            if (distances <= Distance)
-            {
-                GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.y;
-
-                if (distances <= 1)
+                if (velocityVector.x >= 1f)
                 {
-                    body.velocity = new Vector3(0, 0, 0) * damping;
+                    Anim.SetInteger("Walk", 1);
+                    Anim.SetFloat("X", 0);
+                }
+                else if (velocityVector.x <= -1)
+                {
+                    Anim.SetInteger("Walk", 1);
+                    Anim.SetFloat("X", 180);
+                }
+                else if (velocityVector.z >= 1)
+                {
+                    Anim.SetInteger("Walk", 1);
+                    Anim.SetFloat("X", 90);
+                }
+                else if (velocityVector.z <= -1)
+                {
+                    Anim.SetInteger("Walk", 1);
+                    Anim.SetFloat("X", -90);
                 }
                 else
                 {
-                    if (RunAway == true)
-                    {
-                        Vector3 displacement = target.position - transform.position;
-                        displacement = displacement.normalized;
+                    Anim.SetInteger("Walk", 0);
+                }
 
-                        body.velocity = displacement * -damping;
+                if (distances <= Distance)
+                {
+                    GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.y;
+
+                    if (distances <= 1)
+                    {
+                        body.velocity = new Vector3(0, 0, 0) * damping;
                     }
                     else
                     {
-                        Vector3 displacement = target.position - transform.position;
-                        displacement = displacement.normalized;
+                        if (RunAway == true)
+                        {
+                            Vector3 displacement = target.position - transform.position;
+                            displacement = displacement.normalized;
 
-                        body.velocity = displacement * damping;
+                            body.velocity = displacement * -damping;
+                        }
+                        else
+                        {
+                            Vector3 displacement = target.position - transform.position;
+                            displacement = displacement.normalized;
+
+                            body.velocity = displacement * damping;
+                        }
                     }
                 }
-            }
-            else
-            {
-                body.velocity = new Vector3(0, 0, 0) * damping;
+                else
+                {
+                    body.velocity = new Vector3(0, 0, 0) * damping;
+                }
             }
         }
     }

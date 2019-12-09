@@ -30,6 +30,10 @@ public class EntityPlayer : EntityLife
     private Vector3 lastposition;
     private int LastPostitionIntX;
     private int LastPostitionIntZ;
+    private float timestep;
+
+    public bool IsOnDamageArea;
+    public int DamageRate;
 
     void Start()
     {
@@ -145,6 +149,15 @@ public class EntityPlayer : EntityLife
                     if (Game.GameManager.MultiPlayer || Game.GameManager.SinglePlayer)
                     {
                         Status.UpdateStatus();
+
+                        if (IsOnDamageArea)
+                        {
+                            if (Time.time > timestep + DamageRate)
+                            {
+                                DoDamage(5, Game.GameManager.CurrentPlayer.UserID, true);
+                                timestep = Time.time;
+                            }
+                        }
                         Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxisRaw("Horizontal"), 0, CrossPlatformInputManager.GetAxisRaw("Vertical"));
 
                         body.velocity = movement.normalized * Speed;
@@ -311,6 +324,10 @@ public class EntityPlayer : EntityLife
             {
                 //collision.GetComponent<Pathfindingentity>().Run(transform);
             }
+            else if (collision.tag == "DamageArea")
+            {
+                IsOnDamageArea = true;
+            }
         }
     }
 
@@ -331,6 +348,10 @@ public class EntityPlayer : EntityLife
             else if (collision.tag == "Entity")
             {
                 //collision.GetComponent<Pathfindingentity>().Stop();
+            }
+            else if (collision.tag == "DamageArea")
+            {
+                IsOnDamageArea = false;
             }
         }
     }

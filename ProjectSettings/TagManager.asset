@@ -12,6 +12,7 @@ TagManager:
   - City
   - Bau
   - Entity
+  - DamageArea
   layers:
   - Default
   - TransparentFX

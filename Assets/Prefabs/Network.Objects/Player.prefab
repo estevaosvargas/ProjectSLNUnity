@@ -5351,6 +5351,8 @@ MonoBehaviour:
   IsMe: 0
   FootParticleCount: 5
   pathsize: 20
+  IsOnDamageArea: 0
+  DamageRate: 1
 --- !u!114 &114067372861037966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8247,10 +8249,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8636937685268282446}
     m_Modifications:
-    - target: {fileID: 1074234140496492, guid: f10dd878fdf6a4c48b1a22672db21929, type: 3}
-      propertyPath: m_Name
-      value: PT_Medieval_Waraxe_01
-      objectReference: {fileID: 0}
     - target: {fileID: 4017193373314964, guid: f10dd878fdf6a4c48b1a22672db21929, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.011
@@ -8294,6 +8292,10 @@ PrefabInstance:
     - target: {fileID: 4017193373314964, guid: f10dd878fdf6a4c48b1a22672db21929, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -89.969
+      objectReference: {fileID: 0}
+    - target: {fileID: 1074234140496492, guid: f10dd878fdf6a4c48b1a22672db21929, type: 3}
+      propertyPath: m_Name
+      value: PT_Medieval_Waraxe_01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f10dd878fdf6a4c48b1a22672db21929, type: 3}
