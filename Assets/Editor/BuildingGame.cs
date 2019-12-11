@@ -71,7 +71,7 @@ public class BuildingGame : MonoBehaviour {
     private static void NewMenuOption3()
     {
         //chanageClient();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown-Linux-64/ProjectEvilyn.exe", BuildTarget.StandaloneLinux64, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "/home/estevao/Desktop/2DTopDown-Linux-64/ProjectEvilyn", BuildTarget.StandaloneLinux64, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)

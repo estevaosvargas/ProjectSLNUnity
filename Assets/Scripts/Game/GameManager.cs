@@ -240,7 +240,7 @@ public class GameManager : UIElements
         DarckNet.Network.Update();
 
         #region CursorPointer
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        /*if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             if (Mtype == MouseType.none)
             {
@@ -270,7 +270,7 @@ public class GameManager : UIElements
             {
                 Cursor.SetCursor(MousePointer.cursor1_Chat, MousePointer.hotSpot, MousePointer.cursorMode);
             }
-        }
+        }*/
         #endregion
 
         if (Time.time > timetemp + SaveUpdateTime)
@@ -719,9 +719,9 @@ public class SaveWorld
             Directory.CreateDirectory(Path.GetFullPath("Saves./"));
         }
 
-        if (!Directory.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName)))
+        if (!Directory.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName+ "./")))
         {
-            Directory.CreateDirectory(Path.GetFullPath("Saves./" + Game.GameManager.WorldName));
+            Directory.CreateDirectory(Path.GetFullPath("Saves./" + Game.GameManager.WorldName+ "./"));
         }
 
         if (!Directory.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./chunks./")))

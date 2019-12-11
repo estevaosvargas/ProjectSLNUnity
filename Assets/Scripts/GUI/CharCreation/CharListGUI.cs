@@ -253,17 +253,17 @@ public class CharListGUI : MonoBehaviour
     public static void SaveInfo(WorldList[] info)
     {
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Path.GetFullPath("Saves./") + "SavesData.data");
+        FileStream file = File.Create(Path.GetFullPath("Saves./SavesData.data"));
 
         bf.Serialize(file, info);
         file.Close();
     }
     public static WorldList[] LoadInfo()
     {
-        if (File.Exists(Path.GetFullPath("Saves./") + "SavesData.data"))
+        if (File.Exists(Path.GetFullPath("Saves./SavesData.data")))
         {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Path.GetFullPath("Saves./") + "SavesData.data", FileMode.Open);
+            FileStream file = File.Open(Path.GetFullPath("Saves./SavesData.data"), FileMode.Open);
 
             WorldList[] dataa = (WorldList[])bf.Deserialize(file);
             file.Close();
@@ -276,7 +276,7 @@ public class CharListGUI : MonoBehaviour
 
     public static void DeleteWorldFolder(string worldName)
     {
-        Directory.Delete(Path.GetFullPath("Saves/" + worldName), true);
+        Directory.Delete(Path.GetFullPath("Saves./" + worldName + "./"), true);
     }
     #endregion
 

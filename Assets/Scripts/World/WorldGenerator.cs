@@ -196,7 +196,10 @@ public class WorldGenerator : DCallBack
 
                     foreach (var entity in chuks.Entitys.ToArray())
                     {
-                        DarckNet.Network.Destroy(entity.gameObject);
+                        if (entity.gameObject)
+                        {
+                            DarckNet.Network.Destroy(entity.gameObject);
+                        }
                     }
 
                     chunkMap.Remove(chuks.transform.position);
