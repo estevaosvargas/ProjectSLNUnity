@@ -7,322 +7,113 @@ using UnityEngine;
 [System.Serializable]
 public class CityManager : MonoBehaviour
 {
-    public Dictionary<Vector3, City> CurrentCitysLoaded = new Dictionary<Vector3, City>();
-    public List<City> CurrentCitysLoaded_Debug = new List<City>();
-    public Dictionary<string,GameObject> EntitysSpawned = new Dictionary<string, GameObject>();
-    private float TimeTemp;
-    public float TimeUpdate = 10;
-    void Awake()
+    public Dictionary<DataVector3, City> CityList = new Dictionary<DataVector3, City>();
+
+    private void Awake()
     {
         Game.CityManager = this;
     }
 
-    public void UnloadCity(City currentcity, string buildId)
+    public void SetUpCity(DataVector3 city)
     {
-        bool IsLoaded = false;
-
-        foreach (var build in currentcity.CityBuildings.Values)
+        if (!CityList.ContainsKey(city))
         {
-            if (build.Temp_objc != null)
+            if (!LoadCity(city))
             {
-                IsLoaded = true;
-                break;
+                CityList.Add(city, new City("City Teste", city.GetHashCode(), 9999, (EconomicType)UnityEngine.Random.Range(0, 5), city));
+                SaveCity(city);
             }
         }
-
-        currentcity.IsLoaded = IsLoaded;
     }
 
-    void Start()
+    public City GetCity(DataVector3 city)
     {
-        
-    }
-
-    void Update()
-    {
-        if (Time.time > TimeTemp + TimeUpdate)
+        if (CityList.TryGetValue(city, out City curretncity))
         {
-            if (Game.GameManager.SinglePlayer || DarckNet.Network.IsServer)
-            {
-                Debug.Log("CITY TICK");
-
-                foreach (var city in CurrentCitysLoaded.Values)
-                {
-                    if (city.IsLoaded)
-                    {
-                        foreach (var entity in city.LivingEntity.Values)
-                        {
-                            GameObject EntityWorldObject = GetCitzenObject(entity.Citzen_Id);
-                            City currentcity = GetCity(entity.currentcity.ToUnityVector());
-
-                            if (EntityWorldObject != null)
-                            {
-                                if (!Game.TimeOfDay.IsDay)
-                                {
-                                    CityBase build = Game.CityManager.GetBuild(entity.currentcity.ToUnityVector(), entity.LivingHouseId);
-
-                                    if (build != null)
-                                    {
-                                        Game.CityManager.UpdateEntityTask(new NPCTASK(NPCTasks.GoHome, new DataVector3(build.transform.position)), entity.currentcity.ToUnityVector(), entity.Citzen_Id);
-                                        EntityWorldObject.GetComponent<Vilanger>().Go(entity.CurrentTask.TaskPosition.ToUnityVector() + new Vector3(+1, 0, -1));
-                                    }
-                                    else
-                                    {
-                                        Game.CityManager.RemoveEntityFromWorld(entity.currentcity.ToUnityVector(), entity.Citzen_Id, this.gameObject);
-                                    }
-                                }
-                                else if (Game.TimeOfDay.IsDay)
-                                {
-                                    EntityWorldObject.GetComponent<Vilanger>().GetNewPostion();
-                                }
-                            }
-                            else//if the entity is not in world
-                            {
-                                if (Game.TimeOfDay.IsDay)//If is day all entity exit to go work
-                                {
-                                    if (!entity.IsOutSide)
-                                    {
-                                        CityBase build = GetBuild(city.citypoint.ToUnityVector(), entity.LivingHouseId);
-
-                                        if (build != null)
-                                        {
-                                            Game.CityManager.UpdateEntityTask(new NPCTASK(NPCTasks.none, DataVector3.zero), entity.currentcity.ToUnityVector(), entity.Citzen_Id);
-                                            GameObject obj = SpawnNewEntity(entity, build.transform.position + new Vector3(+1, 0, -1));
-                                            obj.GetComponent<Vilanger>().GetNewPostion();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        Debug.Log("CITY_UPDATE : CityIsLoad");
-                    }
-                }
-                Save();//save all citys in disk
-            }
-            TimeTemp = Time.time;
-        }
-    }
-
-    public void AddCity(Vector3 point, Vector3 CityHall, bool havehall)
-    {
-        if (!CurrentCitysLoaded.ContainsKey(point))
-        {
-            CurrentCitysLoaded.Add(point, new City(("Testing City " + point).GetHashCode().ToString(), ("Testing City " + point).GetHashCode().ToString(), 150, (EconomicType)UnityEngine.Random.Range(0, 5), new DataVector3(point)));
-            Save();
-        }
-    }
-
-    public City GetCity(Vector3 cityPoint)
-    {
-        if (CurrentCitysLoaded.TryGetValue(cityPoint, out City city))
-        {
-            return city;
-        }
-        return null;
-    }
-
-    public CityBase GetBuild(Vector3 city, string buildid)
-    {
-        City current_city = GetCity(city);
-
-        if (current_city.CityBuildings.TryGetValue(buildid, out CityBaseSerialization build))
-        {
-            return build.Temp_objc;
+            return curretncity;
         }
         else
         {
+            Debug.Log("Sorry This City Don't Exits!");
             return null;
         }
     }
 
-    public GameObject GetCitzenObject(string citzen_id)
+    public CitzenCredential GetEntity(DataVector3 city, string CitzendId)
     {
-        if (EntitysSpawned.TryGetValue(citzen_id, out GameObject obj))
+        City Currentcity = GetCity(city);
+
+        if (Currentcity != null)
         {
-            return obj;
+            if (Currentcity.LivingEntity.TryGetValue(CitzendId, out CitzenCredential citzen))
+            {
+                return citzen;
+            }
         }
+
         return null;
     }
 
-    public void WantInteract(Vector3 city, string citzen_id, Vilanger entity)
+    public CitzenCredential GetEntity(City city, string CitzendId)
     {
-        City current_city = GetCity(city);
-        CitzenCredential citzen = GetCitzenInfo(citzen_id, current_city);
-        CityBaseSerialization build = null;
-        string buildid = ((int)city.x + (int)city.y * (int)citzen.CurrentTask.TaskPosition.x + (int)citzen.CurrentTask.TaskPosition.z).ToString();
+        if (city.LivingEntity.TryGetValue(CitzendId, out CitzenCredential citzen))
+        {
+            return citzen;
+        }
 
-        if (current_city.CityBuildings.TryGetValue(buildid, out build))
-        {
-            switch (citzen.CurrentTask.this_task)
-            {
-                case NPCTasks.GoGetTask:
-                    build.Temp_objc.WantInteract(entity);
-                    break;
-                case NPCTasks.GoHome:
-                    build.Temp_objc.WantInteract(entity);
-                    break;
-                case NPCTasks.EnterInBuild:
-                    build.Temp_objc.WantInteract(entity);
-                    break;
-            }
-        }
-        else
-        {
-            Debug.LogError("Uhmm somthing is not right, we dont found your location... : " + citzen.CurrentTask.TaskPosition.ToString());
-        }
+        return null;
     }
 
-    public GameObject SpawnNewEntity(CitzenCredential status, Vector3 Position)
+    public GameObject SpawnNewEntity(CitzenCredential citzenCredential, Vector3 spawnPosition)
     {
-        GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/Villager/Villager"), Position, Quaternion.identity, Game.WorldGenerator.World_ID);
-        EntitysSpawned.Add(status.Citzen_Id, obj);
-        obj.GetComponent<Vilanger>().ID = status.Citzen_Id;
-        obj.GetComponent<Vilanger>().CurrentCity = status.currentcity.ToUnityVector();
+        GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/Villager"), spawnPosition, Quaternion.identity, Game.WorldGenerator.World_ID);
 
-        status.IsOutSide = true;
-        status.WorldPostion = new DataVector3(Position);
+        Vilanger villanger = obj.GetComponent<Vilanger>();
+
+        villanger.ID = citzenCredential.Citzen_Id;
+        villanger.CurrentCity = citzenCredential.currentcity;
+        villanger.PrefabName = "Villager";
         return obj;
     }
 
-    /// <summary>
-    /// Tile Spawn Entitys, if a entity is outside of his house the tile spawn him
-    /// </summary>
-    /// <param name="city_point"></param>
-    /// <param name="Tile"></param>
-    public void Tile_SpawnNewEntity(Vector3 city_point, Tile Tile)
+    public void RemoveEntityFromWorld(DataVector3 currentCity, string iD, GameObject gameObject)
     {
-        City current_city = GetCity(city_point);
-
-        if (current_city != null)
-        {
-            Vector3 TilePosition = new Vector3(Tile.x, Tile.y, Tile.z);
-
-            foreach (var entitys in current_city.LivingEntity.Values)
-            {
-                if (entitys.IsOutSide)
-                {
-                    if (entitys.WorldPostion.ToUnityVector() == TilePosition)
-                    {
-                        SpawnNewEntity(entitys, TilePosition);
-                        break;
-                    }
-                }
-            }
-        }
+        DarckNet.Network.Destroy(gameObject);
     }
 
-    /// <summary>
-    /// Remove a Entity from world.
-    /// </summary>
-    /// <param name="city"></param>
-    /// <param name="citzen_Id"></param>
-    /// <param name="obj_entity"></param>
-    /// <returns></returns>
-    public bool RemoveEntityFromWorld(Vector3 city, string citzen_Id, GameObject obj_entity)
+    #region LoadSave
+    public bool LoadCity(DataVector3 city)
     {
-        City currentcity = GetCity(city);
+        CitySave save = SaveWorld.LoadCity(city.GetHashCode().ToString());
 
-        if (currentcity.LivingEntity.TryGetValue(citzen_Id, out CitzenCredential entity))
+        if (save != null)
         {
-            entity.IsOutSide = false;
-            EntitysSpawned.Remove(citzen_Id);
-            DarckNet.Network.Destroy(obj_entity);
+            CityList.Add(save.citypoint, new City(save));
             return true;
         }
-        else
-        {
-            Debug.LogError("Sorry this entity isnt in world!");
-            return false;
-        }
+
+        return false;
     }
 
-    public void SetUpCityTile(Tile tile, Chunk currentchunk, string buildid)
+    public void SaveCity(DataVector3 city)
     {
-        City Currentcitty = Game.CityManager.CurrentCitysLoaded[new Vector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0)];
-        DataVector3 vec = new DataVector3(tile.x, tile.y, tile.z);
-
-        if (!Currentcitty.BuildingType.Contains(Placer.CityHall) && tile.PLACER_DATA != Placer.CityHall)
-        {
-            tile.PLACER_DATA = Placer.CityHall;
-            Currentcitty.BuildingType.Add(Placer.CityHall);
-        }
-        else if (!Currentcitty.BuildingType.Contains(Placer.BlackSmith) && tile.PLACER_DATA != Placer.BlackSmith)
-        {
-            tile.PLACER_DATA = Placer.BlackSmith;
-            Currentcitty.BuildingType.Add(Placer.BlackSmith);
-        }
-    }
-
-    #region CityDataBase/Manager
-    public CitzenCredential GetCitzenInfo(string citzen_id, Vector3 city)
-    {
-        City currentcity = GetCity(city);
-
-        if (currentcity != null)
-        {
-            if (currentcity.LivingEntity.TryGetValue(citzen_id, out CitzenCredential entity))
-            {
-                return entity;
-            }
-        }
-        return null;
-    }
-
-    public CitzenCredential GetCitzenInfo(string citzen_id, City city)
-    {
-        if (city.LivingEntity.TryGetValue(citzen_id, out CitzenCredential entity))
-        {
-            return entity;
-        }
-
-        return null;
-    }
-
-    public void UpdatePositionStaus(Vector3 position, Vector3 city, string citzenid)
-    {
-        City currentcity = GetCity(city);
-        currentcity.LivingEntity[citzenid].WorldPostion = new DataVector3((int)position.x, (int)position.y, (int)position.z);
-    }
-
-    public CitzenCredential UpdateEntityTask(NPCTASK taks, Vector3 city, string citzenid)
-    {
-        City currentcity = GetCity(city);
-        currentcity.LivingEntity[citzenid].CurrentTask = taks;
-
-        return currentcity.LivingEntity[citzenid];
+        SaveWorld.SaveCity(new CitySave(GetCity(city)), city.GetHashCode().ToString());
     }
     #endregion
+}
 
-    #region Save/Load
-    public void Save()
+[System.Serializable]
+public class CityDataBase
+{
+    public static void UpdateEntityTask(NPCTASK nPCTASK, DataVector3 city, string citzen_Id)
     {
-        if (DarckNet.Network.IsServer || Game.GameManager.SinglePlayer)
-        {
-            List<CitySave> citySaves = new List<CitySave>();
-            foreach (var itemcity in CurrentCitysLoaded.Values.ToArray())
-            {
-                citySaves.Add(new CitySave(itemcity.CityName, itemcity.CityId, itemcity.MaxPopulation, itemcity.economicType, itemcity.citypoint, itemcity.LivingEntity.Values.ToArray(), itemcity.CityBuildings.Values.ToArray()));
-            }
+        CitzenCredential citzen = Game.CityManager.GetEntity(city, citzen_Id);
 
-            SaveWorld.SaveCity(citySaves.ToArray(), "citys");
+        if (citzen != null)
+        {
+            citzen.CurrentTask = nPCTASK;
         }
     }
-
-    public void Load()
-    {
-        CitySave[] cityarray = SaveWorld.LoadCity("citys");
-
-        if (cityarray.Length > 0)
-        {
-            foreach (var itemcity in cityarray)
-            {
-                CurrentCitysLoaded.Add(new Vector3(itemcity.citypoint.x, itemcity.citypoint.y, 0), new City(itemcity.CityName, itemcity.CityId, itemcity.MaxPopulation, itemcity.economicType, itemcity.citypoint, itemcity.LivingEntity, itemcity.buildbase));
-                CurrentCitysLoaded_Debug.Add(new City(itemcity.CityName, itemcity.CityId, itemcity.MaxPopulation, itemcity.economicType, itemcity.citypoint, itemcity.LivingEntity, itemcity.buildbase));
-                Debug.Log(itemcity.CityId);
-            }
-        }
-    }
-    #endregion
 }
 
 [System.Serializable]
@@ -337,16 +128,15 @@ public class CityStatus
 {
     public int WorldPopularidade = 0;
     public int Agrssive = 0;
-    
 }
 
 [System.Serializable]
 public class City
 {
-    public string CityName = "";
-    public string CityId = "";
-    public int Population = 0;
-    public int MaxPopulation = 10;
+    public string CityName;
+    public int CityId;
+    public int Population;
+    public int MaxPopulation;
     public EconomicType economicType;
     public CityStatus cityStatus;
 
@@ -354,11 +144,12 @@ public class City
 
     public Dictionary<string, CityBaseSerialization> CityBuildings = new Dictionary<string, CityBaseSerialization>();
     public Dictionary<string, CitzenCredential> LivingEntity = new Dictionary<string, CitzenCredential>();
+    public Dictionary<DataVector3, CitzenCredential> OutSide = new Dictionary<DataVector3, CitzenCredential>();
 
     public DataVector3 citypoint;
     public bool IsLoaded;
 
-    public City(string city_Name, string city_ID, int max_polupation, EconomicType economic_Type, DataVector3 city_point)
+    public City(string city_Name, int city_ID, int max_polupation, EconomicType economic_Type, DataVector3 city_point)
     {
         CityName = city_Name;
         CityId = city_ID;
@@ -367,34 +158,30 @@ public class City
         citypoint = city_point;
     }
 
-    /// <summary>
-    /// Used for loading save files
-    /// </summary>
-    /// <param name="city_Name"></param>
-    /// <param name="city_ID"></param>
-    /// <param name="max_polupation"></param>
-    /// <param name="economic_Type"></param>
-    /// <param name="city_point"></param>
-    /// <param name="livingentitys"></param>
-    public City(string city_Name, string city_ID, int max_polupation, EconomicType economic_Type, DataVector3 city_point, CitzenCredential[] livingentitys, CityBaseSerialization[] _citybases)
+    public City(CitySave Save)
     {
-        CityName = city_Name;
-        CityId = city_ID;
-        MaxPopulation = max_polupation;
-        economicType = economic_Type;
-        citypoint = city_point;
+        CityName = Save.CityName;
+        CityId = Save.CityId;
+        Population = Save.Population;
+        MaxPopulation = Save.MaxPopulation;
+        economicType = Save.economicType;
+        cityStatus = Save.cityStatus;
+        citypoint = Save.citypoint;
 
-        foreach (var Citzen in livingentitys)
-        {
-            LivingEntity.Add(Citzen.Citzen_Id, Citzen);
-        }
-
-        foreach (var build in _citybases)
+        foreach (var build in Save.buildbase)
         {
             CityBuildings.Add(build.BuildId, build);
-            if (build.BuildType != Placer.MainBuild2)
+        }
+
+        foreach (var entity in Save.LivingEntity)
+        {
+            if (!entity.IsOutSide)
             {
-                BuildingType.Add(build.BuildType);
+                LivingEntity.Add(entity.Citzen_Id, entity);
+            }
+            else
+            {
+                OutSide.Add(entity.WorldPostion, entity);
             }
         }
     }
@@ -403,10 +190,10 @@ public class City
 [System.Serializable]
 public class CitySave
 {
-    public string CityName = "";
-    public string CityId = "";
-    public int Population = 0;
-    public int MaxPopulation = 10;
+    public string CityName;
+    public int CityId;
+    public int Population;
+    public int MaxPopulation;
     public EconomicType economicType;
     public CityStatus cityStatus;
 
@@ -415,17 +202,17 @@ public class CitySave
 
     public DataVector3 citypoint;
 
-    public CitySave(string city_Name, string city_ID, int max_polupation, EconomicType economic_Type, DataVector3 city_point, CitzenCredential[] _LivingEntity, CityBaseSerialization[] _buildbase)
+    public CitySave(City city)
     {
-        CityName = city_Name;
-        CityId = city_ID;
-        MaxPopulation = max_polupation;
-        economicType = economic_Type;
+        CityName = city.CityName;
+        CityId = city.CityId;
+        MaxPopulation = city.Population;
+        economicType = city.economicType;
 
-        citypoint = city_point;
+        citypoint = city.citypoint;
 
-        LivingEntity = _LivingEntity;
-        buildbase = _buildbase;
+        LivingEntity = city.LivingEntity.Values.ToArray();
+        buildbase = city.CityBuildings.Values.ToArray();
     }
 }
 

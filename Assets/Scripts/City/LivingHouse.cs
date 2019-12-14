@@ -17,7 +17,7 @@ public class LivingHouse : CityBase
     {
         Debug.Log("NewHouse : " + BuildId);
 
-        City currentcity = Game.CityManager.GetCity(citypoint.ToUnityVector());
+        City currentcity = Game.CityManager.GetCity(citypoint);
         SpawnPosition = new Vector3(SpawnPosition.x + transform.position.x, SpawnPosition.y + transform.position.y, SpawnPosition.z + transform.position.z);
         int amount_entity = Random.Range(1, 5);
         FamilyHouse = System.Convert.ToBoolean(Random.Range(0, 2));
@@ -89,24 +89,6 @@ public class LivingHouse : CityBase
             }
         }
         base.NewBuild();
-    }
-
-    public override void LoadBuild()
-    {
-        /*City currentcity = Game.CityManager.GetCity(citypoint.ToUnityVector());
-        SpawnPosition = new Vector3(SpawnPosition.x + transform.position.x, SpawnPosition.y + transform.position.y, SpawnPosition.z + transform.position.z);
-        foreach (var entity in currentcity.LivingEntity.Values)
-        {
-            if (entity.LivingHouseId == BuildId)
-            {
-                if (entity.IsOutSide)
-                {
-                    GameObject obj = Game.CityManager.SpawnNewEntity(entity, entity.WorldPostion.ToUnityVector());
-                    currentcity.LivingEntity[entity.Citzen_Id].IsOutSide = true;
-                }
-            }
-        }*/
-        base.LoadBuild();
     }
 
     public override void WantInteract(Entity entity)

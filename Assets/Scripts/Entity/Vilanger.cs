@@ -22,8 +22,11 @@ public class Vilanger : Pathfindingentity
     public int X;
     public int Z;
 
-    public string ID;
-    public Vector3 CurrentCity;
+    public DataVector3 CurrentCity;
+    private float timestep;
+    public float UpdateRate = 20;
+
+    private EntitySave Save;
 
     public void GetVocation()
     {
@@ -49,6 +52,9 @@ public class Vilanger : Pathfindingentity
 
         meshRenderer.material.color = new Color(Random.value, Random.value, Random.value, 1);
         meshRenderer.sortingOrder = -(int)transform.position.z;
+
+        Save = new EntitySave(this);
+
         //transform.position = new Vector3(transform.position.x, transform.position.y, 0.05f);
     }
 
@@ -60,7 +66,7 @@ public class Vilanger : Pathfindingentity
 
     public void SetNoneJob()
     {
-        //Game.CityManager.UpdateEntityTask(new NPCTASK(NPCTasks.none, DarckNet.DataVector3.zero), Status.currentcity.ToUnityVector(), Status.Citzen_Id);
+        CityDataBase.UpdateEntityTask(new NPCTASK(NPCTasks.none, DataVector3.zero), CurrentCity, ID);
         GetNewPostion();
     }
 
@@ -73,20 +79,26 @@ public class Vilanger : Pathfindingentity
     {
         if (DarckNet.Network.IsServer || Game.GameManager.SinglePlayer)
         {
-            if (new Vector3(transform.position.x, transform.position.y, transform.position.z) == new Vector3(target.x, target.y, target.z))
+            if (Time.time > timestep + UpdateRate)//Some Update With Rate/Time
             {
-                if (HaveTarget)
-                {
-                    Game.CityManager.WantInteract(CurrentCity, ID, this);
-                    Stop();
-                }
+                GetNewPostion();
+                timestep = Time.time;
             }
 
             if ((int)transform.position.x != X || (int)transform.position.z != Z)
             {
+                if (new Vector3(transform.position.x, transform.position.y, transform.position.z) == new Vector3(target.x, target.y, target.z))
+                {
+                    if (HaveTarget)
+                    {
+                        //Game.CityManager.WantInteract(CurrentCity, ID, this);
+                        Stop();
+                    }
+                }
+
                 Chunk chunk = Game.WorldGenerator.GetChunkAt((int)transform.position.x, (int)transform.position.z);
 
-                Game.CityManager.UpdatePositionStaus(transform.position, CurrentCity, ID);
+                //Game.CityManager.UpdatePositionStaus(transform.position, CurrentCity, ID);
 
                 if (chunk != null)
                 {
@@ -94,6 +106,7 @@ public class Vilanger : Pathfindingentity
                     {
                         Chunk lastchunk = Cuerrent_Chunk;
                         lastchunk.Entitys.Remove(this);
+
                         Cuerrent_Chunk = chunk;
                         Cuerrent_Chunk.Entitys.Add(this);
                     }
@@ -108,14 +121,6 @@ public class Vilanger : Pathfindingentity
         {
             if (ISVISIBLE)
             {
-                var fwdDotProduct = Vector3.Dot(transform.forward, velocity) ;
-                var upDotProduct = Vector3.Dot(transform.up, velocity);
-                var rightDotProduct = Vector3.Dot(transform.right, velocity);
-
-                velocityVector = new Vector3(rightDotProduct, upDotProduct, fwdDotProduct);
-
-                //velocityVector.Normalize();
-
                 Anim.SetFloat("X", 0);
                 Anim.SetFloat("Y", 0);
 
@@ -166,7 +171,7 @@ public class Vilanger : Pathfindingentity
 
     private void OnDestroy()
     {
-        Game.CityManager.EntitysSpawned.Remove(ID);
+        ///Game.CityManager.EntitysSpawned.Remove(ID);
     }
 
     [RPC]

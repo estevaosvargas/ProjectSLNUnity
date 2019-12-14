@@ -13,12 +13,7 @@ public class CityBase : MonoBehaviour
 
     private void OnDestroy()
     {
-        City currentcity = Game.CityManager.GetCity(citypoint.ToUnityVector());
-        currentcity.CityBuildings[BuildId].Temp_objc = null;
 
-        Game.CityManager.UnloadCity(currentcity, BuildId);
-
-        Debug.Log("This Build : " + BuildId + " Are Removed form city build list");
     }
 
     public virtual void WantInteract(Entity entity)

@@ -30,14 +30,14 @@ public class Tile
     public bool Emessive = false;
     public bool OcupedByOther = false;
 
-    public object InsideTile;
+    //public object InsideTile;
 
     public int Hora;
     public int Dia = 1;
     public int Mes = 1;
 
     [NonSerialized]
-    public Vector3 CityPoint;
+    public DataVector3 CityPoint;
 
     [NonSerialized]
     public bool OwnedByCity;
@@ -107,20 +107,6 @@ public class Tile
 
     }
 
-    public Tile(TileSave tile, ChunkInfo ChunkInfo)
-    {
-        TileChunk = ChunkInfo;
-        x = tile.x;
-        z = tile.z;
-        type = tile.type;
-        typego = tile.typego;
-        PLACER_DATA = tile.placer;
-        IsColider = tile.IsColider;
-        Emessive = tile.Emessive;
-        ConnecyToNightboors = tile.ConnecyToNightboors;
-        TileBiome = tile.Biomeofthis;
-    }
-
     public Tile(int x, int y, TypeBlock Type, ChunkInfo ChunkInfo)
     {
         TileChunk = ChunkInfo;
@@ -168,7 +154,7 @@ public class Tile
 
                 sample2 *= 10;
 
-                PerlinSetType(SetUpBiome(x, z, this, sample, sample2));
+                PerlinSetType(SetUpBiome(x, z, sample, sample2));
             }
             else if (sample > 0.01f)
             {
@@ -379,7 +365,7 @@ public class Tile
     }
 
     //Valus to determine whear what biome is on the positions
-    public TypeBlock SetUpBiome(int x, int z, Tile tile, float sample, float sample2)
+    public TypeBlock SetUpBiome(int x, int z, float sample, float sample2)
     {
         if ((int)sample2 == 0)
         {
@@ -567,20 +553,4 @@ public class Tile
             }
         }
     }
-}
-
-[System.Serializable]
-public class TileSave
-{
-    public TypeBlock type;
-    public Placer placer;
-    public TakeGO typego;
-    public bool ConnecyToNightboors = false;
-    public bool IsColider = false;
-    public bool Ocuped = false;
-    public int x;
-    public int z;
-    public BiomeType Biomeofthis;
-    public bool HaveHosue = false;
-    public bool Emessive = false;
 }

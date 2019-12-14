@@ -378,7 +378,7 @@ public class GameManager : UIElements
     [RPC]
     void ChunkData(Vector2 pos, string data)
     {
-        TileSave[] tile = SaveWorld.DeserializeString<TileSave>(data);
+        Tile[] tile = SaveWorld.DeserializeString<Tile>(data);
 
         Game.WorldGenerator.ClientMakeChunkAt((int)pos.x, (int)pos.y, tile);
     }
@@ -660,6 +660,8 @@ public class EntityLife : Entity
 public class Entity : MonoBehaviour
 {
     public NetWorkView Net;
+    public string PrefabName;
+    public string ID;
 
     private void Awake()
     {
@@ -691,6 +693,21 @@ public class Entity : MonoBehaviour
     public virtual void Awakeoverride()
     {
 
+    }
+}
+
+[System.Serializable]
+public class EntitySave
+{
+    public string PrefabName;
+    public string ID;
+    public DataVector3 Position;
+
+    public EntitySave(Entity entity)
+    {
+        ID = entity.ID;
+        PrefabName = entity.PrefabName;
+        Position = new DataVector3(entity.transform.position);
     }
 }
 
@@ -766,23 +783,22 @@ public class SaveWorld
     }
 
     #region ChunkSave
-    public static void Save(Tile[,] tile, string filename)
+    public static void Save(ChunkSerializable tile, string filename)
     {
-
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Create(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + filename + ".chunkdata"));
 
         bf.Serialize(file, tile);
         file.Close();
     }
-    public static Tile[,] Load(string filename)
+    public static ChunkSerializable Load(string filename)
     {
         if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + filename + ".chunkdata")))
         {
             BinaryFormatter bf = new BinaryFormatter();
             FileStream file = File.Open(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./" + "chunks./"  + filename + ".chunkdata"), FileMode.Open);
 
-            Tile[,] dataa = (Tile[,])bf.Deserialize(file);
+            ChunkSerializable dataa = (ChunkSerializable)bf.Deserialize(file);
             file.Close();
 
             return dataa;
@@ -793,7 +809,7 @@ public class SaveWorld
     #endregion
 
     #region City
-    public static void SaveCity(CitySave[] info, string filename)
+    public static void SaveCity(CitySave info, string filename)
     {
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Create(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./city./" + filename + ".city"));
@@ -802,20 +818,20 @@ public class SaveWorld
         file.Close();
     }
 
-    public static CitySave[] LoadCity(string filename)
+    public static CitySave LoadCity(string filename)
     {
         if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./city./" + filename + ".city")))
         {
             BinaryFormatter bf = new BinaryFormatter();
             FileStream file = File.Open(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./city./" + filename + ".city"), FileMode.Open);
 
-            CitySave[] dataa = (CitySave[])bf.Deserialize(file);
+            CitySave dataa = (CitySave)bf.Deserialize(file);
             file.Close();
 
             return dataa;
         }
 
-        return new CitySave[0] { };
+        return null;
     }
     #endregion
 

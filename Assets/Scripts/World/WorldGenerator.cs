@@ -37,8 +37,6 @@ public class WorldGenerator : DCallBack
         chunkMap = new Dictionary<Vector3, Chunk>();
         ClientchunkMap = new Dictionary<Vector3, bool>();
 
-        Game.CityManager.Load();
-
         if (DarckNet.Network.IsServer)
         {
             DarckNet.Network.Instantiate(SUN, Vector3.zero, Quaternion.identity, World_ID);
@@ -196,7 +194,7 @@ public class WorldGenerator : DCallBack
 
                     foreach (var entity in chuks.Entitys.ToArray())
                     {
-                        if (entity.gameObject)
+                        if (entity != null)
                         {
                             DarckNet.Network.Destroy(entity.gameObject);
                         }
@@ -322,7 +320,7 @@ public class WorldGenerator : DCallBack
         }
     }
 
-    public void ClientMakeChunkAt(int x, int z, TileSave[] tile)
+    public void ClientMakeChunkAt(int x, int z, Tile[] tile)
     {
         x = Mathf.FloorToInt(x / (float)Chunk.Size) * Chunk.Size;
         z = Mathf.FloorToInt(z / (float)Chunk.Size) * Chunk.Size;
@@ -335,7 +333,7 @@ public class WorldGenerator : DCallBack
         }
     }
 
-    public TileSave[] ServerMakeChunkAt(int x, int z, long unique)
+    public Tile[] ServerMakeChunkAt(int x, int z, long unique)
     {
         x = Mathf.FloorToInt(x / (float)Chunk.Size) * Chunk.Size;
        z = Mathf.FloorToInt(z / (float)Chunk.Size) * Chunk.Size;
@@ -352,7 +350,7 @@ public class WorldGenerator : DCallBack
         }
         else
         {
-            return chunkMap[new Vector3(x, 0, z)].Tiles_Save.ToArray();
+            return chunkMap[new Vector3(x, 0, z)].tilelist.ToArray();
         }
     }
 

@@ -26,7 +26,6 @@ public class Chunk : MonoBehaviour
     public List<Tile> tilelist = new List<Tile>();
 
     public List<Entity> Entitys = new List<Entity>();
-    public List<TileSave> Tiles_Save = new List<TileSave>();
     public List<long> Players = new List<long>();
     public Dictionary<Tile, GameObject> TransTile = new Dictionary<Tile, GameObject>();
     Dictionary<Tile, GameObject> tileGOmap;
@@ -36,6 +35,7 @@ public class Chunk : MonoBehaviour
     public float TimeUpdate = 10;
 
     public bool HaveAnyBuild = false;
+    public bool AsSave = false;
 
     public Material DefaultTileMaterial;
     public Material DefaultTransMaterial;
@@ -133,7 +133,7 @@ public class Chunk : MonoBehaviour
         }
     }
 
-    public TileSave[] MakeChunk()
+    public Tile[] MakeChunk()
     {
         tileGOmap = new Dictionary<Tile, GameObject>();
         tiles = new Tile[Size, Size];
@@ -142,7 +142,9 @@ public class Chunk : MonoBehaviour
 
         if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + Game.WorldGenerator.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z) + ".chunkdata"))
         {
-            tiles = SaveWorld.Load(Game.WorldGenerator.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z);
+            ChunkSerializable chunkloaded = SaveWorld.Load(Game.WorldGenerator.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z);
+            tiles = chunkloaded.tiles;
+            AsSave = true;
             havesave = true;
         }
 
@@ -162,9 +164,12 @@ public class Chunk : MonoBehaviour
 
                 Vector3 point = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.WorldGenerator.Seed, false).GetPoint(tiles[i, j].x, tiles[i, j].z, 0);
 
-                tiles[i, j].CityPoint = new Vector3((int)point.x, (int)point.y, 0);
+                tiles[i, j].CityPoint = new DataVector3((int)point.x, (int)point.y, 0);
 
-                Game.CityManager.Tile_SpawnNewEntity(tiles[i, j].CityPoint, tiles[i, j]);//Spawn the vilangers, in world, out side the buildings
+                if (tiles[i, j].OwnedByCity)
+                {
+                    Game.CityManager.SetUpCity(tiles[i, j].CityPoint);//Spawn the vilangers, in world, out side the buildings
+                }
 
                 tiles[i, j].SetUpTile(tiles[i, j]);
                 tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
@@ -175,6 +180,7 @@ public class Chunk : MonoBehaviour
                 }
 
                 //Set Up Tree OBject
+                SpawnCityEntity(tiles[i, j]);
                 SetupObjects(tiles[i, j]);
                 SetUpTileTree(tiles[i, j]);
 
@@ -188,26 +194,12 @@ public class Chunk : MonoBehaviour
 
                 //OnTileTypeChange(tiles[i, j]);
                 //TileTransitionChange(tiles[i, j]);
-
-                TileSave tilesa = new TileSave();
-                tilesa.x = tiles[i, j].x;
-                tilesa.z = tiles[i, j].z;
-                tilesa.type = tiles[i, j].type;
-                tilesa.placer = tiles[i, j].PLACER_DATA;
-                tilesa.Ocuped = tiles[i, j].OcupedByOther;
-                tilesa.typego = tiles[i, j].typego;
-                tilesa.IsColider = tiles[i, j].IsColider;
-                tilesa.Emessive = tiles[i, j].Emessive;
-                tilesa.ConnecyToNightboors = tiles[i, j].ConnecyToNightboors;
-                tilesa.Biomeofthis = tiles[i, j].TileBiome;
-
-                Tiles_Save.Add(tilesa);
-
                 tilelist.Add(tiles[i, j]);
             }
         }
         #endregion
-        return Tiles_Save.ToArray();
+
+        return tilelist.ToArray();
     }
 
     public void RefreshChunkTile()
@@ -248,12 +240,9 @@ public class Chunk : MonoBehaviour
 
     private void SpawnNetWorkObject(Tile tile)
     {
-        /*GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/Villager/Villager"), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity, Game.WorldGenerator.World_ID);
-        Entitys.Add(obj.GetComponent<Vilanger>());
-        obj.GetComponent<Vilanger>().Born("VillagerTeste", this);*/
-
-        GameObject obj3 = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/Mobs/Slime"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
+        GameObject obj3 = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/Slime"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
         Entitys.Add(obj3.GetComponent<EntityLife>());
+        obj3.GetComponent<EntityLife>().PrefabName = "Slime";
     }
 
     public void OnTileTypeChange(Tile tile)
@@ -264,8 +253,6 @@ public class Chunk : MonoBehaviour
         //spritee.color = Get.ColorBiome(tile.TileBiome, tile.type);
         //spritee.sprite = Game.SpriteManager.GetSprite(tile);
         //tile.spritetile = spritee;
-
-        
 
         #region SetUpPathGrid
         if (!Game.PathGrid.tiles.ContainsKey(new Vector2(tile.x, tile.z)))
@@ -300,29 +287,6 @@ public class Chunk : MonoBehaviour
             }
         }
         #endregion
-
-        /*if (tile.IsColider)
-        {
-            if (spritee.sprite.name != "Rock_")
-            {
-                if (boxcol != null)
-                {
-                    RefreshColider(tileGOmap[tile].GetComponent<PolygonCollider2D>(), spritee.sprite);
-                }
-                else
-                {
-                    tileGOmap[tile].AddComponent<PolygonCollider2D>().autoTiling = true;
-                    RefreshColider(tileGOmap[tile].GetComponent<PolygonCollider2D>(), spritee.sprite);
-                }
-            }
-        }
-        else
-        {
-            if (boxcol != null)
-            {
-                Destroy(boxcol);
-            }
-        }*/
     }
 
     public void TileTransitionChange(Tile tile)
@@ -414,10 +378,7 @@ public class Chunk : MonoBehaviour
         {
             if (tile.PLACER_DATA != Placer.empty)
             {
-                Game.CityManager.AddCity(new Vector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0), Vector3.zero, false);
                 string buildid = ((int)tile.CityPoint.x + (int)tile.CityPoint.y * tile.x + tile.z).ToString();
-
-                Game.CityManager.SetUpCityTile(tile, this, buildid);
 
                 GameObject PLACER_OBJ = Instantiate(Game.SpriteManager.Getplacerbyname(tile.PLACER_DATA.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
                 PLACER_OBJ.transform.SetParent(this.transform, true);
@@ -425,27 +386,30 @@ public class Chunk : MonoBehaviour
 
                 if (PLACER_OBJ.GetComponent<CityBase>())
                 {
-                    City Currentcitty = Game.CityManager.CurrentCitysLoaded[new Vector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0)];
+                    City Currentcitty = Game.CityManager.GetCity(tile.CityPoint);
 
-                    Currentcitty.IsLoaded = true;
-
-                    PLACER_OBJ.GetComponent<CityBase>().BuildId = buildid;
-                    PLACER_OBJ.GetComponent<CityBase>().citypoint = new DataVector3((int)tile.CityPoint.x, (int)tile.CityPoint.y, 0);
-
-                    if (!Currentcitty.CityBuildings.ContainsKey(buildid))
+                    if (Currentcitty != null)
                     {
-                        Currentcitty.CityBuildings.Add(buildid, new CityBaseSerialization(buildid, new DataVector3(tile.CityPoint), new DataVector3(tile.x, tile.y, tile.z), tile.PLACER_DATA));
-                        Currentcitty.CityBuildings[buildid].Temp_objc = PLACER_OBJ.GetComponent<CityBase>();
-                        PLACER_OBJ.GetComponent<CityBase>().NewBuild();
-                    }
-                    else
-                    {
-                        Currentcitty.CityBuildings[buildid].Temp_objc = PLACER_OBJ.GetComponent<CityBase>();
-                        Currentcitty.CityBuildings[buildid].BuildType = tile.PLACER_DATA;
-                        PLACER_OBJ.GetComponent<CityBase>().LoadBuild();
-                    }
+                        Currentcitty.IsLoaded = true;
 
-                    HaveAnyBuild = true;
+                        PLACER_OBJ.GetComponent<CityBase>().BuildId = buildid;
+                        PLACER_OBJ.GetComponent<CityBase>().citypoint = tile.CityPoint;
+
+                        if (!Currentcitty.CityBuildings.ContainsKey(buildid))
+                        {
+                            Currentcitty.CityBuildings.Add(buildid, new CityBaseSerialization(buildid, tile.CityPoint, new DataVector3(tile.x, tile.y, tile.z), tile.PLACER_DATA));
+                            Currentcitty.CityBuildings[buildid].Temp_objc = PLACER_OBJ.GetComponent<CityBase>();
+                            PLACER_OBJ.GetComponent<CityBase>().NewBuild();
+                        }
+                        else
+                        {
+                            Currentcitty.CityBuildings[buildid].Temp_objc = PLACER_OBJ.GetComponent<CityBase>();
+                            Currentcitty.CityBuildings[buildid].BuildType = tile.PLACER_DATA;
+                            PLACER_OBJ.GetComponent<CityBase>().LoadBuild();
+                        }
+
+                        HaveAnyBuild = true;
+                    }
                 }
             }
         }
@@ -469,39 +433,37 @@ public class Chunk : MonoBehaviour
             {
                 trees.GetComponent<Trees>().ThisTreeTile = tile;
             }
+        }
+    }
 
-            if (trees.GetComponent<SpriteRenderer>())
+    private void SpawnCityEntity(Tile tile)
+    {
+        if (tile.OwnedByCity)
+        {
+            City CurrentCity = Game.CityManager.GetCity(tile.CityPoint);
+
+            if (CurrentCity.OutSide.TryGetValue(new DataVector3(tile.x, 0, tile.z), out CitzenCredential citzen))
             {
-                trees.GetComponent<SpriteRenderer>().sortingOrder = -(int)trees.transform.position.z;
-            }
-            else if (trees.GetComponentInChildren<SpriteRenderer>())
-            {
-                trees.GetComponentInChildren<SpriteRenderer>().sortingOrder = -(int)trees.transform.position.z;
+                Game.CityManager.SpawnNewEntity(citzen, new Vector3(tile.x, 0, tile.z));
             }
         }
+    }
+
+    public Tile GetTileAt(int x, int z)
+    {
+        return tiles[x - (int)transform.position.x, z - (int)transform.position.z];
     }
 
     public void SaveChunk()
     {
         if (Game.GameManager.SinglePlayer)
         {
-            SaveWorld.Save(tiles, Game.WorldGenerator.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z);
+            SaveWorld.Save(new ChunkSerializable(this), Game.WorldGenerator.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z);
+            AsSave = true;
         }
         else if (Game.GameManager.MultiPlayer)
         {
 
-        }
-    }
-
-    public void RefreshColider(PolygonCollider2D polygonCollider, Sprite sprite)
-    {
-        List<Vector2> path = new List<Vector2>();
-        polygonCollider.pathCount = sprite.GetPhysicsShapeCount();
-        path.Clear();
-        for (int i = 0; i < polygonCollider.pathCount; i++)
-        {
-            sprite.GetPhysicsShape(i, path);
-            polygonCollider.SetPath(i, path.ToArray());
         }
     }
 
@@ -511,6 +473,11 @@ public class Chunk : MonoBehaviour
         if (Time.time > timetemp + TimeUpdate)
         {
             UpdateChunk();
+            
+            if (AsSave)// if this chunk can be saved.
+            {
+                SaveChunk();
+            }
 
             Debug.Log("Chunk's Updated!");
             timetemp = Time.time;
@@ -596,8 +563,8 @@ public class Chunk : MonoBehaviour
         }
     }
 
-    //MultiPlayer Client
-    public void ClientSetUpChunk(TileSave[] tile)
+    //MultiPlayer Client, Romover Essa Parte e Adicionar em um lugar só
+    public void ClientSetUpChunk(Tile[] tile)
     {
 #region TileGen
         tileGOmap = new Dictionary<Tile, GameObject>();
@@ -609,7 +576,7 @@ public class Chunk : MonoBehaviour
             int i = tile[v].x - (int)transform.position.x;
             int j = tile[v].z - (int)transform.position.z;
 
-            tiles[i, j] = new Tile(tile[v], new ChunkInfo((int)transform.position.x, (int)transform.position.z, this));
+            tiles[i, j] = tile[v];
 
             tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
 
@@ -712,5 +679,16 @@ public class MeshData
         triangles.Add(vertices.Count - 4);
 
         UVs.AddRange(Game.SpriteManager.GetTileUVs(tile));
+    }
+}
+
+[System.Serializable]
+public class ChunkSerializable
+{
+    public Tile[,] tiles;
+
+    public ChunkSerializable(Chunk chunk)
+    {
+        tiles = chunk.tiles;
     }
 }

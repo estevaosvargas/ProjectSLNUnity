@@ -50,6 +50,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -231,8 +232,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Owner: 0
   ViewID: 0
-  DeliveModo: 1
   IdMode: 1
+  DefaultNetDeliveryMethod: 1
 --- !u!135 &7854196333027297275
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -244,7 +245,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.2
+  m_Radius: 0.3
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3849025721069664276
 GameObject:
@@ -291,6 +292,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
