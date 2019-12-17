@@ -45,6 +45,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -77,7 +78,7 @@ SpriteRenderer:
   m_Size: {x: 0.6333333, y: 0.73333335}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1948370409829794
@@ -130,12 +131,16 @@ MonoBehaviour:
   Destroying: {fileID: 212799697641835358}
   FX: {fileID: 1836075418772876, guid: c5d28b2a147fed64186e44abb61799fd, type: 3}
   ThisTreeTile:
+    type: 0
     typeVariante: 0
+    PLACER_DATA: 0
+    typego: 0
     ConnecyToNightboors: 0
     IsColider: 0
     RenderLevel: 0
     TileBiome: 0
     Emessive: 0
+    OcupedByOther: 0
     Hora: 0
     Dia: 0
     Mes: 0
@@ -157,6 +162,57 @@ CapsuleCollider:
   m_Height: 4.5336113
   m_Direction: 1
   m_Center: {x: -0.12, y: 2.3646204, z: 0.06}
+--- !u!137 &3951945864948168985
+SkinnedMeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3388757113255769836}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 26561c10d2b231543b264c6edbdd7547, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  serializedVersion: 2
+  m_Quality: 0
+  m_UpdateWhenOffscreen: 0
+  m_SkinnedMotionVectors: 1
+  m_Mesh: {fileID: -462981019419857548, guid: 46085e57dba4702488dd5ae2594f3635, type: 3}
+  m_Bones: []
+  m_BlendShapeWeights: []
+  m_RootBone: {fileID: 0}
+  m_AABB:
+    m_Center: {x: 0, y: 0, z: 0.024231056}
+    m_Extent: {x: 0.01, y: 0.01, z: 0.024231056}
+  m_DirtyAABB: 0
 --- !u!1001 &6640176900427706341
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -164,11 +220,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4460924024087730}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: 46085e57dba4702488dd5ae2594f3635,
-        type: 3}
-      propertyPath: m_Name
-      value: BigTree
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 46085e57dba4702488dd5ae2594f3635,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -239,8 +290,20 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 114.45
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: -927199367670048503, guid: 46085e57dba4702488dd5ae2594f3635,
+        type: 3}
+      propertyPath: m_Name
+      value: BigTree
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: -1504981713932161579, guid: 46085e57dba4702488dd5ae2594f3635, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 46085e57dba4702488dd5ae2594f3635, type: 3}
+--- !u!1 &3388757113255769836 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: 46085e57dba4702488dd5ae2594f3635,
+    type: 3}
+  m_PrefabInstance: {fileID: 6640176900427706341}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1827354769625629951 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 46085e57dba4702488dd5ae2594f3635,

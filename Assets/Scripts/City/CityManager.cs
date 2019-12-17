@@ -20,6 +20,7 @@ public class CityManager : MonoBehaviour
         {
             if (!LoadCity(city))
             {
+                Debug.Log("Loaded this city: " + city);
                 CityList.Add(city, new City("City Teste", city.GetHashCode(), 9999, (EconomicType)UnityEngine.Random.Range(0, 5), city));
                 SaveCity(city);
             }
@@ -61,6 +62,16 @@ public class CityManager : MonoBehaviour
             return citzen;
         }
 
+        return null;
+    }
+
+    public CitzenCredential GetOutSideEntity(DataVector3 city, DataVector3 pos)
+    {
+        City CurrentCity = GetCity(city);
+        if (CurrentCity.OutSide.TryGetValue(pos, out CitzenCredential entity))
+        {
+            return entity;
+        }
         return null;
     }
 
@@ -144,6 +155,7 @@ public class City
 
     public Dictionary<string, CityBaseSerialization> CityBuildings = new Dictionary<string, CityBaseSerialization>();
     public Dictionary<string, CitzenCredential> LivingEntity = new Dictionary<string, CitzenCredential>();
+
     public Dictionary<DataVector3, CitzenCredential> OutSide = new Dictionary<DataVector3, CitzenCredential>();
 
     public DataVector3 citypoint;
@@ -175,11 +187,9 @@ public class City
 
         foreach (var entity in Save.LivingEntity)
         {
-            if (!entity.IsOutSide)
-            {
-                LivingEntity.Add(entity.Citzen_Id, entity);
-            }
-            else
+            LivingEntity.Add(entity.Citzen_Id, entity);
+
+            if (entity.IsOutSide)
             {
                 OutSide.Add(entity.WorldPostion, entity);
             }

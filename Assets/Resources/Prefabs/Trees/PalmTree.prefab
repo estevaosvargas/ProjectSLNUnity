@@ -172,7 +172,7 @@ GameObject:
   m_Component:
   - component: {fileID: 407525821185350578}
   - component: {fileID: 8718076265573278084}
-  - component: {fileID: 3152622299128634749}
+  - component: {fileID: 1910563898736013021}
   m_Layer: 0
   m_Name: palmetree
   m_TagString: Untagged
@@ -202,8 +202,8 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3746022147242043809}
   m_Mesh: {fileID: -462981019419857548, guid: a10e1f907e2613d419d1307597d5d551, type: 3}
---- !u!23 &3152622299128634749
-MeshRenderer:
+--- !u!137 &1910563898736013021
+SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -216,11 +216,11 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3d855bd61a503cd4d9cc876e438d48e8, type: 2}
+  - {fileID: 2100000, guid: 12c78be6dacd7ac4480758c2dde41796, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -241,3 +241,15 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  serializedVersion: 2
+  m_Quality: 0
+  m_UpdateWhenOffscreen: 0
+  m_SkinnedMotionVectors: 1
+  m_Mesh: {fileID: -462981019419857548, guid: a10e1f907e2613d419d1307597d5d551, type: 3}
+  m_Bones: []
+  m_BlendShapeWeights: []
+  m_RootBone: {fileID: 0}
+  m_AABB:
+    m_Center: {x: 0, y: 0, z: 0.017230382}
+    m_Extent: {x: 0.01, y: 0.01, z: 0.017230382}
+  m_DirtyAABB: 0

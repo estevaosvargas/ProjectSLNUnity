@@ -108,7 +108,7 @@ MonoBehaviour:
   secondsPerMinute: 60
   secondsPerHour: 3600
   secondsPerDay: 86400
-  timeMultiplier: 5000
+  timeMultiplier: 1000
 --- !u!114 &1624530699793752571
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -216,7 +216,7 @@ public class GameManager : UIElements
 
     public void UpdateCursor(MouseType type)
     {
-        if (Mtype != type)
+        /*if (Mtype != type)
         {
             Mtype = type;
 
@@ -232,7 +232,7 @@ public class GameManager : UIElements
             {
                 Cursor.SetCursor(MousePointer.cursor1_Chat, MousePointer.hotSpot, MousePointer.cursorMode);
             }
-        }
+        }*/
     }
     public Vector3 testepos;
     void Update()

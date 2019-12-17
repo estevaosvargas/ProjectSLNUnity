@@ -69,127 +69,68 @@ public static class Biome
             }
             else
             {
-                #region FloreestaVilla
-                if (perlin <= 0.15f)
-                {
-                    //Water
-                    return TypeBlock.Water;
-                }
-                else if (perlin > 0.15f && perlin < 0.2f)
-                {
-                    //Sand Bench
-                    return TypeBlock.BeachSand;
-                }
-                else if (perlin > 0.2f && perlin <= 0.7f)
-                {
-                    if (perlin > 0.2f && perlin < 0.6f)
-                    {
-                        //grass and bushs and trees
-                        System.Random rand = new System.Random(Game.WorldGenerator.Seed + x * z + (tile.TileChunk.x + tile.TileChunk.z));
-                        int randnum = (rand.Next(1, 20));
+                System.Random rand = new System.Random(Game.WorldGenerator.Seed + x * z + (tile.TileChunk.x + tile.TileChunk.z));
+                int randnum = (rand.Next(1, 20));
 
-                        if (randnum == 1)
-                        {
-                            if (tile.typego == TakeGO.empty && tile.z != 0)
-                            {
-                                tile.typego = TakeGO.Weed01;
-                            }
-                            return TypeBlock.Grass;
-                        }
-                        else if (randnum == 2)
-                        {
-                            if (tile.typego == TakeGO.empty && tile.z != 0)
-                            {
-                                tile.typego = TakeGO.RockProp;
-                            }
-                            return TypeBlock.Grass;
-                        }
-                        else if (randnum == 3)
-                        {
-                            if (tile.typego == TakeGO.empty && tile.z != 0)
-                            {
-                                tile.typego = TakeGO.WeedTall;
-                            }
-                            return TypeBlock.Grass;
-                        }
-                        else if (randnum == 4)
-                        {
-                            if (tile.typego == TakeGO.empty && tile.z != 0)
-                            {
-                                tile.typego = TakeGO.Pine;
-                            }
-                            return TypeBlock.Grass;
-                        }
-                        else if (randnum == 5)
-                        {
-                            if (tile.typego == TakeGO.empty && tile.z != 0)
-                            {
-                                tile.typego = TakeGO.Oak;
-                            }
-                            return TypeBlock.Grass;
-                        }
-                        else if (randnum == 6)
-                        {
-                            tile.typeVariante = TypeVariante.GrassFL1;
-                            return TypeBlock.Grass;
-                        }
-                        else if (randnum == 7)
-                        {
-                            tile.typeVariante = TypeVariante.GrassFL2;
-                            return TypeBlock.Grass;
-                        }
-                        else if (randnum == 8)
-                        {
-                            tile.typeVariante = TypeVariante.GrassRC;
-                            return TypeBlock.Grass;
-                        }
-                        else
-                        {
-                            return TypeBlock.Grass;
-                        }
-                    }
-                    else if (perlin > 0.6f && perlin < 0.605f)
-                    {
-                        //grass
-                        return TypeBlock.Grass;
-                    }
-                    else if (perlin > 0.62f && perlin < 0.63f)
-                    {
-                        //grass
-                        return TypeBlock.Grass;
-                    }
-                    else
-                    {
-                        //tall grass
-                        return TypeBlock.Grass;
-                    }
-
-                }
-                else if (perlin > 0.7f && perlin <= 0.8f)
+                if (randnum == 1)
                 {
-                    if (perlin > 0.7f && perlin < 0.72f)
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
                     {
-                        //grama do pe do morro com arvores
-                        return TypeBlock.Rock;
+                        tile.typego = TakeGO.Weed01;
                     }
-                    else if (perlin > 0.72f && perlin < 0.74f)
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 2)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
                     {
-                        //grama do pe do morro
-                        return TypeBlock.Rock;
+                        tile.typego = TakeGO.RockProp;
                     }
-                    else
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 3)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
                     {
-                        //pe do morro
-                        return TypeBlock.Rock;
+                        tile.typego = TakeGO.WeedTall;
                     }
-
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 4)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.Pine;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 5)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.Oak;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 6)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL1;
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 7)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL2;
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 8)
+                {
+                    tile.typeVariante = TypeVariante.GrassRC;
+                    return TypeBlock.Grass;
                 }
                 else
                 {
-                    //topo do morro
-                    return TypeBlock.Rock;
+                    return TypeBlock.Grass;
                 }
-                #endregion
             }
         }
         else

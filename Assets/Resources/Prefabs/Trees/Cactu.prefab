@@ -284,7 +284,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5854144633128374259}
   - component: {fileID: 3198997444011455941}
-  - component: {fileID: 9176530997416855868}
+  - component: {fileID: 2559960519545574711}
   m_Layer: 0
   m_Name: Cactu
   m_TagString: Untagged
@@ -314,8 +314,8 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7450431931410726368}
   m_Mesh: {fileID: -462981019419857548, guid: dad783805ce72e74badb99e22f535aeb, type: 3}
---- !u!23 &9176530997416855868
-MeshRenderer:
+--- !u!137 &2559960519545574711
+SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -328,11 +328,11 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 13c3e3e45788df64997b9aed000893d9, type: 2}
+  - {fileID: 2100000, guid: 13b199cff056082419f074410a8a3cdc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -353,3 +353,15 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  serializedVersion: 2
+  m_Quality: 0
+  m_UpdateWhenOffscreen: 0
+  m_SkinnedMotionVectors: 1
+  m_Mesh: {fileID: -462981019419857548, guid: dad783805ce72e74badb99e22f535aeb, type: 3}
+  m_Bones: []
+  m_BlendShapeWeights: []
+  m_RootBone: {fileID: 0}
+  m_AABB:
+    m_Center: {x: -0.0007854998, y: 0.0004430241, z: 0.0072221016}
+    m_Extent: {x: 0.0107855, y: 0.010443024, z: 0.0072221016}
+  m_DirtyAABB: 0

@@ -426,7 +426,8 @@ public class Chunk : MonoBehaviour
 
             if (tile.type != TypeBlock.Rock)
             {
-                trees.transform.position = new Vector3(tile.x + 0.5f, tile.y, tile.z + 0.5f);
+                System.Random randomValue = new System.Random(Game.WorldGenerator.Seed + tile.x + tile.z);
+                trees.transform.position = new Vector3(tile.x + (float)randomValue.NextDouble(), tile.y, tile.z + (float)randomValue.NextDouble());
             }
 
             if (trees.GetComponent<Trees>())
@@ -440,11 +441,10 @@ public class Chunk : MonoBehaviour
     {
         if (tile.OwnedByCity)
         {
-            City CurrentCity = Game.CityManager.GetCity(tile.CityPoint);
-
-            if (CurrentCity.OutSide.TryGetValue(new DataVector3(tile.x, 0, tile.z), out CitzenCredential citzen))
+            CitzenCredential entity = Game.CityManager.GetOutSideEntity(tile.CityPoint, new DataVector3(tile.x, tile.y, tile.z));
+            if (entity != null)
             {
-                Game.CityManager.SpawnNewEntity(citzen, new Vector3(tile.x, 0, tile.z));
+                Game.CityManager.SpawnNewEntity(entity, new Vector3(tile.x, 0, tile.z));
             }
         }
     }
