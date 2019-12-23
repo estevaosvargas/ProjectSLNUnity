@@ -39,6 +39,7 @@ public class GameManager : UIElements
     public CharacterCurrentData CurrentPlayer;
     public string Version = "1.0.0";
     public int Seed = 0;
+    public int Small_Seed = 0;
     public string WorldName = "YourWorldName";
     public static bool Playing = false;
     public bool SinglePlayer = false;
@@ -127,6 +128,10 @@ public class GameManager : UIElements
         {
             Seed = int.Parse(seed);
         }
+
+        System.Random randvilla = new System.Random(Game.GameManager.Seed);
+
+         Small_Seed = randvilla.Next(-9999, 9999);
 
         WorldInfo info = SaveWorld.LoadInfo("World");
         if (info != null)
@@ -609,6 +614,67 @@ public class EntityLife : Entity
     // Logic of damage, remove damage of life qunty
     public virtual bool DoDamage(int damage, string attckerid, bool isplayer)
     {
+        OnHit();
+        HP -= damage;
+        FinishDamage();
+        LastAttacker = attckerid;
+        if (isplayer == true)
+        {
+
+        }
+        if (HP <= 0)
+        {
+            OnDead();
+            return true;
+        }
+        return false;
+    }
+
+    public virtual void OnHit()
+    {
+
+    }
+
+    public virtual void OnDead()
+    {
+        IsAlive = false;
+    }
+
+    public virtual void Curar(int qunty)
+    {
+        HP += qunty;
+
+        if (HP > MaxHP)
+        {
+            HP = MaxHP;
+        }
+
+        FinishCura();
+    }
+
+    //All Logic after damage, Like Update life bar
+    public virtual void FinishDamage()
+    {
+
+    }
+
+    //All Logic after cura, Like Update life bar
+    public virtual void FinishCura()
+    {
+
+    }
+}
+
+public class StaticLife : MonoBehaviour
+{
+    public float HP = 100;
+    public float MaxHP = 100;
+    public bool IsAlive = false;
+    public string LastAttacker = "";
+
+    // Logic of damage, remove damage of life qunty
+    public virtual bool DoDamage(int damage, string attckerid, bool isplayer)
+    {
         HP -= damage;
         FinishDamage();
         LastAttacker = attckerid;
@@ -654,6 +720,7 @@ public class EntityLife : Entity
     }
 }
 
+
 /// <summary>
 /// Main Class for all entity in the game
 /// </summary>
@@ -695,6 +762,7 @@ public class Entity : MonoBehaviour
 
     }
 }
+
 
 [System.Serializable]
 public class EntitySave

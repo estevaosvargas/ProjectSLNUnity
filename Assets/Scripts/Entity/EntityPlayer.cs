@@ -21,6 +21,7 @@ public class EntityPlayer : EntityLife
     public Animator AttackSword;
     public int animstatus;
     public float Speed = 5;
+    public float DashSpeed = 10;
     public bool IsVisible = false;
     public bool IsMe = false;
     public int FootParticleCount = 1;
@@ -28,12 +29,15 @@ public class EntityPlayer : EntityLife
 
 
     private Vector3 lastposition;
+    private Vector3 dashdirection;
     private int LastPostitionIntX;
     private int LastPostitionIntZ;
     private float timestep;
 
     public bool IsOnDamageArea;
     public int DamageRate;
+    private float dashtemp;
+    public float deshtime = 1;
 
     void Start()
     {
@@ -136,7 +140,29 @@ public class EntityPlayer : EntityLife
             //MiniMapManager.manager.UpdateMap();
         }
     }
+    public Vector3 inputDirection;
+    public Vector3 Move(Vector3 directionVector)
+    {
+        // move along with direction.
 
+        inputDirection = directionVector;
+        if (directionVector != Vector3.zero)
+        {
+            var directionLength = directionVector.magnitude;
+            directionVector = directionVector / directionLength;
+            directionLength = Mathf.Min(1, directionLength);
+            directionLength = directionLength * directionLength;
+            directionVector = directionVector * directionLength;
+        }
+
+        Quaternion rotation = transform.rotation;
+
+        Vector3 angle = rotation.eulerAngles;
+        angle.x = 0;
+        angle.z = 0;
+        rotation.eulerAngles = angle;
+        return rotation * directionVector;
+    }
     void Update()
     {
         if (IsVisible)//Do the Client Update, and Server.
@@ -158,22 +184,119 @@ public class EntityPlayer : EntityLife
                                 timestep = Time.time;
                             }
                         }
-                        Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxisRaw("Horizontal"), 0, CrossPlatformInputManager.GetAxisRaw("Vertical"));
 
-                        body.velocity = movement.normalized * Speed;
-
-                        if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
+                        if (Time.time > dashtemp + deshtime)
                         {
+                            NetStats.Dashing = false;
+                            dashtemp = Time.time;
+                        }
+
+                        if (!NetStats.Dashing)
+                        {
+                            if (Input.GetKeyDown(KeyCode.Space))
+                            {
+                                Vector3 daPos = new Vector3(Input.GetAxis("Horizontal") * DashSpeed, 0, Input.GetAxis("Vertical") * DashSpeed);
+                                //lookPos = lookPos - transform.position;
+
+                                Anim.SetTrigger("Dash");
+
+                                Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                                Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                                transform.LookAt(new Vector3(transform.position.x + daPos.x, 0, transform.position.z + daPos.z));
+                                body.AddForce(daPos, ForceMode.Impulse);
+                                dashdirection = daPos;
+                                NetStats.Dashing = true;
+                                return;
+                            }
+                            Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxisRaw("Horizontal"), 0, CrossPlatformInputManager.GetAxisRaw("Vertical"));
+
+                            body.velocity = Move(movement.normalized) * Speed;
+
                             Vector3 lookPos = new Vector3(Game.GameManager.mouseX, Game.GameManager.mouseY, Game.GameManager.mouseZ);
                             lookPos = lookPos - transform.position;
 
-                            float angle = Mathf.Atan2(lookPos.z, lookPos.x) * Mathf.Rad2Deg;
-                            NetStats.angle = (int)angle;
+                            if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
+                            {
 
-                            Vector3 vecnor = lookPos.normalized;
+                                Anim.SetFloat("X", 0);
+                                Anim.SetFloat("Y", 0);
 
-                            Anim.SetFloat("X", vecnor.x);
-                            Anim.SetFloat("Y", vecnor.z);
+                                transform.LookAt(new Vector3(transform.position.x + lookPos.x, 0, transform.position.z + lookPos.z));
+                            }
+
+                            transform.LookAt(new Vector3(transform.position.x + lookPos.x, 0, transform.position.z + lookPos.z));
+
+                            if (NetStats.handhide == true)
+                            {
+                                HandRoot.gameObject.SetActive(false);
+                            }
+                            else
+                            {
+                                HandRoot.gameObject.SetActive(true);
+                            }
+
+                            if (Input.GetAxis("Horizontal") > 0f)
+                            {
+                                Anim.SetInteger("Walk", 1);
+
+                                Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                                Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                                //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
+
+                                NetStats.walking = true;
+                                NetStats.Side = 0;
+                            }
+                            else if (Input.GetAxis("Horizontal") < 0f)
+                            {
+                                Anim.SetInteger("Walk", 1);
+
+                                Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                                Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                                //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
+
+
+                                NetStats.walking = true;
+                                NetStats.Side = 1;
+                            }
+                            else if (Input.GetAxis("Vertical") > 0)
+                            {
+                                Anim.SetInteger("Walk", 1);
+
+                                Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                                Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                                //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
+
+                                NetStats.walking = true;
+                                NetStats.Side = 2;
+                            }
+                            else if (Input.GetAxis("Vertical") < 0)
+                            {
+                                Anim.SetInteger("Walk", 1);
+
+                                Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                                Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                                //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
+
+                                NetStats.walking = true;
+                                NetStats.Side = 3;
+                            }
+                            else
+                            {
+                                Anim.SetInteger("Walk", 0);
+                                FootPArticle.Stop();
+
+                                NetStats.walking = false;
+                            }
+
+                        }
+                        else
+                        {
+                            //body.velocity = dashdirection * DashSpeed;
                         }
 
                         #region UpDateOnMove
@@ -190,72 +313,6 @@ public class EntityPlayer : EntityLife
                         LastPostitionIntX = (int)transform.position.x;
                         LastPostitionIntZ = (int)transform.position.z;
                         #endregion
-
-                        if (NetStats.handhide == true)
-                        {
-                            HandRoot.gameObject.SetActive(false);
-                        }
-                        else
-                        {
-                            HandRoot.gameObject.SetActive(true);
-                        }
-
-                        if (Input.GetAxis("Horizontal") > 0f)
-                        {
-                            Anim.SetInteger("Walk", 1);
-
-                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
-                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
-
-                            transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
-
-                            NetStats.walking = true;
-                            NetStats.Side = 0;
-                        }
-                        else if (Input.GetAxis("Horizontal")  < 0f)
-                        {
-                            Anim.SetInteger("Walk", 1);
-
-                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
-                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
-
-                            transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
-
-
-                            NetStats.walking = true;
-                            NetStats.Side = 1;
-                        }
-                        else if (Input.GetAxis("Vertical") > 0)
-                        {
-                            Anim.SetInteger("Walk", 1);
-
-                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
-                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
-
-                            transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
-
-                            NetStats.walking = true;
-                            NetStats.Side = 2;
-                        }
-                        else if (Input.GetAxis("Vertical") < 0)
-                        {
-                            Anim.SetInteger("Walk", 1);
-
-                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
-                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
-
-                            transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
-
-                            NetStats.walking = true;
-                            NetStats.Side = 3;
-                        }
-                        else
-                        {
-                            Anim.SetInteger("Walk", 0);
-                            FootPArticle.Stop();
-
-                            NetStats.walking = false;
-                        }
 
                         UpdateNetStatus();
                     }
@@ -673,6 +730,8 @@ public class PlayerNetStats
     public BiomeType CurrentBiome;
 
     public int Side = -1;
+
+    public bool Dashing { get; internal set; }
 }
 
 public enum Skills : byte

@@ -138,7 +138,7 @@ public class Tile
         xCordee *= frequency;
         zCordee *= frequency;
 
-        float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.WorldGenerator.Seed, LibNoise.Unity.QualityMode.Low).GetValue(x, z, 0);
+        float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(x, z, 0);
 
         if (Game.WorldGenerator.CurrentWorld == WorldType.Caves)
         {
@@ -150,7 +150,7 @@ public class Tile
             
             if (sample >= 50f)
             {
-                float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 1, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
+                float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 1, Game.GameManager.Seed, false).GetValue(x, z, 0);
 
                 sample2 *= 10;
 
@@ -167,6 +167,38 @@ public class Tile
                 PerlinSetType(Biome.OceanNormal(x, z, this, sample));
             }
         }
+    }
+
+    public Tile(int x, int y, int z, ChunkInfo ChunkInfo, bool menu)
+    {
+        TileChunk = ChunkInfo;
+        this.x = x;
+        //this.y = y;
+        this.z = z;
+
+        float persistence = 39.9f;
+        float frequency = 0.001f;
+        float amplitude = 52.79f;
+        int octaves = 184;
+
+        int width = 50;
+        int height = 50;
+
+        float Scale = 1f;
+
+        float xCordee = (float)octaves * x / width * Scale;
+        float zCordee = (float)octaves * z / height * Scale;
+
+        xCordee *= frequency;
+        zCordee *= frequency;
+
+        float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(x, z, 0);
+
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 1, Game.GameManager.Seed, false).GetValue(x, z, 0);
+
+        sample2 *= 10;
+
+        PerlinSetType(SetUpBiome(x, z, sample, sample2));
     }
 
     public void PerlinSetType(TypeBlock type)

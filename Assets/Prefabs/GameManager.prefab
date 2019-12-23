@@ -1400,7 +1400,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2134074469
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10302,6 +10302,7 @@ MonoBehaviour:
     charRace: 1
   Version: 1.0.0
   Seed: 0
+  Small_Seed: 0
   WorldName: YourWorldName
   SinglePlayer: 0
   MultiPlayer: 0
@@ -10496,6 +10497,7 @@ MonoBehaviour:
   - {fileID: 1459282729364594, guid: 745b2d21031cb224d915748f54262248, type: 3}
   - {fileID: 1459282729364594, guid: c773b0ce01424a04e9d6d36724021c5a, type: 3}
   - {fileID: 1470094844478218, guid: 463cc467d5d7628438390fdabb34c341, type: 3}
+  - {fileID: 1470094844478218, guid: 23e187bed0e2a8e4bab2ab96122a901e, type: 3}
 --- !u!114 &716656130
 MonoBehaviour:
   m_ObjectHideFlags: 0

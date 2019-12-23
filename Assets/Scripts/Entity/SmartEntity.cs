@@ -6,7 +6,6 @@ using UnityEngine;
 public class SmartEntity : Pathfindingentity
 {
     public Vector2 LastPosition;
-    private SpriteRenderer Render;
 
     private Vector3 velocity;
     [System.NonSerialized]
@@ -24,11 +23,20 @@ public class SmartEntity : Pathfindingentity
 
     public int direction = 0;
 
+    private float timestep;
+    public float UpdateRate = 20;
+
+    public Chunk Cuerrent_Chunk;
+
+    public bool ISVISIBLE = false;
+
+    public int X;
+    public int Z;
+
 
     public void Born(string name)
     {
-        GetComponent<SpriteRenderer>().color = new Color(Random.value, Random.value, Random.value, 1);
-        GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.y;
+
     }
 
     public void GetVocation()
@@ -48,7 +56,6 @@ public class SmartEntity : Pathfindingentity
     {
         body = GetComponent<Rigidbody2D>();
         Anim = GetComponent<Animator>();
-        Render = GetComponent<SpriteRenderer>();
     }
 
     internal void GetNewPostion()
@@ -56,50 +63,97 @@ public class SmartEntity : Pathfindingentity
         Go(new Vector3(Random.Range(transform.position.x - 10, transform.position.x + 10), Random.Range(transform.position.y - 10, transform.position.y + 10), transform.position.z));
     }
 
-    public override void Updateoverride()
+    public override void OnDead()
     {
-        if (transform.position == target)
+        DarckNet.Network.Destroy(this.gameObject);
+        base.OnDead();
+    }
+
+    public override void OnHit()
+    {
+        GetNewPostion();
+        base.OnHit();
+    }
+
+    public void Update()
+    {
+        if (DarckNet.Network.IsServer || Game.GameManager.SinglePlayer)
         {
-            if (HaveTarget)
+            if (Time.time > timestep + UpdateRate)//Some Update With Rate/Time
             {
-                Stop();
+                GetNewPostion();
+                timestep = Time.time;
             }
-        }
 
-        var fwdDotProduct = Vector3.Dot(transform.forward, velocity);
-        var upDotProduct = Vector3.Dot(transform.up, velocity);
-        var rightDotProduct = Vector3.Dot(transform.right, velocity);
-        Render.sortingOrder = -(int)transform.position.y;
-        Vector3 velocityVector = new Vector3(rightDotProduct, upDotProduct, fwdDotProduct);
+            if ((int)transform.position.x != X || (int)transform.position.z != Z)
+            {
+                if (new Vector3(transform.position.x, transform.position.y, transform.position.z) == new Vector3(target.x, target.y, target.z))
+                {
+                    if (HaveTarget)
+                    {
+                        //Game.CityManager.WantInteract(CurrentCity, ID, this);
+                        Stop();
+                    }
+                }
 
-        if (velocityVector.x >= 1f)
-        {
-            Anim.SetInteger("Walk", 1);
-            Anim.SetFloat("X", 0);
-            direction = 0;
+                Chunk chunk = Game.WorldGenerator.GetChunkAt((int)transform.position.x, (int)transform.position.z);
+
+                //Game.CityManager.UpdatePositionStaus(transform.position, CurrentCity, ID);
+
+                if (chunk != null)
+                {
+                    if (chunk != Cuerrent_Chunk)
+                    {
+                        if (Cuerrent_Chunk != null)
+                        {
+                            Chunk lastchunk = Cuerrent_Chunk;
+                            lastchunk.Entitys.Remove(this);
+                        }
+
+                        Cuerrent_Chunk = chunk;
+                        Cuerrent_Chunk.Entitys.Add(this);
+                    }
+                }
+
+                Net.RPC("RPC_SyncPos", DarckNet.RPCMode.AllNoOwner, transform.position);
+            }
+            X = (int)transform.position.x;
+            Z = (int)transform.position.z;
         }
-        else if (velocityVector.x <= -1)
+        if (DarckNet.Network.IsClient || Game.GameManager.SinglePlayer)
         {
-            Anim.SetInteger("Walk", 1);
-            Anim.SetFloat("X", 180);
-            direction = 3;
+            if (ISVISIBLE)
+            {
+                Anim.SetFloat("X", 0);
+                Anim.SetFloat("Y", 0);
+
+                transform.LookAt(new Vector3(CurrentPoint.x, 0, CurrentPoint.z));
+
+                if (Following)
+                {
+                    Anim.SetInteger("Walk", 1);
+                }
+                else
+                {
+                    Anim.SetInteger("Walk", 0);
+                }
+            }
+
         }
-        else if (velocityVector.y >= 1)
-        {
-            Anim.SetInteger("Walk", 1);
-            Anim.SetFloat("X", 90);
-            direction = 1;
-        }
-        else if (velocityVector.y <= -1)
-        {
-            Anim.SetInteger("Walk", 1);
-            Anim.SetFloat("X", -90);
-            direction = 2;
-        }
-        else
-        {
-            Anim.SetInteger("Walk", 0);
-        }
+    }
+
+    private void OnBecameVisible()
+    {
+        ISVISIBLE = true;
+        Anim.enabled = true;
+        Game.Entity_viewing.Add(this);
+    }
+
+    private void OnBecameInvisible()
+    {
+        ISVISIBLE = false;
+        Anim.enabled = false;
+        Game.Entity_viewing.Remove(this);
     }
 
     void FixedUpdate()

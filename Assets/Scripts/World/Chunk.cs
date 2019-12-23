@@ -162,7 +162,7 @@ public class Chunk : MonoBehaviour
                     tiles[i, j].TileChunk = new ChunkInfo((int)transform.position.x, (int)transform.position.z, this); 
                 }
 
-                Vector3 point = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.WorldGenerator.Seed, false).GetPoint(tiles[i, j].x, tiles[i, j].z, 0);
+                Vector3 point = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetPoint(tiles[i, j].x, tiles[i, j].z, 0);
 
                 tiles[i, j].CityPoint = new DataVector3((int)point.x, (int)point.y, 0);
 
@@ -243,6 +243,10 @@ public class Chunk : MonoBehaviour
         GameObject obj3 = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/Slime"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
         Entitys.Add(obj3.GetComponent<EntityLife>());
         obj3.GetComponent<EntityLife>().PrefabName = "Slime";
+
+        GameObject Cow = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/Cow"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
+        Entitys.Add(Cow.GetComponent<EntityLife>());
+        Cow.GetComponent<EntityLife>().PrefabName = "Cow";
     }
 
     public void OnTileTypeChange(Tile tile)
@@ -426,7 +430,7 @@ public class Chunk : MonoBehaviour
 
             if (tile.type != TypeBlock.Rock)
             {
-                System.Random randomValue = new System.Random(Game.WorldGenerator.Seed + tile.x + tile.z);
+                System.Random randomValue = new System.Random(Game.GameManager.Seed + tile.x + tile.z);
                 trees.transform.position = new Vector3(tile.x + (float)randomValue.NextDouble(), tile.y, tile.z + (float)randomValue.NextDouble());
             }
 

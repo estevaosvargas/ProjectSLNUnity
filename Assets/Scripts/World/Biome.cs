@@ -31,8 +31,8 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Small_Seed, zCorde * noisefactor + Game.WorldGenerator.Small_Seed);
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetValue(x, z, 0);
 
         //Debug.Log("village Chance : " + (int)sample2);
 
@@ -69,7 +69,7 @@ public static class Biome
             }
             else
             {
-                System.Random rand = new System.Random(Game.WorldGenerator.Seed + x * z + (tile.TileChunk.x + tile.TileChunk.z));
+                System.Random rand = new System.Random(Game.GameManager.Seed + x * z + (tile.TileChunk.x + tile.TileChunk.z));
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)
@@ -150,7 +150,7 @@ public static class Biome
                 if (perlin > 0.2f && perlin < 0.6f)
                 {
                     //grass and bushs and trees
-                    System.Random rand = new System.Random(Game.WorldGenerator.Seed + x * z + (tile.TileChunk.x + tile.TileChunk.z));
+                    System.Random rand = new System.Random(Game.GameManager.Seed + x * z + (tile.TileChunk.x + tile.TileChunk.z));
                     int randnum = (rand.Next(1, 20));
 
                     if (randnum == 1)
@@ -281,12 +281,12 @@ public static class Biome
 
         noisefactor = 0.1f;
 
-        float xCorde = (float)x / width * Scale + Game.WorldGenerator.Small_Seed;
-        float zCorde = (float)z / height * Scale + Game.WorldGenerator.Small_Seed;
+        float xCorde = (float)x / width * Scale + Game.GameManager.Small_Seed;
+        float zCorde = (float)z / height * Scale + Game.GameManager.Small_Seed;
 
         float perlin = Mathf.PerlinNoise(xCorde * noisefactor, zCorde * noisefactor);
 
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetValue(x, z, 0);
 
         if ((int)sample2 == 1)
         {
@@ -330,7 +330,7 @@ public static class Biome
                     if (perlin > 0.2f && perlin < 0.6f)
                     {
                         //grass and bushs and trees
-                        System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                        System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
                         int randnum = (rand.Next(1, 20));
 
                         if (randnum == 1)
@@ -414,7 +414,7 @@ public static class Biome
                 if (perlin > 0.2f && perlin < 0.6f)
                 {
                     //grass and bushs and trees
-                    System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                    System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
                     int randnum = (rand.Next(1, 20));
 
                     if (randnum == 1)
@@ -490,7 +490,7 @@ public static class Biome
     {
         if (sample > 0.48f)
         {
-            System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+            System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
             int randnum = (rand.Next(1, 20));
 
             if (randnum == 1)
@@ -535,7 +535,7 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Small_Seed, zCorde * noisefactor + Game.WorldGenerator.Small_Seed);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
 
         if (perlin >= 0.0f && perlin <= 0.15f)
         {
@@ -552,7 +552,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)
@@ -635,9 +635,9 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Small_Seed, zCorde * noisefactor + Game.WorldGenerator.Small_Seed);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
 
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.WorldGenerator.Seed, false).GetValue(x, z, 0);
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetValue(x, z, 0);
 
         if ((int)sample2 == 1)
         {
@@ -682,7 +682,7 @@ public static class Biome
                     {
                         //grass and bushs and trees
 
-                        System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                        System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
                         int randnum = (rand.Next(1, 20));
 
                         if (randnum == 1)
@@ -772,7 +772,7 @@ public static class Biome
                 {
                     //grass and bushs and trees
 
-                    System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                    System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
                     int randnum = (rand.Next(1, 20));
 
                     if (randnum == 1)
@@ -856,7 +856,7 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.WorldGenerator.Small_Seed, zCorde * noisefactor + Game.WorldGenerator.Small_Seed);
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
 
         if (perlin >= 0.0f && perlin <= 0.15f)
         {
@@ -873,7 +873,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)
@@ -954,8 +954,8 @@ public static class Biome
         float amplitude = 52.79f;
         int octaves = 184;
 
-        float xCordee = (float)octaves * x / width * Scale + Game.WorldGenerator.Small_Seed;
-        float zCordee = (float)octaves * z / height * Scale + Game.WorldGenerator.Small_Seed;
+        float xCordee = (float)octaves * x / width * Scale + Game.GameManager.Small_Seed;
+        float zCordee = (float)octaves * z / height * Scale + Game.GameManager.Small_Seed;
 
         // modify with frequency
         xCordee *= frequency;
@@ -979,7 +979,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                System.Random rand = new System.Random(Game.WorldGenerator.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)

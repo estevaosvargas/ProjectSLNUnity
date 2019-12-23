@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Trees : MonoBehaviour {
-
-    public int HP = 100;
+public class Trees : StaticLife
+{
     public SpriteRenderer Destroying;
     public GameObject FX;
     float color = 0;
@@ -13,12 +12,12 @@ public class Trees : MonoBehaviour {
     public int DropQuanty = 10;
     public MaterialHitType MaterialHit;
 
-    public void DoDamage(ItemData item, int damage)
+    public void Damage(ItemData item, int damage)
     {
         _DoDamage(damage, item.MaterialHitBest);
     }
 
-    public void DoDamage(HandData hand, int damage)
+    public void Damage(HandData hand, int damage)
     {
         _DoDamage(damage, hand.MaterialHitBest);
     }
@@ -27,29 +26,28 @@ public class Trees : MonoBehaviour {
     {
         if (MaterialHit == mat_type)
         {
-            HP -= damage * 2;
+            damage = damage * 2;
         }
         else
         {
-            HP -= damage - 5;
+            damage = damage - 5;
         }
 
-        color += 0.1f;
+        DoDamage(damage, "none", false);
+    }
 
-        Destroying.color = new Color(Destroying.color.r, Destroying.color.g, Destroying.color.b, color);
+    public override void OnDead()
+    {
+        GameObject obj = Instantiate(FX, transform.position, Quaternion.identity);
+        obj.transform.rotation = new Quaternion(0, 180, 0, 1);
+        Destroy(obj, 5);
 
-        if (HP <= 0)
-        {
-            GameObject obj = Instantiate(FX, transform.position, Quaternion.identity);
-            obj.transform.rotation = new Quaternion(0,180,0, 1);
-            Destroy(obj, 5);
+        ThisTreeTile.typego = TakeGO.empty;
+        ThisTreeTile.RefreshTile();
+        ThisTreeTile.SaveChunk();
 
-            ThisTreeTile.typego = TakeGO.empty;
-            ThisTreeTile.RefreshTile();
-            ThisTreeTile.SaveChunk();
-
-            ItemManager.Instance.SpawnItem(ItemDrop, DropQuanty, transform.position);
-            Destroy(this.gameObject);
-        }
+        ItemManager.Instance.SpawnItem(ItemDrop, DropQuanty, transform.position);
+        Destroy(this.gameObject);
+        base.OnDead();
     }
 }

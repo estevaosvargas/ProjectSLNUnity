@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class HandManager : MonoBehaviour
 {
     public ItemData CurrentItem;
-    public SpriteRenderer HandRender;
     public static HandManager MyHand;
     public Inventory Inve;
     public bool OnHand = false;
@@ -15,6 +14,12 @@ public class HandManager : MonoBehaviour
     public Transform HandTransform;
 
     float timetemp;
+
+    /// New System
+    public Transform attackPoint;
+    public float attackRange = 0.5f;
+    public LayerMask EntitysLayer;
+
 
     void Awake()
     {
@@ -32,7 +37,6 @@ public class HandManager : MonoBehaviour
     {
         Clear();
         CurrentItem = item;
-        HandRender.sprite = item.Icon;
         SlotIndex = slot;
         OnHand = false;
     }
@@ -54,16 +58,15 @@ public class HandManager : MonoBehaviour
 
     void Clear()
     {
-        HandRender.sprite = null;
         CurrentItem = null;
         SlotIndex = -1;
     }
 
-    public void Attack()
+    private void OnDrawGizmosSelected()
     {
-        if (CurrentItem.ITEMTYPE == ItemType.Weapon)
+        if (attackPoint != null)
         {
-            
+            Gizmos.DrawWireSphere(attackPoint.position, attackRange);
         }
     }
 
@@ -81,75 +84,73 @@ public class HandManager : MonoBehaviour
         }
     }
 
-    public void Harvest()
+    public void FirstAction()
     {
-        if (Game.GameManager.hit.collider != null)
+        Collider[] Entitys = Physics.OverlapSphere(attackPoint.position, attackRange, EntitysLayer);
+
+        if (CurrentItem != null)
         {
-            if (Game.GameManager.hit.collider.tag == "Tree" || Game.GameManager.hit.collider.tag == "TreeTrigger")
+            if (Time.time > timetemp + CurrentItem.About.FireRate)
             {
-                if (CurrentItem != null && CurrentItem.ITEMTYPE == ItemType.Tools)
+                foreach (var item in Entitys)
                 {
-                    if (Time.time > timetemp + CurrentItem.About.FireRate)
+                    if (item.GetComponent<EntityLife>() != null)
                     {
-                        if (Game.GameManager.hit.collider.GetComponent<Trees>())
-                        {
-                            Game.GameManager.hit.collider.GetComponent<Trees>().DoDamage(CurrentItem, CurrentItem.About.BlockDamage);
-                        }
-                        else if (Game.GameManager.hit.collider.GetComponentInChildren<Trees>())
-                        {
-                            Game.GameManager.hit.collider.GetComponentInChildren<Trees>().DoDamage(CurrentItem, CurrentItem.About.BlockDamage);
-                        }
-                        HandTransform.GetComponent<Animator>().SetTrigger("Play");
-                        timetemp = Time.time;
+                        item.GetComponent<EntityLife>().DoDamage(CurrentItem.About.EntityDamage, "Player", true);
                     }
-                }
-                else if (OnHand)
-                {
-                    if (Time.time > timetemp + Hand.FireRate)
+                    if (item.GetComponent<Trees>() != null)
                     {
-                        if (Game.GameManager.hit.collider.GetComponent<Trees>())
-                        {
-                            Game.GameManager.hit.collider.GetComponent<Trees>().DoDamage(Hand, Hand.DamageBlock);
-                        }
-                        else if (Game.GameManager.hit.collider.GetComponentInChildren<Trees>())
-                        {
-                            Game.GameManager.hit.collider.GetComponentInChildren<Trees>().DoDamage(Hand, Hand.DamageBlock);
-                        }
-                        HandTransform.GetComponent<Animator>().SetTrigger("Play");
-                        timetemp = Time.time;
+                        item.GetComponent<Trees>().Damage(CurrentItem, CurrentItem.About.BlockDamage);
                     }
-                }
-            }
-            else
-            {
-                if (CurrentItem != null && CurrentItem.ITEMTYPE == ItemType.Tools)
-                {
-                    if (Time.time > timetemp + CurrentItem.About.FireRate)
-                    {
-                        Game.GameManager.t.DamageBloco(CurrentItem.About.BlockDamage);
-                        HandTransform.GetComponent<Animator>().SetTrigger("Play");
-                        timetemp = Time.time;
-                    }
-                }
-                else if (OnHand)
-                {
-                    if (Time.time > timetemp + Hand.FireRate)
-                    {
-                        Game.GameManager.t.DamageBloco(Hand.DamageBlock);
-                        HandTransform.GetComponent<Animator>().SetTrigger("Play");
-                        timetemp = Time.time;
-                    }
+                    GetComponent<Animator>().SetTrigger("Attack");
+                    Game.GameManager.PopUpDamage(Camera.main.WorldToScreenPoint(item.transform.position), CurrentItem.About.EntityDamage);
+                    Debug.Log("Attacked : " + item.name);
+                    timetemp = Time.time;
                 }
             }
         }
-        else
+        else if (OnHand)
         {
-            if (CurrentItem != null && CurrentItem.ITEMTYPE == ItemType.Tools)
+            if (Time.time > timetemp + Hand.FireRate)
+            {
+                foreach (var item in Entitys)
+                {
+                    if (item.GetComponent<EntityLife>() != null)
+                    {
+                        item.GetComponent<EntityLife>().DoDamage(CurrentItem.About.EntityDamage, "Player", true);
+                    }
+                    if (item.GetComponent<Trees>() != null)
+                    {
+                        item.GetComponent<Trees>().Damage(CurrentItem, CurrentItem.About.BlockDamage);
+                    }
+                    GetComponent<Animator>().SetTrigger("Attack");
+                    Game.GameManager.PopUpDamage(Camera.main.WorldToScreenPoint(item.transform.position), Hand.DamageEnity);
+                    Debug.Log("Attacked : " + item.name);
+                    timetemp = Time.time;
+                }
+            }
+        }
+    }
+
+
+    public void SecondAction()
+    {
+        if (CurrentItem.ITEMTYPE == ItemType.Weapon)
+        {
+
+        }
+        else if (CurrentItem.ITEMTYPE == ItemType.Block)
+        {
+            PlaceBlock();
+        }
+        else if (CurrentItem.ITEMTYPE == ItemType.Tools)
+        {
+            if (CurrentItem != null)
             {
                 if (Time.time > timetemp + CurrentItem.About.FireRate)
                 {
                     Game.GameManager.t.DamageBloco(CurrentItem.About.BlockDamage);
-                    HandTransform.GetComponent<Animator>().SetTrigger("Play");
+                    GetComponent<Animator>().SetTrigger("Attack");
                     timetemp = Time.time;
                 }
             }
@@ -158,10 +159,14 @@ public class HandManager : MonoBehaviour
                 if (Time.time > timetemp + Hand.FireRate)
                 {
                     Game.GameManager.t.DamageBloco(Hand.DamageBlock);
-                    HandTransform.GetComponent<Animator>().SetTrigger("Play");
+                    GetComponent<Animator>().SetTrigger("Attack");
                     timetemp = Time.time;
                 }
             }
+        }
+        else
+        {
+
         }
     }
 
@@ -208,38 +213,9 @@ public class HandManager : MonoBehaviour
                 }
             }
 
-            if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Joystick1Button5))
+            if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Joystick1Button5))
             {
-                if (Game.GameManager.hit.collider != null)
-                {
-                    if (Game.GameManager.hit.collider.tag == "Tree")
-                    {
-                        Harvest();
-                    }
-                    else if (Game.GameManager.hit.collider.tag == "TreeTrigger")
-                    {
-                        Harvest();
-                    }
-                    else if (Game.GameManager.hit.collider.tag == "Entity")
-                    {
-                        if (Time.time > timetemp + CurrentItem.About.FireRate)
-                        {
-                            Game.GameManager.PopUpDamage(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0), CurrentItem.About.EntityDamage);
-
-                            HandTransform.GetComponent<Animator>().SetTrigger("Play");
-                            Game.GameManager.hit.collider.GetComponentInParent<EntityLife>().DoDamage(CurrentItem.About.EntityDamage, "Player", true);
-                            timetemp = Time.time;
-                        }
-                    }
-                    else
-                    {
-                        Harvest();
-                    }
-                }
-                else
-                {
-                    Harvest();
-                }
+                FirstAction();
             }
 
             if (Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.Joystick1Button4))
@@ -252,44 +228,12 @@ public class HandManager : MonoBehaviour
                     }
                     else
                     {
-                        #region PlaceBlock EnterCave
-                        if (Game.GameManager.t.type == TypeBlock.LightBlockON)
-                        {
-                            
-                            return;
-                        }
-                        else
-                        {
-                            PlaceBlock();
-                        }
-                        #endregion
+                        SecondAction();
                     }
                 }
                 else
                 {
-                    #region PlaceBlock EnterCave
-                    if (Game.GameManager.t.type == TypeBlock.RockHole)
-                    {
-                        if (Application.loadedLevel == 2)
-                        {
-                            //WorldManager.This.ChangeWorld("Map", Game.GameManager.t.x, Game.GameManager.t.y);
-                        }
-                        else
-                        {
-                            //WorldManager.This.ChangeWorld("Cave", Game.GameManager.t.x, Game.GameManager.t.y);
-                        }
-                        return;
-                    }
-                    else if (Game.GameManager.t.type == TypeBlock.LightBlockON)
-                    {
-
-                        return;
-                    }
-                    else
-                    {
-                        PlaceBlock();
-                    }
-                    #endregion
+                    SecondAction();
                 }
             }
         }
@@ -308,38 +252,9 @@ public class HandManager : MonoBehaviour
                 }
             }
 
-            if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Joystick1Button5))
+            if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Joystick1Button5))
             {
-                if (Game.GameManager.hit.collider != null)
-                {
-                    if (Game.GameManager.hit.collider.tag == "Tree")
-                    {
-                        Harvest();
-                    }
-                    else if (Game.GameManager.hit.collider.tag == "TreeTrigger")
-                    {
-                        Harvest();
-                    }
-                    else if (Game.GameManager.hit.collider.tag == "Entity")
-                    {
-                        if (Time.time > timetemp + Hand.FireRate)
-                        {
-                            Game.GameManager.PopUpDamage(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0), Hand.DamageEnity);
-
-                            HandTransform.GetComponent<Animator>().SetTrigger("Play");
-                            Game.GameManager.hit.collider.GetComponentInParent<EntityLife>().DoDamage(Hand.DamageEnity, "Player", true);
-                            timetemp = Time.time;
-                        }
-                    }
-                    else
-                    {
-                        Harvest();
-                    }
-                }
-                else
-                {
-                    Harvest();
-                }
+                FirstAction();
             }
         }
         else

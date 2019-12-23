@@ -12,7 +12,7 @@ public class MainMenu : Menus
 
     void Start()
     {
-        Version.text = "©2019 Darckcomsoft.";
+        Version.text = "©2020 - Darckcomsoft. V" + Game.GameManager.Version;
     }
 
     public void ExitGame()

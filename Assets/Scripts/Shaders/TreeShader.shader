@@ -65,7 +65,7 @@
                 o.pos *= _HueVariation.a;
                 //o.pos = mul(unity_ObjectToWorld, v.vertex).xyz * step(_HueVariation.r+ _HueVariation.g+ _HueVariation.b,rand(mul(unity_ObjectToWorld, v.vertex).yyy))* _HueVariation.rgb;
                 #endif
- //gradient = _WindYShake - mul(unity_ObjectToWorld, v.vertex).y;
+                //gradient = _WindYShake - mul(unity_ObjectToWorld, v.vertex).y;
                     
                 #ifdef ACTIVATE_WIND  
                     if (v.vertex.y >= 0) {

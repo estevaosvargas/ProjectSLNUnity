@@ -104,8 +104,11 @@ public class Vilanger : Pathfindingentity
                 {
                     if (chunk != Cuerrent_Chunk)
                     {
-                        Chunk lastchunk = Cuerrent_Chunk;
-                        lastchunk.Entitys.Remove(this);
+                        if (Cuerrent_Chunk != null)
+                        {
+                            Chunk lastchunk = Cuerrent_Chunk;
+                            lastchunk.Entitys.Remove(this);
+                        }
 
                         Cuerrent_Chunk = chunk;
                         Cuerrent_Chunk.Entitys.Add(this);

@@ -72,8 +72,6 @@ public class DumbEntity : EntityLife
 
                 if (distances <= Distance)
                 {
-                    GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.y;
-
                     if (distances <= 1)
                     {
                         body.velocity = new Vector3(0, 0, 0) * damping;

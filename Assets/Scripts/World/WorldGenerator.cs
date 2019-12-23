@@ -21,11 +21,9 @@ public class WorldGenerator : DCallBack
 
     public Transform SlectedBlock;
     public WorldType CurrentWorld;
-    public int Seed = 0;
-    public int Small_Seed = 0;
     public int VillaPorcetage = 10;
     public Texture2D HeightTeste;
-
+    public bool IsMainMenu = false;
     private System.Random randomValue;
 
     [Header("TimeData")]
@@ -39,24 +37,26 @@ public class WorldGenerator : DCallBack
         chunkMap = new Dictionary<Vector3, Chunk>();
         ClientchunkMap = new Dictionary<Vector3, bool>();
 
-        if (DarckNet.Network.IsServer)
+        if (!IsMainMenu)
         {
-            DarckNet.Network.Instantiate(SUN, Vector3.zero, Quaternion.identity, World_ID);
-            Debug.Log("SERVER: Sun Spawned");
-        }
+            if (DarckNet.Network.IsServer)
+            {
+                DarckNet.Network.Instantiate(SUN, Vector3.zero, Quaternion.identity, World_ID);
+                Debug.Log("SERVER: Sun Spawned");
+            }
 
-        randomValue = new System.Random(Game.WorldGenerator.Seed);
+            randomValue = new System.Random(Game.GameManager.Seed);
+        }
+        else
+        {
+            
+        }
     }
 
     public void Setplayer_data()
     {
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
-            System.Random randvilla = new System.Random(Game.GameManager.Seed);
-
-            Seed = Game.GameManager.Seed;
-            Small_Seed = randvilla.Next(-9999, 9999);
-
             Player = Game.GameManager.CurrentPlayer.MyObject.transform;
             Player.GetComponent<EntityPlayer>().World = this.transform;
             Cam.target = Game.GameManager.CurrentPlayer.MyObject.transform;
@@ -94,9 +94,8 @@ public class WorldGenerator : DCallBack
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
             WorldManager.This.SpawnPlayer(0, 0, 0, World_ID);
+            Game.ConsoleInGame.LoadingScreen_Hide();
         }
-        Game.ConsoleInGame.LoadingScreen_Hide();
-        Debug.Log("Teste Random : " + RandomNumber());
     }
 
 
