@@ -128,6 +128,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 1
+  MaxHP: 100
+  IsAlive: 0
+  LastAttacker: 
   Destroying: {fileID: 212592084834586446}
   FX: {fileID: 1836075418772876, guid: c5d28b2a147fed64186e44abb61799fd, type: 3}
   ThisTreeTile:
@@ -366,6 +369,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BushSmall
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 1ec2d9031cb02df4abf3fd87ca81fb1b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -1504981713932161579, guid: 1ec2d9031cb02df4abf3fd87ca81fb1b, type: 3}

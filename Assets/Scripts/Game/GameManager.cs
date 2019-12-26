@@ -286,19 +286,11 @@ public class GameManager : UIElements
 
         if (Playing)
         {
-            if (!Application.isFocused)
-            {
-                if (Game.MenuManager.CheckifEnable("InGameMenu") == false)
-                {
-                    Game.MenuManager.OpenMenuName("InGameMenu");
-                }
-            }
-
             if (LastMouseX != (int)Input.mousePosition.x || LastMouseY != (int)Input.mousePosition.y)
             {
                 Ray rayy = Camera.main.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y + mouseplus, Input.mousePosition.z));
 
-                if (Physics.Raycast(rayy, out hit, 10000))
+                if (Physics.Raycast(rayy, out hit, 100, 9))
                 {
                     mouseX = hit.point.x;
                     mouseY = hit.point.y;
@@ -727,6 +719,7 @@ public class StaticLife : MonoBehaviour
 public class Entity : MonoBehaviour
 {
     public NetWorkView Net;
+    public Chunk Cuerrent_Chunk;
     public string PrefabName;
     public string ID;
 

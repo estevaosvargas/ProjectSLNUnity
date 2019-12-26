@@ -143,8 +143,7 @@ public class MenuManager : Menus
     public GameObject popup;
 
     public BarIcons LifeBar;
-    public BarIcons AguaBar;
-    public BarIcons FoodBar;
+    public BarIcons EnergyBar;
     public BarIcons ManaBar;
 
     void Start()

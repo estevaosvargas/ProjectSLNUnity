@@ -247,6 +247,7 @@ public class Chunk : MonoBehaviour
         GameObject Cow = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/Cow"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
         Entitys.Add(Cow.GetComponent<EntityLife>());
         Cow.GetComponent<EntityLife>().PrefabName = "Cow";
+        Cow.GetComponent<SmartEntity>().Cuerrent_Chunk = this;
     }
 
     public void OnTileTypeChange(Tile tile)
@@ -352,7 +353,7 @@ public class Chunk : MonoBehaviour
             }
         }
 
-        foreach (var ai in Entitys.ToArray())
+        foreach (var ai in Entitys)
         {
             if (ai != null)
             {

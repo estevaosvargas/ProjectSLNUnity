@@ -26,8 +26,6 @@ public class SmartEntity : Pathfindingentity
     private float timestep;
     public float UpdateRate = 20;
 
-    public Chunk Cuerrent_Chunk;
-
     public bool ISVISIBLE = false;
 
     public int X;
@@ -65,6 +63,7 @@ public class SmartEntity : Pathfindingentity
 
     public override void OnDead()
     {
+        Cuerrent_Chunk.Entitys.Remove(this);
         DarckNet.Network.Destroy(this.gameObject);
         base.OnDead();
     }
@@ -104,11 +103,9 @@ public class SmartEntity : Pathfindingentity
                 {
                     if (chunk != Cuerrent_Chunk)
                     {
-                        if (Cuerrent_Chunk != null)
-                        {
-                            Chunk lastchunk = Cuerrent_Chunk;
-                            lastchunk.Entitys.Remove(this);
-                        }
+                        Chunk lastchunk = Cuerrent_Chunk;
+                        lastchunk.Entitys.Remove(this);
+
 
                         Cuerrent_Chunk = chunk;
                         Cuerrent_Chunk.Entitys.Add(this);

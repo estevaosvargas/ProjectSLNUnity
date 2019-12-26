@@ -568,7 +568,7 @@ namespace DarckNet
                         }
                         else
                         {
-                            Debug.LogError("Sorry this object already Destroyed or isn't over network");
+                            Debug.LogError("Sorry, this object: " + Object.name + " already Destroyed or isn't over network");
                         }
                     }
                     else

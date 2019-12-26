@@ -10,7 +10,7 @@ public class Vilanger : Pathfindingentity
     [System.NonSerialized] public Animator Anim;
     [System.NonSerialized] public float Distance = 10;
     public Vector2 LastPosition;
-    public Chunk Cuerrent_Chunk;
+
     private Vector3 velocity;
     public float damping = 1;
     public bool RunAway = false;

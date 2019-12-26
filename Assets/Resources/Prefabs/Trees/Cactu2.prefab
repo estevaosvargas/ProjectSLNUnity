@@ -48,6 +48,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 1
+  MaxHP: 100
+  IsAlive: 0
+  LastAttacker: 
   Destroying: {fileID: 212878726081491998}
   FX: {fileID: 1836075418772876, guid: c5d28b2a147fed64186e44abb61799fd, type: 3}
   ThisTreeTile:
@@ -160,7 +163,7 @@ GameObject:
   - component: {fileID: 4587699199124737668}
   - component: {fileID: 4823863873132278962}
   - component: {fileID: 876578972743723846}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cactu2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

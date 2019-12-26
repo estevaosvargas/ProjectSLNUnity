@@ -46,15 +46,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 1
+  MaxHP: 100
+  IsAlive: 0
+  LastAttacker: 
   Destroying: {fileID: 7324574479753765234}
   FX: {fileID: 1836075418772876, guid: c5d28b2a147fed64186e44abb61799fd, type: 3}
   ThisTreeTile:
+    type: 0
     typeVariante: 0
+    PLACER_DATA: 0
+    typego: 0
     ConnecyToNightboors: 0
     IsColider: 0
     RenderLevel: 0
     TileBiome: 0
     Emessive: 0
+    OcupedByOther: 0
     Hora: 0
     Dia: 0
     Mes: 0
@@ -107,6 +114,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -139,7 +147,7 @@ SpriteRenderer:
   m_Size: {x: 0.6333333, y: 0.73333335}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1001 &1977709376090947128
@@ -149,11 +157,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7441487254475402614}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: 00b7fedce06dcc941a54474e258cd84e,
-        type: 3}
-      propertyPath: m_Name
-      value: grassteste
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 00b7fedce06dcc941a54474e258cd84e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -228,7 +231,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 3d855bd61a503cd4d9cc876e438d48e8, type: 2}
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 00b7fedce06dcc941a54474e258cd84e,
+        type: 3}
+      propertyPath: m_Name
+      value: grassteste
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 00b7fedce06dcc941a54474e258cd84e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 00b7fedce06dcc941a54474e258cd84e, type: 3}
 --- !u!4 &6775816257427313954 stripped

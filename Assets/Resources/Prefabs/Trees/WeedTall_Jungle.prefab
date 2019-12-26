@@ -127,6 +127,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 1
+  MaxHP: 100
+  IsAlive: 0
+  LastAttacker: 
   Destroying: {fileID: 212485373705599694}
   FX: {fileID: 1836075418772876, guid: c5d28b2a147fed64186e44abb61799fd, type: 3}
   ThisTreeTile:
@@ -165,7 +168,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3d855bd61a503cd4d9cc876e438d48e8, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -264,11 +267,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 3d855bd61a503cd4d9cc876e438d48e8, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: -927199367670048503, guid: 9ccc75ac2d4f754468ad59c3443dffb8,
         type: 3}
       propertyPath: m_Name
       value: WeedTallJungle
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 9ccc75ac2d4f754468ad59c3443dffb8,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -1504981713932161579, guid: 9ccc75ac2d4f754468ad59c3443dffb8, type: 3}

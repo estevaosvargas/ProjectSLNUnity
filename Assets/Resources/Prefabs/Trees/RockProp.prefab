@@ -49,6 +49,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -81,7 +82,7 @@ SpriteRenderer:
   m_Size: {x: 0.7, y: 0.6333333}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &61798696004257994
@@ -149,21 +150,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 100
+  MaxHP: 100
+  IsAlive: 0
+  LastAttacker: 
   Destroying: {fileID: 212127474124715476}
   FX: {fileID: 1836075418772876, guid: c5d28b2a147fed64186e44abb61799fd, type: 3}
   ThisTreeTile:
+    type: 0
     typeVariante: 0
+    PLACER_DATA: 0
+    typego: 0
     ConnecyToNightboors: 0
     IsColider: 0
     RenderLevel: 0
     TileBiome: 0
     Emessive: 0
+    OcupedByOther: 0
     Hora: 0
     Dia: 0
     Mes: 0
     HP: 100
   ItemDrop: 0
   DropQuanty: 5
+  MaterialHit: 0
 --- !u!1 &1925809481632828
 GameObject:
   m_ObjectHideFlags: 0
@@ -209,6 +218,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -241,6 +251,6 @@ SpriteRenderer:
   m_Size: {x: 0.6333333, y: 0.73333335}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0

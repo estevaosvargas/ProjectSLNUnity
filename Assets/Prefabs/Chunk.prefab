@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4894482176488452}
   - component: {fileID: 114536837246406512}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Chunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,11 +47,11 @@ MonoBehaviour:
   TileObj: {fileID: 1635427906649808, guid: 82fde870c2d818744ba97904da40f2c7, type: 3}
   tilelist: []
   Entitys: []
-  Tiles_Save: []
   Players: 
   TimeUpdate: 10
+  HaveAnyBuild: 0
+  AsSave: 0
   DefaultTileMaterial: {fileID: 2100000, guid: 043170319843d8445983b4dcebd92201, type: 2}
   DefaultTransMaterial: {fileID: 2100000, guid: eb8bd7a799865d043ad533d09292f68a,
     type: 2}
   MeshTile: {fileID: 0}
-  MeshTileTran: {fileID: 0}

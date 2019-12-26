@@ -5143,8 +5143,8 @@ MonoBehaviour:
   World: {fileID: 0}
   Status:
     Race: 1
-    Water: 80
-    Food: 80
+    Energy: 80
+    MaxEnergy: 80
     Mana: 80
     Age: 19
     Friends: 0
@@ -5186,7 +5186,7 @@ MonoBehaviour:
   AttackSword: {fileID: 95925241092886188}
   animstatus: 0
   Speed: 2
-  DashSpeed: 1
+  DashSpeed: 5
   IsVisible: 0
   IsMe: 0
   FootParticleCount: 5
@@ -5194,6 +5194,7 @@ MonoBehaviour:
   IsOnDamageArea: 0
   DamageRate: 1
   deshtime: 1
+  StatusUpdateRate: 1
   inputDirection: {x: 0, y: 0, z: 0}
 --- !u!114 &114067372861037966
 MonoBehaviour:

@@ -47,6 +47,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 100
+  MaxHP: 100
+  IsAlive: 0
+  LastAttacker: 
   Destroying: {fileID: 212954794786110878}
   FX: {fileID: 1836075418772876, guid: c5d28b2a147fed64186e44abb61799fd, type: 3}
   ThisTreeTile:
@@ -173,7 +176,7 @@ GameObject:
   - component: {fileID: 407525821185350578}
   - component: {fileID: 8718076265573278084}
   - component: {fileID: 1910563898736013021}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: palmetree
   m_TagString: Untagged
   m_Icon: {fileID: 0}

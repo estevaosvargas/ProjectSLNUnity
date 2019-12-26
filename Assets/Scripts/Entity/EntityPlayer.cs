@@ -39,6 +39,9 @@ public class EntityPlayer : EntityLife
     private float dashtemp;
     public float deshtime = 1;
 
+    public float StatusUpdateRate = 1;
+    private float Statustimestep;
+
     void Start()
     {
         Net = GetComponent<NetWorkView>();
@@ -62,6 +65,9 @@ public class EntityPlayer : EntityLife
             Game.GameManager.CurrentPlayer.MyPlayerMove.IsAlive = true;
 
             Game.WorldGenerator.Setplayer_data();
+
+            Game.MenuManager.LifeBar.RefreshBar(HP);
+            Game.MenuManager.EnergyBar.RefreshBar(Status.Energy);
 
             body.isKinematic = false;
         }
@@ -176,6 +182,16 @@ public class EntityPlayer : EntityLife
                     {
                         Status.UpdateStatus();
 
+                        if (Time.time > Statustimestep + StatusUpdateRate)
+                        {
+                            if (Status.Energy < Status.MaxEnergy)
+                            {
+                                Status.Energy += 10;
+                                Game.MenuManager.EnergyBar.RefreshBar(Status.Energy);
+                            }
+                            Statustimestep = Time.time;
+                        }
+
                         if (IsOnDamageArea)
                         {
                             if (Time.time > timestep + DamageRate)
@@ -193,28 +209,39 @@ public class EntityPlayer : EntityLife
 
                         if (!NetStats.Dashing)
                         {
+                            Vector3 lookPos = new Vector3(Game.GameManager.mouseX, Game.GameManager.mouseY, Game.GameManager.mouseZ);
+                            lookPos = lookPos - transform.position;
+
                             if (Input.GetKeyDown(KeyCode.Space))
                             {
-                                Vector3 daPos = new Vector3(Input.GetAxis("Horizontal") * DashSpeed, 0, Input.GetAxis("Vertical") * DashSpeed);
-                                //lookPos = lookPos - transform.position;
+                                if (Status.Energy > 0)
+                                {
+                                    Vector3 daPos = lookPos;
+                                    //lookPos = lookPos - transform.position;
 
-                                Anim.SetTrigger("Dash");
+                                    Anim.SetTrigger("Dash");
 
-                                Anim.SetFloat("X", Input.GetAxis("Horizontal"));
-                                Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+                                    Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                                    Anim.SetFloat("Y", Input.GetAxis("Vertical"));
 
-                                transform.LookAt(new Vector3(transform.position.x + daPos.x, 0, transform.position.z + daPos.z));
-                                body.AddForce(daPos, ForceMode.Impulse);
-                                dashdirection = daPos;
-                                NetStats.Dashing = true;
-                                return;
+
+                                    body.AddForce(transform.forward * DashSpeed, ForceMode.Impulse);
+                                    dashdirection = daPos;
+                                    NetStats.Dashing = true;
+                                    Status.Energy -= 35;
+                                    Game.MenuManager.EnergyBar.RefreshBar(Status.Energy);
+                                    return;
+                                }
+                                else
+                                {
+                                    Game.MenuManager.PopUpName("Out Of Stamina!");
+                                }
                             }
                             Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxisRaw("Horizontal"), 0, CrossPlatformInputManager.GetAxisRaw("Vertical"));
 
                             body.velocity = Move(movement.normalized) * Speed;
 
-                            Vector3 lookPos = new Vector3(Game.GameManager.mouseX, Game.GameManager.mouseY, Game.GameManager.mouseZ);
-                            lookPos = lookPos - transform.position;
+                            
 
                             if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
                             {
@@ -365,9 +392,10 @@ public class EntityPlayer : EntityLife
         {
             if (collision.tag == "TreeTrigger")
             {
-                SpriteRenderer sprite = collision.transform.GetComponentInParent<SpriteRenderer>();
-
-                sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0.3f);
+                Trees tree = collision.transform.GetComponentInParent<Trees>();
+                
+                tree.Enable_LeafMesh.SetActive(false);
+                tree.Disable_LeafMesh.SetActive(true);
             }
             else if (collision.tag == "ItemDrop")
             {
@@ -394,9 +422,10 @@ public class EntityPlayer : EntityLife
         {
             if (collision.tag == "TreeTrigger")
             {
-                SpriteRenderer sprite = collision.transform.GetComponentInParent<SpriteRenderer>();
+                Trees tree = collision.transform.GetComponentInParent<Trees>();
 
-                sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1f);
+                tree.Enable_LeafMesh.SetActive(true);
+                tree.Disable_LeafMesh.SetActive(false);
             }
             else if (collision.tag == "ItemDrop")
             {
@@ -515,8 +544,8 @@ public class LifeStatus
     [Header("CharCracterstic")]
     public CharRace Race;
     [Header("CharStatus")]
-    public float Water = 80;
-    public float Food = 80;
+    public int Energy = 100;
+    public int MaxEnergy = 100;
     public float Mana = 80;
     [Header("SocialStatus")]
     public int Age = 19;

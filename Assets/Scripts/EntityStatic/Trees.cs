@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class Trees : StaticLife
 {
-    public SpriteRenderer Destroying;
     public GameObject FX;
     float color = 0;
     public Tile ThisTreeTile;
     public int ItemDrop = 2;
     public int DropQuanty = 10;
     public MaterialHitType MaterialHit;
+
+    public GameObject Enable_LeafMesh;
+    public GameObject Disable_LeafMesh;
 
     public void Damage(ItemData item, int damage)
     {

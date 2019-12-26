@@ -94,19 +94,23 @@ public class HandManager : MonoBehaviour
             {
                 foreach (var item in Entitys)
                 {
-                    if (item.GetComponent<EntityLife>() != null)
+                    if (item.tag != "TreeTrigger")
                     {
-                        item.GetComponent<EntityLife>().DoDamage(CurrentItem.About.EntityDamage, "Player", true);
+                        if (item.GetComponent<EntityLife>() != null)
+                        {
+                            item.GetComponent<EntityLife>().DoDamage(CurrentItem.About.EntityDamage, "Player", true);
+                        }
+                        if (item.GetComponent<Trees>() != null)
+                        {
+                            item.GetComponent<Trees>().Damage(CurrentItem, CurrentItem.About.BlockDamage);
+                        }
+                        GetComponent<Animator>().SetTrigger("Attack");
+                        Game.GameManager.PopUpDamage(Camera.main.WorldToScreenPoint(item.transform.position), CurrentItem.About.EntityDamage);
+                        Debug.Log("Attacked : " + item.name);
                     }
-                    if (item.GetComponent<Trees>() != null)
-                    {
-                        item.GetComponent<Trees>().Damage(CurrentItem, CurrentItem.About.BlockDamage);
-                    }
-                    GetComponent<Animator>().SetTrigger("Attack");
-                    Game.GameManager.PopUpDamage(Camera.main.WorldToScreenPoint(item.transform.position), CurrentItem.About.EntityDamage);
-                    Debug.Log("Attacked : " + item.name);
-                    timetemp = Time.time;
                 }
+
+                timetemp = Time.time;
             }
         }
         else if (OnHand)
@@ -115,19 +119,23 @@ public class HandManager : MonoBehaviour
             {
                 foreach (var item in Entitys)
                 {
-                    if (item.GetComponent<EntityLife>() != null)
+                    if (item.tag != "TreeTrigger")
                     {
-                        item.GetComponent<EntityLife>().DoDamage(CurrentItem.About.EntityDamage, "Player", true);
+                        if (item.GetComponent<EntityLife>() != null)
+                        {
+                            item.GetComponent<EntityLife>().DoDamage(Hand.DamageEnity, "Player", true);
+                        }
+                        if (item.GetComponent<Trees>() != null)
+                        {
+                            item.GetComponent<Trees>().Damage(Hand, Hand.DamageBlock);
+                        }
+                        GetComponent<Animator>().SetTrigger("Attack");
+                        Game.GameManager.PopUpDamage(Camera.main.WorldToScreenPoint(item.transform.position), Hand.DamageEnity);
+                        Debug.Log("Attacked : " + item.name);
                     }
-                    if (item.GetComponent<Trees>() != null)
-                    {
-                        item.GetComponent<Trees>().Damage(CurrentItem, CurrentItem.About.BlockDamage);
-                    }
-                    GetComponent<Animator>().SetTrigger("Attack");
-                    Game.GameManager.PopUpDamage(Camera.main.WorldToScreenPoint(item.transform.position), Hand.DamageEnity);
-                    Debug.Log("Attacked : " + item.name);
-                    timetemp = Time.time;
                 }
+
+                timetemp = Time.time;
             }
         }
     }
