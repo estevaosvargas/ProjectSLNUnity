@@ -7,7 +7,7 @@ using UnityStandardAssets.CrossPlatformInput;
 public class EntityPlayer : EntityLife
 {
     public Animator Anim;
-    public Rigidbody body;
+    public CharacterController body;
     public Inventory Inve;
     public Transform World;
     public LifeStatus Status;
@@ -42,6 +42,8 @@ public class EntityPlayer : EntityLife
     public float StatusUpdateRate = 1;
     private float Statustimestep;
 
+    private Vector3 moveVector;
+
     void Start()
     {
         Net = GetComponent<NetWorkView>();
@@ -69,7 +71,7 @@ public class EntityPlayer : EntityLife
             Game.MenuManager.LifeBar.RefreshBar(HP);
             Game.MenuManager.EnergyBar.RefreshBar(Status.Energy);
 
-            body.isKinematic = false;
+            
         }
         else
         {
@@ -78,7 +80,7 @@ public class EntityPlayer : EntityLife
                 Destroy(item);
             }
 
-            body.isKinematic = true;
+           
         }
     }
 
@@ -108,7 +110,7 @@ public class EntityPlayer : EntityLife
             }
             else if (tile.type == TypeBlock.IceWater)
             {
-                Speed = 4;
+                Speed = 5f;
             }
             else
             {
@@ -169,6 +171,9 @@ public class EntityPlayer : EntityLife
         rotation.eulerAngles = angle;
         return rotation * directionVector;
     }
+
+
+
     void Update()
     {
         if (IsVisible)//Do the Client Update, and Server.
@@ -225,7 +230,7 @@ public class EntityPlayer : EntityLife
                                     Anim.SetFloat("Y", Input.GetAxis("Vertical"));
 
 
-                                    body.AddForce(transform.forward * DashSpeed, ForceMode.Impulse);
+                                    //body.AddForce(transform.forward * DashSpeed, ForceMode.Impulse);
                                     dashdirection = daPos;
                                     NetStats.Dashing = true;
                                     Status.Energy -= 35;
@@ -239,20 +244,18 @@ public class EntityPlayer : EntityLife
                             }
                             Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxisRaw("Horizontal"), 0, CrossPlatformInputManager.GetAxisRaw("Vertical"));
 
-                            body.velocity = Move(movement.normalized) * Speed;
+                            moveVector = Move(movement.normalized);
 
-                            
-
-                            if (Input.GetKey(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
+                            if (body.isGrounded == false)
                             {
-
-                                Anim.SetFloat("X", 0);
-                                Anim.SetFloat("Y", 0);
-
-                                transform.LookAt(new Vector3(transform.position.x + lookPos.x, 0, transform.position.z + lookPos.z));
+                                //Add our gravity Vecotr
+                                moveVector += Physics.gravity;
                             }
 
+                            body.Move(moveVector * Speed * Time.deltaTime);
+
                             transform.LookAt(new Vector3(transform.position.x + lookPos.x, 0, transform.position.z + lookPos.z));
+                            transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
 
                             if (NetStats.handhide == true)
                             {
@@ -323,7 +326,7 @@ public class EntityPlayer : EntityLife
                         }
                         else
                         {
-                            //body.velocity = dashdirection * DashSpeed;
+                            body.Move(Move(new Vector3(0,0,1)) * DashSpeed * Time.deltaTime);
                         }
 
                         #region UpDateOnMove

@@ -48,21 +48,6 @@ public class Chunk : MonoBehaviour
             MakeChunk();
     }
 
-    private void OnDrawGizmos()
-    {
-        if (Game.GameManager.SHOWDEBUG)
-        {
-            foreach (var tilecity in tilelist)
-            {
-                if (Game.CityManager.GetCity(tilecity.CityPoint) != null)
-                {
-                    Gizmos.color = Color.blue;
-                    Gizmos.DrawCube(new Vector3(tilecity.x + 0.5f, tilecity.y, tilecity.z + 0.5f), Vector3.one);
-                }
-            }
-        }
-    }
-
     void Start()
     {
         if (Game.GameManager.SinglePlayer)
@@ -165,6 +150,7 @@ public class Chunk : MonoBehaviour
                 Vector3 point = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetPoint(tiles[i, j].x, tiles[i, j].z, 0);
 
                 tiles[i, j].CityPoint = new DataVector3((int)point.x, (int)point.y, 0);
+
 
                 if (tiles[i, j].OwnedByCity)
                 {

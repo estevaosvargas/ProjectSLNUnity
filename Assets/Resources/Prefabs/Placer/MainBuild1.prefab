@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4573140218301574}
   - component: {fileID: 58721097473356106}
-  m_Layer: 2
+  m_Layer: 8
   m_Name: Trigger
   m_TagString: City
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   - component: {fileID: 212982514859263436}
   - component: {fileID: 60056681445416380}
   - component: {fileID: 114332415537504718}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MainBuild1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +99,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -147,8 +147,8 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 1.13, y: 0.51}
+    pivot: {x: 0.0017783851, y: 0.019877115}
+    oldSize: {x: 1.14, y: 0.51}
     newSize: {x: 1.13, y: 0.51}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -180,12 +180,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4cec97bce044ad4eba68caacbbc743d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CityName: 
-  CityId: 
-  Population: 0
-  MaxPopulation: 10
-  Level: 1
-  cityStatus:
-    WorldPopularidade: 0
-    Agrssive: 0
-  Vilangers: []

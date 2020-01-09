@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 212463036757095632}
   - component: {fileID: 60249927421400944}
   - component: {fileID: 114721773741199708}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GeralStore_LV1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,7 +51,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

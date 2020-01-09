@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TreeJungle_Ghost
-  m_Shader: {fileID: 4800000, guid: b94e8784961d40442871cc4130502a53, type: 3}
+  m_Name: Trees02
+  m_Shader: {fileID: 4800000, guid: 4e9e02b7a98a70749a8d4cf7b0442b39, type: 3}
   m_ShaderKeywords: ACTIVATE_WIND EFFECT_HUE_VARIATION ETC1_EXTERNAL_ALPHA GEOM_TYPE_LEAF
     HUE POSITION_BASED _ALPHATEST_ON _WINDQUALITY_BEST
   m_LightmapFlags: 4
@@ -25,10 +25,6 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _CutTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -61,7 +57,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 0dada85335b780c40b9b288646ff5ef7, type: 3}
+        m_Texture: {fileID: 2800000, guid: 8f43b0ea4fe40ad45bde89834652d213, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -104,7 +100,7 @@ Material:
     - _BumpScale: 1
     - _Contrast: 1
     - _Cull: 0
-    - _Cutoff: 0.953
+    - _Cutoff: 0.91
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnableExternalAlpha: 0
@@ -147,24 +143,36 @@ Material:
     - _WindStrength: 0.156
     - _WindYShake: 0
     - _ZWrite: 1
+    - _amplitude: 1.5
     - _b_influence: 0
     - _branches_disp: 0
+    - _frequency: 2
+    - _gain: 0.5
+    - _lacunarity: 2
     - _leaves_wiggle_disp: 0
     - _leaves_wiggle_speed: 0
+    - _monochromatic: 0
+    - _octaves: 7
+    - _offsetX: 0
+    - _offsetY: 0
+    - _power: 1
     - _r_influence: 0
+    - _range: 0.5
+    - _scale: 1
     - _tree_sway_disp: 0
     - _tree_sway_speed: 0
     - _tree_sway_stutter: 0
     - _tree_sway_stutter_influence: 0
-    - _wind_size: 50
+    - _value: 0
+    - _wind_size: 5
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 0.1764706}
+    - _Color: {r: 0.8962264, g: 0.8962264, b: 0.8962264, a: 1}
     - _Couleur: {r: 1, g: 1, b: 1, a: 1}
     - _Emission: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
-    - _HueVariation: {r: 0.257595, g: 1, b: 0.1372549, a: 0.24705882}
-    - _HueVariationColor: {r: 1, g: 0.899874, b: 0, a: 0.2}
+    - _HueVariation: {r: 1, g: 0.75342274, b: 0, a: 0.33333334}
+    - _HueVariationColor: {r: 1, g: 0.5, b: 0, a: 0.27058825}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 1, g: 1, b: 1, a: 0}
     - _SubsurfaceColor: {r: 1, g: 1, b: 1, a: 1}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4000245564821553288}
   - component: {fileID: 2485853385620259032}
   - component: {fileID: 9168702653386995111}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MainBuild2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,7 +84,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3999958980775456806}
   - component: {fileID: 3981767259096944106}
-  m_Layer: 2
+  m_Layer: 8
   m_Name: Trigger
   m_TagString: City
   m_Icon: {fileID: 0}
@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 598474177552184714}
   - component: {fileID: 2184542390870910498}
   - component: {fileID: 6353658493511557760}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -303,16 +303,21 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 86.586
       objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: 29553904efa37814390a5703b52b3965,
-        type: 3}
-      propertyPath: m_Name
-      value: Human_Villanger_house01
-      objectReference: {fileID: 0}
     - target: {fileID: -1504981713932161579, guid: 29553904efa37814390a5703b52b3965,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 49d8649a997fad24db4a4b128cc056d2, type: 2}
+    - target: {fileID: -927199367670048503, guid: 29553904efa37814390a5703b52b3965,
+        type: 3}
+      propertyPath: m_Name
+      value: Human_Villanger_house01
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 29553904efa37814390a5703b52b3965,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 29553904efa37814390a5703b52b3965, type: 3}
 --- !u!4 &5169591751965407252 stripped

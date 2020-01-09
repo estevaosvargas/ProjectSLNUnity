@@ -26,8 +26,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1942962543966904}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1930.626, y: 711.888, z: 0}
-  m_LocalScale: {x: 1.787, y: 1.769, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2.4210274, y: 2.3966413, z: 1.3548}
   m_Children:
   - {fileID: 4196958466470942670}
   - {fileID: 6466003330456019982}
@@ -51,7 +51,6 @@ MonoBehaviour:
   MaxHP: 100
   IsAlive: 0
   LastAttacker: 
-  Destroying: {fileID: 0}
   FX: {fileID: 1836075418772876, guid: c5d28b2a147fed64186e44abb61799fd, type: 3}
   ThisTreeTile:
     type: 0
@@ -294,7 +293,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3149813095802641621}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1080.3728, y: -402.42395, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 1.68}
   m_LocalScale: {x: 0.55959713, y: 0.5652911, z: 1}
   m_Children: []
   m_Father: {fileID: 4403108388797596}
@@ -311,5 +310,5 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.8528078, y: 3.4003105, z: 4.2574015}
-  m_Center: {x: 0.017125696, y: 1.7739134, z: 1.1288486}
+  m_Size: {x: 2.1293573, y: 3.4003105, z: 5.488463}
+  m_Center: {x: -0.12114906, y: 1.7739134, z: 1.7443788}
