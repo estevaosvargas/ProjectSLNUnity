@@ -242,7 +242,7 @@ public class GameManager : UIElements
     public Vector3 testepos;
     void Update()
     {
-        DarckNet.Network.Update();
+        //DarckNet.Network.Update();
 
         #region CursorPointer
         /*if (Input.GetKeyDown(KeyCode.Mouse0))

@@ -40,7 +40,7 @@ public class NetworkingManager : MonoBehaviour
         { 
             Text01.text = DarckNet.Network.PeerStat.ToString();
         }
-        DarckNet.Network.Update();
+        //DarckNet.Network.Update();
     }
 
     private void OnDestroy()

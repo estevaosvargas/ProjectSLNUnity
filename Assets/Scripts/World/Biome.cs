@@ -483,7 +483,24 @@ public static class Biome
 
     public static TypeBlock OceanNormal(int x, int z, Tile tile, float sample)
     {
-        return TypeBlock.Water;
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetValue(x, z, 0);
+
+        if ((int)sample2 == 1)
+        {
+            Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
+
+            tile.OwnedByCity = true;
+
+            if (color == Game.Color("FFFFFF"))//Caiz
+            {
+                return TypeBlock.DirtRoad;
+            }
+            return TypeBlock.Water;
+        }
+        else
+        {
+            return TypeBlock.Water;
+        }
     }
 
     public static TypeBlock Bench(int x, int z, Tile tile, float sample)

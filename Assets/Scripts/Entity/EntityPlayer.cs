@@ -172,8 +172,6 @@ public class EntityPlayer : EntityLife
         return rotation * directionVector;
     }
 
-
-
     void Update()
     {
         if (IsVisible)//Do the Client Update, and Server.

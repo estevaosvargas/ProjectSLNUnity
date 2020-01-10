@@ -48,6 +48,10 @@ namespace DarckNet
         public static bool Ready { get; private set; }
         public static NetPeerStatistics PeerStat;
         public static int DimensionGeral = -1;
+        public static GameObject NetManagerObj;
+
+        public static Thread Netthread;
+
         #endregion
 
         /// <summary>
@@ -62,6 +66,16 @@ namespace DarckNet
             if (Client == null && Server == null)
             {
                 Debug.Log("DarckNet " + NetVersion);
+
+                Runing = true;
+
+                NetManagerObj = new GameObject("DARCKNET: UnityThreadAPI");
+                NetManagerObj.AddComponent<NetUnityThreadAPI>();
+
+                Netthread = new Thread(new ThreadStart(Update));
+                Netthread.Name = "DarckNet unity network";
+                Netthread.IsBackground = true;
+                Netthread.Start();
 
                 NetDeliveryMode = NetDeliveryMethod.UnreliableSequenced;
 
@@ -104,7 +118,6 @@ namespace DarckNet
 
                 Debug.Log("Unique identifier is " + peer.UniqueIdentifier);
                 Ready = true;
-                Runing = true;
 
                 if (ServerSinglePlayer)
                 {
@@ -142,6 +155,17 @@ namespace DarckNet
             if (Server == null && Client == null)
             {
                 Debug.Log("DarckNet " + NetVersion);
+
+                Runing = true;
+
+                NetManagerObj = new GameObject("DARCKNET: NetUnityThreadAPI");
+                NetManagerObj.AddComponent<NetUnityThreadAPI>();
+
+                Netthread = new Thread(new ThreadStart(Update));
+                Netthread.Name = "DarckNet unity network";
+                Netthread.IsBackground = true;
+                Netthread.Start();
+
                 NetDeliveryMode = NetDeliveryMethod.UnreliableSequenced;
 
                 NetPeerConfiguration config = new NetPeerConfiguration(NetConfig.AppIdentifier);
@@ -170,7 +194,6 @@ namespace DarckNet
                 Debug.Log("Unique identifier is " + peer.UniqueIdentifier);
 
                 Ready = true;
-                Runing = true;
 
                 _ISCLIENT = true;
                 _ISSERVER = false;
@@ -384,6 +407,7 @@ namespace DarckNet
                 Players.Clear();
                 ConnectionList.Clear();
 
+                Netthread.Abort();
 
                 DimensionGeral = -1;
 
@@ -422,6 +446,8 @@ namespace DarckNet
                 ConnectionList.Clear();
 
                 DimensionGeral = -1;
+
+                Netthread.Abort();
 
                 Events.Clear();
             }
@@ -631,243 +657,248 @@ namespace DarckNet
         /// <summary>
         ///  Update method network
         /// </summary>
-       public static void Update()
+        private static void Update()
         {
-            if (MyPeer != null)
+            while (Runing)
             {
-                if (IsServer)
+                if (MyPeer != null)
                 {
-                    NetIncomingMessage inc;
-                    while ((inc = Server.ReadMessage()) != null)
+                    if (IsServer)
                     {
-                        switch (inc.MessageType)
+                        NetIncomingMessage inc;
+                        while ((inc = Server.ReadMessage()) != null)
                         {
-                            case NetIncomingMessageType.VerboseDebugMessage:
-                                Debug.LogError(inc.ReadString());
-                                break;
-                            case NetIncomingMessageType.DebugMessage:
-                                Debug.Log(inc.ReadString());
-                                break;
-                            case NetIncomingMessageType.WarningMessage:
-                                Debug.LogWarning(inc.ReadString());
-                                break;
-                            case NetIncomingMessageType.ErrorMessage:
-                                string erro = inc.ReadString();
-                                Debug.LogError(erro);
-                                if (erro == "Shutdown complete")
-                                {
-                                    for (int i = 0; i < Events.Count; i++)
+                            switch (inc.MessageType)
+                            {
+                                case NetIncomingMessageType.VerboseDebugMessage:
+                                    Debug.LogError(inc.ReadString());
+                                    break;
+                                case NetIncomingMessageType.DebugMessage:
+                                    Debug.Log(inc.ReadString());
+                                    break;
+                                case NetIncomingMessageType.WarningMessage:
+                                    Debug.LogWarning(inc.ReadString());
+                                    break;
+                                case NetIncomingMessageType.ErrorMessage:
+                                    string erro = inc.ReadString();
+                                    Debug.LogError(erro);
+                                    if (erro == "Shutdown complete")
                                     {
-                                        Events[i].OnPlayerDisconnect(inc.SenderConnection);
-                                    }
-                                }
-                                break;
-                            case NetIncomingMessageType.Data:
-                                ProceMenssagServer(inc);
-                                break;
-                            case NetIncomingMessageType.ConnectionApproval:
-                                string s = inc.ReadString();
-
-                                for (int i = 0; i < Events.Count; i++)
-                                {
-                                    Events[i].PlayerApproval(s, inc.SenderConnection);
-                                }
-                                break;
-                            default:
-                                if (inc.SenderConnection.Status == NetConnectionStatus.Connected)
-                                {
-                                    for (int i = 0; i < Events.Count; i++)
-                                    {
-                                        Events[i].OnPlayerConnect(inc.SenderConnection);
-                                    }
-                                    List<NetViewSerializer> netvi = new List<NetViewSerializer>();
-                                    var om = MyPeer.CreateMessage();
-                                    om.Write((byte)DataType.Instantiate_Pool);
-
-                                    om.WriteVariableInt64(inc.SenderConnection.RemoteUniqueIdentifier);
-                                    foreach (var kvp in GetAutomaticView(0))
-                                    {
-                                        NetViewSerializer neww = new NetViewSerializer();
-                                        neww.PrefabID = kvp.PrefabID;
-                                        neww.Owner = kvp.Owner;
-                                        neww.ViewID = kvp.ViewID;
-                                        neww.IdMode = kvp.IdMode;
-                                        neww.Dimension = kvp.Dimension;
-
-                                        neww.p_x = kvp.transform.position.x;
-                                        neww.p_y = kvp.transform.position.y;
-                                        neww.p_z = kvp.transform.position.z;
-
-                                        neww.r_x = kvp.transform.rotation.x;
-                                        neww.r_y = kvp.transform.rotation.y;
-                                        neww.r_z = kvp.transform.rotation.z;
-
-                                        netvi.Add(neww);
-                                    }
-
-                                    if (NetDimension.ContainsKey(0))
-                                    {
-                                        if (NetDimension[0].Players.Contains(inc.SenderConnection.RemoteUniqueIdentifier) == false)
+                                        for (int i = 0; i < Events.Count; i++)
                                         {
-                                            NetDimension[0].Players.Add(inc.SenderConnection.RemoteUniqueIdentifier);
+                                            Events[i].OnPlayerDisconnect(inc.SenderConnection);
                                         }
                                     }
-                                    else
-                                    {
-                                        WorldList wlist = new WorldList();
-                                        wlist.Players.Add(inc.SenderConnection.RemoteUniqueIdentifier);
-                                        NetDimension.Add(0, wlist);
-                                    }
+                                    break;
+                                case NetIncomingMessageType.Data:
+                                    ProceMenssagServer(inc);
+                                    break;
+                                case NetIncomingMessageType.ConnectionApproval:
+                                    string s = inc.ReadString();
 
-                                    string dimendata = JsonHelper.ToJson(NetDimension.Values.ToArray());
-                                    om.Write(CompressString.StringCompressor.CompressString(dimendata));
-
-                                    Debug.LogError(dimendata);
-
-                                    string data = JsonHelper.ToJson(netvi.ToArray());
-                                    om.Write(CompressString.StringCompressor.CompressString(data));
-
-                                    Server.SendMessage(om, inc.SenderConnection, NetDeliveryMode);
-                                    //----------------------------------------------------------------//
-
-                                    foreach (var net in Server.m_connections.ToArray())
-                                    {
-                                        if (net != inc.SenderConnection)
-                                        {
-                                            var om2 = MyPeer.CreateMessage();
-
-                                            om2.Write((byte)DataType.EnterInWorld);
-
-                                            om2.WriteVariableInt64(inc.SenderConnection.RemoteUniqueIdentifier);
-                                            om2.Write(0);
-                                            om2.Write(-1);
-
-                                            Server.SendMessage(om2, net, NetDeliveryMode);
-                                        }
-                                    }
-                                }
-                                else if (inc.SenderConnection.Status == NetConnectionStatus.RespondedConnect)
-                                {
-                                    Debug.Log("This Player : " + NetUtility.ToHexString(inc.SenderConnection.RemoteUniqueIdentifier) + " Are Accepted to server");
-                                    ConnectionList.Add(inc.SenderConnection.RemoteUniqueIdentifier, inc.SenderConnection);
-                                }
-                                else if (inc.SenderConnection.Status == NetConnectionStatus.Disconnected)
-                                {
                                     for (int i = 0; i < Events.Count; i++)
                                     {
-                                        Events[i].OnPlayerDisconnect(inc.SenderConnection);
+                                        Events[i].PlayerApproval(s, inc.SenderConnection);
                                     }
-
-                                    NetworkObj[] obj = NetworkViews.Values.ToArray();
-
-                                    for (int i = 0; i < obj.Length; i++)
+                                    break;
+                                default:
+                                    if (inc.SenderConnection.Status == NetConnectionStatus.Connected)
                                     {
-                                        if (obj[i].Owner == inc.SenderConnection.RemoteUniqueIdentifier)
+                                        for (int i = 0; i < Events.Count; i++)
                                         {
-                                            NetworkViews.Remove(obj[i].ViewID);
-                                            Destroy(obj[i].gameObject);
+                                            Events[i].OnPlayerConnect(inc.SenderConnection);
+                                        }
+                                        List<NetViewSerializer> netvi = new List<NetViewSerializer>();
+                                        var om = MyPeer.CreateMessage();
+                                        om.Write((byte)DataType.Instantiate_Pool);
+
+                                        om.WriteVariableInt64(inc.SenderConnection.RemoteUniqueIdentifier);
+                                        foreach (var kvp in GetAutomaticView(0))
+                                        {
+                                            NetViewSerializer neww = new NetViewSerializer();
+                                            neww.PrefabID = kvp.PrefabID;
+                                            neww.Owner = kvp.Owner;
+                                            neww.ViewID = kvp.ViewID;
+                                            neww.IdMode = kvp.IdMode;
+                                            neww.Dimension = kvp.Dimension;
+
+                                            neww.p_x = kvp.transform.position.x;
+                                            neww.p_y = kvp.transform.position.y;
+                                            neww.p_z = kvp.transform.position.z;
+
+                                            neww.r_x = kvp.transform.rotation.x;
+                                            neww.r_y = kvp.transform.rotation.y;
+                                            neww.r_z = kvp.transform.rotation.z;
+
+                                            netvi.Add(neww);
+                                        }
+
+                                        if (NetDimension.ContainsKey(0))
+                                        {
+                                            if (NetDimension[0].Players.Contains(inc.SenderConnection.RemoteUniqueIdentifier) == false)
+                                            {
+                                                NetDimension[0].Players.Add(inc.SenderConnection.RemoteUniqueIdentifier);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            WorldList wlist = new WorldList();
+                                            wlist.Players.Add(inc.SenderConnection.RemoteUniqueIdentifier);
+                                            NetDimension.Add(0, wlist);
+                                        }
+
+                                        string dimendata = JsonHelper.ToJson(NetDimension.Values.ToArray());
+                                        om.Write(CompressString.StringCompressor.CompressString(dimendata));
+
+                                        Debug.LogError(dimendata);
+
+                                        string data = JsonHelper.ToJson(netvi.ToArray());
+                                        om.Write(CompressString.StringCompressor.CompressString(data));
+
+                                        Server.SendMessage(om, inc.SenderConnection, NetDeliveryMode);
+                                        //----------------------------------------------------------------//
+
+                                        foreach (var net in Server.m_connections.ToArray())
+                                        {
+                                            if (net != inc.SenderConnection)
+                                            {
+                                                var om2 = MyPeer.CreateMessage();
+
+                                                om2.Write((byte)DataType.EnterInWorld);
+
+                                                om2.WriteVariableInt64(inc.SenderConnection.RemoteUniqueIdentifier);
+                                                om2.Write(0);
+                                                om2.Write(-1);
+
+                                                Server.SendMessage(om2, net, NetDeliveryMode);
+                                            }
                                         }
                                     }
+                                    else if (inc.SenderConnection.Status == NetConnectionStatus.RespondedConnect)
+                                    {
+                                        Debug.Log("This Player : " + NetUtility.ToHexString(inc.SenderConnection.RemoteUniqueIdentifier) + " Are Accepted to server");
+                                        ConnectionList.Add(inc.SenderConnection.RemoteUniqueIdentifier, inc.SenderConnection);
+                                    }
+                                    else if (inc.SenderConnection.Status == NetConnectionStatus.Disconnected)
+                                    {
+                                        for (int i = 0; i < Events.Count; i++)
+                                        {
+                                            Events[i].OnPlayerDisconnect(inc.SenderConnection);
+                                        }
 
-                                    ConnectionList.Remove(inc.SenderConnection.RemoteUniqueIdentifier);
+                                        NetworkObj[] obj = NetworkViews.Values.ToArray();
 
-                                    Debug.Log("Player : " + NetUtility.ToHexString(inc.SenderConnection.RemoteUniqueIdentifier) + " Disconnected!");
-                                }
-                                else if (inc.SenderConnection.Status == NetConnectionStatus.Disconnecting)
-                                {
-                                    //last paket sande to client, and after this is disconnect
-                                }
-                                break;
+                                        for (int i = 0; i < obj.Length; i++)
+                                        {
+                                            if (obj[i].Owner == inc.SenderConnection.RemoteUniqueIdentifier)
+                                            {
+                                                NetworkViews.Remove(obj[i].ViewID);
+                                                Destroy(obj[i].gameObject);
+                                            }
+                                        }
+
+                                        ConnectionList.Remove(inc.SenderConnection.RemoteUniqueIdentifier);
+
+                                        Debug.Log("Player : " + NetUtility.ToHexString(inc.SenderConnection.RemoteUniqueIdentifier) + " Disconnected!");
+                                    }
+                                    else if (inc.SenderConnection.Status == NetConnectionStatus.Disconnecting)
+                                    {
+                                        //last paket sande to client, and after this is disconnect
+                                    }
+                                    break;
+                            }
+                            Server.Recycle(inc);
                         }
-                        Server.Recycle(inc);
+                    }
+                    else if (IsClient)
+                    {
+                        NetIncomingMessage inc;
+                        while ((inc = Client.ReadMessage()) != null)
+                        {
+                            switch (inc.MessageType)
+                            {
+                                case NetIncomingMessageType.VerboseDebugMessage:
+                                    Debug.LogError(inc.ReadString());
+                                    break;
+                                case NetIncomingMessageType.DebugMessage:
+                                    Debug.LogError(inc.ReadString());
+                                    break;
+                                case NetIncomingMessageType.WarningMessage:
+                                    Debug.LogWarning(inc.ReadString());
+                                    break;
+                                case NetIncomingMessageType.ErrorMessage:
+                                    string erro = inc.ReadString();
+                                    Debug.LogError(erro);
+                                    if (erro == "Shutdown complete")
+                                    {
+                                        for (int i = 0; i < Events.Count; i++)
+                                        {
+                                            Events[i].OnPlayerDisconnect(inc.SenderConnection);
+                                        }
+                                    }
+                                    break;
+                                case NetIncomingMessageType.Data:
+                                    ProceMenssagClient(inc);
+                                    break;
+                                case NetIncomingMessageType.StatusChanged:
+                                    NetConnectionStatus status = (NetConnectionStatus)inc.ReadByte();
+
+                                    if (status == NetConnectionStatus.Disconnected)
+                                    {
+                                        for (int i = 0; i < Events.Count; i++)
+                                        {
+                                            Events[i].OnDisconnect();
+                                        }
+                                    }
+                                    else if (status == NetConnectionStatus.Disconnecting)
+                                    {
+                                        Debug.Log("Disconnect from server");
+                                    }
+                                    break;
+                                default:
+                                    if (inc.SenderConnection.Status == NetConnectionStatus.Connected)
+                                    {
+
+                                    }
+                                    else if (inc.SenderConnection.Status == NetConnectionStatus.RespondedConnect)
+                                    {
+                                        Debug.LogError("This Player : " + NetUtility.ToHexString(inc.SenderConnection.RemoteUniqueIdentifier) + " Are Accepted to server");
+
+                                        ConnectionList.Add(inc.SenderConnection.RemoteUniqueIdentifier, inc.SenderConnection);
+                                    }
+                                    else if (inc.SenderConnection.Status == NetConnectionStatus.Disconnected)
+                                    {
+                                        for (int i = 0; i < Events.Count; i++)
+                                        {
+                                            Events[i].OnPlayerDisconnect(inc.SenderConnection);
+                                        }
+
+                                        NetworkObj[] obj = NetworkViews.Values.ToArray();
+                                        for (int i = 0; i < obj.Length; i++)
+                                        {
+                                            if (obj[i].Owner == inc.SenderConnection.RemoteUniqueIdentifier)
+                                            {
+                                                NetworkViews.Remove(obj[i].ViewID);
+                                                Destroy(obj[i].gameObject);
+                                            }
+                                        }
+
+                                        ConnectionList.Remove(inc.SenderConnection.RemoteUniqueIdentifier);
+
+                                        Debug.Log("Player Disconnected : " + NetUtility.ToHexString(inc.SenderConnection.RemoteUniqueIdentifier) + " Disconnected! From Server, Reson : " + inc.SenderConnection.m_disconnectMessage);
+                                    }
+                                    else if (inc.SenderConnection.Status == NetConnectionStatus.Disconnecting)
+                                    {
+
+                                    }
+                                    break;
+                            }
+                            Client.Recycle(inc);
+                        }
                     }
                 }
-                else if (IsClient)
-                {
-                    NetIncomingMessage inc;
-                    while ((inc = Client.ReadMessage()) != null)
-                    {
-                        switch (inc.MessageType)
-                        {
-                            case NetIncomingMessageType.VerboseDebugMessage:
-                                Debug.LogError(inc.ReadString());
-                                break;
-                            case NetIncomingMessageType.DebugMessage:
-                                Debug.LogError(inc.ReadString());
-                                break;
-                            case NetIncomingMessageType.WarningMessage:
-                                Debug.LogWarning(inc.ReadString());
-                                break;
-                            case NetIncomingMessageType.ErrorMessage:
-                                string erro = inc.ReadString();
-                                Debug.LogError(erro);
-                                if (erro == "Shutdown complete")
-                                {
-                                    for (int i = 0; i < Events.Count; i++)
-                                    {
-                                        Events[i].OnPlayerDisconnect(inc.SenderConnection);
-                                    }
-                                }
-                                break;
-                            case NetIncomingMessageType.Data:
-                                ProceMenssagClient(inc);
-                                break;
-                            case NetIncomingMessageType.StatusChanged:
-                                NetConnectionStatus status = (NetConnectionStatus)inc.ReadByte();
 
-                                if (status == NetConnectionStatus.Disconnected)
-                                {
-                                    for (int i = 0; i < Events.Count; i++)
-                                    {
-                                        Events[i].OnDisconnect();
-                                    }
-                                }
-                                else if (status == NetConnectionStatus.Disconnecting)
-                                {
-                                    Debug.Log("Disconnect from server");
-                                }
-                                break;
-                            default:
-                                if (inc.SenderConnection.Status == NetConnectionStatus.Connected)
-                                {
-
-                                }
-                                else if (inc.SenderConnection.Status == NetConnectionStatus.RespondedConnect)
-                                {
-                                    Debug.LogError("This Player : " + NetUtility.ToHexString(inc.SenderConnection.RemoteUniqueIdentifier) + " Are Accepted to server");
-
-                                    ConnectionList.Add(inc.SenderConnection.RemoteUniqueIdentifier, inc.SenderConnection);
-                                }
-                                else if (inc.SenderConnection.Status == NetConnectionStatus.Disconnected)
-                                {
-                                    for (int i = 0; i < Events.Count; i++)
-                                    {
-                                        Events[i].OnPlayerDisconnect(inc.SenderConnection);
-                                    }
-
-                                    NetworkObj[] obj = NetworkViews.Values.ToArray();
-                                    for (int i = 0; i < obj.Length; i++)
-                                    {
-                                        if (obj[i].Owner == inc.SenderConnection.RemoteUniqueIdentifier)
-                                        {
-                                            NetworkViews.Remove(obj[i].ViewID);
-                                            Destroy(obj[i].gameObject);
-                                        }
-                                    }
-
-                                    ConnectionList.Remove(inc.SenderConnection.RemoteUniqueIdentifier);
-
-                                    Debug.Log("Player Disconnected : " + NetUtility.ToHexString(inc.SenderConnection.RemoteUniqueIdentifier) + " Disconnected! From Server, Reson : " + inc.SenderConnection.m_disconnectMessage);
-                                }
-                                else if (inc.SenderConnection.Status == NetConnectionStatus.Disconnecting)
-                                {
-
-                                }
-                                break;
-                        }
-                        Client.Recycle(inc);
-                    }
-                }
+                Thread.Sleep(NetConfig.TickRate);
             }
         }
 
@@ -925,12 +956,14 @@ namespace DarckNet
 
                 //long uniq = inc.ReadVariableInt64();
 
-                GameObject Objc = GameObject.Instantiate(PregabsList.Prefabs[prefabid], Pos, Rot);
-                NetworkViews.Add(viewid, Objc.GetComponent<NetworkObj>());
-                Objc.GetComponent<NetworkObj>().SetID(viewid, prefabid, inc.SenderConnection.RemoteUniqueIdentifier);
-                Objc.GetComponent<NetworkObj>().Dimension = dimension;
 
-                Debug.Log("ViewsIDs" + viewid);
+                NetUnityThreadAPI.actionQueue.Enqueue(() =>
+                {
+                    GameObject Objc = GameObject.Instantiate(PregabsList.Prefabs[prefabid], Pos, Rot);
+                    NetworkViews.Add(viewid, Objc.GetComponent<NetworkObj>());
+                    Objc.GetComponent<NetworkObj>().SetID(viewid, prefabid, inc.SenderConnection.RemoteUniqueIdentifier);
+                    Objc.GetComponent<NetworkObj>().Dimension = dimension;
+                });
 
                 //--------------------------------------------------//
 
@@ -981,7 +1014,11 @@ namespace DarckNet
                     Server_SendToAll(om, listanet.ToArray(), NetDeliveryMode);
                     #endregion
 
-                    GameObject.Destroy(net.gameObject);
+                    NetUnityThreadAPI.actionQueue.Enqueue(() =>
+                    {
+                        GameObject.Destroy(net.gameObject);
+                    });
+
                     NetworkViews.Remove(viewid);
                 }
             }
@@ -1147,10 +1184,14 @@ namespace DarckNet
 
                 long uniq = inc.ReadVariableInt64();
 
-                GameObject Objc = GameObject.Instantiate(PregabsList.Prefabs[prefabid], Pos, Rot);
-                NetworkViews.Add(viewid, Objc.GetComponent<NetworkObj>());
-                Objc.GetComponent<NetworkObj>().SetID(viewid, prefabid, uniq);
-                Objc.GetComponent<NetworkObj>().Dimension = dimension;
+                NetUnityThreadAPI.actionQueue.Enqueue(() =>
+                {
+                    GameObject Objc = GameObject.Instantiate(PregabsList.Prefabs[prefabid], Pos, Rot);
+                    NetworkViews.Add(viewid, Objc.GetComponent<NetworkObj>());
+                    Objc.GetComponent<NetworkObj>().SetID(viewid, prefabid, uniq);
+                    Objc.GetComponent<NetworkObj>().Dimension = dimension;
+                });
+
             }
             else if (type == DataType.Destroy)
             {
@@ -1160,8 +1201,11 @@ namespace DarckNet
 
                 if (NetworkViews.TryGetValue(viewid, out net))
                 {
-                    GameObject.Destroy(net.gameObject);
-
+                    
+                    NetUnityThreadAPI.actionQueue.Enqueue(() =>
+                    {
+                        GameObject.Destroy(net.gameObject);
+                    });
                     NetworkViews.Remove(viewid);
                 }
             }
@@ -1179,10 +1223,13 @@ namespace DarckNet
 
                 foreach (NetViewSerializer nv in net)
                 {
-                    GameObject Objc = GameObject.Instantiate(PregabsList.Prefabs[nv.PrefabID], new Vector3(nv.p_x, nv.p_y, nv.p_z), new Quaternion(nv.r_x, nv.r_y, nv.r_z, 1));
-                    Objc.GetComponent<NetworkObj>().SetID(nv.ViewID, nv.PrefabID, nv.Owner);
-                    Objc.GetComponent<NetworkObj>().Dimension = nv.Dimension;
-                    NetworkViews.Add(nv.ViewID, Objc.GetComponent<NetworkObj>());
+                    NetUnityThreadAPI.actionQueue.Enqueue(() =>
+                    {
+                        GameObject Objc = GameObject.Instantiate(PregabsList.Prefabs[nv.PrefabID], new Vector3(nv.p_x, nv.p_y, nv.p_z), new Quaternion(nv.r_x, nv.r_y, nv.r_z, 1));
+                        Objc.GetComponent<NetworkObj>().SetID(nv.ViewID, nv.PrefabID, nv.Owner);
+                        Objc.GetComponent<NetworkObj>().Dimension = nv.Dimension;
+                        NetworkViews.Add(nv.ViewID, Objc.GetComponent<NetworkObj>());
+                    });
                 }
 
                 if (world.Length > 0)
@@ -1245,10 +1292,13 @@ namespace DarckNet
 
                 foreach (NetViewSerializer nv in net)
                 {
-                    GameObject Objc = GameObject.Instantiate(PregabsList.Prefabs[nv.PrefabID], new Vector3(nv.p_x, nv.p_y, nv.p_z), new Quaternion(nv.r_x, nv.r_y, nv.r_z, 1));
-                    Objc.GetComponent<NetworkObj>().SetID(nv.ViewID, nv.PrefabID, nv.Owner);
-                    Objc.GetComponent<NetworkObj>().Dimension = nv.Dimension;
-                    NetworkViews.Add(nv.ViewID, Objc.GetComponent<NetworkObj>());
+                    NetUnityThreadAPI.actionQueue.Enqueue(() =>
+                    {
+                        GameObject Objc = GameObject.Instantiate(PregabsList.Prefabs[nv.PrefabID], new Vector3(nv.p_x, nv.p_y, nv.p_z), new Quaternion(nv.r_x, nv.r_y, nv.r_z, 1));
+                        Objc.GetComponent<NetworkObj>().SetID(nv.ViewID, nv.PrefabID, nv.Owner);
+                        Objc.GetComponent<NetworkObj>().Dimension = nv.Dimension;
+                        NetworkViews.Add(nv.ViewID, Objc.GetComponent<NetworkObj>());
+                    });
                 }
 
                 if (NetDimension.ContainsKey(dimension))
@@ -1791,7 +1841,7 @@ namespace DarckNet
         /// <summary>
         /// TiketRate is the milliseconds to Thread stop and continue. 15 is Recommended
         /// </summary>
-        public static int TiketRate = 15;
+        public static int TickRate = 15;
         /// <summary>
         /// If is true Unat is false, if is false Unat is true.
         /// </summary>
@@ -1952,6 +2002,32 @@ public struct DataVector3Int
     public Vector3 ToUnityVector()
     {
         return new Vector3(x, y, z);
+    }
+}
+
+public class NetUnityThreadAPI : MonoBehaviour
+{
+    public static Queue<Action> actionQueue = new Queue<Action>();
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public void SendMessageOnMainthread(string message)
+    {
+        actionQueue.Enqueue(() =>
+        {
+            SendMessage(message);
+        });
+    }
+
+    void Update()
+    {
+        if (actionQueue.Count > 0)
+        {
+            actionQueue.Dequeue()();
+        }
     }
 }
 
