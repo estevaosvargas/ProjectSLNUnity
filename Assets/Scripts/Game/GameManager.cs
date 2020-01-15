@@ -286,44 +286,46 @@ public class GameManager : UIElements
 
         if (Playing)
         {
-            if (LastMouseX != (int)Input.mousePosition.x || LastMouseY != (int)Input.mousePosition.y)
+            Ray rayy = Camera.main.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y + mouseplus, Input.mousePosition.z));
+
+            if (Physics.Raycast(rayy, out hit, 50, 9))
             {
-                Ray rayy = Camera.main.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y + mouseplus, Input.mousePosition.z));
+                mouseX = hit.point.x;
+                mouseY = hit.point.y;
+                mouseZ = hit.point.z;
 
-                if (Physics.Raycast(rayy, out hit, 100, 9))
+                if (Game.WorldGenerator)
                 {
-                    mouseX = hit.point.x;
-                    mouseY = hit.point.y;
-                    mouseZ = hit.point.z;
+                    t = Game.WorldGenerator.GetTileAt(hit.point.x, hit.point.z);
+                }
 
-                    if (Game.WorldGenerator)
+                if (hit.collider.gameObject.GetComponent<Vilanger>())
+                {
+                    UpdateCursor(MouseType.Chat);
+                }
+                else
+                {
+                    if (t != null)
                     {
-                        t = Game.WorldGenerator.GetTileAt(hit.point.x, hit.point.z);
-                    }
-
-                    if (hit.collider.gameObject.GetComponent<Vilanger>())
-                    {
-                        UpdateCursor(MouseType.Chat);
-                    }
-                    else
-                    {
-                        if (t != null)
+                        if (Get.GetMouseIteract(t))
                         {
-                            if (Get.GetMouseIteract(t))
-                            {
-                                UpdateCursor(MouseType.Open);
-                            }
-                            else
-                            {
-                                UpdateCursor(MouseType.none);
-                            }
+                            UpdateCursor(MouseType.Open);
                         }
                         else
                         {
                             UpdateCursor(MouseType.none);
                         }
                     }
+                    else
+                    {
+                        UpdateCursor(MouseType.none);
+                    }
                 }
+            }
+
+            if (LastMouseX != (int)Input.mousePosition.x || LastMouseY != (int)Input.mousePosition.y)
+            {
+                
             }
 
             LastMouseX = (int)Input.mousePosition.x;

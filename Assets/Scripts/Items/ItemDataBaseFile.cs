@@ -15,6 +15,9 @@ public class ItemDataBaseFile
         itemlist.Add(5, SetUpItem(5, "SilverCoin", "SilverCoin Is a global coin to trade/buy.", Game.SpriteManager.Getitemicon("SilverCoin"), ItemRarity.Money, 1000, true, false, ItemType.Trade, MaterialHitType.none, new ItemAbout()));
         itemlist.Add(6, SetUpItem(6, "CoperCoin", "CoperCoin Is a global coin to trade/buy.", Game.SpriteManager.Getitemicon("CoperCoin"), ItemRarity.Money, 1000, true, false, ItemType.Trade, MaterialHitType.none, new ItemAbout()));
         itemlist.Add(7, SetUpItem(7, "HeadTeste", "HeadTeste", Game.SpriteManager.Getitemicon("Head"), ItemRarity.Legendary, 1, false, false, ItemType.Armor, MaterialHitType.none, new ItemAbout()));
+        itemlist.Add(8, SetUpItem(8, "Book", "You can lern alot of things with books!", Game.SpriteManager.Getitemicon("Book"), ItemRarity.Common, 5, true, false, ItemType.none, MaterialHitType.none, new ItemAbout()));
+        itemlist.Add(9, SetUpItem(9, "Magic Book", "You can lern alot of things with books!", Game.SpriteManager.Getitemicon("MagicalBook"), ItemRarity.Legendary, 5, true, false, ItemType.none, MaterialHitType.none, new ItemAbout()));
+        itemlist.Add(10, SetUpItem(10, "Dark Magic Book", "You can lern alot of things with books!", Game.SpriteManager.Getitemicon("DarkBook"), ItemRarity.Dark, 5, true, false, ItemType.none, MaterialHitType.none, new ItemAbout()));
 
         Debug.Log("ItemData Loading Finished!");
         return itemlist;

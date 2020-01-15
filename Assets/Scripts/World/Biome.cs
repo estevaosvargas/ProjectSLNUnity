@@ -32,17 +32,44 @@ public static class Biome
         float zCorde = (float)z / height * Scale;
 
         float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetValue(x, z, 0);
+
+        LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false);
+
+        VeronoiStruc sample2 = CityNoise.GetValueNPoint(x, z, 0);
+
+        tile.CityPoint = new DataVector3(CityNoise.GetPoint(x, z, 0));
 
         //Debug.Log("village Chance : " + (int)sample2);
 
         //sample2 *= 10;
 
-        if ((int)sample2 == 1)
+        VeronoiStruc Tile_Vila_Up = CityNoise.GetValueNPoint(x, z + 1, 0);
+        VeronoiStruc Tile_Vila_Down = CityNoise.GetValueNPoint(x, z - 1, 0);
+        VeronoiStruc Tile_Vila_Left = CityNoise.GetValueNPoint(x - 1, z, 0);
+        VeronoiStruc Tile_Vila_Right = CityNoise.GetValueNPoint(x + 1, z, 0);
+
+        /*Tile_Vila_Up.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x, z + 1);
+        Tile_Vila_Down.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x, z - 1);
+        Tile_Vila_Left.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x - 1, z);
+        Tile_Vila_Right.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x + 1, z);*/
+
+        if ((int)sample2.Value == 1)
         {
             Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
 
             tile.OwnedByCity = true;
+
+            /*if (Tile_Vila_Up.Point != sample2.Point || Tile_Vila_Down.Point != sample2.Point || Tile_Vila_Left.Point != sample2.Point || Tile_Vila_Right.Point != sample2.Point)
+            {
+                if (Tile_Vila_Up.TileType != Game.Color("FFFFFF") || Tile_Vila_Down.TileType != Game.Color("FFFFFF") || Tile_Vila_Left.TileType != Game.Color("FFFFFF") || Tile_Vila_Right.TileType != Game.Color("FFFFFF"))
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.RockWall;
+                    }
+                    return TypeBlock.Rock;
+                }
+            }*/
 
             if (color == Game.Color("FF0000") || color == Game.Color("7F7F7F"))//Somthing Is On this tile
             {
@@ -135,6 +162,15 @@ public static class Biome
         }
         else
         {
+            if ((int)Tile_Vila_Up.Value == 1 || (int)Tile_Vila_Down.Value == 1 || (int)Tile_Vila_Left.Value == 1 || (int)Tile_Vila_Right.Value == 1)
+            {
+                if (tile.typego == TakeGO.empty && tile.z != 0)
+                {
+                    tile.typego = TakeGO.RockWall;
+                }
+                return TypeBlock.Rock;
+            }
+
             if (perlin <= 0.15f)
             {
                 //Water

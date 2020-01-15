@@ -25,7 +25,7 @@ namespace DarckNet
     public class Network
     {
         #region Vars
-        public static string NetVersion = "V0.5";
+        public static string NetVersion = "V: Alpha 0.1.7";
         internal static NetPeer MyPeer;
         internal static NetConnection MyConnection;
         internal static NetServer Server;
@@ -69,8 +69,11 @@ namespace DarckNet
 
                 Runing = true;
 
-                NetManagerObj = new GameObject("DARCKNET: UnityThreadAPI");
-                NetManagerObj.AddComponent<NetUnityThreadAPI>();
+                if (!NetManagerObj)
+                {
+                    NetManagerObj = new GameObject("DARCKNET: UnityThreadAPI");
+                    NetManagerObj.AddComponent<NetUnityThreadAPI>();
+                }
 
                 Netthread = new Thread(new ThreadStart(Update));
                 Netthread.Name = "DarckNet unity network";
@@ -158,8 +161,11 @@ namespace DarckNet
 
                 Runing = true;
 
-                NetManagerObj = new GameObject("DARCKNET: NetUnityThreadAPI");
-                NetManagerObj.AddComponent<NetUnityThreadAPI>();
+                if (!NetManagerObj)
+                {
+                    NetManagerObj = new GameObject("DARCKNET: UnityThreadAPI");
+                    NetManagerObj.AddComponent<NetUnityThreadAPI>();
+                }
 
                 Netthread = new Thread(new ThreadStart(Update));
                 Netthread.Name = "DarckNet unity network";

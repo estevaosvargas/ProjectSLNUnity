@@ -252,8 +252,19 @@ public class EntityPlayer : EntityLife
 
                             body.Move(moveVector * Speed * Time.deltaTime);
 
-                            transform.LookAt(new Vector3(transform.position.x + lookPos.x, 0, transform.position.z + lookPos.z));
-                            transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
+                            if (!MouselockFake.IsLock)
+                            {
+                                transform.LookAt(new Vector3(transform.position.x + lookPos.x, 0, transform.position.z + lookPos.z));
+                                transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
+                            }
+
+                            /*if (Input.GetKeyDown(KeyCode.Mouse1))
+                            {
+                                if (Game.GameManager.hit.collider != null)
+                                {
+                                    Go(new Vector3(Game.GameManager.mouseX, Game.GameManager.mouseY, Game.GameManager.mouseZ));
+                                }
+                            }*/
 
                             if (NetStats.handhide == true)
                             {

@@ -8,6 +8,7 @@ using System.Threading;
 
 public class Pathfindingentity : EntityLife
 {
+    [Header("Pathfinding Variabales")]
     public Vector3 target;
     const float minPathUpdateTime = .2f;
     const float pathUpdateMoveThreshold = .5f;
@@ -107,6 +108,8 @@ public class Pathfindingentity : EntityLife
             {
                 follow = false;
                 Following = false;
+
+                Stop();
             }
         }
     }
