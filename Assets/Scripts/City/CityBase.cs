@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class CityBase : MonoBehaviour
 {
+    public string BuildName;
     public string BuildId;
     public DataVector3 citypoint;
     public DataVector3 BuildPosition;

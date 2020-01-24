@@ -131,7 +131,6 @@ MonoBehaviour:
   MaxHP: 100
   IsAlive: 0
   LastAttacker: 
-  Destroying: {fileID: 212592084834586446}
   FX: {fileID: 1836075418772876, guid: c5d28b2a147fed64186e44abb61799fd, type: 3}
   ThisTreeTile:
     type: 0
@@ -151,6 +150,8 @@ MonoBehaviour:
   ItemDrop: 0
   DropQuanty: 5
   MaterialHit: 0
+  Enable_LeafMesh: {fileID: 0}
+  Disable_LeafMesh: {fileID: 0}
 --- !u!137 &2130665885866901414
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0

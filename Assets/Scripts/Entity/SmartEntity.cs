@@ -121,9 +121,6 @@ public class SmartEntity : Pathfindingentity
         {
             if (ISVISIBLE)
             {
-                Anim.SetFloat("X", 0);
-                Anim.SetFloat("Y", 0);
-
                 transform.LookAt(new Vector3(CurrentPoint.x, 0, CurrentPoint.z));
 
                 if (Following)

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LivingHouse : CityBase
+public class LivingHouse : InteriorEnter
 {
     public Vector3 SpawnPosition;
     public bool FamilyHouse;

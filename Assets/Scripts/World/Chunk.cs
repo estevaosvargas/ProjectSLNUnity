@@ -39,8 +39,10 @@ public class Chunk : MonoBehaviour
 
     public Material DefaultTileMaterial;
     public Material DefaultTransMaterial;
+    public Material WaterTileMaterial;
 
     public GameObject MeshTile;
+    public GameObject WaterMeshTile;
 
     void Awake()
     {
@@ -61,6 +63,7 @@ public class Chunk : MonoBehaviour
             }
 
             GenerateTilesLayer(tiles);
+            GenerateWaterLayer(tiles);
 
             Game.WorldGenerator.LoadNewChunks(this);
 
@@ -192,10 +195,26 @@ public class Chunk : MonoBehaviour
     {
         if (MeshTile != null)
         {
+            MeshData data = new MeshData(tiles);
+
             MeshFilter filter = MeshTile.GetComponent<MeshFilter>();
+            MeshRenderer render = MeshTile.GetComponent<MeshRenderer>();
+            MeshCollider mMeshcollider = MeshTile.GetComponent<MeshCollider>();
+
+            Mesh mesh = filter.mesh;
+
+            mesh.vertices = data.vertices.ToArray();
+            mesh.triangles = data.triangles.ToArray();
+            mesh.uv = data.UVs.ToArray();
+
+            mesh.RecalculateNormals();
+
+            mMeshcollider.sharedMesh = mesh;
+
+            /*MeshFilter filter = MeshTile.GetComponent<MeshFilter>();
             MeshData data = new MeshData();
             data.UpdateUv(tiles);
-            filter.mesh.uv = data.UVs.ToArray();
+            filter.mesh.uv = data.UVs.ToArray();*/
         }
     }
 
@@ -224,11 +243,33 @@ public class Chunk : MonoBehaviour
         MeshTile = meshGO;
     }
 
+    void GenerateWaterLayer(Tile[,] tiles)
+    {
+        MeshData data = new MeshData(tiles, true);
+
+        GameObject meshGO = new GameObject("WaterLayer_" + transform.position.x + "_" + transform.position.z);
+        meshGO.transform.SetParent(this.transform);
+
+        MeshFilter filter = meshGO.AddComponent<MeshFilter>();
+        MeshRenderer render = meshGO.AddComponent<MeshRenderer>();
+        render.material = WaterTileMaterial;
+
+        Mesh mesh = filter.mesh;
+
+        mesh.vertices = data.vertices.ToArray();
+        mesh.triangles = data.triangles.ToArray();
+        mesh.uv = data.UVs.ToArray();
+
+        mesh.RecalculateNormals();
+
+        WaterMeshTile = meshGO;
+    }
+
     private void SpawnNetWorkObject(Tile tile)
     {
-        GameObject obj3 = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/Slime"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
+        /*GameObject obj3 = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/Slime"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
         Entitys.Add(obj3.GetComponent<EntityLife>());
-        obj3.GetComponent<EntityLife>().PrefabName = "Slime";
+        obj3.GetComponent<EntityLife>().PrefabName = "Slime";*/
 
         GameObject Cow = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/Cow"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
         Entitys.Add(Cow.GetComponent<EntityLife>());
@@ -460,20 +501,18 @@ public class Chunk : MonoBehaviour
 
     void Update()
     {
-#if Client
         if (Time.time > timetemp + TimeUpdate)
         {
             UpdateChunk();
-            
+
             if (AsSave)// if this chunk can be saved.
             {
                 SaveChunk();
             }
-
-            Debug.Log("Chunk's Updated!");
             timetemp = Time.time;
         }
 
+#if Client
         /*if (Time.time > timetemp2 + 1)
         {
             //UpdateLiquid();
@@ -483,12 +522,7 @@ public class Chunk : MonoBehaviour
         }*/
 #endif
 #if Server
-        if (Time.time > timetemp + TimeUpdate)
-        {
-            UpdateChunk();
 
-            timetemp = Time.time;
-        }
 #endif
     }
 
@@ -554,10 +588,9 @@ public class Chunk : MonoBehaviour
         }
     }
 
-    //MultiPlayer Client, Romover Essa Parte e Adicionar em um lugar só
     public void ClientSetUpChunk(Tile[] tile)
     {
-#region TileGen
+        #region TileGen
         tileGOmap = new Dictionary<Tile, GameObject>();
         tiles = new Tile[Size, Size];
         Game.WorldGenerator.ChunksList.Add(this);
@@ -567,54 +600,49 @@ public class Chunk : MonoBehaviour
             int i = tile[v].x - (int)transform.position.x;
             int j = tile[v].z - (int)transform.position.z;
 
-            tiles[i, j] = tile[v];
-
-            tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
-
-            GameObject TileGo = GameObject.Instantiate(TileObj, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), Quaternion.identity);
-
-            TileGo.name = "Tile_" + tiles[i, j].x + "_" + tiles[i, j].z;
-
-            TileGo.transform.position = new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z);
-            TileGo.transform.Rotate(new Vector3(90, 0, 0), Space.Self);
-            TileGo.transform.SetParent(this.transform, true);
-
-            tiles[i, j].TileObj = TileGo.GetComponent<TileObj>();
+            tiles[i, j] = new Tile(tile[v]);
 
             tiles[i, j].TileChunk = new ChunkInfo((int)transform.position.x, (int)transform.position.z, this);
 
-            //SetUp Tree object, spawn tree object and transalte for a new position
-            SetupObjects(tiles[i, j]);
-            SetUpTileTree(tiles[i, j]);
+            Vector3 point = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetPoint(tiles[i, j].x, tiles[i, j].z, 0);
+
+            tiles[i, j].CityPoint = new DataVector3((int)point.x, (int)point.y, 0);
+
+            tiles[i, j].SetUpTile(tiles[i, j]);
+            tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
+
+            if (!Game.GameManager.SinglePlayer || !DarckNet.Network.IsClient)
+            {
+                tiles[i, j].IsServerTile = true;
+            }
 
             if (tiles[i, j] == null)
             {
                 Debug.Log("Null tiles[x, y]");
             }
 
-            if (TileGo == null)
-            {
-                Debug.Log("Null TileGo");
-            }
-
-            tileGOmap.Add(tiles[i, j], TileGo);
+            //Set Up Tree OBject
+            SetupObjects(tiles[i, j]);
+            SetUpTileTree(tiles[i, j]);
 
             OnTileTypeChange(tiles[i, j]);
         }
 
-        for (int i = 0; i < Size; i++)
+        /*for (int i = 0; i < Size; i++)
         {
             for (int j = 0; j < Size; j++)
             {
                 tiles[i, j].RefreshTile();
             }
-        }
+        }*/
 
-        GenerateTilesLayer(tiles);
+        //GenerateTilesLayer(tiles);
 
         Game.WorldGenerator.LoadNewChunks(this);
         #endregion
     }
+
+    //MultiPlayer Client, Romover Essa Parte e Adicionar em um lugar só
 }
 
 public class MeshData
@@ -633,7 +661,36 @@ public class MeshData
         {
             for (int z = 0; z < 10; z++)
             {
-                CreateSquare(tile[x, z].x, tile[x, z].z, tile[x, z]);
+                if (tile[x,z].TileBiome == BiomeType.OceanNormal)
+                {
+                    CreateSquareWater(tile[x, z].x, tile[x, z].y, tile[x, z].z, tile,new Vector3(x, 0, z), tile[x, z]);
+                }
+                else if (tile[x, z].type == TypeBlock.WaterFloor)
+                {
+                    CreateSquareWaterLow(tile[x, z].x, tile[x, z].y, tile[x, z].z, tile, new Vector3(x, 0, z), tile[x, z]);
+                }
+                else
+                {
+                    CreateSquare(tile[x, z].x, tile[x, z].y, tile[x, z].z, tile[x, z]);
+                }
+            }
+        }
+    }
+
+    public MeshData(Tile[,] tile, bool iswater)
+    {
+        vertices = new List<Vector3>();
+        UVs = new List<Vector2>();
+        triangles = new List<int>();
+
+        for (int x = 0; x < 10; x++)
+        {
+            for (int z = 0; z < 10; z++)
+            {
+                if (tile[x, z].type == TypeBlock.WaterFloor)
+                {
+                    CreateSquare(tile[x, z].x, tile[x, z].y, tile[x, z].z, tile[x, z]);
+                }
             }
         }
     }
@@ -654,12 +711,12 @@ public class MeshData
         }
     }
 
-    void CreateSquare(int x, int z, Tile tile)
+    void CreateSquare(int x, float y,int z, Tile tile)
     {
-        vertices.Add(new Vector3(x + 0, 0, z + 0));
-        vertices.Add(new Vector3(x + 1, 0, z + 0));
-        vertices.Add(new Vector3(x + 0, 0, z + 1));
-        vertices.Add(new Vector3(x + 1, 0, z + 1));
+        vertices.Add(new Vector3(x + 0, y, z + 0));
+        vertices.Add(new Vector3(x + 1, y, z + 0));
+        vertices.Add(new Vector3(x + 0, y, z + 1));
+        vertices.Add(new Vector3(x + 1, y, z + 1));
 
         triangles.Add(vertices.Count - 1);
         triangles.Add(vertices.Count - 3);
@@ -670,6 +727,131 @@ public class MeshData
         triangles.Add(vertices.Count - 4);
 
         UVs.AddRange(Game.SpriteManager.GetTileUVs(tile));
+    }
+
+    void CreateSquareWater(int x, float y, int z, Tile[,] tile, Vector3 currenttile, Tile thistile)
+    {
+        LibNoise.Unity.Generator.Perlin sample = new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low);
+
+        if (HaveTile(x, z))
+        {
+            vertices.Add(new Vector3(x, y, z));
+        }
+        else 
+        {
+            vertices.Add(new Vector3(x, (float)sample.GetValue(x, z, 0) / 45, z));
+        }
+
+        if (HaveTile(x + 1, z))
+        {
+            vertices.Add(new Vector3(x + 1, y, z));
+        }
+        else
+        {
+            vertices.Add(new Vector3(x + 1, (float)sample.GetValue(x + 1, z, 0) / 45, z));
+        }
+
+        if (HaveTile(x, z + 1))
+        {
+            vertices.Add(new Vector3(x, y, z + 1));
+        }
+        else
+        {
+            vertices.Add(new Vector3(x, (float)sample.GetValue(x, z + 1, 0) / 45, z + 1));
+        }
+
+        if (HaveTile(x + 1, z + 1))
+        {
+            vertices.Add(new Vector3(x + 1, y, z + 1));
+        }
+        else
+        {
+            vertices.Add(new Vector3(x + 1, (float)sample.GetValue(x + 1, z + 1, 0) / 45, z + 1));
+        }
+
+        triangles.Add(vertices.Count - 1);
+        triangles.Add(vertices.Count - 3);
+        triangles.Add(vertices.Count - 4);
+
+        triangles.Add(vertices.Count - 2);
+        triangles.Add(vertices.Count - 1);
+        triangles.Add(vertices.Count - 4);
+
+        UVs.AddRange(Game.SpriteManager.GetTileUVs(thistile));
+    }
+
+    void CreateSquareWaterLow(int x, float y, int z, Tile[,] tile, Vector3 currenttile, Tile thistile)
+    {
+        LibNoise.Unity.Generator.Perlin sample = new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low);
+
+        if (HaveTile(x, z))
+        {
+            vertices.Add(new Vector3(x, y, z));
+        }
+        else
+        {
+            vertices.Add(new Vector3(x, y - 1, z));
+        }
+
+        if (HaveTile(x + 1, z))
+        {
+            vertices.Add(new Vector3(x + 1, y, z));
+        }
+        else
+        {
+            vertices.Add(new Vector3(x + 1, y- 1, z));
+        }
+
+        if (HaveTile(x, z + 1))
+        {
+            vertices.Add(new Vector3(x, y, z + 1));
+        }
+        else
+        {
+            vertices.Add(new Vector3(x, y - 1, z + 1));
+        }
+
+        if (HaveTile(x + 1, z + 1))
+        {
+            vertices.Add(new Vector3(x + 1, y, z + 1));
+        }
+        else
+        {
+            vertices.Add(new Vector3(x + 1, y - 1, z + 1));
+        }
+
+        triangles.Add(vertices.Count - 1);
+        triangles.Add(vertices.Count - 3);
+        triangles.Add(vertices.Count - 4);
+
+        triangles.Add(vertices.Count - 2);
+        triangles.Add(vertices.Count - 1);
+        triangles.Add(vertices.Count - 4);
+
+        UVs.AddRange(Game.SpriteManager.GetTileUVs(thistile));
+    }
+
+    public bool HaveTile(int x, int z)
+    {
+        Tile currenttile = Game.WorldGenerator.GetTileAt(x, z);
+
+        if (currenttile != null)
+        {
+            Tile[] neighbor = currenttile.GetNeighboors(true);
+
+            foreach (var item in neighbor)
+            {
+                if (item != null)
+                {
+                    if (item.type == TypeBlock.BeachSand)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        return false;
     }
 }
 

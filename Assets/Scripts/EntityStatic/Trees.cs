@@ -11,9 +11,6 @@ public class Trees : StaticLife
     public int DropQuanty = 10;
     public MaterialHitType MaterialHit;
 
-    public GameObject Enable_LeafMesh;
-    public GameObject Disable_LeafMesh;
-
     public void Damage(ItemData item, int damage)
     {
         _DoDamage(damage, item.MaterialHitBest);

@@ -226,13 +226,13 @@ public class ConsoleInGame : MonoBehaviour
         else if (string.Equals(value[0], "Info", StringComparison.OrdinalIgnoreCase))
         {
             #region Comand
-            AddInRoolGUI("UserID : " + Game.GameManager.CurrentPlayer.UserID + "| UserName : " + Game.GameManager.CurrentPlayer.UserName + " | GameVersion : " + Game.GameManager.Version, true, Color.white);
+            AddInRoolGUI("UserID : " + Game.GameManager.Player.UserID + "| UserName : " + Game.GameManager.Player.UserName + " | GameVersion : " + Game.GameManager.Version, true, Color.white);
             #endregion
         }
         else if (string.Equals(value[0], "AddItem", StringComparison.OrdinalIgnoreCase))
         {
             #region Comand
-            Game.GameManager.CurrentPlayer.MyInventory.Additem(Tools.GetStringInt(value[1]), Tools.GetStringInt(value[2]));
+            Game.GameManager.Player.PlayerObj.Inve.Additem(Tools.GetStringInt(value[1]), Tools.GetStringInt(value[2]));
             AddInRoolGUI("Add This Item on your inventory : " + ItemManager.Instance.GetItem(Tools.GetStringInt(value[1])).Name, true, Color.white);
             #endregion
         }

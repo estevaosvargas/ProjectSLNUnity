@@ -107,6 +107,16 @@ public class SpriteManager : MonoBehaviour
         }
     }
 
+    public GameObject GetHandItem(string name)
+    {
+        if (Objects.ContainsKey(name))
+        {
+            return Objects[name];
+        }
+        Debug.LogError("Nao encontrado esse tipo: " + name);
+        return null;
+    }
+
     public GameObject GetPrefabbyname(string name)
     {
         if (Objects.ContainsKey(name))
@@ -204,7 +214,12 @@ public class SpriteManager : MonoBehaviour
             Objects.Add(s.name, s);
         }
 
-        foreach (var s in Resources.LoadAll<GameObject>("Prefabs/Mobs/"))
+        foreach (var s in Resources.LoadAll<GameObject>("Prefabs/AI/"))
+        {
+            Objects.Add(s.name, s);
+        }
+
+        foreach (var s in Resources.LoadAll<GameObject>("Prefabs/HandItems/"))
         {
             Objects.Add(s.name, s);
         }

@@ -159,9 +159,9 @@ public class MenuManager : Menus
 
     void InputMenu()
     {
-        if (Game.GameManager.CurrentPlayer.MyPlayerMove)
+        if (Game.GameManager.Player.PlayerObj)
         {
-            if (Game.GameManager.CurrentPlayer.MyPlayerMove.IsAlive)
+            if (Game.GameManager.Player.PlayerObj.IsAlive)
             {
                 if (!MouselockFake.ConsoleIsOpen)
                 {
@@ -170,13 +170,13 @@ public class MenuManager : Menus
                         if (CheckifEnable("Inventory") == true)
                         {
                             CloseMenuName("Inventory");
-                            InveGui.CloseInve(Game.GameManager.CurrentPlayer.MyInventory);
+                            InveGui.CloseInve(Game.GameManager.Player.PlayerObj.Inve);
                             MouselockFake.IsLock = false;
                         }
                         else
                         {
                             OpenMenuNameNoClose("Inventory");
-                            InveGui.OpenInev(Game.GameManager.CurrentPlayer.MyInventory);
+                            InveGui.OpenInev(Game.GameManager.Player.PlayerObj.Inve);
                             MouselockFake.IsLock = true;
                         }
                     }
@@ -228,7 +228,7 @@ public class MenuManager : Menus
     {
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
-            WorldManager.This.SpawnPlayer(UnityEngine.Random.Range(-100, 100), 0, UnityEngine.Random.Range(-100, 100), Game.WorldGenerator.World_ID);
+            Game.GameManager.Player.RequestSpawnPlayer(new Vector3(UnityEngine.Random.Range(-100, 100), 0, UnityEngine.Random.Range(-100, 100)), Game.WorldGenerator.World_ID);
 
             DCallBack.Call(CallType.OnRespawn);
             CloseMenuName("Respawn");
@@ -240,7 +240,7 @@ public class MenuManager : Menus
     {
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
-            WorldManager.This.SpawnPlayer(UnityEngine.Random.Range(-100, 100), 0, UnityEngine.Random.Range(-100, 100), Game.WorldGenerator.World_ID);
+            Game.GameManager.Player.RequestSpawnPlayer(new Vector3(UnityEngine.Random.Range(-100, 100), 0, UnityEngine.Random.Range(-100, 100)), Game.WorldGenerator.World_ID);
 
             DCallBack.Call(CallType.OnRespawn);
             CloseMenuName("Respawn");
@@ -259,7 +259,7 @@ public class MenuManager : Menus
         else
         {
             OpenMenuName("Inventory");
-            InveGui.OpenInevContainer(Game.GameManager.CurrentPlayer.MyInventory, cont);
+            InveGui.OpenInevContainer(Game.GameManager.Player.PlayerObj.Inve, cont);
             MouselockFake.IsLock = true;
         }
 

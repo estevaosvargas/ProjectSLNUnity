@@ -6,12 +6,14 @@ using UnityEngine.UI;
 public class HandManager : MonoBehaviour
 {
     public ItemData CurrentItem;
+    public GameObject CurrentItemObject;
     public static HandManager MyHand;
     public Inventory Inve;
     public bool OnHand = false;
     public int SlotIndex = -1;
     public HandData Hand;
-    public Transform HandTransform;
+
+    public Transform HandRoot;
 
     float timetemp;
 
@@ -36,6 +38,9 @@ public class HandManager : MonoBehaviour
     public void PutItem(ItemData item, int slot)
     {
         Clear();
+
+        CurrentItemObject = Instantiate(Game.SpriteManager.GetHandItem(item.Name), HandRoot);
+
         CurrentItem = item;
         SlotIndex = slot;
         OnHand = false;
@@ -58,6 +63,7 @@ public class HandManager : MonoBehaviour
 
     void Clear()
     {
+        Destroy(CurrentItemObject);
         CurrentItem = null;
         SlotIndex = -1;
     }
@@ -198,9 +204,43 @@ public class HandManager : MonoBehaviour
             }
         }
 
-        if (HandTransform.GetComponent<Animator>())
+        if (Input.GetKeyDown(KeyCode.Alpha1))//Hand01
         {
-            HandTransform.GetComponent<Animator>().SetInteger("Side", GetComponent<EntityPlayer>().NetStats.Side);
+            if (Inve.HandOneIndex >= 0)
+            {
+                ItemData item = ItemManager.Instance.GetItem(Inve.ItemList[Inve.HandOneIndex].Index);
+
+                if (item.CanEquip)
+                {
+                    if (SlotIndex == Inve.HandOneIndex)
+                    {
+                        RemoveItem();
+                    }
+                    else
+                    {
+                        PutItem(item, Inve.HandOneIndex);
+                    }
+                }
+            }
+        }
+        if(Input.GetKeyDown(KeyCode.Alpha2))//Hand02
+        {
+            if (Inve.HandTwoIndex >= 0)
+            {
+                ItemData item = ItemManager.Instance.GetItem(Inve.ItemList[Inve.HandTwoIndex].Index);
+
+                if (item.CanEquip)
+                {
+                    if (SlotIndex == Inve.HandTwoIndex)
+                    {
+                        RemoveItem();
+                    }
+                    else
+                    {
+                        PutItem(item, Inve.HandTwoIndex);
+                    }
+                }
+            }
         }
 
         if (MouselockFake.IsLock == false && CurrentItem != null && Distance <= CurrentItem.About.Distance && OnHand == false)

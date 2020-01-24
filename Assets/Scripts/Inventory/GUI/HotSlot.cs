@@ -43,6 +43,22 @@ public class HotSlot : MonoBehaviour
                 Key = KeyCode.Alpha6;
                 HotNum.text = "6";
                 break;
+            case 6:
+                Key = KeyCode.Alpha7;
+                HotNum.text = "7";
+                break;
+            case 7:
+                Key = KeyCode.Alpha8;
+                HotNum.text = "8";
+                break;
+            case 8:
+                Key = KeyCode.Alpha9;
+                HotNum.text = "9";
+                break;
+            case 9:
+                Key = KeyCode.Alpha0;
+                HotNum.text = "0";
+                break;
             default:
                 Key = KeyCode.Alpha0;
                 break;

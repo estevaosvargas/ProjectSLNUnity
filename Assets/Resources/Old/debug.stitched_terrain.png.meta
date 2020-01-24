@@ -53,6 +53,9 @@ TextureImporter:
   - first:
       213: 2368123607558683645
     second: GrassFL2
+  - first:
+      213: -8726482712974310149
+    second: WaterFloor_
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -489,6 +492,27 @@ TextureImporter:
       bones: []
       spriteID: a85043c25a6efde4d995b82a875a8ce5
       internalID: 2368123607558683645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WaterFloor_
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 32
+        width: 32
+        height: 32
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d90d5fa3d3d142e42a43332c72e8cbf3
+      internalID: -8726482712974310149
       vertices: []
       indices: 
       edges: []

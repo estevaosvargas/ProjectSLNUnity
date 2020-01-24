@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.IO;
 using System.Text;
@@ -36,7 +37,7 @@ public class GameManager : UIElements
 #endif
     Queue<PathResult> results = new Queue<PathResult>();
     public GameObject Cnavas;
-    public CharacterCurrentData CurrentPlayer;
+    public PlayerManager Player;
     public string Version = "1.0.0";
     public int Seed = 0;
     public int Small_Seed = 0;
@@ -47,7 +48,6 @@ public class GameManager : UIElements
 
     public CustomizationCharacter charcustom;
 
-    public MousePngs MousePointer;
     public static MouseType Mtype = MouseType.none;
     public GameObject DMPOP;
     public bool SHOWDEBUG = false;
@@ -175,7 +175,7 @@ public class GameManager : UIElements
         if (SinglePlayer)
         {
             Game.MenuManager.Canavas.SetActive(Playing);
-            WorldManager.This.StartNewWorld("Map");
+            ChangeWorld("Map", 0, -1);
         }
         base.OnServerStart();
     }
@@ -183,7 +183,7 @@ public class GameManager : UIElements
     public override void OnConnect()
     {
         Game.MenuManager.Canavas.SetActive(Playing);
-        WorldManager.This.StartNewWorld("Map");
+        ChangeWorld("Map", 0, -1);
         base.OnConnect();
     }
 
@@ -219,64 +219,20 @@ public class GameManager : UIElements
         }
     }
 
-    public void UpdateCursor(MouseType type)
+    public void ChangeWorld(string worldname, int DimensionTo, int LastDimension)
     {
-        /*if (Mtype != type)
+        if (Player.PlayerObj)
         {
-            Mtype = type;
-
-            if (Mtype == MouseType.none)
-            {
-                Cursor.SetCursor(MousePointer.cursorTexture, MousePointer.hotSpot, MousePointer.cursorMode);
-            }
-            else if (Mtype == MouseType.Open)
-            {
-                Cursor.SetCursor(MousePointer.cursorOpen1, MousePointer.hotSpot, MousePointer.cursorMode);
-            }
-            else if (Mtype == MouseType.Chat)
-            {
-                Cursor.SetCursor(MousePointer.cursor1_Chat, MousePointer.hotSpot, MousePointer.cursorMode);
-            }
-        }*/
+            DarckNet.Network.Destroy(Player.PlayerObj.gameObject);
+        }
+        DarckNet.Network.ChangeDimension(DimensionTo, LastDimension);
+        SceneManager.LoadSceneAsync(worldname);
     }
+
     public Vector3 testepos;
     void Update()
     {
-        //DarckNet.Network.Update();
-
-        #region CursorPointer
-        /*if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            if (Mtype == MouseType.none)
-            {
-                Cursor.SetCursor(MousePointer.cursorTexture2, MousePointer.hotSpot, MousePointer.cursorMode);
-            }
-            else if (Mtype == MouseType.Open)
-            {
-                Cursor.SetCursor(MousePointer.cursorOpen2, MousePointer.hotSpot, MousePointer.cursorMode);
-            }
-            else if (Mtype == MouseType.Chat)
-            {
-                Cursor.SetCursor(MousePointer.cursor2_Chat, MousePointer.hotSpot, MousePointer.cursorMode);
-            }
-        }
-
-        if (Input.GetKeyUp(KeyCode.Mouse0))
-        {
-            if (Mtype == MouseType.none)
-            {
-                Cursor.SetCursor(MousePointer.cursorTexture, MousePointer.hotSpot, MousePointer.cursorMode);
-            }
-            else if (Mtype == MouseType.Open)
-            {
-                Cursor.SetCursor(MousePointer.cursorOpen1, MousePointer.hotSpot, MousePointer.cursorMode);
-            }
-            else if (Mtype == MouseType.Chat)
-            {
-                Cursor.SetCursor(MousePointer.cursor1_Chat, MousePointer.hotSpot, MousePointer.cursorMode);
-            }
-        }*/
-        #endregion
+        DarckNet.Network.Update();
 
         if (Time.time > timetemp + SaveUpdateTime)
         {
@@ -299,26 +255,11 @@ public class GameManager : UIElements
                     t = Game.WorldGenerator.GetTileAt(hit.point.x, hit.point.z);
                 }
 
-                if (hit.collider.gameObject.GetComponent<Vilanger>())
+                if (Input.GetKeyDown(KeyCode.Mouse1))
                 {
-                    UpdateCursor(MouseType.Chat);
-                }
-                else
-                {
-                    if (t != null)
+                    if (hit.collider.tag == "Interact")
                     {
-                        if (Get.GetMouseIteract(t))
-                        {
-                            UpdateCursor(MouseType.Open);
-                        }
-                        else
-                        {
-                            UpdateCursor(MouseType.none);
-                        }
-                    }
-                    else
-                    {
-                        UpdateCursor(MouseType.none);
+                        ChangeWorld("Inside", 1 ,0);
                     }
                 }
             }
@@ -354,6 +295,7 @@ public class GameManager : UIElements
     #region RPC
 
     #region Client
+
     public void GenerateChunkNet(int x, int y)
     {
         Net.RPC("ChunkDataNet", DarckNet.RPCMode.Server, x, y);
@@ -378,7 +320,6 @@ public class GameManager : UIElements
     void ChunkData(Vector2 pos, string data)
     {
         Tile[] tile = SaveWorld.DeserializeString<Tile>(data);
-
         Game.WorldGenerator.ClientMakeChunkAt((int)pos.x, (int)pos.y, tile);
     }
     #endregion
@@ -829,7 +770,7 @@ public class SaveWorld
     {
         string playerToJason = CompressString.StringCompressor.CompressString(JsonHelper.ToJson(staticOptions));
 
-        //Debug.Log("Tamanho : " + playerToJason.Length);
+        //Debug.Log("Tamanho : " + playerToJason);
 
         return playerToJason;
     }
@@ -838,7 +779,7 @@ public class SaveWorld
     {
         string datadescompres = CompressString.StringCompressor.DecompressString(data);
 
-        //Debug.Log("Tamanho : " + datadescompres);
+        Debug.Log("Tamanho : " + datadescompres);
 
         T[] tiles = JsonHelper.FromJson<T>(datadescompres);
 
@@ -1096,23 +1037,6 @@ public static class DataTime
         lasth = Hora;
     }
 }
-
-[System.Serializable]
-public class MousePngs
-{
-    [Header("Textures Pointer")]
-    public Texture2D cursorTexture;
-    public Texture2D cursorTexture2;
-    public Texture2D cursor1_Chat;
-
-    public Texture2D cursorOpen1;
-    public Texture2D cursorOpen2;
-    public Texture2D cursor2_Chat;
-
-    public CursorMode cursorMode = CursorMode.Auto;
-    public Vector2 hotSpot = Vector2.zero;
-}
-
 public enum MouseType
 {
     none, Info, Take, Open, Chat
@@ -1283,20 +1207,38 @@ public struct ClientConnect
 }
 
 [System.Serializable]
-public class CharacterCurrentData
+public class PlayerManager
 {
+    public GameObject PlayerObject;
     [Header("CharCreator-GlobalData")]
     public string UserName = "";
     public string UserID;
+    public EntityPlayer PlayerObj;
 
-    public GameObject MyObject;
-    public Inventory MyInventory;
-    public EntityPlayer MyPlayerMove;
     [Header("GUI MY INVENTORY")]
     public InfoItemGUI InveItemInfo;
-
     [Header("CharCreator-HoldingData")]
     public CharRace charRace = CharRace.Human;
+
+    public EntityPlayer RequestSpawnPlayer(Vector3 Pos, int dimension)
+    {
+        if (!PlayerObj)
+        {
+            GameObject obj = DarckNet.Network.Instantiate(PlayerObject, Pos, Quaternion.identity, dimension);
+            PlayerObj = obj.GetComponent<EntityPlayer>();
+            return PlayerObj;
+        }
+        else
+        {
+            Debug.Log("Your Player Allready is spawned");
+            return PlayerObj;
+        }
+    }
+
+    public EntityPlayer GetPlayer()
+    {
+        return PlayerObj;
+    }
 }
 
 public enum CharRace : byte
@@ -1538,6 +1480,11 @@ public class CustomizationCharacter
     public CharColorStruc CurrentEyesColor;
 }
 
+public class MapManager : DCallBack
+{
+    public int World_ID = 0;
+}
+
 /// <summary>
 /// Use to get instance, of the scripts
 /// </summary>
@@ -1556,6 +1503,7 @@ public static class Game
     public static InventoryGUI InventoryGUI;
     public static CityManager CityManager;
     public static NPCConvercetion NPCTALK;
+    public static InteriorManager InteriorManager;
 
     public static List<Entity> Entity_viewing = new List<Entity>();
 

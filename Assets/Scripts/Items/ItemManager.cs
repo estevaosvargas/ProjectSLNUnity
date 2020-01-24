@@ -193,5 +193,9 @@ public enum ItemRarity : byte
 
 public enum ItemType
 {
-    none, Weapon, Tools, Armor, Block, Placer, Trade
+    none, Weapon, Tools, Armor, Block, Placer, Trade, Head, Torso, Pants, Foot, Neck, Cape,
+    Bag,
+    Ring,
+    Lag,
+    Face
 }

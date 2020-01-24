@@ -108,28 +108,63 @@ public class InventoryGUI : MonoBehaviour {
 
     public void LoadInventory(int index,int qunty, ItemData item)
     {
-        if (index >= NumSlot -6 && index < NumSlot)
+        if (index >= NumSlot -10 && index < NumSlot)
         {
             GameObject obj = GameObject.Instantiate(SlotPrefab, Vector3.zero, Quaternion.identity);
             obj.name = "ArmorSlot: " + index;
             obj.GetComponent<Slots>().SetSlot(index, qunty, item, false);
             obj.GetComponent<Slots>().InveGUI = this;
-            obj.GetComponent<Slots>().SlotItemType = ItemType.Armor;
-            Inve.ItemList[index].ItemType = ItemType.Armor;
+
+            switch (hotba)
+            {
+                case 0://Head
+                    obj.GetComponent<Slots>().SlotItemType = ItemType.Head;
+                    Inve.ItemList[index].ItemType = ItemType.Head;
+                    break;
+                case 2://Face
+                    obj.GetComponent<Slots>().SlotItemType = ItemType.Face;
+                    Inve.ItemList[index].ItemType = ItemType.Face;
+                    break;
+                case 4://Torso
+                    obj.GetComponent<Slots>().SlotItemType = ItemType.Torso;
+                    Inve.ItemList[index].ItemType = ItemType.Torso;
+                    break;
+                case 6://Lag
+                    obj.GetComponent<Slots>().SlotItemType = ItemType.Lag;
+                    Inve.ItemList[index].ItemType = ItemType.Lag;
+                    break;
+                case 8://Foot
+                    obj.GetComponent<Slots>().SlotItemType = ItemType.Foot;
+                    Inve.ItemList[index].ItemType = ItemType.Foot;
+                    break;
+
+
+                case 1://Ring
+                    obj.GetComponent<Slots>().SlotItemType = ItemType.Ring;
+                    Inve.ItemList[index].ItemType = ItemType.Ring;
+                    break;
+                case 3://Neck
+                    obj.GetComponent<Slots>().SlotItemType = ItemType.Neck;
+                    Inve.ItemList[index].ItemType = ItemType.Neck;
+                    break;
+                case 5://Bag
+                    obj.GetComponent<Slots>().SlotItemType = ItemType.Bag;
+                    Inve.ItemList[index].ItemType = ItemType.Bag;
+                    break;
+                case 7://Hand1
+                    obj.GetComponent<Slots>().SlotItemType = ItemType.none;
+                    Inve.ItemList[index].ItemType = ItemType.none;
+                    Inve.HandOneIndex = index;
+                    break;
+                case 9://Hand2
+                    obj.GetComponent<Slots>().SlotItemType = ItemType.none;
+                    Inve.ItemList[index].ItemType = ItemType.none;
+                    Inve.HandTwoIndex = index;
+                    break;
+            }
+
             Player_Slots.Add(obj.GetComponent<Slots>());
             obj.transform.SetParent(ArmorRoot.gameObject.transform, false);
-        }
-        else if (index >= NumSlot -12 && index <= NumSlot -6)
-        {
-            GameObject obj = GameObject.Instantiate(SlotHotPrefab, Vector3.zero, Quaternion.identity);
-            obj.name = "HotBar: " + index;
-            obj.GetComponent<Slots>().SetSlot(index, qunty, item, false);
-            obj.GetComponent<Slots>().InveGUI = this;
-            obj.GetComponent<Slots>().SlotItemType = ItemType.none;
-            Inve.ItemList[index].ItemType = ItemType.none;
-            Player_Slots.Add(obj.GetComponent<Slots>());
-            obj.GetComponent<HotSlot>().SetSlot(hotba);
-            obj.transform.SetParent(HotRoot.gameObject.transform, false);
             hotba++;
         }
         else
@@ -146,6 +181,20 @@ public class InventoryGUI : MonoBehaviour {
 
             obj.transform.SetParent(InveRoot.gameObject.transform, false);
         }
+
+        /* else if (index >= NumSlot -12 && index <= NumSlot -6)
+        {
+            GameObject obj = GameObject.Instantiate(SlotHotPrefab, Vector3.zero, Quaternion.identity);
+            obj.name = "HotBar: " + index;
+            obj.GetComponent<Slots>().SetSlot(index, qunty, item, false);
+            obj.GetComponent<Slots>().InveGUI = this;
+            obj.GetComponent<Slots>().SlotItemType = ItemType.none;
+            Inve.ItemList[index].ItemType = ItemType.none;
+            Player_Slots.Add(obj.GetComponent<Slots>());
+            obj.GetComponent<HotSlot>().SetSlot(hotba);
+            obj.transform.SetParent(HotRoot.gameObject.transform, false);
+            hotba++;
+        }*/
     }
 
     public void Player_RefreshSlot(int index)

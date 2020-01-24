@@ -13,6 +13,7 @@ TagManager:
   - Bau
   - Entity
   - DamageArea
+  - Interact
   layers:
   - Default
   - TransparentFX
@@ -25,7 +26,7 @@ TagManager:
   - Tree
   - Player
   - Terrain
-  - 
+  - Interact
   - 
   - 
   - 

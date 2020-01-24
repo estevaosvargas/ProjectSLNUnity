@@ -13,6 +13,9 @@ public class Inventory : MonoBehaviour
 
     public List<Lidgren.Network.NetConnection> PlayerOpen = new List<Lidgren.Network.NetConnection>();
 
+    public int HandOneIndex;
+    public int HandTwoIndex;
+
     void Awake()
     {
 
@@ -24,13 +27,16 @@ public class Inventory : MonoBehaviour
 
         if (IsPlayer == true)
         {
-            SavePlayerInfo inve = SaveWorld.LoadPlayer(Game.GameManager.CurrentPlayer.UserID);
+            SavePlayerInfo inve = SaveWorld.LoadPlayer(Game.GameManager.Player.UserID);
 
             if (inve != null)
             {
                 ItemList = inve.Inve.ItemList;
 
-                transform.position = new Vector3(inve.x, 0, inve.z);
+                if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Inside")
+                {
+                    transform.position = new Vector3(inve.x, 1, inve.z);
+                }
 
                 GetComponent<EntityPlayer>().Status = inve.Status;
                 GetComponent<EntityPlayer>().HP = inve.Life;
@@ -56,7 +62,7 @@ public class Inventory : MonoBehaviour
         {
             if (IsPlayer == true)
             {
-                SaveWorld.SavePlayer(new SavePlayerInfo(new SaveInventory(ItemList), transform.position, GetComponent<EntityLife>().HP, GetComponent<EntityPlayer>().Status), Game.GameManager.CurrentPlayer.UserID);
+                SaveWorld.SavePlayer(new SavePlayerInfo(new SaveInventory(ItemList), transform.position, GetComponent<EntityLife>().HP, GetComponent<EntityPlayer>().Status), Game.GameManager.Player.UserID);
             }
             else
             {
@@ -71,7 +77,7 @@ public class Inventory : MonoBehaviour
         {
             if (IsPlayer == true)
             {
-                SaveWorld.DeletPlayer(Game.GameManager.CurrentPlayer.UserID);
+                SaveWorld.DeletPlayer(Game.GameManager.Player.UserID);
             }
             else
             {

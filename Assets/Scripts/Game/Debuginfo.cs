@@ -21,16 +21,16 @@ public class Debuginfo : MonoBehaviour
 
     void Update()
     {
-        if (Game.GameManager.CurrentPlayer.MyObject != null)
+        if (Game.GameManager.Player.PlayerObj != null)
         {
             Version.text = Application.productName + " On ("+ Game.GameManager.Version + ")" + " On (" + SystemInfo.graphicsDeviceName + ") - (" + SystemInfo.operatingSystem + ")";
             WorldSeed.text = "WorldSeed : " + Game.GameManager.Seed;
             EntityLoade.text = "Entity : " + Game.Entity_viewing.Count;
             ChunksLoade.text = "Chunks Loaded : " + Game.WorldGenerator.ChunksList.Count;
-            Biome.text = "Biome : " + Game.GameManager.CurrentPlayer.MyPlayerMove.NetStats.CurrentBiome;
-            CurrentBlock.text = "Tile : " + Game.GameManager.CurrentPlayer.MyPlayerMove.NetStats.CurrentTile.type;
+            Biome.text = "Biome : " + Game.GameManager.Player.PlayerObj.NetStats.CurrentBiome;
+            CurrentBlock.text = "Tile : " + Game.GameManager.Player.PlayerObj.NetStats.CurrentTile.type;
 
-            City currentcity = Game.CityManager.GetCity(Game.GameManager.CurrentPlayer.MyPlayerMove.NetStats.CurrentTile.CityPoint);
+            City currentcity = Game.CityManager.GetCity(Game.GameManager.Player.PlayerObj.NetStats.CurrentTile.CityPoint);
 
             if (currentcity != null)
             {
@@ -41,7 +41,7 @@ public class Debuginfo : MonoBehaviour
                 CurrentCity.text = "Current-City : None";
             }
 
-            Position.text = "X:" + Game.GameManager.CurrentPlayer.MyObject.transform.position.x + ", Y:" + Game.GameManager.CurrentPlayer.MyObject.transform.position.y + ", Z:" + Game.GameManager.CurrentPlayer.MyObject.transform.position.z;
+            Position.text = "X:" + Game.GameManager.Player.PlayerObj.transform.position.x + ", Y:" + Game.GameManager.Player.PlayerObj.transform.position.y + ", Z:" + Game.GameManager.Player.PlayerObj.transform.position.z;
         }
     }
 }

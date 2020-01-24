@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Threading;
 
-public class WorldGenerator : DCallBack
+public class WorldGenerator : MapManager
 {
     public Transform Player;
     public UnityStandardAssets.Utility.SmoothFollow Cam;
@@ -14,7 +14,6 @@ public class WorldGenerator : DCallBack
     public GameObject SUN;
     public int RenderDistance;
     public int DisRenderDistance = 5;
-    public int World_ID = 0;
     Dictionary<Vector3, Chunk> chunkMap;
     Dictionary<Vector3, bool> ClientchunkMap;
     public List<Chunk> ChunksList = new List<Chunk>();
@@ -57,9 +56,9 @@ public class WorldGenerator : DCallBack
     {
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
-            Player = Game.GameManager.CurrentPlayer.MyObject.transform;
+            Player = Game.GameManager.Player.PlayerObj.transform;
             Player.GetComponent<EntityPlayer>().World = this.transform;
-            Cam.target = Game.GameManager.CurrentPlayer.MyObject.transform;
+            Cam.target = Game.GameManager.Player.PlayerObj.transform;
 
             UpdateFindChunk();
         }
@@ -93,7 +92,7 @@ public class WorldGenerator : DCallBack
     {
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
-            WorldManager.This.SpawnPlayer(0, 0, 0, World_ID);
+            Game.GameManager.Player.RequestSpawnPlayer(new Vector3(0, 1, 0), World_ID);
             Game.ConsoleInGame.LoadingScreen_Hide();
         }
     }

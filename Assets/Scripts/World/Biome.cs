@@ -174,7 +174,7 @@ public static class Biome
             if (perlin <= 0.15f)
             {
                 //Water
-                return TypeBlock.Water;
+                return TypeBlock.WaterFloor;
             }
             else if (perlin > 0.15f && perlin < 0.2f)
             {
@@ -527,15 +527,15 @@ public static class Biome
 
             tile.OwnedByCity = true;
 
-            if (color == Game.Color("FFFFFF"))//Caiz
+            /*if (color == Game.Color("FFFFFF"))//Caiz
             {
                 return TypeBlock.DirtRoad;
-            }
-            return TypeBlock.Water;
+            }*/
+            return TypeBlock.WaterFloor;
         }
         else
         {
-            return TypeBlock.Water;
+            return TypeBlock.WaterFloor;
         }
     }
 
@@ -543,28 +543,78 @@ public static class Biome
     {
         if (sample > 0.48f)
         {
-            System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
-            int randnum = (rand.Next(1, 20));
+            LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false);
 
-            if (randnum == 1)
+            VeronoiStruc sample2 = CityNoise.GetValueNPoint(x, z, 0);
+
+            tile.CityPoint = new DataVector3(CityNoise.GetPoint(x, z, 0));
+
+            //Debug.Log("village Chance : " + (int)sample2);
+
+            //sample2 *= 10;
+
+            if ((int)sample2.Value == 1)
             {
-                if (tile.typego == TakeGO.empty)
+                Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
+
+                tile.OwnedByCity = true;
+
+                if (color == Game.Color("FFFFFF"))//Road
                 {
-                    tile.typego = TakeGO.PalmTree;
+                    return TypeBlock.DirtRoad;
                 }
-                return TypeBlock.BeachSand;
-            }
-            else if (randnum == 5)
-            {
-                if (tile.typego == TakeGO.empty)
+                else
                 {
-                    tile.typego = TakeGO.PalmTree2;
+                    System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                    int randnum = (rand.Next(1, 20));
+
+                    if (randnum == 1)
+                    {
+                        if (tile.typego == TakeGO.empty)
+                        {
+                            tile.typego = TakeGO.PalmTree;
+                        }
+                        return TypeBlock.BeachSand;
+                    }
+                    else if (randnum == 5)
+                    {
+                        if (tile.typego == TakeGO.empty)
+                        {
+                            tile.typego = TakeGO.PalmTree2;
+                        }
+                        return TypeBlock.BeachSand;
+                    }
+                    else
+                    {
+                        return TypeBlock.BeachSand;
+                    }
                 }
-                return TypeBlock.BeachSand;
             }
             else
             {
-                return TypeBlock.BeachSand;
+                System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+                int randnum = (rand.Next(1, 20));
+
+                if (randnum == 1)
+                {
+                    if (tile.typego == TakeGO.empty)
+                    {
+                        tile.typego = TakeGO.PalmTree;
+                    }
+                    return TypeBlock.BeachSand;
+                }
+                else if (randnum == 5)
+                {
+                    if (tile.typego == TakeGO.empty)
+                    {
+                        tile.typego = TakeGO.PalmTree2;
+                    }
+                    return TypeBlock.BeachSand;
+                }
+                else
+                {
+                    return TypeBlock.BeachSand;
+                }
             }
         }
         else if (sample > 0.47f)
@@ -573,7 +623,7 @@ public static class Biome
         }
         else
         {
-            return TypeBlock.Water;
+            return TypeBlock.BeachSand;
         }
     }
 

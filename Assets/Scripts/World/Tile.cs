@@ -41,7 +41,8 @@ public class Tile
 
     [NonSerialized]
     public bool OwnedByCity;
-
+    [NonSerialized]
+    public float OceanHight = 0;
     /// <summary>
     /// If AI Can Walk.
     /// </summary>
@@ -107,6 +108,28 @@ public class Tile
 
     }
 
+    public Tile(Tile newtile)
+    {
+        type = newtile.type;
+        typeVariante = newtile.typeVariante;
+        PLACER_DATA = newtile.PLACER_DATA;
+        typego = newtile.typego;
+        ConnecyToNightboors = newtile.ConnecyToNightboors;
+        IsColider = newtile.IsColider;
+        x = newtile.x;
+        y = newtile.y;
+        z = newtile.z;
+        RenderLevel = newtile.RenderLevel;
+        TileBiome = newtile.TileBiome;
+
+        Emessive = newtile.Emessive;
+        OcupedByOther = newtile.OcupedByOther;
+
+        Hora = newtile.Hora;
+        Dia = newtile.Dia;
+        Mes = newtile.Mes;
+    }
+
     public Tile(int x, int y, TypeBlock Type, ChunkInfo ChunkInfo)
     {
         TileChunk = ChunkInfo;
@@ -139,7 +162,7 @@ public class Tile
         zCordee *= frequency;
 
         float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(x, z, 0);
-
+        OceanHight = sample;
         if (Game.WorldGenerator.CurrentWorld == WorldType.Caves)
         {
             Debug.LogError("Sorry Caves Is Not enable in alpha!");

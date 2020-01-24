@@ -84,8 +84,8 @@ public class CharListGUI : MonoBehaviour
             {
                 Game.ConsoleInGame.LoadingScreen_Show();
 
-                Game.GameManager.CurrentPlayer.UserName = characterDatas[i].NAME;
-                Game.GameManager.CurrentPlayer.UserID = characterDatas[i].ID.ToString();
+                Game.GameManager.Player.UserName = characterDatas[i].NAME;
+                Game.GameManager.Player.UserID = characterDatas[i].ID.ToString();
 
                 Game.GameManager.WorldName = characterDatas[i].WorldName;
                 Game.GameManager.SetUpSinglePlayer(characterDatas[i].Seed);
@@ -131,8 +131,8 @@ public class CharListGUI : MonoBehaviour
         List.Add(new WorldList(Input_WorldName.text, "", "", Input_SeedName.text));
         SaveInfo(List.ToArray());
 
-        Game.GameManager.CurrentPlayer.UserName = characterDatas[characterDatas.Count - 1].NAME;
-        Game.GameManager.CurrentPlayer.UserID = characterDatas[characterDatas.Count -1].ID.ToString();
+        Game.GameManager.Player.UserName = characterDatas[characterDatas.Count - 1].NAME;
+        Game.GameManager.Player.UserID = characterDatas[characterDatas.Count -1].ID.ToString();
 
         Game.GameManager.WorldName = Input_WorldName.text;
         Game.GameManager.SetUpSinglePlayer(Input_SeedName.text);

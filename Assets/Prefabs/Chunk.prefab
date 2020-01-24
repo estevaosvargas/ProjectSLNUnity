@@ -54,4 +54,6 @@ MonoBehaviour:
   DefaultTileMaterial: {fileID: 2100000, guid: 043170319843d8445983b4dcebd92201, type: 2}
   DefaultTransMaterial: {fileID: 2100000, guid: eb8bd7a799865d043ad533d09292f68a,
     type: 2}
+  WaterTileMaterial: {fileID: 2100000, guid: a5f2339f242f6cc41a982ec55ea3c201, type: 2}
   MeshTile: {fileID: 0}
+  WaterMeshTile: {fileID: 0}

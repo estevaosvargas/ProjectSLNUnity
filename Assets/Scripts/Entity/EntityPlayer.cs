@@ -29,15 +29,12 @@ public class EntityPlayer : EntityLife
 
 
     private Vector3 lastposition;
-    private Vector3 dashdirection;
     private int LastPostitionIntX;
     private int LastPostitionIntZ;
     private float timestep;
 
     public bool IsOnDamageArea;
     public int DamageRate;
-    private float dashtemp;
-    public float deshtime = 1;
 
     public float StatusUpdateRate = 1;
     private float Statustimestep;
@@ -61,10 +58,7 @@ public class EntityPlayer : EntityLife
                 World = Game.WorldGenerator.transform;
             }
 
-            Game.GameManager.CurrentPlayer.MyObject = gameObject;
-            Game.GameManager.CurrentPlayer.MyInventory = GetComponent<Inventory>();
-            Game.GameManager.CurrentPlayer.MyPlayerMove = this;
-            Game.GameManager.CurrentPlayer.MyPlayerMove.IsAlive = true;
+            IsAlive = true;
 
             Game.WorldGenerator.Setplayer_data();
 
@@ -106,15 +100,24 @@ public class EntityPlayer : EntityLife
 
             if (tile.type == TypeBlock.Water)
             {
-                Speed = 0.5f;
+                Speed = 0.8f;
+                Anim.applyRootMotion = false;
+                NetStats.swiming = true;
+                Anim.SetBool("swing", true);
             }
             else if (tile.type == TypeBlock.IceWater)
             {
                 Speed = 5f;
+                Anim.applyRootMotion = false;
+                NetStats.swiming = false;
+                Anim.SetBool("swing", false);
             }
             else
             {
                 Speed = 2f;
+                Anim.applyRootMotion = false;
+                NetStats.swiming = false;
+                Anim.SetBool("swing", false);
             }
 
             if (tile.type == TypeBlock.Grass)
@@ -199,38 +202,36 @@ public class EntityPlayer : EntityLife
                         {
                             if (Time.time > timestep + DamageRate)
                             {
-                                DoDamage(5, Game.GameManager.CurrentPlayer.UserID, true);
+                                DoDamage(5, Game.GameManager.Player.UserID, true);
                                 timestep = Time.time;
                             }
                         }
 
-                        if (Time.time > dashtemp + deshtime)
+                        Vector3 lookPos = new Vector3(Game.GameManager.mouseX, Game.GameManager.mouseY, Game.GameManager.mouseZ);
+                        lookPos = lookPos - transform.position;
+
+                        if (Anim.GetCurrentAnimatorStateInfo(0).IsName("Roll"))
                         {
-                            NetStats.Dashing = false;
-                            dashtemp = Time.time;
+                            Anim.applyRootMotion = true;
+                            return;
+                        }
+                        else
+                        {
+                            Anim.applyRootMotion = false;
                         }
 
-                        if (!NetStats.Dashing)
+                        if (Input.GetKeyDown(KeyCode.Space))
                         {
-                            Vector3 lookPos = new Vector3(Game.GameManager.mouseX, Game.GameManager.mouseY, Game.GameManager.mouseZ);
-                            lookPos = lookPos - transform.position;
-
-                            if (Input.GetKeyDown(KeyCode.Space))
+                            if (!NetStats.swiming)
                             {
                                 if (Status.Energy > 0)
                                 {
+                                    Anim.applyRootMotion = true;
                                     Vector3 daPos = lookPos;
                                     //lookPos = lookPos - transform.position;
 
                                     Anim.SetTrigger("Dash");
 
-                                    Anim.SetFloat("X", Input.GetAxis("Horizontal"));
-                                    Anim.SetFloat("Y", Input.GetAxis("Vertical"));
-
-
-                                    //body.AddForce(transform.forward * DashSpeed, ForceMode.Impulse);
-                                    dashdirection = daPos;
-                                    NetStats.Dashing = true;
                                     Status.Energy -= 35;
                                     Game.MenuManager.EnergyBar.RefreshBar(Status.Energy);
                                     return;
@@ -240,102 +241,98 @@ public class EntityPlayer : EntityLife
                                     Game.MenuManager.PopUpName("Out Of Stamina!");
                                 }
                             }
-                            Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxisRaw("Horizontal"), 0, CrossPlatformInputManager.GetAxisRaw("Vertical"));
+                        }
+                        
+                        Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxisRaw("Horizontal"), 0, CrossPlatformInputManager.GetAxisRaw("Vertical"));
 
-                            moveVector = Move(movement.normalized);
+                        moveVector = Move(movement.normalized);
 
-                            if (body.isGrounded == false)
+                        if (body.isGrounded == false)
+                        {
+                            //Add our gravity Vecotr
+                            moveVector += Physics.gravity;
+                        }
+
+                        body.Move(moveVector * Speed * Time.deltaTime);
+
+                        if (!MouselockFake.IsLock)
+                        {
+                            transform.LookAt(new Vector3(transform.position.x + lookPos.x, 0, transform.position.z + lookPos.z));
+                            transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
+                        }
+
+                        /*if (Input.GetKeyDown(KeyCode.Mouse1))
+                        {
+                            if (Game.GameManager.hit.collider != null)
                             {
-                                //Add our gravity Vecotr
-                                moveVector += Physics.gravity;
+                                Go(new Vector3(Game.GameManager.mouseX, Game.GameManager.mouseY, Game.GameManager.mouseZ));
                             }
+                        }*/
 
-                            body.Move(moveVector * Speed * Time.deltaTime);
-
-                            if (!MouselockFake.IsLock)
-                            {
-                                transform.LookAt(new Vector3(transform.position.x + lookPos.x, 0, transform.position.z + lookPos.z));
-                                transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
-                            }
-
-                            /*if (Input.GetKeyDown(KeyCode.Mouse1))
-                            {
-                                if (Game.GameManager.hit.collider != null)
-                                {
-                                    Go(new Vector3(Game.GameManager.mouseX, Game.GameManager.mouseY, Game.GameManager.mouseZ));
-                                }
-                            }*/
-
-                            if (NetStats.handhide == true)
-                            {
-                                HandRoot.gameObject.SetActive(false);
-                            }
-                            else
-                            {
-                                HandRoot.gameObject.SetActive(true);
-                            }
-
-                            if (Input.GetAxis("Horizontal") > 0f)
-                            {
-                                Anim.SetInteger("Walk", 1);
-
-                                Anim.SetFloat("X", Input.GetAxis("Horizontal"));
-                                Anim.SetFloat("Y", Input.GetAxis("Vertical"));
-
-                                //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
-
-                                NetStats.walking = true;
-                                NetStats.Side = 0;
-                            }
-                            else if (Input.GetAxis("Horizontal") < 0f)
-                            {
-                                Anim.SetInteger("Walk", 1);
-
-                                Anim.SetFloat("X", Input.GetAxis("Horizontal"));
-                                Anim.SetFloat("Y", Input.GetAxis("Vertical"));
-
-                                //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
-
-
-                                NetStats.walking = true;
-                                NetStats.Side = 1;
-                            }
-                            else if (Input.GetAxis("Vertical") > 0)
-                            {
-                                Anim.SetInteger("Walk", 1);
-
-                                Anim.SetFloat("X", Input.GetAxis("Horizontal"));
-                                Anim.SetFloat("Y", Input.GetAxis("Vertical"));
-
-                                //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
-
-                                NetStats.walking = true;
-                                NetStats.Side = 2;
-                            }
-                            else if (Input.GetAxis("Vertical") < 0)
-                            {
-                                Anim.SetInteger("Walk", 1);
-
-                                Anim.SetFloat("X", Input.GetAxis("Horizontal"));
-                                Anim.SetFloat("Y", Input.GetAxis("Vertical"));
-
-                                //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
-
-                                NetStats.walking = true;
-                                NetStats.Side = 3;
-                            }
-                            else
-                            {
-                                Anim.SetInteger("Walk", 0);
-                                FootPArticle.Stop();
-
-                                NetStats.walking = false;
-                            }
-
+                        if (NetStats.handhide == true)
+                        {
+                            HandRoot.gameObject.SetActive(false);
                         }
                         else
                         {
-                            body.Move(Move(new Vector3(0,0,1)) * DashSpeed * Time.deltaTime);
+                            HandRoot.gameObject.SetActive(true);
+                        }
+
+                        if (Input.GetAxis("Horizontal") > 0f)
+                        {
+                            Anim.SetInteger("Walk", 1);
+
+                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                            //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
+
+                            NetStats.walking = true;
+                            NetStats.Side = 0;
+                        }
+                        else if (Input.GetAxis("Horizontal") < 0f)
+                        {
+                            Anim.SetInteger("Walk", 1);
+
+                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                            //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
+
+
+                            NetStats.walking = true;
+                            NetStats.Side = 1;
+                        }
+                        else if (Input.GetAxis("Vertical") > 0)
+                        {
+                            Anim.SetInteger("Walk", 1);
+
+                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                            //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
+
+                            NetStats.walking = true;
+                            NetStats.Side = 2;
+                        }
+                        else if (Input.GetAxis("Vertical") < 0)
+                        {
+                            Anim.SetInteger("Walk", 1);
+
+                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
+                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                            //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
+
+                            NetStats.walking = true;
+                            NetStats.Side = 3;
+                        }
+                        else
+                        {
+                            Anim.SetInteger("Walk", 0);
+                            FootPArticle.Stop();
+
+                            NetStats.walking = false;
                         }
 
                         #region UpDateOnMove
@@ -364,7 +361,7 @@ public class EntityPlayer : EntityLife
             }
             else///Server Update
             {
-                
+
             }
         }
     }
@@ -405,9 +402,6 @@ public class EntityPlayer : EntityLife
             if (collision.tag == "TreeTrigger")
             {
                 Trees tree = collision.transform.GetComponentInParent<Trees>();
-                
-                tree.Enable_LeafMesh.SetActive(false);
-                tree.Disable_LeafMesh.SetActive(true);
             }
             else if (collision.tag == "ItemDrop")
             {
@@ -435,9 +429,6 @@ public class EntityPlayer : EntityLife
             if (collision.tag == "TreeTrigger")
             {
                 Trees tree = collision.transform.GetComponentInParent<Trees>();
-
-                tree.Enable_LeafMesh.SetActive(true);
-                tree.Disable_LeafMesh.SetActive(false);
             }
             else if (collision.tag == "ItemDrop")
             {
@@ -771,8 +762,6 @@ public class PlayerNetStats
     public BiomeType CurrentBiome;
 
     public int Side = -1;
-
-    public bool Dashing { get; internal set; }
 }
 
 public enum Skills : byte

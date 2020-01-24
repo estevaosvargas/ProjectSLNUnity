@@ -182,7 +182,7 @@ public enum TypeBlock : byte
     Grass, Water, GoldStone, IronStone,
     Rock, DirtGrass, Sand,
     Bloco, Dirt, DirtRoad, IceWater, Snow, LightBlockON,
-    BeachSand
+    BeachSand, WaterFloor
 }
 
 public enum TypeVariante : byte

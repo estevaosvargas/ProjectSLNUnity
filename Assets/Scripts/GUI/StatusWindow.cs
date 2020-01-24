@@ -35,7 +35,7 @@ public class StatusWindow : MonoBehaviour
 
     public void Refresh()
     {
-        if (Game.GameManager.CurrentPlayer.MyPlayerMove)
+        if (Game.GameManager.Player.PlayerObj)
         {
             ClearCanvas();
             switch (Pages)
@@ -64,18 +64,18 @@ public class StatusWindow : MonoBehaviour
                     Title1.text = "Professions Skills";
                     Title2.text = "Weapons Skills";
 
-                    if (Game.GameManager.CurrentPlayer.MyPlayerMove.Status.SkillsList.Count > 0)
+                    if (Game.GameManager.Player.PlayerObj.Status.SkillsList.Count > 0)
                     {
-                        SkillsList = Game.GameManager.CurrentPlayer.MyPlayerMove.Status.SkillsList.ToArray();
+                        SkillsList = Game.GameManager.Player.PlayerObj.Status.SkillsList.ToArray();
 
                         for (int i = 0; i < SkillsList.Length; i++)
                         {
                             DrawnList01(SkillsList[i].Type.ToString() + " : (LV: " + SkillsList[i].SkillLevel + ") " + SkillsList[i].SkillXp + "/" + SkillsList[i].MaxSkillXp);
                         }
                     }
-                    if (Game.GameManager.CurrentPlayer.MyPlayerMove.Status.WPSkillsList.Count > 0)
+                    if (Game.GameManager.Player.PlayerObj.Status.WPSkillsList.Count > 0)
                     {
-                        WeapondSkill = Game.GameManager.CurrentPlayer.MyPlayerMove.Status.WPSkillsList.ToArray();
+                        WeapondSkill = Game.GameManager.Player.PlayerObj.Status.WPSkillsList.ToArray();
 
                         for (int i = 0; i < WeapondSkill.Length; i++)
                         {
