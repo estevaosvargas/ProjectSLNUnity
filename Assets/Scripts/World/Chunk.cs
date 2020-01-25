@@ -267,9 +267,13 @@ public class Chunk : MonoBehaviour
 
     private void SpawnNetWorkObject(Tile tile)
     {
-        /*GameObject obj3 = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/Slime"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
-        Entitys.Add(obj3.GetComponent<EntityLife>());
-        obj3.GetComponent<EntityLife>().PrefabName = "Slime";*/
+        GameObject cardinal = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/cardinal"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
+        Entitys.Add(cardinal.GetComponent<EntityLife>());
+        cardinal.GetComponent<EntityLife>().PrefabName = "cardinal";
+
+        GameObject sparrow = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/sparrow"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
+        Entitys.Add(sparrow.GetComponent<EntityLife>());
+        sparrow.GetComponent<EntityLife>().PrefabName = "sparrow";
 
         GameObject Cow = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/Cow"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
         Entitys.Add(Cow.GetComponent<EntityLife>());

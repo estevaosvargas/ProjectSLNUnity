@@ -99,12 +99,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb84e30e02715445aeb9959894e3b4d, type: 3}
   m_Name: ColorGrading
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   enabled:
     overrideState: 1
     value: 1
   gradingMode:
-    overrideState: 1
+    overrideState: 0
     value: 0
   externalLut:
     overrideState: 0
@@ -143,7 +143,7 @@ MonoBehaviour:
     value: 1
   tint:
     overrideState: 1
-    value: 18
+    value: 3
   colorFilter:
     overrideState: 0
     value: {r: 1, g: 1, b: 1, a: 1}
@@ -1410,15 +1410,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48a79b01ea5641d4aa6daa2e23605641, type: 3}
   m_Name: Bloom
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   enabled:
     overrideState: 1
     value: 1
   intensity:
-    overrideState: 1
-    value: 10
-  threshold:
     overrideState: 0
+    value: 1
+  threshold:
+    overrideState: 1
     value: 1
   softKnee:
     overrideState: 0
