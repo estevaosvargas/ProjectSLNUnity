@@ -1207,34 +1207,36 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "All Or Licence thing, Copyright of or games etc.\r\nLast Update 25/12/2019
-    - 10:59 HM\r\n\r\nCopyright (c) 2019 Darckcomsoft - All rights reserved. All
-    others trademarks are property of their respective owners in All countries\r\nCopyright
-    (c) 2019 Villanger and King - All rights reserved.\r\nCopyright (c) 2019 Fate
-    of Survival - All rights reserved.\r\nCopyright (c) 2019 Beyondworld Free To
-    Play - All rights reserved.\r\n\r\nDarckcomsoft - logo is alowed to use for comercial.
-    Youtube Videos, Twitch Stream etc.\r\nIs Alowed to capture any image/videos of
-    or public games >> (Beyondworld - Free To Play, Villanger and King)\r\n\r\n====================-PRIVATE-SOURCE-CODE-=========================\r\nYou
-    cant any way possible use or private source code, all privates files are proibeted
-    to use, only darckcomsoft is alowed to use, modificate, distribution, all others
+  m_text: "All Or Licence thing, Copyright of or games etc.\r\nLast Update 26/1/2020
+    - 9:46PM (HM)\r\n\r\nCopyright (c) 2020 Darkcomsoft - All rights reserved. All
+    others trademarks are property of their respective owners in All countries.\r\nCopyright
+    (c) 2020 Villagers and Kings - All rights reserved.\r\nCopyright (c) 2020 Fate
+    of Survival - All rights reserved.\r\n\r\nDarkcomsoft logo is alowed to use for
+    comercial. Youtube Videos, Twitch Stream etc.\r\nIs Alowed to capture any image/videos
+    of or public games >> (Beyondworld - Free To Play, Villangers and Kings)\r\n\r\n====================-PRIVATE-SOURCE-CODE-=========================\r\nYou
+    cant any way possible, use or private source code, all privates files are proibeted
+    to use, only darkcomsoft is alowed to use, modificate, distribution, all others
     files is property of their respective owners. \r\n      Commercial use : no alowed\r\n     
     Distribution : no alowed\r\n      Modification : no alowed\r\n      Patent use
-    : no alowed\r\n      Private use : no alowed\r\n\r\nIf need contact with us send
-    email to darckcomsoft@gmail.com\n\n------LIDGREN NETWORK----------\n\nThe MIT
-    License (MIT)\r\n\r\nCopyright (c) 2015 lidgren\r\n\r\nPermission is hereby granted,
-    free of charge, to any person obtaining a copy\r\nof this software and associated
-    documentation files (the \"Software\"), to deal\r\nin the Software without restriction,
-    including without limitation the rights\r\nto use, copy, modify, merge, publish,
-    distribute, sublicense, and/or sell\r\ncopies of the Software, and to permit
-    persons to whom the Software is\r\nfurnished to do so, subject to the following
-    conditions:\r\n\r\nThe above copyright notice and this permission notice shall
-    be included in all\r\ncopies or substantial portions of the Software.\r\n\r\nTHE
-    SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\r\nIMPLIED,
-    INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\r\nFITNESS FOR
-    A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\r\nAUTHORS OR
-    COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\r\nLIABILITY, WHETHER
-    IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\r\nOUT OF OR IN CONNECTION
-    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\r\nSOFTWARE.\n\n------------------\n\nhttps://www.youtube.com/user/quill18creates
+    : no alowed\r\n      Private use : no alowed\r\n\r\nIf need contact with us,
+    send a email to \"darkcomsoft@gmail.com\"\r\n\r\n\r\nWhat Changed? : Last Update
+    26/1/2020 - 9:46PM (HM)\r\n---------------\r\nChange name Villangers and Kings
+    to Villagers and Kings\r\nRemove the 'N' of Villa'n'gers\n\n------LIDGREN NETWORK----------\n\nThe
+    MIT License (MIT)\r\n\r\nCopyright (c) 2015 lidgren\r\n\r\nPermission is hereby
+    granted, free of charge, to any person obtaining a copy\r\nof this software and
+    associated documentation files (the \"Software\"), to deal\r\nin the Software
+    without restriction, including without limitation the rights\r\nto use, copy,
+    modify, merge, publish, distribute, sublicense, and/or sell\r\ncopies of the
+    Software, and to permit persons to whom the Software is\r\nfurnished to do so,
+    subject to the following conditions:\r\n\r\nThe above copyright notice and this
+    permission notice shall be included in all\r\ncopies or substantial portions
+    of the Software.\r\n\r\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY
+    OF ANY KIND, EXPRESS OR\r\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    OF MERCHANTABILITY,\r\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE\r\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+    DAMAGES OR OTHER\r\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+    ARISING FROM,\r\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE\r\nSOFTWARE.\n\n------------------\n\nhttps://www.youtube.com/user/quill18creates
     - Help Me with your videos to how procedural worlds are made(Procedural Mesh,
     and texture)\r\nhttps://www.youtube.com/channel/UCntwvD4TCEQhrb8HmYaCdBA - Help
     Me with your videos to how procedural worlds are made(Tiles Procedural World,
@@ -2475,10 +2477,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0, g: 0.43455696, b: 1, a: 0.80784315}
-    m_PressedColor: {r: 0, g: 0.43529415, b: 1, a: 1}
-    m_SelectedColor: {r: 0.0033374948, g: 0.30987585, b: 0.7075472, a: 1}
+    m_NormalColor: {r: 1, g: 0.9436245, b: 0.8160377, a: 1}
+    m_HighlightedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 0.80784315}
+    m_PressedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 0.6784314}
+    m_SelectedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -3572,10 +3574,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0, g: 0.43455696, b: 1, a: 0.80784315}
-    m_PressedColor: {r: 0, g: 0.43529415, b: 1, a: 1}
-    m_SelectedColor: {r: 0.0033374948, g: 0.30987585, b: 0.7075472, a: 1}
+    m_NormalColor: {r: 1, g: 0.9436245, b: 0.8160377, a: 1}
+    m_HighlightedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 0.80784315}
+    m_PressedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 0.6784314}
+    m_SelectedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 1}
     m_DisabledColor: {r: 0.6132076, g: 0.6132076, b: 0.6132076, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -7297,10 +7299,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0, g: 0.43455696, b: 1, a: 0.80784315}
-    m_PressedColor: {r: 0, g: 0.43529415, b: 1, a: 1}
-    m_SelectedColor: {r: 0.0033374948, g: 0.30987585, b: 0.7075472, a: 1}
+    m_NormalColor: {r: 1, g: 0.9436245, b: 0.8160377, a: 1}
+    m_HighlightedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 0.80784315}
+    m_PressedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 0.6784314}
+    m_SelectedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -7907,10 +7909,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0, g: 0.43455696, b: 1, a: 0.80784315}
-    m_PressedColor: {r: 0, g: 0.43529415, b: 1, a: 1}
-    m_SelectedColor: {r: 0.0033374948, g: 0.30987585, b: 0.7075472, a: 1}
+    m_NormalColor: {r: 1, g: 0.9436245, b: 0.8160377, a: 1}
+    m_HighlightedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 0.80784315}
+    m_PressedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 0.6784314}
+    m_SelectedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -10935,10 +10937,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0, g: 0.43455696, b: 1, a: 0.80784315}
-    m_PressedColor: {r: 0, g: 0.43529415, b: 1, a: 1}
-    m_SelectedColor: {r: 0.0033374948, g: 0.30987585, b: 0.7075472, a: 1}
+    m_NormalColor: {r: 1, g: 0.9436245, b: 0.8160377, a: 1}
+    m_HighlightedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 0.80784315}
+    m_PressedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 0.6784314}
+    m_SelectedColor: {r: 1, g: 0.7725491, b: 0.25882354, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1

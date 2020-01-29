@@ -114,6 +114,17 @@ public class HandManager : MonoBehaviour
                         Game.GameManager.PopUpDamage(Camera.main.WorldToScreenPoint(item.transform.position), CurrentItem.About.EntityDamage);
                         Debug.Log("Attacked : " + item.name);
                     }
+                    else
+                    {
+                        GetComponent<Animator>().SetTrigger("Attack");
+                        Debug.Log("Attacked : Air");
+                    }
+                }
+
+                if (Entitys.Length <= 0)
+                {
+                    GetComponent<Animator>().SetTrigger("Attack");
+                    Debug.Log("Attacked : Air");
                 }
 
                 timetemp = Time.time;
@@ -139,6 +150,17 @@ public class HandManager : MonoBehaviour
                         Game.GameManager.PopUpDamage(Camera.main.WorldToScreenPoint(item.transform.position), Hand.DamageEnity);
                         Debug.Log("Attacked : " + item.name);
                     }
+                    else
+                    {
+                        GetComponent<Animator>().SetTrigger("Attack");
+                        Debug.Log("Attacked : Air");
+                    }
+                }
+
+                if (Entitys.Length <= 0)
+                {
+                    GetComponent<Animator>().SetTrigger("Attack");
+                    Debug.Log("Attacked : Air");
                 }
 
                 timetemp = Time.time;
@@ -307,6 +329,11 @@ public class HandManager : MonoBehaviour
         }
         else
         {
+            if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Joystick1Button5))
+            {
+                FirstAction();
+            }
+
             if (Game.WorldGenerator)
             {
                 if (Game.WorldGenerator.SlectedBlock != null)

@@ -37,6 +37,7 @@ public class GameManager : UIElements
 #endif
     Queue<PathResult> results = new Queue<PathResult>();
     public GameObject Cnavas;
+    public Text versioningameText;
     public PlayerManager Player;
     public string Version = "1.0.0";
     public int Seed = 0;
@@ -90,6 +91,8 @@ public class GameManager : UIElements
             Instantiate(Console);
         }
 #endif
+        versioningameText.text = Version;
+
         AudioSourceGlobal = GetComponent<AudioSource>();
         Game.AudioManager.LoadAudio();
 		ItchAPi.StartItchApi();
@@ -155,12 +158,14 @@ public class GameManager : UIElements
 
         SinglePlayer = true;
         Playing = true;
+        Game.ConsoleInGame.UpdateLoadingText("Creating Local Server...");
         DarckNet.NetConfig.DedicatedServer = false;
         DarckNet.Network.Create("127.0.0.1", 25000, 1);
     }
 
     public void SetUpMultiplayer()
     {
+        Game.ConsoleInGame.UpdateLoadingText("Connecting...");
         if (DarckNet.Network.Connect(Client.IP, Client.Port, Client.Password) == null) { return; }
         SinglePlayer = false;
         MultiPlayer = true;
@@ -260,6 +265,10 @@ public class GameManager : UIElements
                     if (hit.collider.tag == "Interact")
                     {
                         ChangeWorld("Inside", 1 ,0);
+                    }
+                    else if (hit.collider.tag == "Interact2")
+                    {
+                        ChangeWorld("Map", 1, 0);
                     }
                 }
             }

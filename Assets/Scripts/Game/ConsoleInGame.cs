@@ -22,6 +22,7 @@ public class ConsoleInGame : MonoBehaviour
     [Header("LoadingScreen")]
     public bool IsLoading = false;
     public GameObject LoadingscreenObj;
+    public Text LoadingText;
 
     public bool Collapse = true;
 
@@ -468,6 +469,11 @@ public class ConsoleInGame : MonoBehaviour
     public void LoadingScreen_Hide()
     {
         LoadingscreenObj.SetActive(false);
+    }
+
+    public void UpdateLoadingText(string text)
+    {
+        LoadingText.text = text;
     }
     #endregion
 }

@@ -19,6 +19,7 @@ public class EntityPlayer : EntityLife
     public List<GameObject> ObjectToDisable = new List<GameObject>();
     public Transform Vector;
     public Animator AttackSword;
+    Tile tile;
     public int animstatus;
     public float Speed = 5;
     public float DashSpeed = 10;
@@ -27,6 +28,7 @@ public class EntityPlayer : EntityLife
     public int FootParticleCount = 1;
     public int pathsize = 20;
 
+    public bool enableGravity = true;
 
     private Vector3 lastposition;
     private int LastPostitionIntX;
@@ -84,6 +86,34 @@ public class EntityPlayer : EntityLife
         {
             Net.RPC("UpdatePosition", DarckNet.RPCMode.AllNoOwner, new Vector3(transform.position.x, transform.position.y, transform.position.z));
         }
+
+        if (tile != null)
+        {
+            if (transform.position.y <= -0.8f)
+            {
+                Speed = 0.8f;
+                enableGravity = false;
+                Anim.applyRootMotion = false;
+                NetStats.swiming = true;
+                Anim.SetBool("swing", true);
+            }
+            else if (tile.type == TypeBlock.IceWater)
+            {
+                Speed = 5f;
+                enableGravity = true;
+                Anim.applyRootMotion = false;
+                NetStats.swiming = false;
+                Anim.SetBool("swing", false);
+            }
+            else
+            {
+                Speed = 2f;
+                enableGravity = true;
+                Anim.applyRootMotion = false;
+                NetStats.swiming = false;
+                Anim.SetBool("swing", false);
+            }
+        }
     }
 
     void UpdateOnMoveInt()
@@ -92,33 +122,11 @@ public class EntityPlayer : EntityLife
         {
             Game.WorldGenerator.UpdateFindChunk();
 
-            Tile tile = Game.WorldGenerator.GetTileAt(transform.position.x, transform.position.z);
+            tile = Game.WorldGenerator.GetTileAt(transform.position.x, transform.position.z);
             var main = FootPArticle.main;
 
             NetStats.CurrentTile = tile;
             NetStats.CurrentBiome = tile.TileBiome;
-
-            if (tile.type == TypeBlock.Water)
-            {
-                Speed = 0.8f;
-                Anim.applyRootMotion = false;
-                NetStats.swiming = true;
-                Anim.SetBool("swing", true);
-            }
-            else if (tile.type == TypeBlock.IceWater)
-            {
-                Speed = 5f;
-                Anim.applyRootMotion = false;
-                NetStats.swiming = false;
-                Anim.SetBool("swing", false);
-            }
-            else
-            {
-                Speed = 2f;
-                Anim.applyRootMotion = false;
-                NetStats.swiming = false;
-                Anim.SetBool("swing", false);
-            }
 
             if (tile.type == TypeBlock.Grass)
             {
@@ -209,7 +217,7 @@ public class EntityPlayer : EntityLife
 
                         Vector3 lookPos = new Vector3(Game.GameManager.mouseX, Game.GameManager.mouseY, Game.GameManager.mouseZ);
                         lookPos = lookPos - transform.position;
-
+                        
                         if (Anim.GetCurrentAnimatorStateInfo(0).IsName("Roll"))
                         {
                             Anim.applyRootMotion = true;
@@ -247,10 +255,13 @@ public class EntityPlayer : EntityLife
 
                         moveVector = Move(movement.normalized);
 
-                        if (body.isGrounded == false)
+                        if (enableGravity)
                         {
-                            //Add our gravity Vecotr
-                            moveVector += Physics.gravity;
+                            if (body.isGrounded == false)
+                            {
+                                //Add our gravity Vecotr
+                                moveVector += Physics.gravity;
+                            }
                         }
 
                         body.Move(moveVector * Speed * Time.deltaTime);

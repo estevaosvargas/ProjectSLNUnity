@@ -11,7 +11,7 @@ public class BuildingGame : MonoBehaviour {
     private static void NewMenuOption()
     {
         chanageClient();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown/ProjectEvilyn-Client.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/VillagersandKings/VillagersandKings-client.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -29,7 +29,7 @@ public class BuildingGame : MonoBehaviour {
     private static void NewMenuOptionBuild()
     {
         chanageClient();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown/ProjectEvilyn.exe", BuildTarget.StandaloneWindows64, BuildOptions.Development);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/VillagersandKings/ProjectEvilyn-devclient.exe", BuildTarget.StandaloneWindows64, BuildOptions.Development);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -47,7 +47,7 @@ public class BuildingGame : MonoBehaviour {
     private static void ClientWindows32()
     {
         chanageClient();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown32/ProjectEvilyn.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/VillagersandKings32/VillagersandKings-client.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -71,7 +71,7 @@ public class BuildingGame : MonoBehaviour {
     private static void NewMenuOption3()
     {
         //chanageClient();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "/home/estevao/Desktop/2DTopDown-Linux-64/ProjectEvilyn", BuildTarget.StandaloneLinux64, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "/home/estevao/Desktop/VillagersandKings-Linux-64/VillagersandKings", BuildTarget.StandaloneLinux64, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -89,7 +89,7 @@ public class BuildingGame : MonoBehaviour {
     private static void AndroidBuild()
     {
         chanageClient();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown.apk", BuildTarget.Android, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/VillagersandKings.apk", BuildTarget.Android, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -109,7 +109,7 @@ public class BuildingGame : MonoBehaviour {
     private static void ClientWindows64Demo()
     {
         DemochanageClient();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown/ProjectEvilynDemo.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/VillagersandKings/VillagersandKingsDemo.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -127,7 +127,7 @@ public class BuildingGame : MonoBehaviour {
     private static void ClientWindows32Demo()
     {
         DemochanageClient();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDown32/ProjectEvilynDemo.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/VillagersandKings32/VillagersandKingsDemo.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -159,7 +159,7 @@ public class BuildingGame : MonoBehaviour {
     private static void NewMenuOption4()
     {
         chanageServer();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDownServer32/ProjectEvilynServer.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/VillagersandKingsServer32/VillagersandKings-Server.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -178,7 +178,7 @@ public class BuildingGame : MonoBehaviour {
     private static void NewMenuOption8()
     {
         chanageServer();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/2DTopDownServer/ProjectEvilynServer.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/VillagersandKingsServer/VillagersandKings-Server.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
@@ -197,7 +197,7 @@ public class BuildingGame : MonoBehaviour {
     private static void NewMenuOption5()
     {
         chanageServer();
-        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/ProjectEvilynServer/", BuildTarget.StandaloneLinux, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, "C:/Users/estev/Desktop/VillagersandKings-Server/", BuildTarget.StandaloneLinux, BuildOptions.None);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)

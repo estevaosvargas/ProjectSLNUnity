@@ -8,7 +8,7 @@ public class ItemDataBaseFile
         Dictionary<int, ItemData> itemlist = new Dictionary<int, ItemData>();
 
         itemlist.Add(0, SetUpItem(0, "Wood", "Wood Log Taked from a tree", Game.SpriteManager.Getitemicon("Wood"), ItemRarity.Common, 150, true, false, ItemType.none, MaterialHitType.none, new ItemAbout()));
-        itemlist.Add(1, SetUpItem(1, "Sword", "SwordSwordSwordSwordSwordSwordSword", Game.SpriteManager.Getitemicon("PickAxe"), ItemRarity.Common, 1, false, true, ItemType.Tools, MaterialHitType.Rock, new ItemAbout(25, 45, 45, 100, 2, 0.7f)));
+        itemlist.Add(1, SetUpItem(1, "Sword", "SwordSwordSwordSwordSwordSwordSword", Game.SpriteManager.Getitemicon("PickAxe"), ItemRarity.Common, 1, false, true, ItemType.Weapon, MaterialHitType.Rock, new ItemAbout(25, 45, 45, 100, 2, 0.7f)));
         itemlist.Add(2, SetUpItem(2, "Wood Chest", "ChestChestChestChestChestChestChest", Game.SpriteManager.Getitemicon("ChestWood"), ItemRarity.Common, 150, true, true, ItemType.Placer, MaterialHitType.none, new ItemAbout(Placer.BauWood, 2)));
         itemlist.Add(3, SetUpItem(3, "WoodAxe", "Is Good for take wood, cut down a tree!", Game.SpriteManager.Getitemicon("Axe"), ItemRarity.Common, 1, false, true, ItemType.Tools, MaterialHitType.Wood, new ItemAbout(35, 15, 15, 100, 2, 0.7f)));
         itemlist.Add(4, SetUpItem(4, "GoldCoin", "GoldCoin Is a global coin to trade/buy.", Game.SpriteManager.Getitemicon("GoldCoin"), ItemRarity.Money, 1000, true, false, ItemType.Trade, MaterialHitType.none, new ItemAbout()));

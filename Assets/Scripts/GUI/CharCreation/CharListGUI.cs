@@ -83,6 +83,7 @@ public class CharListGUI : MonoBehaviour
             if (characterDatas[i].ID == id)
             {
                 Game.ConsoleInGame.LoadingScreen_Show();
+                Game.ConsoleInGame.UpdateLoadingText("Starting Local Server...");
 
                 Game.GameManager.Player.UserName = characterDatas[i].NAME;
                 Game.GameManager.Player.UserID = characterDatas[i].ID.ToString();
@@ -99,6 +100,7 @@ public class CharListGUI : MonoBehaviour
         if (characterDatas.Count < 8)
         {
             Game.ConsoleInGame.LoadingScreen_Show();
+            Game.ConsoleInGame.UpdateLoadingText("Starting Local Server...");
 
             string seed_hash = Random.Range(-99999, 99999).GetHashCode().ToString();
 

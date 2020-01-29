@@ -16,32 +16,47 @@ public class BirdEntity : EntityLife
     public float TickSpeed = 5;
     private float timestep;
 
-    void Start()
+    public override void Awakeoverride()
+    {
+        Source.mute = true;
+        base.Awakeoverride();
+    }
+
+    public override void Startoverride()
     {
         Anim = GetComponent<Animator>();
+        base.Startoverride();
     }
 
     void Update()
     {
         if (ISVISIBLE)
         {
-            if (Time.time > TickSpeed + timestep)
+            if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
             {
-                if (Random.Range(0, 2) == 1)
+                if (Time.time > TickSpeed + timestep)
                 {
-                    Source.PlayOneShot(AudioLoop[Random.Range(0, AudioLoop.Length)]);
+                    if (Random.Range(0, 2) == 1)
+                    {
+                        Source.mute = false;
+                        Source.PlayOneShot(AudioLoop[Random.Range(0, AudioLoop.Length)]);
+                    }
+                    timestep = Time.time;
+                }
+            }
+
+
+            if (HaveTarget)
+            {
+                if (transform.position.y <= 1)
+                {
+                    Anim.SetBool("Fly", false);
                 }
 
-                if (HaveTarget)
+                if (transform.position == NextTarget)
                 {
-                    if (transform.position.y <= 1)
-                    {
-                        Anim.SetBool("Fly", false);
-                    }
-                    Anim.SetBool("Fly", true);
-                }
-                else
-                {
+                    HaveTarget = false;
+
                     Anim.SetBool("Fly", true);
                     HaveTarget = true;
                     NextTarget = new Vector3(Random.Range(-RandomRange, RandomRange), Random.Range(0, RandomRange), Random.Range(-RandomRange, RandomRange)) + transform.position;
@@ -51,24 +66,35 @@ public class BirdEntity : EntityLife
                         NextTarget = new Vector3(Random.Range(-1, 1), Random.Range(0, 2), Random.Range(-1, 1)) + transform.position;
                     }
 
-                    if(NextTarget.y >= RandomRange)
+                    if (NextTarget.y >= RandomRange)
                     {
                         NextTarget = new Vector3(Random.Range(-RandomRange, RandomRange), Random.Range(0, RandomRange - 5), Random.Range(-RandomRange, RandomRange)) + transform.position;
                     }
 
-                    
                     transform.LookAt(NextTarget);
+                    transform.rotation = transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
                 }
-                timestep = Time.time;
+                transform.position = Vector3.MoveTowards(transform.position, NextTarget, Speed * Time.deltaTime);
             }
-        }
-        if (HaveTarget)
-        {
-            if (transform.position == NextTarget)
+            else
             {
-                HaveTarget = false;
+                Anim.SetBool("Fly", true);
+                HaveTarget = true;
+                NextTarget = new Vector3(Random.Range(-RandomRange, RandomRange), Random.Range(0, RandomRange), Random.Range(-RandomRange, RandomRange)) + transform.position;
+
+                if (Game.WorldGenerator.GetTileAt(NextTarget.x, NextTarget.z) == null)
+                {
+                    NextTarget = new Vector3(Random.Range(-1, 1), Random.Range(0, 2), Random.Range(-1, 1)) + transform.position;
+                }
+
+                if (NextTarget.y >= RandomRange)
+                {
+                    NextTarget = new Vector3(Random.Range(-RandomRange, RandomRange), Random.Range(0, RandomRange - 5), Random.Range(-RandomRange, RandomRange)) + transform.position;
+                }
+
+                transform.LookAt(NextTarget);
+                transform.rotation = transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
             }
-            transform.position = Vector3.MoveTowards(transform.position, NextTarget, Speed * Time.deltaTime);
         }
     }
 

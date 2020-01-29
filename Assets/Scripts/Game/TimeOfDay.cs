@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class TimeOfDay : MonoBehaviour
 {
+    [Header("WaterColor")]
+    public UnityStandardAssets.Water.WaterBase Water;
+    public Gradient _BaseColor;
+    public Gradient _ReflectionColor;
+    public Gradient _SpecularColor;
+
+    [Header("TimeSystem")]
     public Gradient AmbientColor;
     public Gradient FogColor;
     public bool IsDay = true;
@@ -45,6 +52,30 @@ public class TimeOfDay : MonoBehaviour
         }
     }
 
+    public Color Get_BaseColor
+    {
+        get
+        {
+            return _BaseColor.Evaluate(timeOfDay / 24);
+        }
+    }
+
+    public Color Get_ReflectionColor
+    {
+        get
+        {
+            return _ReflectionColor.Evaluate(timeOfDay / 24);
+        }
+    }
+
+    public Color Get_SpecularColor
+    {
+        get
+        {
+            return _SpecularColor.Evaluate(timeOfDay / 24);
+        }
+    }
+
     public void LastUpdateTime()
     {
         Net.RPC("RPC_Updatetime", DarckNet.RPCMode.AllNoOwner, timeOfDay);
@@ -77,6 +108,9 @@ public class TimeOfDay : MonoBehaviour
 
             RenderSettings.ambientLight = CurrentAmbientColor;
             RenderSettings.fogColor = CurrentFogColor;
+            Water.sharedMaterial.SetColor("_BaseColor", Get_BaseColor);
+            Water.sharedMaterial.SetColor("_ReflectionColor", Get_ReflectionColor);
+            Water.sharedMaterial.SetColor("_SpecularColor", Get_SpecularColor);
         }
 
         DataTime.SetTimeData((int)timeOfDay);

@@ -72,8 +72,6 @@ MonoBehaviour:
   ItemDrop: 0
   DropQuanty: 15
   MaterialHit: 4
-  Enable_LeafMesh: {fileID: 9065466857772261685}
-  Disable_LeafMesh: {fileID: 1380363046534564582}
 --- !u!136 &3159787471221211723
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -230,7 +228,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &9000022598140725992
 Transform:
   m_ObjectHideFlags: 0
