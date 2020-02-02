@@ -265,8 +265,8 @@ MonoBehaviour:
   Cam: {fileID: 804721776}
   ChunkGO: {fileID: 1728794627388856, guid: 30810d7135128834fbab67c15393ed24, type: 3}
   SUN: {fileID: 5965577152830102322, guid: 4e487a1d7286b914fb5b80b808c32e37, type: 3}
-  RenderDistance: 20
-  DisRenderDistance: 4
+  RenderDistance: 50
+  DisRenderDistance: 15
   ChunksList: []
   SlectedBlock: {fileID: 1639277418}
   CurrentWorld: 0

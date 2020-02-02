@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4327038994211512}
   - component: {fileID: 114910292516890844}
+  - component: {fileID: 4120394342688962062}
   m_Layer: 8
   m_Name: Cactu
   m_TagString: Tree
@@ -51,7 +52,6 @@ MonoBehaviour:
   MaxHP: 100
   IsAlive: 0
   LastAttacker: 
-  Destroying: {fileID: 212452085510769370}
   FX: {fileID: 1836075418772876, guid: c5d28b2a147fed64186e44abb61799fd, type: 3}
   ThisTreeTile:
     type: 0
@@ -71,6 +71,27 @@ MonoBehaviour:
   ItemDrop: 0
   DropQuanty: 5
   MaterialHit: 0
+--- !u!205 &4120394342688962062
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501946098933908}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0.495168, z: 0}
+  m_Size: 1.1463361
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.026078995
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 212452085510769370}
+    - renderer: {fileID: 2559960519545574711}
+    - renderer: {fileID: 7137282354425959828}
+  m_Enabled: 1
 --- !u!1 &1971748869143032
 GameObject:
   m_ObjectHideFlags: 0

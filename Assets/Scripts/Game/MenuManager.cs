@@ -171,13 +171,13 @@ public class MenuManager : Menus
                         {
                             CloseMenuName("Inventory");
                             InveGui.CloseInve(Game.GameManager.Player.PlayerObj.Inve);
-                            MouselockFake.IsLock = false;
+                            MouselockFake.LockUnlock(false);
                         }
                         else
                         {
                             OpenMenuNameNoClose("Inventory");
                             InveGui.OpenInev(Game.GameManager.Player.PlayerObj.Inve);
-                            MouselockFake.IsLock = true;
+                            MouselockFake.LockUnlock(true);
                         }
                     }
 
@@ -186,12 +186,12 @@ public class MenuManager : Menus
                         if (CheckifEnable("InGameMenu") == true)
                         {
                             CloseMenuName("InGameMenu");
-                            MouselockFake.IsLock = false;
+                            MouselockFake.LockUnlock(false);
                         }
                         else
                         {
                             OpenMenuName("InGameMenu");
-                            MouselockFake.IsLock = true;
+                            MouselockFake.LockUnlock(true);
                         }
                     }
 
@@ -201,12 +201,12 @@ public class MenuManager : Menus
                         if (CheckifEnable("Status") == true)
                         {
                             CloseMenuName("Status");
-                            MouselockFake.IsLock = false;
+                            MouselockFake.LockUnlock(false);
                         }
                         else
                         {
                             OpenMenuName("Status");
-                            MouselockFake.IsLock = true;
+                            MouselockFake.LockUnlock(true);
                         }
                     }
                 }
@@ -221,7 +221,7 @@ public class MenuManager : Menus
     public void OpenRespawn()
     {
         OpenMenuName("Respawn");
-        MouselockFake.IsLock = true;
+        MouselockFake.LockUnlock(true);
     }
 
     public void Respawn()
@@ -232,7 +232,7 @@ public class MenuManager : Menus
 
             DCallBack.Call(CallType.OnRespawn);
             CloseMenuName("Respawn");
-            MouselockFake.IsLock = false;
+            MouselockFake.LockUnlock(false);
         }
     }
 
@@ -244,7 +244,7 @@ public class MenuManager : Menus
 
             DCallBack.Call(CallType.OnRespawn);
             CloseMenuName("Respawn");
-            MouselockFake.IsLock = false;
+            MouselockFake.LockUnlock(false);
         }
     }
 
@@ -254,22 +254,22 @@ public class MenuManager : Menus
         {
             CloseMenuName("Inventory");
             InveGui.CloseInve(cont);
-            MouselockFake.IsLock = false;
+            MouselockFake.LockUnlock(false);
         }
         else
         {
             OpenMenuName("Inventory");
             InveGui.OpenInevContainer(Game.GameManager.Player.PlayerObj.Inve, cont);
-            MouselockFake.IsLock = true;
+            MouselockFake.LockUnlock(true);
         }
 
         if (CheckifEnable("Inventory") == true || CheckifEnable("InGameMenu") == true || CheckifEnable("Status") == true)
         {
-            MouselockFake.IsLock = true;
+            MouselockFake.LockUnlock(true);
         }
         else
         {
-            MouselockFake.IsLock = false;
+            MouselockFake.LockUnlock(false);
         }
     }
 
@@ -294,7 +294,7 @@ public class MenuManager : Menus
     public void Resume()
     {
         CloseMenuName("InGameMenu");
-        MouselockFake.IsLock = false;
+        MouselockFake.LockUnlock(false);
     }
 
     public void Options()

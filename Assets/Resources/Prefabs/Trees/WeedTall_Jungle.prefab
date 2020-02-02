@@ -91,6 +91,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4824327435032598}
   - component: {fileID: 114356057490449344}
+  - component: {fileID: 274189309279919767}
   m_Layer: 8
   m_Name: WeedTall_Jungle
   m_TagString: Tree
@@ -130,7 +131,6 @@ MonoBehaviour:
   MaxHP: 100
   IsAlive: 0
   LastAttacker: 
-  Destroying: {fileID: 212485373705599694}
   FX: {fileID: 1836075418772876, guid: c5d28b2a147fed64186e44abb61799fd, type: 3}
   ThisTreeTile:
     type: 0
@@ -150,6 +150,30 @@ MonoBehaviour:
   ItemDrop: 0
   DropQuanty: 5
   MaterialHit: 0
+--- !u!205 &274189309279919767
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1796846250172066}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
+  m_Size: 1
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.6
+    fadeTransitionWidth: 0
+    renderers: []
+  - screenRelativeHeight: 0.3
+    fadeTransitionWidth: 0
+    renderers: []
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers: []
+  m_Enabled: 1
 --- !u!137 &4990892486224675444
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -168,7 +192,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 12c78be6dacd7ac4480758c2dde41796, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

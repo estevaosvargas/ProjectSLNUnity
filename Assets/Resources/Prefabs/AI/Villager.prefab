@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 155474608623118998}
   - component: {fileID: 5531139975782748323}
   - component: {fileID: -4515052521310811540}
+  - component: {fileID: -2627467624141623180}
   m_Layer: 9
   m_Name: Villager
   m_TagString: Entity
@@ -86,6 +87,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Net: {fileID: 0}
+  Cuerrent_Chunk: {fileID: 0}
+  PrefabName: 
+  ID: 
   HP: 100
   MaxHP: 100
   IsAlive: 0
@@ -96,7 +100,6 @@ MonoBehaviour:
   CurrentPoint: {x: 0, y: 0, z: 0}
   Following: 0
   LastPosition: {x: 0, y: 0}
-  Cuerrent_Chunk: {fileID: 0}
   damping: 1
   RunAway: 0
   direction: 0
@@ -105,8 +108,11 @@ MonoBehaviour:
   meshRenderer: {fileID: 1267874643698157628}
   X: 0
   Z: 0
-  ID: 
-  CurrentCity: {x: 0, y: 0, z: 0}
+  CurrentCity:
+    x: 0
+    y: 0
+    z: 0
+  UpdateRate: 20
 --- !u!136 &5531139975782748323
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -137,6 +143,26 @@ MonoBehaviour:
   ViewID: 0
   IdMode: 1
   DefaultNetDeliveryMethod: 1
+--- !u!205 &-2627467624141623180
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1459282729364594}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.018185735, y: 0.2961732, z: 0.036912918}
+  m_Size: 1.2511432
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.021121858
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 3929243261200002403}
+    - renderer: {fileID: 1267874643698157628}
+  m_Enabled: 1
 --- !u!1 &11200814868455580
 GameObject:
   m_ObjectHideFlags: 0
@@ -2711,6 +2737,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4283254774385208772}
     m_Modifications:
+    - target: {fileID: 1074234140496492, guid: f10dd878fdf6a4c48b1a22672db21929, type: 3}
+      propertyPath: m_Name
+      value: PT_Medieval_Waraxe_01
+      objectReference: {fileID: 0}
     - target: {fileID: 4017193373314964, guid: f10dd878fdf6a4c48b1a22672db21929, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.011
@@ -2755,15 +2785,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -89.969
       objectReference: {fileID: 0}
-    - target: {fileID: 1074234140496492, guid: f10dd878fdf6a4c48b1a22672db21929, type: 3}
-      propertyPath: m_Name
-      value: PT_Medieval_Waraxe_01
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f10dd878fdf6a4c48b1a22672db21929, type: 3}
 --- !u!4 &3952895676625377315 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4017193373314964, guid: f10dd878fdf6a4c48b1a22672db21929,
+    type: 3}
+  m_PrefabInstance: {fileID: 3951279963212904375}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &3929243261200002403 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 23289702903716564, guid: f10dd878fdf6a4c48b1a22672db21929,
     type: 3}
   m_PrefabInstance: {fileID: 3951279963212904375}
   m_PrefabAsset: {fileID: 0}

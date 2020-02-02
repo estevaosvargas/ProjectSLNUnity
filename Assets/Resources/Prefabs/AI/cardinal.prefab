@@ -346,10 +346,11 @@ GameObject:
   - component: {fileID: 964372570060515493}
   - component: {fileID: 3093877044838752561}
   - component: {fileID: 5770941128626987399}
+  - component: {fileID: 1426277739304859250}
   m_Layer: 0
   m_Name: cardinal
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -486,6 +487,26 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!205 &1426277739304859250
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 964372570060515494}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
+  m_Size: 1
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.031536855
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 5770941128626987399}
+    - renderer: {fileID: 964372570055304220}
+  m_Enabled: 1
 --- !u!1 &964372570060515496
 GameObject:
   m_ObjectHideFlags: 0

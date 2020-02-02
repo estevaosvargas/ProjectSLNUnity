@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4625163943885582}
   - component: {fileID: 114658063286381882}
+  - component: {fileID: 5096521794384030142}
   m_Layer: 8
   m_Name: RockProp
   m_TagString: Tree
@@ -67,8 +68,25 @@ MonoBehaviour:
   ItemDrop: 0
   DropQuanty: 5
   MaterialHit: 0
-  Enable_LeafMesh: {fileID: 0}
-  Disable_LeafMesh: {fileID: 0}
+--- !u!205 &5096521794384030142
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1723261521618328}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: -0.009091318, y: 0.12386891, z: 0.03287062}
+  m_Size: 0.6968133
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.050914757
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 5470058183108403606}
+  m_Enabled: 1
 --- !u!1001 &5470058183106378230
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -145,6 +163,12 @@ PrefabInstance:
 --- !u!4 &5470058183105979254 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: ff775ad6de0408246a14b407044826f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 5470058183106378230}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &5470058183108403606 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2300000, guid: ff775ad6de0408246a14b407044826f6,
     type: 3}
   m_PrefabInstance: {fileID: 5470058183106378230}
   m_PrefabAsset: {fileID: 0}

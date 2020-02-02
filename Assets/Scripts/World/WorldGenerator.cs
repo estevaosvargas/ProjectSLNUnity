@@ -94,11 +94,21 @@ public class WorldGenerator : MapManager
         {
             Game.GameManager.Player.RequestSpawnPlayer(new Vector3(0, 1, 0), World_ID);
             Game.ConsoleInGame.LoadingScreen_Hide();
+            StartCoroutine("StrartGenerator");
         }
     }
 
 
-    public void UpdateFindChunk()
+    IEnumerator StrartGenerator()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+            UpdateFindChunk();
+        }
+    }
+
+    private void UpdateFindChunk()
     {
         if (Game.GameManager.SinglePlayer)
         {

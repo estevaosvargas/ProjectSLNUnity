@@ -736,8 +736,24 @@ public class PlayerInfo : MonoBehaviour
 
 public static class MouselockFake
 {
-    public static bool IsLock { get; set; }
+    public static bool IsLock { get; private set; }
     public static bool ConsoleIsOpen { get; set; }
+
+    public static void LockUnlock(bool lockedvalued)
+    {
+        IsLock = lockedvalued;
+
+        if (!lockedvalued)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
 }
 
 public class SaveWorld

@@ -141,6 +141,7 @@ GameObject:
   - component: {fileID: 964372570060515493}
   - component: {fileID: 3093877044838752561}
   - component: {fileID: 5770941128626987399}
+  - component: {fileID: 9122375135762439390}
   m_Layer: 0
   m_Name: sparrow
   m_TagString: Untagged
@@ -281,6 +282,26 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!205 &9122375135762439390
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 964372570060515494}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
+  m_Size: 1
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.024036052
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 5770941128626987399}
+    - renderer: {fileID: 2742168569554225761}
+  m_Enabled: 1
 --- !u!1 &5385680158496767678
 GameObject:
   m_ObjectHideFlags: 0
@@ -427,6 +448,12 @@ PrefabInstance:
 --- !u!4 &2742168569550887737 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400122, guid: 9e8e96d31d222394087dd09880b9a261,
+    type: 3}
+  m_PrefabInstance: {fileID: 2742168569551012291}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &2742168569554225761 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700002, guid: 9e8e96d31d222394087dd09880b9a261,
     type: 3}
   m_PrefabInstance: {fileID: 2742168569551012291}
   m_PrefabAsset: {fileID: 0}

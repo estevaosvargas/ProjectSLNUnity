@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4761913315173366}
   - component: {fileID: 114155715939308764}
+  - component: {fileID: -7786229824128833723}
   m_Layer: 8
   m_Name: WeedTall
   m_TagString: Tree
@@ -67,8 +68,25 @@ MonoBehaviour:
   ItemDrop: 0
   DropQuanty: 5
   MaterialHit: 0
-  Enable_LeafMesh: {fileID: 0}
-  Disable_LeafMesh: {fileID: 0}
+--- !u!205 &-7786229824128833723
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1817274293392502}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0.72221, z: -0.00000011920929}
+  m_Size: 1.6209915
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.018387917
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 6368805495233428298}
+  m_Enabled: 1
 --- !u!1001 &3710880056594978463
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146,6 +164,12 @@ PrefabInstance:
 --- !u!4 &8504209031612956037 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 9ccc75ac2d4f754468ad59c3443dffb8,
+    type: 3}
+  m_PrefabInstance: {fileID: 3710880056594978463}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6368805495233428298 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -1504981713932161579, guid: 9ccc75ac2d4f754468ad59c3443dffb8,
     type: 3}
   m_PrefabInstance: {fileID: 3710880056594978463}
   m_PrefabAsset: {fileID: 0}

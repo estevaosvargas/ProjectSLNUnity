@@ -36,7 +36,7 @@ public class BirdEntity : EntityLife
             {
                 if (Time.time > TickSpeed + timestep)
                 {
-                    if (Random.Range(0, 2) == 1)
+                    if (Random.Range(0, 10) == 5)
                     {
                         Source.mute = false;
                         Source.PlayOneShot(AudioLoop[Random.Range(0, AudioLoop.Length)]);

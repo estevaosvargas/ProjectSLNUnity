@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4460924024087730}
   - component: {fileID: 114061456111814536}
   - component: {fileID: 5316726480386573022}
+  - component: {fileID: -1632018849062418052}
   m_Layer: 8
   m_Name: BigTree2
   m_TagString: Tree
@@ -32,6 +33,7 @@ Transform:
   - {fileID: 4370196043562920953}
   - {fileID: 648811087771232525}
   - {fileID: 7621659767053412172}
+  - {fileID: 9018129823262854853}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -70,8 +72,6 @@ MonoBehaviour:
   ItemDrop: 0
   DropQuanty: 45
   MaterialHit: 4
-  Enable_LeafMesh: {fileID: 7560991205352346362}
-  Disable_LeafMesh: {fileID: 6495939214535312678}
 --- !u!136 &5316726480386573022
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -86,6 +86,75 @@ CapsuleCollider:
   m_Height: 4.5336113
   m_Direction: 1
   m_Center: {x: -0.12, y: 2.3646204, z: 0.06}
+--- !u!205 &-1632018849062418052
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1948370409829794}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 3.1397328, z: -0.00000047683716}
+  m_Size: 6.2794666
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.10172848
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 3169089179831600692}
+  m_Enabled: 1
+--- !u!1 &1325059832232700604
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9018129823262854853}
+  - component: {fileID: 4893993566739397747}
+  m_Layer: 0
+  m_Name: Shadow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9018129823262854853
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325059832232700604}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.6234414, y: 1, z: 0.61425054}
+  m_Children: []
+  m_Father: {fileID: 4460924024087730}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!119 &4893993566739397747
+Projector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325059832232700604}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_NearClipPlane: 0
+  m_FarClipPlane: 2
+  m_FieldOfView: 30.52
+  m_AspectRatio: 1
+  m_Orthographic: 1
+  m_OrthographicSize: 2.13
+  m_Material: {fileID: 2100000, guid: 4d3a2532ba747c040beedc6aaccff0ab, type: 2}
+  m_IgnoreLayers:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &6495939214535312678
 GameObject:
   m_ObjectHideFlags: 0

@@ -71,7 +71,7 @@ public class ConsoleInGame : MonoBehaviour
             {
                 IsVisible = true;
                 MouselockFake.ConsoleIsOpen = true;
-                MouselockFake.IsLock = true;
+                MouselockFake.LockUnlock(true);
 
                 if (Game.MenuManager != null)
                 {
@@ -85,7 +85,7 @@ public class ConsoleInGame : MonoBehaviour
             {
                 IsVisible = false;
                 MouselockFake.ConsoleIsOpen = false;
-                MouselockFake.IsLock = false;
+                MouselockFake.LockUnlock(false);
                 ConsoleWindow.SetActive(false);
             }
         }

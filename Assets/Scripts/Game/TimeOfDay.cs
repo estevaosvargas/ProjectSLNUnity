@@ -5,7 +5,7 @@ using UnityEngine;
 public class TimeOfDay : MonoBehaviour
 {
     [Header("WaterColor")]
-    public UnityStandardAssets.Water.WaterBase Water;
+    public Material WaterMat;
     public Gradient _BaseColor;
     public Gradient _ReflectionColor;
     public Gradient _SpecularColor;
@@ -108,9 +108,8 @@ public class TimeOfDay : MonoBehaviour
 
             RenderSettings.ambientLight = CurrentAmbientColor;
             RenderSettings.fogColor = CurrentFogColor;
-            Water.sharedMaterial.SetColor("_BaseColor", Get_BaseColor);
-            Water.sharedMaterial.SetColor("_ReflectionColor", Get_ReflectionColor);
-            Water.sharedMaterial.SetColor("_SpecularColor", Get_SpecularColor);
+            WaterMat.SetColor("_DepthGradientDeep", Get_BaseColor);
+            WaterMat.SetColor("_DepthGradientShallow", Get_ReflectionColor);
         }
 
         DataTime.SetTimeData((int)timeOfDay);

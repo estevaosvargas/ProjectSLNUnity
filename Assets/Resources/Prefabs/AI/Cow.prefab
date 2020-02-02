@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -4585381493525235857}
   - component: {fileID: 2039784212642747225}
   - component: {fileID: -3078520732864325336}
+  - component: {fileID: -5131336065315320644}
   m_Layer: 0
   m_Name: Cow
   m_TagString: Entity
@@ -198,6 +199,25 @@ MonoBehaviour:
   ISVISIBLE: 0
   X: 0
   Z: 0
+--- !u!205 &-5131336065315320644
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1470094844478218}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.0025182366, y: 0.52509886, z: 0.17093688}
+  m_Size: 1.8618628
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.03874724
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 2039784212642747225}
+  m_Enabled: 1
 --- !u!1 &4357301882616066
 GameObject:
   m_ObjectHideFlags: 0

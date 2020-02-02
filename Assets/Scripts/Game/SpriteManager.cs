@@ -12,7 +12,6 @@ public class SpriteManager : MonoBehaviour
     Dictionary<string, Vector2[]> tileUVMap = new Dictionary<string, Vector2[]>();
 
     public Texture2D terrainTiles;
-    public Texture2D transTiles;
 
     void Awake()
     {
@@ -29,14 +28,10 @@ public class SpriteManager : MonoBehaviour
 
     void LoadTileUvs()
     {
-        Sprite[] sprites = Resources.LoadAll<Sprite>("Old/");
-        Sprite[] sprite_tra = Resources.LoadAll<Sprite>("Tiles/Trans/");
+        Sprite[] sprites = Resources.LoadAll<Sprite>("Tiles/");
 
         float imageWidth = terrainTiles.width;
         float imageHeight = terrainTiles.height;
-
-        float Trans_imageWidth = transTiles.width;
-        float Trans_imageHeight = transTiles.height;
 
         foreach (Sprite s in sprites)
         {
@@ -47,18 +42,6 @@ public class SpriteManager : MonoBehaviour
             uvs[1] = new Vector2((s.rect.x + s.rect.width) / imageWidth, s.rect.y / imageHeight);
             uvs[2] = new Vector2(s.rect.x / imageWidth, (s.rect.y + s.rect.height) / imageHeight);
             uvs[3] = new Vector2((s.rect.x + s.rect.width) / imageWidth, (s.rect.y + s.rect.height) / imageHeight);
-
-            tileUVMap.Add(s.name, uvs);
-        }
-
-        foreach (Sprite s in sprite_tra)
-        {
-            Vector2[] uvs = new Vector2[4];
-
-            uvs[0] = new Vector2(s.rect.x / Trans_imageWidth, s.rect.y / Trans_imageHeight);
-            uvs[1] = new Vector2((s.rect.x + s.rect.width) / Trans_imageWidth, s.rect.y / Trans_imageHeight);
-            uvs[2] = new Vector2(s.rect.x / Trans_imageWidth, (s.rect.y + s.rect.height) / Trans_imageHeight);
-            uvs[3] = new Vector2((s.rect.x + s.rect.width) / Trans_imageWidth, (s.rect.y + s.rect.height) / Trans_imageHeight);
 
             tileUVMap.Add(s.name, uvs);
         }
@@ -83,27 +66,6 @@ public class SpriteManager : MonoBehaviour
 
             Debug.LogError("There is no UV map for tile type: " + key);
             return tileUVMap["Air_"];
-        }
-    }
-
-    public Vector2[] GetTransUVs(Tile tile)
-    {
-        string key = "None_";
-        if (tile.havetran)
-        {
-            key = tile.TileTran[0].ToString();
-        }
-
-        if (tileUVMap.ContainsKey(key) == true)
-        {
-
-            return tileUVMap[key];
-        }
-        else
-        {
-
-            Debug.LogError("There is no UV map for tile type: " + key);
-            return tileUVMap["None_"];
         }
     }
 
@@ -194,14 +156,14 @@ public class SpriteManager : MonoBehaviour
             Perlinimage.Add(s.name, s);
         }
 
-        foreach (var s in Resources.LoadAll<Sprite>("Tiles/"))
-        {
-            tileSprites.Add(s.name, s);
-        }
-
         foreach (var icon in Resources.LoadAll<Sprite>("ItemsSprites/"))
         {
             Icons.Add(icon.name, icon);
+        }
+
+        foreach (var icon in Resources.LoadAll<Sprite>("Tiles/Old/"))
+        {
+            tileSprites.Add(icon.name, icon);
         }
 
         foreach (var s in Resources.LoadAll<GameObject>("Prefabs/Trees/"))

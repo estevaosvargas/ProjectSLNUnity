@@ -250,6 +250,8 @@ public class Chunk : MonoBehaviour
         GameObject meshGO = new GameObject("WaterLayer_" + transform.position.x + "_" + transform.position.z);
         meshGO.transform.SetParent(this.transform);
 
+        meshGO.transform.position = new Vector3(meshGO.transform.position.x, -0.1f, meshGO.transform.position.z);
+
         MeshFilter filter = meshGO.AddComponent<MeshFilter>();
         MeshRenderer render = meshGO.AddComponent<MeshRenderer>();
         render.material = WaterTileMaterial;

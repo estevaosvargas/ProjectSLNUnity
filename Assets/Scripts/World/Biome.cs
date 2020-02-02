@@ -643,7 +643,7 @@ public static class Biome
         if (perlin >= 0.0f && perlin <= 0.15f)
         {
             //Water
-            return TypeBlock.Water;
+            return TypeBlock.WaterFloor;
         }
         else if (perlin > 0.15f && perlin < 0.2f)
         {
@@ -664,7 +664,7 @@ public static class Biome
                     {
                         tile.typego = TakeGO.BigTree;
                     }
-                    return TypeBlock.Grass;
+                    return TypeBlock.JungleGrass;
                 }
                 else if (randnum == 3)
                 {
@@ -672,7 +672,7 @@ public static class Biome
                     {
                         tile.typego = TakeGO.BigTree2;
                     }
-                    return TypeBlock.Grass;
+                    return TypeBlock.JungleGrass;
                 }
                 else if (randnum == 5)
                 {
@@ -680,23 +680,23 @@ public static class Biome
                     {
                         tile.typego = TakeGO.WeedTall_Jungle;
                     }
-                    return TypeBlock.Grass;
+                    return TypeBlock.JungleGrass;
                 }
             }
             else if (perlin > 0.6f && perlin < 0.605f)
             {
                 //grass
-                return TypeBlock.Grass;
+                return TypeBlock.JungleGrass;
             }
             else if (perlin > 0.62f && perlin < 0.63f)
             {
                 //grass
-                return TypeBlock.Grass;
+                return TypeBlock.JungleGrass;
             }
             else
             {
                 //tall grass
-                return TypeBlock.Grass;
+                return TypeBlock.JungleGrass;
             }
 
         }
@@ -724,7 +724,7 @@ public static class Biome
             //topo do morro
             return TypeBlock.Rock;
         }
-        return TypeBlock.Grass;
+        return TypeBlock.JungleGrass;
     }
 
     public static TypeBlock Plaine(int x, int z, Tile tile, float sample)

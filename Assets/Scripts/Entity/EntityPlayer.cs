@@ -120,7 +120,7 @@ public class EntityPlayer : EntityLife
     {
         if (Game.WorldGenerator)
         {
-            Game.WorldGenerator.UpdateFindChunk();
+           // Game.WorldGenerator.UpdateFindChunk();
 
             tile = Game.WorldGenerator.GetTileAt(transform.position.x, transform.position.z);
             var main = FootPArticle.main;
@@ -264,13 +264,13 @@ public class EntityPlayer : EntityLife
                             }
                         }
 
-                        body.Move(moveVector * Speed * Time.deltaTime);
+                        //body.Move(moveVector * Speed * Time.deltaTime);
 
-                        if (!MouselockFake.IsLock)
+                        /*if (!MouselockFake.IsLock)
                         {
                             transform.LookAt(new Vector3(transform.position.x + lookPos.x, 0, transform.position.z + lookPos.z));
                             transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
-                        }
+                        }*/
 
                         /*if (Input.GetKeyDown(KeyCode.Mouse1))
                         {
