@@ -214,7 +214,7 @@ public class WorldGenerator : MapManager
                 for (int x = minX; x < maxX; x += Chunk.Size)
                 {
                     Thread.Sleep(ThickRate);
-                    Vector3Int vector = new Vector3Int(x, 0, z);
+                    Vector3Int vector = new Vector3Int(x + PlayerP.x, 0, z + PlayerP.z);
 
                     if (!chunkMap.ContainsKey(vector))
                     {

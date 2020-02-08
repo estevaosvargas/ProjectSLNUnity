@@ -82,6 +82,7 @@ public class EntityPlayer : EntityLife
 
     void UpdateOnMove()
     {
+
         if (DarckNet.Network.IsClient)
         {
             Net.RPC("UpdatePosition", DarckNet.RPCMode.AllNoOwner, new Vector3(transform.position.x, transform.position.y, transform.position.z));
@@ -122,8 +123,10 @@ public class EntityPlayer : EntityLife
         {
            //Game.WorldGenerator.UpdateFindChunk();
 
-            tile = Game.WorldGenerator.GetTileAt((int)transform.position.x, (int)transform.position.z);
+            
             var main = FootPArticle.main;
+
+            tile = Game.WorldGenerator.GetTileAt((int)transform.position.x, (int)transform.position.z);
 
             NetStats.CurrentTile = tile;
             NetStats.CurrentBiome = tile.TileBiome;

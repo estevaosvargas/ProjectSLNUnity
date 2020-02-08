@@ -135,9 +135,9 @@ public class Chunk : MonoBehaviour
         }
 
         #region TileGen
-        for (int i = 0; i < Size * TileObj.transform.localScale.x; i++)
+        for (int i = 0; i < Size; i++)
         {
-            for (int j = 0; j < Size * TileObj.transform.localScale.y; j++)
+            for (int j = 0; j < Size; j++)
             {
                 if (!havesave) 
                 { 
@@ -387,6 +387,11 @@ public class Chunk : MonoBehaviour
                 tilescript.TILEANIMATOR.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("Animations/WaterAnimator");
             }*/
         }
+    }
+
+    public void DestroyChunk()
+    {
+
     }
 
     void OnDestroy()
@@ -674,8 +679,6 @@ public class Chunk : MonoBehaviour
         Game.WorldGenerator.LoadNewChunks(this);
         #endregion
     }
-
-    //MultiPlayer Client, Romover Essa Parte e Adicionar em um lugar só
 }
 
 public class MeshData
@@ -690,9 +693,9 @@ public class MeshData
         UVs = new List<Vector2>();
         triangles = new List<int>();
 
-        for (int x = 0; x < 10; x++)
+        for (int x = 0; x < Chunk.Size; x++)
         {
-            for (int z = 0; z < 10; z++)
+            for (int z = 0; z < Chunk.Size; z++)
             {
                 if (tile[x,z].TileBiome == BiomeType.OceanNormal)
                 {
@@ -716,9 +719,9 @@ public class MeshData
         UVs = new List<Vector2>();
         triangles = new List<int>();
 
-        for (int x = 0; x < 10; x++)
+        for (int x = 0; x < Chunk.Size; x++)
         {
-            for (int z = 0; z < 10; z++)
+            for (int z = 0; z < Chunk.Size; z++)
             {
                 if (tile[x, z].type == TypeBlock.WaterFloor)
                 {
@@ -735,9 +738,9 @@ public class MeshData
 
     public void UpdateUv(Tile[,] tile)
     {
-        for (int x = 0; x < 10; x++)
+        for (int x = 0; x < Chunk.Size; x++)
         {
-            for (int z = 0; z < 10; z++)
+            for (int z = 0; z < Chunk.Size; z++)
             {
                 UVs.AddRange(Game.SpriteManager.GetTileUVs(tile[x, z]));
             }
