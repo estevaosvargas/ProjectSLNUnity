@@ -7,7 +7,7 @@ using System.Linq;
 
 public class ChunkGenerator : MonoBehaviour
 {
-    public Transform PlayerRoot;
+    /*public Transform PlayerRoot;
     public int renderDistance;
     public int ThickRate = 1;
 
@@ -110,18 +110,5 @@ public class ChunkGenerator : MonoBehaviour
             }
 
         }
-    }
-}
-
-[System.Serializable]
-public class ChunkData
-{
-    internal bool isReady;
-    internal Vector3Int position;
-    internal GameObject obj;
-
-    public ChunkData()
-    {
-
-    }
+    }*/
 }

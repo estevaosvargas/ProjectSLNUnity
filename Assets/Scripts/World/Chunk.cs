@@ -152,7 +152,6 @@ public class Chunk : MonoBehaviour
 
                 tiles[i, j].CityPoint = new DataVector3((int)point.x, (int)point.y, 0);
 
-
                 if (tiles[i, j].OwnedByCity)
                 {
                     Game.CityManager.SetUpCity(tiles[i, j].CityPoint);//Spawn the vilangers, in world, out side the buildings

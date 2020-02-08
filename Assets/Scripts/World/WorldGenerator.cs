@@ -86,6 +86,7 @@ public class WorldGenerator : MapManager
     void Update()
     {
         PlayerPos = new Vector3Int((int)Player.position.x, 0, (int)Player.position.z);
+
         while (pendingchunks.Count > 0)
         {
             ChunkData chunk = pendingchunks.Dequeue();
@@ -160,6 +161,8 @@ public class WorldGenerator : MapManager
         base.OnRespawn();
     }
 
+    public int seila = 1;
+
     private void MadeChunks()
     {
         while (WorldRuning)
@@ -175,7 +178,7 @@ public class WorldGenerator : MapManager
                 for (int x = minX; x < maxX; x += Chunk.Size)
                 {
                     Thread.Sleep(ThickRate);
-                    Vector3Int vector = new Vector3Int(x + PlayerP.x, 0, z + PlayerP.z);
+                    Vector3Int vector = new Vector3Int(x, 0, z);
 
                     if (!chunkMap.ContainsKey(vector))
                     {
@@ -190,10 +193,11 @@ public class WorldGenerator : MapManager
 
             foreach (var chunk in chunks)
             {
-                Thread.Sleep(ThickRate);
+
                 if (chunk != null)
                 {
                     Vector3Int vector = new Vector3Int(chunk.position.x, chunk.position.y, chunk.position.z);
+
                     if (vector.x > maxX || vector.x < minX || vector.z > maxZ || vector.z < minZ)
                     {
                         pendingDeletions.Enqueue(vector);
@@ -430,4 +434,14 @@ public class WorldGenerator : MapManager
 public enum WorldType
 {
     Normal = 0, DemondWorld = 1, Caves = 2, Dungeons = 3, Sky = 4
+}
+
+
+[System.Serializable]
+public struct ChunkData
+{
+    internal bool isReady;
+    internal Vector3Int position;
+    internal Chunk ChunkC;
+    internal GameObject obj;
 }
