@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 2d5d6f0f6fc06064a87b6354d148b10a, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -971,18 +971,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   World_ID: 0
-  Player: {fileID: 61056515}
   Cam: {fileID: 0}
-  ChunkGO: {fileID: 1728794627388856, guid: 30810d7135128834fbab67c15393ed24, type: 3}
-  SUN: {fileID: 5965577152830102322, guid: 4e487a1d7286b914fb5b80b808c32e37, type: 3}
-  RenderDistance: 20
-  DisRenderDistance: 4
-  ChunksList: []
   SlectedBlock: {fileID: 0}
   CurrentWorld: 0
   VillaPorcetage: 10
   HeightTeste: {fileID: 2800000, guid: 6af08647a7710034081e990525d85b91, type: 3}
   IsMainMenu: 1
+  Player: {fileID: 61056515}
+  renderDistance: 0
+  ThickRate: 1
+  PlayerPos: {x: 0, y: 0, z: 0}
+  WorldRuning: 0
+  ChunkGO: {fileID: 1728794627388856, guid: 30810d7135128834fbab67c15393ed24, type: 3}
+  SUN: {fileID: 5965577152830102322, guid: 4e487a1d7286b914fb5b80b808c32e37, type: 3}
+  ChunksList: []
   h: 0
   d: 0
   m: 0
@@ -6519,23 +6521,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114703607706690276, guid: 75477bc6298eaf340a55213d80fde845,
-        type: 3}
-      propertyPath: Player.PlayerObject
-      value: 
-      objectReference: {fileID: 1915398696615718, guid: 6160774319f13bc4688c51264c308111,
-        type: 3}
-    - target: {fileID: 114895733168992536, guid: 75477bc6298eaf340a55213d80fde845,
-        type: 3}
-      propertyPath: Prefabs.Array.size
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 114895733168992536, guid: 75477bc6298eaf340a55213d80fde845,
-        type: 3}
-      propertyPath: Prefabs.Array.data[12]
-      value: 
-      objectReference: {fileID: 1840211445445238, guid: 4fafb6936ed50ed458392bd04405df71,
-        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 75477bc6298eaf340a55213d80fde845, type: 3}
 --- !u!1 &724137972

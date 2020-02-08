@@ -25,6 +25,8 @@ public class Chunk : MonoBehaviour
     public Tile[,] tiles { get; private set; }
     public List<Tile> tilelist = new List<Tile>();
 
+    public Vector3Int position;
+
     public List<Entity> Entitys = new List<Entity>();
     public List<long> Players = new List<long>();
     public Dictionary<Tile, GameObject> TransTile = new Dictionary<Tile, GameObject>();
@@ -33,6 +35,8 @@ public class Chunk : MonoBehaviour
     private float timetemp = 0;
     private float timetemp2 = 0;
     public float TimeUpdate = 10;
+
+    public float QueeTime = 5;
 
     public bool HaveAnyBuild = false;
     public bool AsSave = false;
@@ -54,13 +58,7 @@ public class Chunk : MonoBehaviour
     {
         if (Game.GameManager.SinglePlayer)
         {
-            for (int i = 0; i < Size; i++)
-            {
-                for (int j = 0; j < Size; j++)
-                {
-                    tiles[i, j].RefreshTile();
-                }
-            }
+            StartCoroutine(QueeObjects());
 
             GenerateTilesLayer(tiles);
             GenerateWaterLayer(tiles);
@@ -163,21 +161,20 @@ public class Chunk : MonoBehaviour
                 tiles[i, j].SetUpTile(tiles[i, j]);
                 tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
 
-                if (!Game.GameManager.SinglePlayer || !DarckNet.Network.IsClient)
+                if (DarckNet.Network.IsServer && !Game.GameManager.SinglePlayer)
                 {
                     tiles[i, j].IsServerTile = true;
-                }
 
-                //Set Up Tree OBject
-                SpawnCityEntity(tiles[i, j]);
-                SetupObjects(tiles[i, j]);
-                SetUpTileTree(tiles[i, j]);
+                    SetUpTileTree(tiles[i, j]);
+                    SpawnCityEntity(tiles[i, j]);
+                    SetupObjects(tiles[i, j]);
 
-                if (tiles[i, j].CanWalk)
-                {
-                    if (Random.Range(1, 125) > 123)
+                    if (tiles[i, j].CanWalk)
                     {
-                        SpawnNetWorkObject(tiles[i, j]);
+                        if (Random.Range(1, 125) > 123)
+                        {
+                            SpawnNetWorkObject(tiles[i, j]);
+                        }
                     }
                 }
 
@@ -189,6 +186,30 @@ public class Chunk : MonoBehaviour
         #endregion
 
         return tilelist.ToArray();
+    }
+
+    IEnumerator QueeObjects()
+    {
+        for (int i = 0; i < Size; i++)
+        {
+            for (int j = 0; j < Size; j++)
+            {
+                yield return new WaitForSeconds(QueeTime);
+                SetUpTileTree(tiles[i, j]);
+                SpawnCityEntity(tiles[i, j]);
+                SetupObjects(tiles[i, j]);
+
+                if (tiles[i, j].CanWalk)
+                {
+                    if (Random.Range(1, 125) > 123)
+                    {
+                        SpawnNetWorkObject(tiles[i, j]);
+                    }
+                }
+
+                tiles[i, j].RefreshTile();
+            }
+        }
     }
 
     public void RefreshChunkTile()
@@ -210,11 +231,6 @@ public class Chunk : MonoBehaviour
             mesh.RecalculateNormals();
 
             mMeshcollider.sharedMesh = mesh;
-
-            /*MeshFilter filter = MeshTile.GetComponent<MeshFilter>();
-            MeshData data = new MeshData();
-            data.UpdateUv(tiles);
-            filter.mesh.uv = data.UVs.ToArray();*/
         }
     }
 
@@ -464,8 +480,19 @@ public class Chunk : MonoBehaviour
 
             if (tile.type != TypeBlock.Rock)
             {
-                System.Random randomValue = new System.Random(Game.GameManager.Seed + tile.x + tile.z);
-                trees.transform.position = new Vector3(tile.x + (float)randomValue.NextDouble(), tile.y, tile.z + (float)randomValue.NextDouble());
+                if (tile.typego != TakeGO.WeedTall)
+                {
+                    if (tile.typego != TakeGO.Weed01)
+                    {
+                        if (tile.typego != TakeGO.RockProp)
+                        {
+                            System.Random randomValue = new System.Random(Game.GameManager.Seed + tile.x + tile.z);
+                            float size = Random.Range(0f, 0.5f);
+                            trees.transform.position = new Vector3(tile.x + (float)randomValue.NextDouble(), tile.y, tile.z + (float)randomValue.NextDouble());
+                            trees.transform.localScale = new Vector3(trees.transform.localScale.x + size, trees.transform.localScale.y + size, trees.transform.localScale.z + size);
+                        }
+                    }
+                }
             }
 
             if (trees.GetComponent<Trees>())

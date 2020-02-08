@@ -5,30 +5,43 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
 using System.Threading;
+using System.Linq;
 
 public class WorldGenerator : MapManager
 {
-    public Transform Player;
     public UnityStandardAssets.Utility.SmoothFollow Cam;
-    public GameObject ChunkGO;
-    public GameObject SUN;
-    public int RenderDistance;
-    public int DisRenderDistance = 5;
-    Dictionary<Vector3, Chunk> chunkMap;
-    Dictionary<Vector3, bool> ClientchunkMap;
-    public List<Chunk> ChunksList = new List<Chunk>();
-
     public Transform SlectedBlock;
     public WorldType CurrentWorld;
     public int VillaPorcetage = 10;
     public Texture2D HeightTeste;
     public bool IsMainMenu = false;
+
+
+    public Transform Player;
+    public int renderDistance;
+    public int ThickRate = 1;
+    public Vector3Int PlayerPos;
+    public bool WorldRuning = false;
+    public GameObject ChunkGO;
+    public GameObject SUN;
+
+    private Thread worldGenerator;
+
     private System.Random randomValue;
+
+    private Queue<Vector3Int> pendingDeletions = new Queue<Vector3Int>();
+    private Queue<ChunkData> pendingchunks = new Queue<ChunkData>();
+
+    Dictionary<Vector3, Chunk> chunkMap;
+    Dictionary<Vector3, bool> ClientchunkMap;
+    public List<Chunk> ChunksList = new List<Chunk>();
 
     [Header("TimeData")]
     public int h;
     public int d;
     public int m;
+
+    public static int Snap(float i, int v) => (int)(Mathf.Round(i / v) * v);
 
     void Awake()
     {
@@ -92,39 +105,70 @@ public class WorldGenerator : MapManager
     {
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
-            Game.GameManager.Player.RequestSpawnPlayer(new Vector3(0, 1, 0), World_ID);
+            Player = Game.GameManager.Player.RequestSpawnPlayer(new Vector3(0, 55, 0), World_ID).transform;
             Game.ConsoleInGame.LoadingScreen_Hide();
-            StartCoroutine("StrartGenerator");
+            //StartCoroutine("StrartGenerator");
+        }
+        if (!IsMainMenu)
+        {
+            WorldRuning = true;
+            PlayerPos = new Vector3Int((int)Player.position.x, 0, (int)Player.position.z);
+            worldGenerator = new Thread(new ThreadStart(MadeChunks));
+            worldGenerator.Name = "WorldGenerator";
+            worldGenerator.IsBackground = true;
+            worldGenerator.Start();
         }
     }
 
-
-    IEnumerator StrartGenerator()
+    private void OnDestroy()
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(1f);
-            UpdateFindChunk();
-        }
+        WorldRuning = false;
+        worldGenerator.Abort();
+        worldGenerator = null;
     }
 
     private void UpdateFindChunk()
     {
         if (Game.GameManager.SinglePlayer)
         {
-            FindChunksToLoad();
-            DeleteChunk();
+            //FindChunksToLoad();
+           // DeleteChunk();
         }
         else if (Game.GameManager.MultiPlayer)
         {
-            NetFindChunksToLoad();
-            NetFindDeleteChunk();
+            //NetFindChunksToLoad();
+            //NetFindDeleteChunk();
         }
     }
 
     void Update()
     {
-    #if Client
+        PlayerPos = new Vector3Int((int)Player.position.x, 0, (int)Player.position.z);
+        while (pendingchunks.Count > 0)
+        {
+            ChunkData chunk = pendingchunks.Dequeue();
+
+            if (!chunkMap.ContainsKey(new Vector3Int(chunk.position.x, 0, chunk.position.z)))
+            {
+                GameObject obj = Instantiate(ChunkGO, new Vector3Int(chunk.position.x, 0, chunk.position.z), Quaternion.identity);
+                obj.name = "Chunk : " + chunk.position.x + " : " + chunk.position.z;
+
+                obj.GetComponent<Chunk>().position = new Vector3Int(chunk.position.x, 0, chunk.position.z);
+
+                chunkMap.Add(new Vector3Int(chunk.position.x, 0, chunk.position.z), obj.GetComponent<Chunk>());
+            }
+        }
+        while (pendingDeletions.Count > 0)
+        {
+            Vector3Int vector = pendingDeletions.Dequeue();
+            if (chunkMap.TryGetValue(vector, out Chunk chunk))
+            {
+                Destroy(chunk.gameObject);
+                chunkMap.Remove(vector);
+            }
+        }
+
+#if Client
         if (MouselockFake.IsLock == false)
         {
             if (Input.GetKeyDown(KeyCode.KeypadMinus))
@@ -155,70 +199,47 @@ public class WorldGenerator : MapManager
     #endif
     }
 
-    public int RandomNumber(int Min, int Max)
+    private void MadeChunks()
     {
-        return randomValue.Next(Min, Max);
-    }
-
-    public float RandomNumber()
-    {
-        return (float)randomValue.NextDouble();
-    }
-
-    public void FindChunksToLoad()
-    {
-        if (Player)
+        while (WorldRuning)
         {
-            int xPos = (int)Player.position.x;
-            int zPos = (int)Player.position.z;
+            Vector3Int PlayerP = new Vector3Int(Snap(PlayerPos.x, Chunk.Size), 0, Snap(PlayerPos.z, Chunk.Size));
+            int minX = PlayerP.x - renderDistance;
+            int maxX = PlayerP.x + renderDistance;
+            int minZ = PlayerP.z - renderDistance;
+            int maxZ = PlayerP.z + renderDistance;
 
-            for (int i = -RenderDistance; i < RenderDistance; i++)
+            for (int z = minZ; z < maxZ; z += Chunk.Size)
             {
-                for (int z = -RenderDistance; z < RenderDistance; z++)
+                for (int x = minX; x < maxX; x += Chunk.Size)
                 {
-                    MakeChunkAt(xPos + i, zPos + z);
+                    Thread.Sleep(ThickRate);
+                    Vector3Int vector = new Vector3Int(x, 0, z);
+
+                    if (!chunkMap.ContainsKey(vector))
+                    {
+                        ChunkData nchunk = new ChunkData();
+                        nchunk.position = vector;
+                        pendingchunks.Enqueue(nchunk);
+                    }
                 }
             }
-        }
-    }
 
-    void MakeChunkAt(int x, int z)
-    {
-        x = Mathf.FloorToInt(x / (float)Chunk.Size) * Chunk.Size;
-        z = Mathf.FloorToInt(z / (float)Chunk.Size) * Chunk.Size;
+            Chunk[] chunks = chunkMap.Values.ToArray();
 
-        if (chunkMap.ContainsKey(new Vector3(x, 0, z)) == false)
-        {
-            GameObject go = Instantiate(ChunkGO, new Vector3(x, 0, z), Quaternion.identity);
-            go.SetActive(true);
-            chunkMap.Add(new Vector3(x, 0,z), go.GetComponent<Chunk>());
-        }
-    }
-
-    public void DeleteChunk()
-    {
-        if (Player)
-        {
-            List<Chunk> DeleteChuks = new List<Chunk>(chunkMap.Values);
-            Queue<Chunk> deletechuks = new Queue<Chunk>();
-
-            for (int i = 0; i < DeleteChuks.Count; i++)
+            foreach (var chunk in chunks)
             {
-                float Distanc = Vector3.Distance(Player.position, DeleteChuks[i].transform.position);
-
-                if (Distanc > DisRenderDistance * Chunk.Size)
+                Thread.Sleep(ThickRate);
+                if (chunk != null)
                 {
-                    deletechuks.Enqueue(DeleteChuks[i]);
-                }
-
-                while (deletechuks.Count > 0)
-                {
-                    Chunk chuks = deletechuks.Dequeue();
-
-                    chunkMap.Remove(chuks.transform.position);
-                    Destroy(chuks.gameObject);
+                    Vector3Int vector = new Vector3Int(chunk.position.x, chunk.position.y, chunk.position.z);
+                    if (vector.x > maxX || vector.x < minX || vector.z > maxZ || vector.z < minZ)
+                    {
+                        pendingDeletions.Enqueue(vector);
+                    }
                 }
             }
+            
         }
     }
 
@@ -250,20 +271,6 @@ public class WorldGenerator : MapManager
         return null;
     }
 
-    public Tile GetTileAt(float x, float z)
-    {
-        int mx = Mathf.FloorToInt(x);
-        int mz = Mathf.FloorToInt(z);
-
-        Chunk chunk = GetChunkAt(mx, mz);
-
-        if (chunk != null)
-        {
-            return chunk.tiles[mx - (int)chunk.transform.position.x, mz - (int)chunk.transform.position.z];
-        }
-        return null;
-    }
-
     public Vector3 GetPos(float x, float z)
     {
         int mx = Mathf.FloorToInt(x);
@@ -278,8 +285,79 @@ public class WorldGenerator : MapManager
         return Vector3.zero;
     }
 
+    public int RandomNumber(int Min, int Max)
+    {
+        return randomValue.Next(Min, Max);
+    }
+
+    public float RandomNumber()
+    {
+        return (float)randomValue.NextDouble();
+    }
+
+    [Obsolete]
+    public void FindChunksToLoad()
+    {
+        if (Player)
+        {
+            int xPos = (int)Player.position.x;
+            int zPos = (int)Player.position.z;
+
+            /*for (int i = -RenderDistance; i < RenderDistance; i++)
+            {
+                for (int z = -RenderDistance; z < RenderDistance; z++)
+                {
+                    MakeChunkAt(xPos + i, zPos + z);
+                }
+            }*/
+        }
+    }
+
+    [Obsolete]
+    void MakeChunkAt(int x, int z)
+    {
+        x = Mathf.FloorToInt(x / (float)Chunk.Size) * Chunk.Size;
+        z = Mathf.FloorToInt(z / (float)Chunk.Size) * Chunk.Size;
+
+        if (chunkMap.ContainsKey(new Vector3(x, 0, z)) == false)
+        {
+            GameObject go = Instantiate(ChunkGO, new Vector3(x, 0, z), Quaternion.identity);
+            go.SetActive(true);
+            chunkMap.Add(new Vector3(x, 0,z), go.GetComponent<Chunk>());
+        }
+    }
+
+    [Obsolete]
+    public void DeleteChunk()
+    {
+        if (Player)
+        {
+            List<Chunk> DeleteChuks = new List<Chunk>(chunkMap.Values);
+            Queue<Chunk> deletechuks = new Queue<Chunk>();
+
+            for (int i = 0; i < DeleteChuks.Count; i++)
+            {
+                float Distanc = Vector3.Distance(Player.position, DeleteChuks[i].transform.position);
+
+                if (Distanc > renderDistance * Chunk.Size)
+                {
+                    deletechuks.Enqueue(DeleteChuks[i]);
+                }
+
+                while (deletechuks.Count > 0)
+                {
+                    Chunk chuks = deletechuks.Dequeue();
+
+                    chunkMap.Remove(chuks.transform.position);
+                    Destroy(chuks.gameObject);
+                }
+            }
+        }
+    }
+
     //<!---------------------------------------->
 
+    [Obsolete]
     void NetFindChunksToLoad()
     {
         if (Player)
@@ -290,9 +368,9 @@ public class WorldGenerator : MapManager
             int xx = 0;
             int zz = 0;
 
-            for (int i = -RenderDistance; i < RenderDistance; i++)
+            for (int i = -renderDistance; i < renderDistance; i++)
             {
-                for (int z = -RenderDistance; z < RenderDistance; z++)
+                for (int z = -renderDistance; z < renderDistance; z++)
                 {
                     xx = xPos + i;
                     zz = zPos + z;
@@ -310,6 +388,7 @@ public class WorldGenerator : MapManager
         }
     }
 
+    [Obsolete]
     void NetFindDeleteChunk()
     {
         if (Player)
@@ -319,7 +398,7 @@ public class WorldGenerator : MapManager
             for (int i = 0; i < DeleteChuks.Count; i++)
             {
                 float Distanc = Vector3.Distance(Player.position, DeleteChuks[i].transform.position);
-                if (Distanc > DisRenderDistance * Chunk.Size)
+                if (Distanc > renderDistance * Chunk.Size)
                 {
                     deletechuks.Enqueue(DeleteChuks[i]);
                 }
@@ -335,6 +414,7 @@ public class WorldGenerator : MapManager
         }
     }
 
+    [Obsolete]
     public void ClientMakeChunkAt(int x, int z, Tile[] tile)
     {
         x = Mathf.FloorToInt(x / (float)Chunk.Size) * Chunk.Size;
@@ -348,6 +428,7 @@ public class WorldGenerator : MapManager
         }
     }
 
+    [Obsolete]
     public Tile[] ServerMakeChunkAt(int x, int z, long unique)
     {
         x = Mathf.FloorToInt(x / (float)Chunk.Size) * Chunk.Size;
@@ -369,6 +450,7 @@ public class WorldGenerator : MapManager
         }
     }
 
+    [Obsolete]
     public void NetDeleteChunk(int x, int z, long player)
     {
         if (chunkMap.ContainsKey(new Vector3(x, 0,z)) == true && chunkMap[new Vector3(x, 0,z)].Players.Count == 0 || chunkMap.ContainsKey(new Vector3(x, 0, z)) == true && chunkMap[new Vector3(x, 0, z)].Players.Count == 1 && chunkMap[new Vector3(x, 0, z)].Players[0] == player)

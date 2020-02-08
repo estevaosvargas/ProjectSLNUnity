@@ -48,6 +48,8 @@
 			Blend SrcAlpha OneMinusSrcAlpha
 			ZWrite Off
 
+			Cull off
+
             CGPROGRAM
 			#define SMOOTHSTEP_AA 0.01
 

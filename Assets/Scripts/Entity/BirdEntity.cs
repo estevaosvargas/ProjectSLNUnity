@@ -61,7 +61,7 @@ public class BirdEntity : EntityLife
                     HaveTarget = true;
                     NextTarget = new Vector3(Random.Range(-RandomRange, RandomRange), Random.Range(0, RandomRange), Random.Range(-RandomRange, RandomRange)) + transform.position;
 
-                    if (Game.WorldGenerator.GetTileAt(NextTarget.x, NextTarget.z) == null)
+                    if (Game.WorldGenerator.GetTileAt((int)NextTarget.x, (int)NextTarget.z) == null)
                     {
                         NextTarget = new Vector3(Random.Range(-1, 1), Random.Range(0, 2), Random.Range(-1, 1)) + transform.position;
                     }
@@ -82,7 +82,7 @@ public class BirdEntity : EntityLife
                 HaveTarget = true;
                 NextTarget = new Vector3(Random.Range(-RandomRange, RandomRange), Random.Range(0, RandomRange), Random.Range(-RandomRange, RandomRange)) + transform.position;
 
-                if (Game.WorldGenerator.GetTileAt(NextTarget.x, NextTarget.z) == null)
+                if (Game.WorldGenerator.GetTileAt((int)NextTarget.x, (int)NextTarget.z) == null)
                 {
                     NextTarget = new Vector3(Random.Range(-1, 1), Random.Range(0, 2), Random.Range(-1, 1)) + transform.position;
                 }

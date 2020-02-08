@@ -41,6 +41,8 @@ public class HandManager : MonoBehaviour
 
         CurrentItemObject = Instantiate(Game.SpriteManager.GetHandItem(item.Name), HandRoot);
 
+        CurrentItemObject.GetComponent<FPItemBase>().SetUpData(item);
+
         CurrentItem = item;
         SlotIndex = slot;
         OnHand = false;
@@ -76,6 +78,73 @@ public class HandManager : MonoBehaviour
         }
     }
 
+    public void PhysicDamage(ItemData _CurrentItem, float range)
+    {
+        Collider[] Entitys = Physics.OverlapSphere(attackPoint.position, range, EntitysLayer);
+
+        if (Time.time > timetemp + _CurrentItem.About.FireRate)
+        {
+            foreach (var item in Entitys)
+            {
+                if (item.GetComponent<EntityPlayer>())
+                {
+                    if (!item.GetComponent<EntityPlayer>().Net.isMine)//if isnt me
+                    {
+                        if (item.tag != "TreeTrigger")
+                        {
+                            if (item.GetComponent<EntityLife>() != null)
+                            {
+                                item.GetComponent<EntityLife>().DoDamage(_CurrentItem.About.EntityDamage, "Player", true);
+                            }
+                            if (item.GetComponent<Trees>() != null)
+                            {
+                                item.GetComponent<Trees>().Damage(_CurrentItem, _CurrentItem.About.BlockDamage);
+                            }
+                            GetComponent<Animator>().SetTrigger("Attack");
+                            Game.GameManager.PopUpDamage(Camera.main.WorldToScreenPoint(item.transform.position), _CurrentItem.About.EntityDamage);
+                            Debug.Log("Attacked : " + item.name);
+                        }
+                        else
+                        {
+                            GetComponent<Animator>().SetTrigger("Attack");
+                            Debug.Log("Attacked : Air");
+                        }
+                    }
+                }
+                else
+                {
+                    if (item.tag != "TreeTrigger")
+                    {
+                        if (item.GetComponent<EntityLife>() != null)
+                        {
+                            item.GetComponent<EntityLife>().DoDamage(_CurrentItem.About.EntityDamage, "Player", true);
+                        }
+                        if (item.GetComponent<Trees>() != null)
+                        {
+                            item.GetComponent<Trees>().Damage(_CurrentItem, _CurrentItem.About.BlockDamage);
+                        }
+                        GetComponent<Animator>().SetTrigger("Attack");
+                        Game.GameManager.PopUpDamage(Camera.main.WorldToScreenPoint(item.transform.position), _CurrentItem.About.EntityDamage);
+                        Debug.Log("Attacked : " + item.name);
+                    }
+                    else
+                    {
+                        GetComponent<Animator>().SetTrigger("Attack");
+                        Debug.Log("Attacked : Air");
+                    }
+                }
+            }
+
+            if (Entitys.Length <= 0)
+            {
+                GetComponent<Animator>().SetTrigger("Attack");
+                Debug.Log("Attacked : Air");
+            }
+
+            timetemp = Time.time;
+        }
+    }
+
     public void PlaceBlock()
     {
         if (CurrentItem.ITEMTYPE == ItemType.Block)
@@ -92,7 +161,8 @@ public class HandManager : MonoBehaviour
 
     public void FirstAction()
     {
-        Collider[] Entitys = Physics.OverlapSphere(attackPoint.position, attackRange, EntitysLayer);
+        
+        /*Collider[] Entitys = Physics.OverlapSphere(attackPoint.position, attackRange, EntitysLayer);
 
         if (CurrentItem != null)
         {
@@ -165,7 +235,7 @@ public class HandManager : MonoBehaviour
 
                 timetemp = Time.time;
             }
-        }
+        }*/
     }
 
 
@@ -365,4 +435,19 @@ public class HandData
     public float FireRate = 0.4f;
 
     public MaterialHitType MaterialHitBest = MaterialHitType.Entity;
+}
+
+public class FPItemBase : MonoBehaviour
+{
+    private ItemData ThisItem;
+
+    public void SetUpData(ItemData item)
+    {
+        ThisItem = item;
+    }
+
+    public ItemData GetItem()
+    {
+        return ThisItem;
+    }
 }

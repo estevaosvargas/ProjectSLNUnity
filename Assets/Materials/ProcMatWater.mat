@@ -90,8 +90,8 @@ Material:
     - _BumpDirection: {r: 1, g: 1, b: -1, a: 1}
     - _BumpTiling: {r: 1, g: 1, b: -2, a: 3}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DepthGradientDeep: {r: 0.16852015, g: 0.5871499, b: 0.5568143, a: 1}
-    - _DepthGradientShallow: {r: 0.5062297, g: 0.5062297, b: 0.5062297, a: 0}
+    - _DepthGradientDeep: {r: 0.16852395, g: 0.58718824, b: 0.55681604, a: 1}
+    - _DepthGradientShallow: {r: 0.5068054, g: 0.5068054, b: 0.5068054, a: 0}
     - _DistortParams: {r: 1, g: 1, b: 2, a: 0.5}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _Foam: {r: 0, g: 0, b: 0, a: 0}

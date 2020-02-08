@@ -120,9 +120,9 @@ public class EntityPlayer : EntityLife
     {
         if (Game.WorldGenerator)
         {
-           // Game.WorldGenerator.UpdateFindChunk();
+           //Game.WorldGenerator.UpdateFindChunk();
 
-            tile = Game.WorldGenerator.GetTileAt(transform.position.x, transform.position.z);
+            tile = Game.WorldGenerator.GetTileAt((int)transform.position.x, (int)transform.position.z);
             var main = FootPArticle.main;
 
             NetStats.CurrentTile = tile;
@@ -375,6 +375,11 @@ public class EntityPlayer : EntityLife
 
             }
         }
+    }
+
+    public bool IsWalking()
+    {
+        return NetStats.walking;
     }
 
     void UpdateNetStatus()//for now is every frame send to all, just for stress test

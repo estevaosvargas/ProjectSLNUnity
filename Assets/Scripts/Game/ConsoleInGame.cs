@@ -6,6 +6,7 @@ using TMPro;
 using System;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Collections;
 
 public class ConsoleInGame : MonoBehaviour
 {
@@ -59,6 +60,7 @@ public class ConsoleInGame : MonoBehaviour
         CommandsData.Add("quit");
         CommandsData.Add("console.collapse");
         CommandsData.Add("loadingscreen.show");
+        CommandsData.Add("discordmsg");
 
         AddInRoolGUI("Commands Loaded", true, Color.yellow);
     }
@@ -298,6 +300,26 @@ public class ConsoleInGame : MonoBehaviour
             AddInRoolGUI("LoadingScreen Is Showing!!", true, Color.white);
             #endregion
         }
+        else if (string.Equals(value[0], "discordmsg", StringComparison.OrdinalIgnoreCase))
+        {
+            if (value.Length >= 2)
+            {
+                string valuefinal = "";
+                for (int i = 0; i < value.Length; i++)
+                {
+                    if (i != 0)
+                    {
+                        valuefinal += value[i] + " ";
+                    }
+                }
+                StartCoroutine(TestApi("log","(" + Game.GameManager.Player.UserID + ") Say: " + valuefinal));
+                Game.MenuManager.PopUpName("(" + Game.GameManager.Player.UserID + ") Say: " + valuefinal);
+            }
+            else
+            {
+                Game.MenuManager.PopUpName(value[1]);
+            }
+        }
         else if (string.Equals(value[0], "say", StringComparison.OrdinalIgnoreCase))
         {
             if (value.Length >= 2)
@@ -419,6 +441,10 @@ public class ConsoleInGame : MonoBehaviour
             {
                 commands[i] += " true";
             }
+            else if (string.Equals(commands[i], "discordmsg", StringComparison.OrdinalIgnoreCase))
+            {
+                commands[i] += " Hello from console in game to discord (:";
+            }
         }
 
         return commands;
@@ -474,6 +500,16 @@ public class ConsoleInGame : MonoBehaviour
     public void UpdateLoadingText(string text)
     {
         LoadingText.text = text;
+    }
+    #endregion
+
+    #region HttpApi
+    IEnumerator TestApi(string type, string msg)
+    {
+        using (WWW www = new WWW("https://darckcomsoftdb.000webhostapp.com/api/discord?type=" + type + "&msg=" + msg))
+        {
+            yield return www;
+        }
     }
     #endregion
 }

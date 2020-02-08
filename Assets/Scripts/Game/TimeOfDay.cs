@@ -5,10 +5,16 @@ using UnityEngine;
 public class TimeOfDay : MonoBehaviour
 {
     [Header("WaterColor")]
+    public Material SkyMaterial;
     public Material WaterMat;
     public Gradient _BaseColor;
     public Gradient _ReflectionColor;
     public Gradient _SpecularColor;
+
+    [Header("Sky")]
+    public Gradient SkyTopColor;
+    public Gradient HorizonColor;
+    public Gradient BottonColor;
 
     [Header("TimeSystem")]
     public Gradient AmbientColor;
@@ -76,6 +82,30 @@ public class TimeOfDay : MonoBehaviour
         }
     }
 
+    public Color Get_TopSkyColor
+    {
+        get
+        {
+            return SkyTopColor.Evaluate(timeOfDay / 24);
+        }
+    }
+
+    public Color Get_HorizonColor
+    {
+        get
+        {
+            return HorizonColor.Evaluate(timeOfDay / 24);
+        }
+    }
+
+    public Color Get_BottonColor
+    {
+        get
+        {
+            return BottonColor.Evaluate(timeOfDay / 24);
+        }
+    }
+
     public void LastUpdateTime()
     {
         Net.RPC("RPC_Updatetime", DarckNet.RPCMode.AllNoOwner, timeOfDay);
@@ -110,6 +140,10 @@ public class TimeOfDay : MonoBehaviour
             RenderSettings.fogColor = CurrentFogColor;
             WaterMat.SetColor("_DepthGradientDeep", Get_BaseColor);
             WaterMat.SetColor("_DepthGradientShallow", Get_ReflectionColor);
+
+            SkyMaterial.SetColor("_SkyColor1", Get_TopSkyColor);
+            SkyMaterial.SetColor("_SkyColor2", Get_HorizonColor);
+            SkyMaterial.SetColor("_SkyColor3", Get_BottonColor);
         }
 
         DataTime.SetTimeData((int)timeOfDay);

@@ -11,6 +11,7 @@ using System.IO.Compression;
 using System;
 using darckcomsoft.itch;
 using System.Threading;
+using System.Collections;
 
 public class UIElements : DarckNet.DarckMonoBehaviour
 {
@@ -257,7 +258,7 @@ public class GameManager : UIElements
 
                 if (Game.WorldGenerator)
                 {
-                    t = Game.WorldGenerator.GetTileAt(hit.point.x, hit.point.z);
+                    t = Game.WorldGenerator.GetTileAt((int)hit.point.x, (int)hit.point.z);
                 }
 
                 if (Input.GetKeyDown(KeyCode.Mouse1))

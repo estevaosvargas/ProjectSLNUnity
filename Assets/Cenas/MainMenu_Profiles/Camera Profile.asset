@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb84e30e02715445aeb9959894e3b4d, type: 3}
   m_Name: ColorGrading
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -1415,13 +1415,13 @@ MonoBehaviour:
     overrideState: 1
     value: 1
   intensity:
-    overrideState: 0
+    overrideState: 1
     value: 1
   threshold:
     overrideState: 1
     value: 1
   softKnee:
-    overrideState: 0
+    overrideState: 1
     value: 0.693
   clamp:
     overrideState: 0
@@ -1430,11 +1430,11 @@ MonoBehaviour:
     overrideState: 0
     value: 10
   anamorphicRatio:
-    overrideState: 1
+    overrideState: 0
     value: 1
   color:
-    overrideState: 1
-    value: {r: 1, g: 1, b: 1, a: 1}
+    overrideState: 0
+    value: {r: 2.6390157, g: 2.6390157, b: 2.6390157, a: 1}
   fastMode:
     overrideState: 0
     value: 0
@@ -1444,4 +1444,4 @@ MonoBehaviour:
     defaultState: 1
   dirtIntensity:
     overrideState: 1
-    value: 1
+    value: 2

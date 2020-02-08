@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a055403e1efc914e809eaf6c57fd9c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SkyMaterial: {fileID: 2100000, guid: 2d5d6f0f6fc06064a87b6354d148b10a, type: 2}
   WaterMat: {fileID: 2100000, guid: 42ddd616eefa7cb42bfb158bbb19b996, type: 2}
   _BaseColor:
     serializedVersion: 2
@@ -132,6 +133,93 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 8
     m_NumAlphaKeys: 2
+  SkyTopColor:
+    serializedVersion: 2
+    key0: {r: 0.004004982, g: 0.020811431, b: 0.09433961, a: 1}
+    key1: {r: 0.007843138, g: 0.023529412, b: 0.09803922, a: 1}
+    key2: {r: 0.83921576, g: 0.5568628, b: 0.15294118, a: 1}
+    key3: {r: 0.24313727, g: 0.8078432, b: 0.9176471, a: 1}
+    key4: {r: 0.24705884, g: 0.8117648, b: 0.9176471, a: 1}
+    key5: {r: 0.8396226, g: 0.55693007, b: 0.1544589, a: 1}
+    key6: {r: 0.007843138, g: 0.023529412, b: 0.09803922, a: 1}
+    key7: {r: 0.007843138, g: 0.022641527, b: 0.09803922, a: 1}
+    ctime0: 0
+    ctime1: 14482
+    ctime2: 18531
+    ctime3: 23195
+    ctime4: 41358
+    ctime5: 45531
+    ctime6: 50072
+    ctime7: 65535
+    atime0: 0
+    atime1: 14456
+    atime2: 18311
+    atime3: 23130
+    atime4: 41249
+    atime5: 45682
+    atime6: 50308
+    atime7: 65005
+    m_Mode: 0
+    m_NumColorKeys: 8
+    m_NumAlphaKeys: 8
+  HorizonColor:
+    serializedVersion: 2
+    key0: {r: 0.004004982, g: 0.020811431, b: 0.09433961, a: 1}
+    key1: {r: 0.007843138, g: 0.023529412, b: 0.09803922, a: 1}
+    key2: {r: 1, g: 0.68235296, b: 0.23137255, a: 1}
+    key3: {r: 0.5529412, g: 0.89019614, b: 0.95294124, a: 1}
+    key4: {r: 0.5529412, g: 0.89019614, b: 0.95294124, a: 1}
+    key5: {r: 1, g: 0.68102723, b: 0.23113209, a: 1}
+    key6: {r: 0.007843138, g: 0.023529412, b: 0.09803922, a: 1}
+    key7: {r: 0.007843138, g: 0.022641527, b: 0.09803922, a: 1}
+    ctime0: 0
+    ctime1: 14482
+    ctime2: 18531
+    ctime3: 23195
+    ctime4: 41358
+    ctime5: 45531
+    ctime6: 50072
+    ctime7: 65535
+    atime0: 0
+    atime1: 14456
+    atime2: 18311
+    atime3: 23130
+    atime4: 41249
+    atime5: 45682
+    atime6: 50308
+    atime7: 65005
+    m_Mode: 0
+    m_NumColorKeys: 8
+    m_NumAlphaKeys: 8
+  BottonColor:
+    serializedVersion: 2
+    key0: {r: 0.004004982, g: 0.020811431, b: 0.09433961, a: 1}
+    key1: {r: 0.007843138, g: 0.023529412, b: 0.09803922, a: 1}
+    key2: {r: 0.83921576, g: 0.5568628, b: 0.15294118, a: 1}
+    key3: {r: 0.24313727, g: 0.8078432, b: 0.9176471, a: 1}
+    key4: {r: 0.24705884, g: 0.8117648, b: 0.9176471, a: 1}
+    key5: {r: 0.8396226, g: 0.55693007, b: 0.1544589, a: 1}
+    key6: {r: 0.007843138, g: 0.023529412, b: 0.09803922, a: 1}
+    key7: {r: 0.007843138, g: 0.022641527, b: 0.09803922, a: 1}
+    ctime0: 0
+    ctime1: 14482
+    ctime2: 18531
+    ctime3: 23195
+    ctime4: 41358
+    ctime5: 45531
+    ctime6: 50072
+    ctime7: 65535
+    atime0: 0
+    atime1: 14456
+    atime2: 18311
+    atime3: 23130
+    atime4: 41249
+    atime5: 45682
+    atime6: 50308
+    atime7: 65005
+    m_Mode: 0
+    m_NumColorKeys: 8
+    m_NumAlphaKeys: 8
   AmbientColor:
     serializedVersion: 2
     key0: {r: 0.08627451, g: 0.121568635, b: 0.28627452, a: 1}
@@ -163,14 +251,14 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   FogColor:
     serializedVersion: 2
-    key0: {r: 0.08627451, g: 0.121568635, b: 0.28627452, a: 1}
-    key1: {r: 0.07058824, g: 0.098039225, b: 0.227451, a: 1}
-    key2: {r: 0.7264151, g: 0.44248375, b: 0, a: 0}
-    key3: {r: 0.9245283, g: 0.8641965, b: 0.7893378, a: 0}
-    key4: {r: 0.92549026, g: 0.86274517, b: 0.78823537, a: 0}
-    key5: {r: 0.7254902, g: 0.4431373, b: 0, a: 0}
-    key6: {r: 0.08627451, g: 0.121568635, b: 0.28627452, a: 0}
-    key7: {r: 0.10991457, g: 0.15342715, b: 0.3584906, a: 0}
+    key0: {r: 0.004004982, g: 0.020811431, b: 0.09433961, a: 1}
+    key1: {r: 0.007843138, g: 0.023529412, b: 0.09803922, a: 1}
+    key2: {r: 1, g: 0.68235296, b: 0.23137255, a: 1}
+    key3: {r: 0.5529412, g: 0.89019614, b: 0.95294124, a: 1}
+    key4: {r: 0.5529412, g: 0.89019614, b: 0.95294124, a: 1}
+    key5: {r: 1, g: 0.68102723, b: 0.23113209, a: 1}
+    key6: {r: 0.007843138, g: 0.023529412, b: 0.09803922, a: 1}
+    key7: {r: 0.007843138, g: 0.022641527, b: 0.09803922, a: 1}
     ctime0: 0
     ctime1: 14482
     ctime2: 18531
@@ -180,16 +268,16 @@ MonoBehaviour:
     ctime6: 50072
     ctime7: 65535
     atime0: 0
-    atime1: 65005
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
+    atime1: 14456
+    atime2: 18311
+    atime3: 23130
+    atime4: 41249
+    atime5: 45682
+    atime6: 50308
+    atime7: 65005
     m_Mode: 0
     m_NumColorKeys: 8
-    m_NumAlphaKeys: 2
+    m_NumAlphaKeys: 8
   IsDay: 1
   Net: {fileID: 1624530699793752571}
   timeOfDay: 12
