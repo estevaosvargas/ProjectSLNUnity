@@ -121,102 +121,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &804721775
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1015959465718836418, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_BackGroundColor.r
-      value: 0.12682448
-      objectReference: {fileID: 0}
-    - target: {fileID: 1015959465718836418, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_BackGroundColor.g
-      value: 0.26380783
-      objectReference: {fileID: 0}
-    - target: {fileID: 1015959465718836418, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_BackGroundColor.b
-      value: 0.4716981
-      objectReference: {fileID: 0}
-    - target: {fileID: 7405386958101326968, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_Name
-      value: CamBheavior
-      objectReference: {fileID: 0}
-    - target: {fileID: 7405386958101326970, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 5534.1147
-      objectReference: {fileID: 0}
-    - target: {fileID: 7405386958101326970, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7405386958101326970, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 5017.957
-      objectReference: {fileID: 0}
-    - target: {fileID: 7405386958101326970, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7405386958101326970, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7405386958101326970, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7405386958101326970, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7405386958101326970, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7405386958101326970, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7405386958101326970, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7405386958101326970, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 300af818a0f7e8f4b81ad3859be9cda0, type: 3}
---- !u!114 &804721776 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5727285932324943886, guid: 300af818a0f7e8f4b81ad3859be9cda0,
-    type: 3}
-  m_PrefabInstance: {fileID: 804721775}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f76806479d916a64aa03f8e3eba7912f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1440289436
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,7 +150,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1440289438
 MonoBehaviour:
@@ -261,14 +165,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   World_ID: 0
-  Cam: {fileID: 804721776}
   SlectedBlock: {fileID: 1639277418}
   CurrentWorld: 0
   VillaPorcetage: 10
   HeightTeste: {fileID: 2800000, guid: 6af08647a7710034081e990525d85b91, type: 3}
   IsMainMenu: 0
   Player: {fileID: 0}
-  renderDistance: 50
+  renderDistance: 100
   ThickRate: 1
   PlayerPos: {x: 0, y: 0, z: 0}
   WorldRuning: 0
@@ -307,7 +210,7 @@ Transform:
   m_Children:
   - {fileID: 1988588636}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1988588635
 GameObject:

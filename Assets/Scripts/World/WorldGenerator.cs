@@ -9,7 +9,6 @@ using System.Linq;
 
 public class WorldGenerator : MapManager
 {
-    public UnityStandardAssets.Utility.SmoothFollow Cam;
     public Transform SlectedBlock;
     public WorldType CurrentWorld;
     public int VillaPorcetage = 10;
@@ -65,42 +64,6 @@ public class WorldGenerator : MapManager
         }
     }
 
-    public void Setplayer_data()
-    {
-        if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
-        {
-            Player = Game.GameManager.Player.PlayerObj.transform;
-            Player.GetComponent<EntityPlayer>().World = this.transform;
-            Cam.target = Game.GameManager.Player.PlayerObj.transform;
-
-            UpdateFindChunk();
-        }
-    }
-
-    public void LoadNewChunks(Chunk current_chunk)
-    {
-        List<Chunk> chunks = new List<Chunk>();
-
-        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x, (int)current_chunk.transform.position.z + 10));//Cima
-        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x, (int)current_chunk.transform.position.z - 10));//Baixo
-        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x + 10, (int)current_chunk.transform.position.z));//Direita
-        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x - 10, (int)current_chunk.transform.position.z));//Esquerda
-
-        foreach (var item in chunks)
-        {
-            if (item != null)
-            {
-                item.RefreshChunkTile();
-            }
-        }
-    }
-
-    public override void OnRespawn()
-    {
-        Setplayer_data();
-        base.OnRespawn();
-    }
-
     void Start()
     {
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
@@ -117,27 +80,6 @@ public class WorldGenerator : MapManager
             worldGenerator.Name = "WorldGenerator";
             worldGenerator.IsBackground = true;
             worldGenerator.Start();
-        }
-    }
-
-    private void OnDestroy()
-    {
-        WorldRuning = false;
-        worldGenerator.Abort();
-        worldGenerator = null;
-    }
-
-    private void UpdateFindChunk()
-    {
-        if (Game.GameManager.SinglePlayer)
-        {
-            //FindChunksToLoad();
-           // DeleteChunk();
-        }
-        else if (Game.GameManager.MultiPlayer)
-        {
-            //NetFindChunksToLoad();
-            //NetFindDeleteChunk();
         }
     }
 
@@ -171,32 +113,51 @@ public class WorldGenerator : MapManager
 #if Client
         if (MouselockFake.IsLock == false)
         {
-            if (Input.GetKeyDown(KeyCode.KeypadMinus))
-            {
-                if (Cam.GetComponent<Camera>().orthographicSize > 90)
-                {
-                    Cam.GetComponent<Camera>().orthographicSize -= 1;
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.KeypadPlus))
-            {
-                if (Cam.GetComponent<Camera>().fieldOfView < 20)
-                {
-                    Cam.GetComponent<Camera>().fieldOfView += 1;
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.KeypadMultiply))
-            {
-                Cam.GetComponent<Camera>().fieldOfView = 60f;
-            }
-
             h = DataTime.Hora;
             d = DataTime.Dia;
             m = DataTime.Mes;
         }
-    #endif
+#endif
+    }
+
+    private void OnDestroy()
+    {
+        WorldRuning = false;
+        worldGenerator.Abort();
+        worldGenerator = null;
+    }
+
+    public void Setplayer_data()
+    {
+        if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
+        {
+            Player = Game.GameManager.Player.PlayerObj.transform;
+            Player.GetComponent<EntityPlayer>().World = this.transform;
+        }
+    }
+
+    public void LoadNewChunks(Chunk current_chunk)
+    {
+        List<Chunk> chunks = new List<Chunk>();
+
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x, (int)current_chunk.transform.position.z + 10));//Cima
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x, (int)current_chunk.transform.position.z - 10));//Baixo
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x + 10, (int)current_chunk.transform.position.z));//Direita
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x - 10, (int)current_chunk.transform.position.z));//Esquerda
+
+        foreach (var item in chunks)
+        {
+            if (item != null)
+            {
+                item.RefreshChunkTile();
+            }
+        }
+    }
+
+    public override void OnRespawn()
+    {
+        Setplayer_data();
+        base.OnRespawn();
     }
 
     private void MadeChunks()
@@ -354,8 +315,6 @@ public class WorldGenerator : MapManager
             }
         }
     }
-
-    //<!---------------------------------------->
 
     [Obsolete]
     void NetFindChunksToLoad()
