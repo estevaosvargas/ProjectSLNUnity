@@ -10561,7 +10561,7 @@ MonoBehaviour:
     PlayerObj: {fileID: 0}
     InveItemInfo: {fileID: 114231698105305826}
     charRace: 1
-  Version: Alpha Dev 0.0.5
+  Version: Alpha Dev 0.0.6
   Seed: 0
   Small_Seed: 0
   WorldName: YourWorldName

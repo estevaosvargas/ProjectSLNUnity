@@ -172,7 +172,7 @@ MonoBehaviour:
   IsMainMenu: 0
   Player: {fileID: 0}
   renderDistance: 50
-  ThickRate: 1
+  ThickRate: 15
   PlayerPos: {x: 0, y: 0, z: 0}
   WorldRuning: 0
   ChunkGO: {fileID: 1728794627388856, guid: 30810d7135128834fbab67c15393ed24, type: 3}
@@ -282,15 +282,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_Sprite: {fileID: 7367284169698937212, guid: 7e08542d63f0c804d9a8e082af826389,
+  m_Sprite: {fileID: 1423580199096852351, guid: 404004a5fe81172428b4ecfcded812bd,
     type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 0.422}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.0031348, y: 1.0031348}
+  m_Size: {x: 0.32, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0

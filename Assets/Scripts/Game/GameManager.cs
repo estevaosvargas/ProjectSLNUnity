@@ -258,7 +258,7 @@ public class GameManager : UIElements
 
                 if (Game.WorldGenerator)
                 {
-                    t = Game.WorldGenerator.GetTileAt((int)hit.point.x, (int)hit.point.z);
+                    t = Game.WorldGenerator.GetTileAt(hit.point.x, hit.point.z);
                 }
 
                 if (Input.GetKeyDown(KeyCode.Mouse1))

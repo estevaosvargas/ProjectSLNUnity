@@ -25,7 +25,7 @@ public class Chunk : MonoBehaviour
     public Tile[,] tiles { get; private set; }
     public List<Tile> tilelist = new List<Tile>();
 
-    public Vector3Int position;
+    public Vector3 position;
 
     public List<Entity> Entitys = new List<Entity>();
     public List<long> Players = new List<long>();
@@ -238,7 +238,7 @@ public class Chunk : MonoBehaviour
         MeshData data = new MeshData(tiles);
 
         GameObject meshGO = new GameObject("TileLayer_" + transform.position.x + "_" + transform.position.z);
-        meshGO.transform.SetParent(this.transform);
+        meshGO.transform.SetParent(this.transform, true);
 
         MeshFilter filter = meshGO.AddComponent<MeshFilter>();
         MeshRenderer render = meshGO.AddComponent<MeshRenderer>();

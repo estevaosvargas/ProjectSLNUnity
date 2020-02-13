@@ -971,7 +971,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   World_ID: 0
-  Cam: {fileID: 0}
   SlectedBlock: {fileID: 0}
   CurrentWorld: 0
   VillaPorcetage: 10

@@ -19,7 +19,7 @@ public class WorldGenerator : MapManager
     public Transform Player;
     public int renderDistance;
     public int ThickRate = 1;
-    public Vector3Int PlayerPos;
+    public Vector3 PlayerPos;
     public bool WorldRuning = false;
     public GameObject ChunkGO;
     public GameObject SUN;
@@ -28,10 +28,10 @@ public class WorldGenerator : MapManager
 
     private System.Random randomValue;
 
-    private Queue<Vector3Int> pendingDeletions = new Queue<Vector3Int>();
+    private Queue<Chunk2> pendingDeletions = new Queue<Chunk2>();
     private Queue<ChunkData> pendingchunks = new Queue<ChunkData>();
 
-    Dictionary<Vector3, Chunk> chunkMap;
+    Dictionary<Chunk2, Chunk> chunkMap;
     Dictionary<Vector3, bool> ClientchunkMap;
     public List<Chunk> ChunksList = new List<Chunk>();
 
@@ -45,7 +45,7 @@ public class WorldGenerator : MapManager
     void Awake()
     {
         Game.WorldGenerator = this;
-        chunkMap = new Dictionary<Vector3, Chunk>();
+        chunkMap = new Dictionary<Chunk2, Chunk>();
         ClientchunkMap = new Dictionary<Vector3, bool>();
 
         if (!IsMainMenu)
@@ -75,7 +75,7 @@ public class WorldGenerator : MapManager
         if (!IsMainMenu)
         {
             WorldRuning = true;
-            PlayerPos = new Vector3Int((int)Player.position.x, 0, (int)Player.position.z);
+            PlayerPos = new Vector3((int)Player.position.x, 0, (int)Player.position.z);
             worldGenerator = new Thread(new ThreadStart(MadeChunks));
             worldGenerator.Name = "WorldGenerator";
             worldGenerator.IsBackground = true;
@@ -85,25 +85,25 @@ public class WorldGenerator : MapManager
 
     void Update()
     {
-        PlayerPos = new Vector3Int((int)Player.position.x, 0, (int)Player.position.z);
+        PlayerPos = new Vector3(Player.position.x, 0, Player.position.z);
 
         while (pendingchunks.Count > 0)
         {
             ChunkData chunk = pendingchunks.Dequeue();
 
-            if (!chunkMap.ContainsKey(new Vector3Int(chunk.position.x, 0, chunk.position.z)))
+            if (!chunkMap.ContainsKey(new Chunk2(chunk.position.x, chunk.position.z)))
             {
-                GameObject obj = Instantiate(ChunkGO, new Vector3Int(chunk.position.x, 0, chunk.position.z), Quaternion.identity);
+                GameObject obj = Instantiate(ChunkGO, new Vector3(chunk.position.x, 0, chunk.position.z), Quaternion.identity);
                 obj.name = "Chunk : " + chunk.position.x + " : " + chunk.position.z;
 
-                obj.GetComponent<Chunk>().position = new Vector3Int(chunk.position.x, 0, chunk.position.z);
+                obj.GetComponent<Chunk>().position = new Vector3(chunk.position.x, 0, chunk.position.z);
 
-                chunkMap.Add(new Vector3Int(chunk.position.x, 0, chunk.position.z), obj.GetComponent<Chunk>());
+                chunkMap.Add(new Chunk2(chunk.position.x, chunk.position.z), obj.GetComponent<Chunk>());
             }
         }
         while (pendingDeletions.Count > 0)
         {
-            Vector3Int vector = pendingDeletions.Dequeue();
+            Chunk2 vector = pendingDeletions.Dequeue();
             if (chunkMap.TryGetValue(vector, out Chunk chunk))
             {
                 Destroy(chunk.gameObject);
@@ -161,26 +161,22 @@ public class WorldGenerator : MapManager
         base.OnRespawn();
     }
 
-    public int seila = 1;
-
     private void MadeChunks()
     {
         while (WorldRuning)
         {
-            Vector3Int PlayerP = new Vector3Int(Snap(PlayerPos.x, Chunk.Size), 0, Snap(PlayerPos.z, Chunk.Size));
-            int minX = PlayerP.x - renderDistance;
-            int maxX = PlayerP.x + renderDistance;
-            int minZ = PlayerP.z - renderDistance;
-            int maxZ = PlayerP.z + renderDistance;
+            Vector3 PlayerP = new Vector3(Snap(PlayerPos.x, Chunk.Size), 0, Snap(PlayerPos.z, Chunk.Size));
+            int minX = (int)PlayerP.x - renderDistance;
+            int maxX = (int)PlayerP.x + renderDistance;
+            int minZ = (int)PlayerP.z - renderDistance;
+            int maxZ = (int)PlayerP.z + renderDistance;
 
-            for (int z = minZ; z < maxZ; z += Chunk.Size)
+            for (int z = minZ; z < maxZ; z +=Chunk.Size)
             {
-                for (int x = minX; x < maxX; x += Chunk.Size)
+                for (int x = minX; x < maxX; x +=Chunk.Size)
                 {
-                    Thread.Sleep(ThickRate);
-                    Vector3Int vector = new Vector3Int(x, 0, z);
-
-                    if (!chunkMap.ContainsKey(vector))
+                    Chunk2 vector = new Chunk2(x, z);
+                    if (chunkMap.ContainsKey(vector) == false)
                     {
                         ChunkData nchunk = new ChunkData();
                         nchunk.position = vector;
@@ -193,10 +189,9 @@ public class WorldGenerator : MapManager
 
             foreach (var chunk in chunks)
             {
-
                 if (chunk != null)
                 {
-                    Vector3Int vector = new Vector3Int(chunk.position.x, chunk.position.y, chunk.position.z);
+                    Chunk2 vector = new Chunk2((int)chunk.position.x, (int)chunk.position.z);
 
                     if (vector.x > maxX || vector.x < minX || vector.z > maxZ || vector.z < minZ)
                     {
@@ -204,16 +199,16 @@ public class WorldGenerator : MapManager
                     }
                 }
             }
-            
+            Thread.Sleep(ThickRate);
         }
     }
 
-    public Chunk GetChunkAt(int x, int z)
+    public Chunk GetChunkAt(int xx, int zz)
     {
-        x = Mathf.FloorToInt(x / (float)Chunk.Size) * Chunk.Size;
-        z = Mathf.FloorToInt(z / (float)Chunk.Size) * Chunk.Size;
+        xx = Mathf.FloorToInt(xx / (float)Chunk.Size) * Chunk.Size;
+        zz = Mathf.FloorToInt(zz / (float)Chunk.Size) * Chunk.Size;
 
-        Vector3 chunkpos = new Vector3(x, 0, z);
+        Chunk2 chunkpos = new Chunk2(xx, zz);
 
         if (chunkMap.ContainsKey(chunkpos))
         {
@@ -232,6 +227,20 @@ public class WorldGenerator : MapManager
         if (chunk != null)
         {
             return chunk.tiles[x - (int)chunk.transform.position.x, z - (int)chunk.transform.position.z];
+        }
+        return null;
+    }
+
+    public Tile GetTileAt(float x, float z)
+    {
+        int mx = Mathf.FloorToInt(x);
+        int mz = Mathf.FloorToInt(z);
+
+        Chunk chunk = GetChunkAt(mx, mz);
+
+        if (chunk != null)
+        {
+            return chunk.tiles[mx - (int)chunk.transform.position.x, mz - (int)chunk.transform.position.z];
         }
         return null;
     }
@@ -268,13 +277,13 @@ public class WorldGenerator : MapManager
             int xPos = (int)Player.position.x;
             int zPos = (int)Player.position.z;
 
-            /*for (int i = -RenderDistance; i < RenderDistance; i++)
+            for (int i = -renderDistance; i < renderDistance; i++)
             {
-                for (int z = -RenderDistance; z < RenderDistance; z++)
+                for (int z = -renderDistance; z < renderDistance; z++)
                 {
                     MakeChunkAt(xPos + i, zPos + z);
                 }
-            }*/
+            }
         }
     }
 
@@ -284,11 +293,11 @@ public class WorldGenerator : MapManager
         x = Mathf.FloorToInt(x / (float)Chunk.Size) * Chunk.Size;
         z = Mathf.FloorToInt(z / (float)Chunk.Size) * Chunk.Size;
 
-        if (chunkMap.ContainsKey(new Vector3(x, 0, z)) == false)
+        if (chunkMap.ContainsKey(new Chunk2(x,z)) == false)
         {
             GameObject go = Instantiate(ChunkGO, new Vector3(x, 0, z), Quaternion.identity);
             go.SetActive(true);
-            chunkMap.Add(new Vector3(x, 0,z), go.GetComponent<Chunk>());
+            chunkMap.Add(new Chunk2(x,z), go.GetComponent<Chunk>());
         }
     }
 
@@ -313,7 +322,7 @@ public class WorldGenerator : MapManager
                 {
                     Chunk chuks = deletechuks.Dequeue();
 
-                    chunkMap.Remove(chuks.transform.position);
+                    chunkMap.Remove(new Chunk2 ((int)chuks.transform.position.x, (int)chuks.transform.position.z));
                     Destroy(chuks.gameObject);
                 }
             }
@@ -370,7 +379,7 @@ public class WorldGenerator : MapManager
                     Chunk chuks = deletechuks.Dequeue();
                     Game.GameManager.DeleteChunkNet((int)chuks.transform.position.x, (int)chuks.transform.position.z);
                     ClientchunkMap.Remove(chuks.transform.position);
-                    chunkMap.Remove(chuks.transform.position);
+                    chunkMap.Remove(new Chunk2((int)chuks.transform.position.x, (int)chuks.transform.position.z));
                     Destroy(chuks.gameObject);
                 }
             }
@@ -383,10 +392,10 @@ public class WorldGenerator : MapManager
         x = Mathf.FloorToInt(x / (float)Chunk.Size) * Chunk.Size;
         z = Mathf.FloorToInt(z / (float)Chunk.Size) * Chunk.Size;
 
-        if (chunkMap.ContainsKey(new Vector3(x, 0, z)) == false)
+        if (chunkMap.ContainsKey(new Chunk2(x, z)) == false)
         {
             GameObject go = Instantiate(ChunkGO, new Vector3(x, 0, z), Quaternion.identity);
-            chunkMap.Add(new Vector3(x, 0,z), go.GetComponent<Chunk>());
+            chunkMap.Add(new Chunk2(x, z), go.GetComponent<Chunk>());
             go.GetComponent<Chunk>().ClientSetUpChunk(tile);
         }
     }
@@ -397,11 +406,11 @@ public class WorldGenerator : MapManager
         x = Mathf.FloorToInt(x / (float)Chunk.Size) * Chunk.Size;
        z = Mathf.FloorToInt(z / (float)Chunk.Size) * Chunk.Size;
 
-        if (chunkMap.ContainsKey(new Vector3(x, 0, z)) == false)
+        if (chunkMap.ContainsKey(new Chunk2(x, z)) == false)
         {
             GameObject go = Instantiate(ChunkGO, new Vector3(x, 0, z), Quaternion.identity);
 
-            chunkMap.Add(new Vector3(x, 0,z), go.GetComponent<Chunk>());
+            chunkMap.Add(new Chunk2(x,z), go.GetComponent<Chunk>());
 
             go.GetComponent<Chunk>().Players.Add(unique);
 
@@ -409,24 +418,24 @@ public class WorldGenerator : MapManager
         }
         else
         {
-            return chunkMap[new Vector3(x, 0, z)].tilelist.ToArray();
+            return chunkMap[new Chunk2(x, z)].tilelist.ToArray();
         }
     }
 
     [Obsolete]
     public void NetDeleteChunk(int x, int z, long player)
     {
-        if (chunkMap.ContainsKey(new Vector3(x, 0,z)) == true && chunkMap[new Vector3(x, 0,z)].Players.Count == 0 || chunkMap.ContainsKey(new Vector3(x, 0, z)) == true && chunkMap[new Vector3(x, 0, z)].Players.Count == 1 && chunkMap[new Vector3(x, 0, z)].Players[0] == player)
+        if (chunkMap.ContainsKey(new Chunk2(x,z)) == true && chunkMap[new Chunk2(x, z)].Players.Count == 0 || chunkMap.ContainsKey(new Chunk2(x, z)) == true && chunkMap[new Chunk2(x, z)].Players.Count == 1 && chunkMap[new Chunk2(x,  z)].Players[0] == player)
         {
-            Chunk chunk = chunkMap[new Vector3(x, 0,z)];
+            Chunk chunk = chunkMap[new Chunk2(x,z)];
 
-            chunkMap[new Vector3(x, 0, z)].Players.RemoveAt(0);
-            chunkMap.Remove(new Vector3(x, 0, z));
+            chunkMap[new Chunk2(x, z)].Players.RemoveAt(0);
+            chunkMap.Remove(new Chunk2(x,z));
             Destroy(chunk.gameObject);
         }
-        else if (chunkMap.ContainsKey(new Vector3(x, 0, z)) == true)
+        else if (chunkMap.ContainsKey(new Chunk2(x, z)) == true)
         {
-            chunkMap[new Vector3(x, 0, z)].Players.Remove(player);
+            chunkMap[new Chunk2(x,  z)].Players.Remove(player);
         }
     }
 }
@@ -441,7 +450,19 @@ public enum WorldType
 public struct ChunkData
 {
     internal bool isReady;
-    internal Vector3Int position;
+    internal Chunk2 position;
     internal Chunk ChunkC;
     internal GameObject obj;
+}
+
+public struct Chunk2
+{
+    public int x;
+    public int z;
+
+    public Chunk2(int _x, int _z)
+    {
+        x = _x;
+        z = _z;
+    }
 }

@@ -126,7 +126,7 @@ public class EntityPlayer : EntityLife
             
             var main = FootPArticle.main;
 
-            tile = Game.WorldGenerator.GetTileAt((int)transform.position.x, (int)transform.position.z);
+            tile = Game.WorldGenerator.GetTileAt(transform.position.x, transform.position.z);
 
             NetStats.CurrentTile = tile;
             NetStats.CurrentBiome = tile.TileBiome;
