@@ -19,6 +19,8 @@ Properties {
 	
 	_FresnelScale ("FresnelScale", Range (0.15, 4.0)) = 0.75
 
+	_BeanchDeep ("BeanchDeep", Range (0, 5)) = 0
+
 	_BaseColor ("Base color", COLOR)  = ( .54, .95, .99, 0.5)
 	_ReflectionColor ("Reflection color", COLOR)  = ( .54, .95, .99, 0.5)
 	_SpecularColor ("Specular color", COLOR)  = ( .72, .72, .72, 1)
@@ -35,6 +37,7 @@ Properties {
 	_GSpeed ("Wave Speed", Vector) = (1.2, 1.375, 1.1, 1.5)
 	_GDirectionAB ("Wave Direction", Vector) = (0.3 ,0.85, 0.85, 0.25)
 	_GDirectionCD ("Wave Direction", Vector) = (0.1 ,0.9, 0.5, 0.5)
+
 }
 
 
@@ -103,6 +106,7 @@ CGINCLUDE
 	// fresnel, vertex & bump displacements & strength
 	uniform float4 _DistortParams;
 	uniform float _FresnelScale;
+	uniform float _BeanchDeep;
 	uniform float4 _BumpTiling;
 	uniform float4 _BumpDirection;
 
@@ -147,7 +151,7 @@ CGINCLUDE
 			_GDirectionCD												// direction # 3, 4
 		);
 		
-		v.vertex.xyz += offsets;
+		v.vertex.xyz += offsets * _BeanchDeep;
 		
 		// one can also use worldSpaceVertex.xz here (speed!), albeit it'll end up a little skewed
 		half2 tileableUv = mul(unity_ObjectToWorld,(v.vertex)).xz;

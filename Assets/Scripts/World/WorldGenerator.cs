@@ -175,6 +175,7 @@ public class WorldGenerator : MapManager
             {
                 for (int x = minX; x < maxX; x +=Chunk.Size)
                 {
+                    Thread.Sleep(ThickRate);
                     Chunk2 vector = new Chunk2(x, z);
                     if (chunkMap.ContainsKey(vector) == false)
                     {
@@ -199,7 +200,6 @@ public class WorldGenerator : MapManager
                     }
                 }
             }
-            Thread.Sleep(ThickRate);
         }
     }
 

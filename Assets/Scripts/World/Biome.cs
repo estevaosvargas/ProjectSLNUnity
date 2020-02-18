@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using LibNoise.Unity.Generator;
 
-public enum BiomeType { ForestNormal = 0, Desert = 1, OceanNormal = 2, Jungle = 3, Plain = 4, Snow = 5, Bench = 6 , None, Montahas, Cave}
+public enum BiomeType { ForestNormal = 0, Desert = 1, OceanNormal = 2, Jungle = 3, Plain = 4, Snow = 5, Bench = 6 , None, Montahas, Cave, ForestNormal_Dense }
 
 public static class Biome
 {
@@ -21,6 +21,295 @@ public static class Biome
     public static int octaves = 26;
 
     public static TypeBlock ForestNormal(int x, int z, Tile tile, float sample)
+    {
+        Scale = 30f;
+        height = 50;
+        width = 50;
+
+        noisefactor = 0.1f;
+
+        float xCorde = (float)x / width * Scale;
+        float zCorde = (float)z / height * Scale;
+
+        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+
+        LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false);
+
+        VeronoiStruc sample2 = CityNoise.GetValueNPoint(x, z, 0);
+
+        tile.CityPoint = new DataVector3(CityNoise.GetPoint(x, z, 0));
+
+        //Debug.Log("village Chance : " + (int)sample2);
+
+        //sample2 *= 10;
+
+        VeronoiStruc Tile_Vila_Up = CityNoise.GetValueNPoint(x, z + 1, 0);
+        VeronoiStruc Tile_Vila_Down = CityNoise.GetValueNPoint(x, z - 1, 0);
+        VeronoiStruc Tile_Vila_Left = CityNoise.GetValueNPoint(x - 1, z, 0);
+        VeronoiStruc Tile_Vila_Right = CityNoise.GetValueNPoint(x + 1, z, 0);
+
+        /*Tile_Vila_Up.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x, z + 1);
+        Tile_Vila_Down.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x, z - 1);
+        Tile_Vila_Left.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x - 1, z);
+        Tile_Vila_Right.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x + 1, z);*/
+
+        if ((int)sample2.Value == 1)
+        {
+            Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
+
+            tile.OwnedByCity = true;
+
+            /*if (Tile_Vila_Up.Point != sample2.Point || Tile_Vila_Down.Point != sample2.Point || Tile_Vila_Left.Point != sample2.Point || Tile_Vila_Right.Point != sample2.Point)
+            {
+                if (Tile_Vila_Up.TileType != Game.Color("FFFFFF") || Tile_Vila_Down.TileType != Game.Color("FFFFFF") || Tile_Vila_Left.TileType != Game.Color("FFFFFF") || Tile_Vila_Right.TileType != Game.Color("FFFFFF"))
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.RockWall;
+                    }
+                    return TypeBlock.Rock;
+                }
+            }*/
+
+            if (color == Game.Color("FF0000") || color == Game.Color("7F7F7F"))//Somthing Is On this tile
+            {
+                return TypeBlock.Dirt;
+            }
+            else if (color == Game.Color("FF0048"))//House Spawn Origin
+            {
+                tile.PLACER_DATA = Placer.MainBuild2;
+                return TypeBlock.Dirt;
+            }
+            else if (color == Game.Color("2D92FF"))//Spawn Chest(TesteOnly)
+            {
+                tile.PLACER_DATA = Placer.BauWood;
+                return TypeBlock.Dirt;
+            }
+            else if (color == Game.Color("303030"))//Spawn BlackSmith
+            {
+                tile.PLACER_DATA = Placer.BlackSmith;
+                return TypeBlock.Dirt;
+            }
+            else if (color == Game.Color("FFFFFF"))//Road
+            {
+                return TypeBlock.DirtRoad;
+            }
+            else
+            {
+                System.Random rand = new System.Random(Game.GameManager.Seed + x * z + (tile.TileChunk.x + tile.TileChunk.z));
+                int randnum = (rand.Next(1, 50));
+
+                if (randnum == 1)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.Weed01;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 2)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.RockProp;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 3)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.WeedTall;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 4)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.Pine;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 5)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.Oak;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 6)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL1;
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 7)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL2;
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 8)
+                {
+                    tile.typeVariante = TypeVariante.GrassRC;
+                    return TypeBlock.Grass;
+                }
+                else
+                {
+                    return TypeBlock.Grass;
+                }
+            }
+        }
+        else
+        {
+            if ((int)Tile_Vila_Up.Value == 1 || (int)Tile_Vila_Down.Value == 1 || (int)Tile_Vila_Left.Value == 1 || (int)Tile_Vila_Right.Value == 1)
+            {
+                if (tile.typego == TakeGO.empty && tile.z != 0)
+                {
+                    tile.typego = TakeGO.RockWall;
+                }
+                return TypeBlock.Rock;
+            }
+
+            if (perlin <= 0.15f)
+            {
+                //Water
+                return TypeBlock.WaterFloor;
+            }
+            else if (perlin > 0.15f && perlin < 0.2f)
+            {
+                //Sand Bench
+                return TypeBlock.BeachSand;
+            }
+            else if (perlin > 0.2f && perlin <= 0.7f)
+            {
+                if (perlin > 0.2f && perlin < 0.6f)
+                {
+                    //grass and bushs and trees
+                    System.Random rand = new System.Random(Game.GameManager.Seed + x * z + (tile.TileChunk.x + tile.TileChunk.z));
+                    int randnum = (rand.Next(1, 50));
+
+                    if (randnum == 1)
+                    {
+                        if (tile.typego == TakeGO.empty && tile.z != 0)
+                        {
+                            tile.typego = TakeGO.Weed01;
+                        }
+                        return TypeBlock.Grass;
+                    }
+                    else if (randnum == 2)
+                    {
+                        if (tile.typego == TakeGO.empty && tile.z != 0)
+                        {
+                            tile.typego = TakeGO.RockProp;
+                        }
+                        return TypeBlock.Grass;
+                    }
+                    else if (randnum == 3)
+                    {
+                        if (tile.typego == TakeGO.empty && tile.z != 0)
+                        {
+                            tile.typego = TakeGO.WeedTall;
+                        }
+                        return TypeBlock.Grass;
+                    }
+                    else if (randnum == 4)
+                    {
+                        if (tile.typego == TakeGO.empty && tile.z != 0)
+                        {
+                            tile.typego = TakeGO.Pine;
+                        }
+                        return TypeBlock.Grass;
+                    }
+                    else if (randnum == 5)
+                    {
+                        if (tile.typego == TakeGO.empty && tile.z != 0)
+                        {
+                            tile.typego = TakeGO.Oak;
+                        }
+                        return TypeBlock.Grass;
+                    }
+                    else if (randnum == 6)
+                    {
+                        tile.typeVariante = TypeVariante.GrassFL1;
+                        return TypeBlock.Grass;
+                    }
+                    else if (randnum == 7)
+                    {
+                        tile.typeVariante = TypeVariante.GrassFL2;
+                        return TypeBlock.Grass;
+                    }
+                    else if (randnum == 8)
+                    {
+                        tile.typeVariante = TypeVariante.GrassRC;
+                        return TypeBlock.Grass;
+                    }
+                    else
+                    {
+                        return TypeBlock.Grass;
+                    }
+                }
+                else if (perlin > 0.6f && perlin < 0.605f)
+                {
+                    //grass
+                    return TypeBlock.Grass;
+                }
+                else if (perlin > 0.62f && perlin < 0.63f)
+                {
+                    //grass
+                    return TypeBlock.Grass;
+                }
+                else
+                {
+                    //tall grass
+                    return TypeBlock.Grass;
+                }
+
+            }
+            else if (perlin > 0.7f && perlin <= 0.8f)
+            {
+                if (perlin > 0.7f && perlin < 0.72f)
+                {
+                    //grama do pe do morro com arvores
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.RockWall;
+                    }
+                    return TypeBlock.Rock;
+                }
+                else if (perlin > 0.72f && perlin < 0.74f)
+                {
+                    //grama do pe do morro
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.RockWall;
+                    }
+                    return TypeBlock.Rock;
+                }
+                else
+                {
+                    //pe do morro
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.RockWall;
+                    }
+                    return TypeBlock.Rock;
+                }
+
+            }
+            else
+            {
+                //topo do morro
+                if (tile.typego == TakeGO.empty && tile.z != 0)
+                {
+                    tile.typego = TakeGO.RockWall;
+                }
+                return TypeBlock.Rock;
+            }
+        }
+    }
+
+    public static TypeBlock ForestNormal_Dense(int x, int z, Tile tile, float sample)
     {
         Scale = 30f;
         height = 50;
@@ -541,84 +830,23 @@ public static class Biome
 
     public static TypeBlock Bench(int x, int z, Tile tile, float sample)
     {
-        if (sample > 0.48f)
+        System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
+        int randnum = (rand.Next(1, 100));
+
+        if (randnum == 1)
         {
-            LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false);
-
-            VeronoiStruc sample2 = CityNoise.GetValueNPoint(x, z, 0);
-
-            tile.CityPoint = new DataVector3(CityNoise.GetPoint(x, z, 0));
-
-            //Debug.Log("village Chance : " + (int)sample2);
-
-            //sample2 *= 10;
-
-            if ((int)sample2.Value == 1)
+            if (tile.typego == TakeGO.empty)
             {
-                Color color = Game.WorldGenerator.HeightTeste.GetPixel(x, z);
-
-                tile.OwnedByCity = true;
-
-                if (color == Game.Color("FFFFFF"))//Road
-                {
-                    return TypeBlock.DirtRoad;
-                }
-                else
-                {
-                    System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
-                    int randnum = (rand.Next(1, 20));
-
-                    if (randnum == 1)
-                    {
-                        if (tile.typego == TakeGO.empty)
-                        {
-                            tile.typego = TakeGO.PalmTree;
-                        }
-                        return TypeBlock.BeachSand;
-                    }
-                    else if (randnum == 5)
-                    {
-                        if (tile.typego == TakeGO.empty)
-                        {
-                            tile.typego = TakeGO.PalmTree2;
-                        }
-                        return TypeBlock.BeachSand;
-                    }
-                    else
-                    {
-                        return TypeBlock.BeachSand;
-                    }
-                }
+                tile.typego = TakeGO.PalmTree;
             }
-            else
-            {
-                System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
-                int randnum = (rand.Next(1, 20));
-
-                if (randnum == 1)
-                {
-                    if (tile.typego == TakeGO.empty)
-                    {
-                        tile.typego = TakeGO.PalmTree;
-                    }
-                    return TypeBlock.BeachSand;
-                }
-                else if (randnum == 5)
-                {
-                    if (tile.typego == TakeGO.empty)
-                    {
-                        tile.typego = TakeGO.PalmTree2;
-                    }
-                    return TypeBlock.BeachSand;
-                }
-                else
-                {
-                    return TypeBlock.BeachSand;
-                }
-            }
+            return TypeBlock.BeachSand;
         }
-        else if (sample > 0.47f)
+        else if (randnum == 5)
         {
+            if (tile.typego == TakeGO.empty)
+            {
+                tile.typego = TakeGO.PalmTree2;
+            }
             return TypeBlock.BeachSand;
         }
         else

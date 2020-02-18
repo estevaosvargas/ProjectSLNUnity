@@ -147,6 +147,8 @@ MonoBehaviour:
   Anim: {fileID: 2482433076691726201}
   _Player: {fileID: 0}
   _HandManager: {fileID: 0}
+  AttackRate: 0.2
+  Range: 0.7
 --- !u!1 &7580884688790547621
 GameObject:
   m_ObjectHideFlags: 0

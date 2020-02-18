@@ -179,7 +179,7 @@ public class Tile
 
                 PerlinSetType(SetUpBiome(x, z, sample, sample2));
             }
-            else if (sample > 0.01f)
+            else if (sample > 0.08f)
             {
                 TileBiome = BiomeType.Bench;
                 PerlinSetType(Biome.Bench(x, z, this, sample));
@@ -473,11 +473,30 @@ public class Tile
         else if ((int)sample2 == -4)
         {
             //sem nemhum
-            TileBiome = BiomeType.Desert;
-            return Biome.Desert(x, z, this, sample);
+            TileBiome = BiomeType.ForestNormal_Dense;
+            return Biome.ForestNormal_Dense(x, z, this, sample);
+        }
+        else if ((int)sample2 == 8)
+        {
+            //sem nemhum
+            TileBiome = BiomeType.ForestNormal_Dense;
+            return Biome.ForestNormal_Dense(x, z, this, sample);
+        }
+        else if ((int)sample2 == -8)
+        {
+            //sem nemhum
+            TileBiome = BiomeType.ForestNormal_Dense;
+            return Biome.ForestNormal_Dense(x, z, this, sample);
+        }
+        else if ((int)sample2 == -2)
+        {
+            //sem nemhum
+            TileBiome = BiomeType.ForestNormal_Dense;
+            return Biome.ForestNormal_Dense(x, z, this, sample);
         }
         else
         {
+            Debug.Log("BiomeNum : " + (int)sample2);
             TileBiome = BiomeType.ForestNormal;
             return Biome.ForestNormal(x, z, this, sample);
         }

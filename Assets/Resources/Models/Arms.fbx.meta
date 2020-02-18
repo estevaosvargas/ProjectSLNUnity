@@ -1,14 +1,12 @@
 fileFormatVersion: 2
-guid: 46085e57dba4702488dd5ae2594f3635
+guid: 183f86b704940da46856891ecc7537ad
 ModelImporter:
   serializedVersion: 19300
-  internalIDToNameTable: []
-  externalObjects:
+  internalIDToNameTable:
   - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: No Name
-    second: {fileID: 2100000, guid: 13c3e3e45788df64997b9aed000893d9, type: 2}
+      74: 91952026964097789
+    second: ArmatureBras|Action
+  externalObjects: {}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -63,7 +61,7 @@ ModelImporter:
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
-    useFileScale: 0
+    useFileScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0

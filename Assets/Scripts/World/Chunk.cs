@@ -48,6 +48,8 @@ public class Chunk : MonoBehaviour
     public GameObject MeshTile;
     public GameObject WaterMeshTile;
 
+    public float DebugOcean = 0;
+
     void Awake()
     {
         if (Game.GameManager.SinglePlayer)
@@ -62,6 +64,24 @@ public class Chunk : MonoBehaviour
 
             GenerateTilesLayer(tiles);
             GenerateWaterLayer(tiles);
+            //_BeanchDeep
+
+            float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(transform.position.x, transform.position.z, 0);
+
+            sample = sample / 150;
+
+            Vector2 samplee = new Vector2(sample, sample);
+
+            samplee.Normalize();
+
+            DebugOcean = samplee.x;
+
+            if (samplee.x > 1 || samplee.x < -1)
+            {
+                samplee.x = 1;
+            }
+
+            WaterMeshTile.GetComponent<MeshRenderer>().material.SetFloat("_BeanchDeep", samplee.x);
 
             Game.WorldGenerator.LoadNewChunks(this);
 
@@ -269,7 +289,7 @@ public class Chunk : MonoBehaviour
 
         MeshFilter filter = meshGO.AddComponent<MeshFilter>();
         MeshRenderer render = meshGO.AddComponent<MeshRenderer>();
-        render.material = WaterTileMaterial;
+        render.material = new Material(WaterTileMaterial);
 
         Mesh mesh = filter.mesh;
 

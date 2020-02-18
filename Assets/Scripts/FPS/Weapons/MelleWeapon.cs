@@ -8,8 +8,8 @@ public class MelleWeapon : FPItemBase
     public EntityPlayer _Player;
     public HandManager _HandManager;
 
-    private float AttackRate = 1;
-    private float Range = 0.5f;
+    public float AttackRate = 1;
+    public float Range = 0.5f;
 
     private bool HoldAttack = false;
     private float timetemp;

@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SkyMaterial
-  m_Shader: {fileID: 4800000, guid: 1cf1a1a8d0a13344ab1905d01682ac02, type: 3}
+  m_Name: Skin
+  m_Shader: {fileID: 7, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -67,24 +67,11 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _SkyExponent1: 8.5
-    - _SkyExponent2: 3.32
-    - _SkyIntensity: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _SunAlpha: 550
-    - _SunAltitude: 38
-    - _SunAzimuth: 20
-    - _SunBeta: 1
-    - _SunIntensity: 1.51
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.8962264, g: 0.6837634, b: 0.4438857, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _SkyColor1: {r: 0.24604245, g: 0.8107484, b: 0.9176471, a: 1}
-    - _SkyColor2: {r: 0.5529412, g: 0.89019614, b: 0.95294124, a: 1}
-    - _SkyColor3: {r: 0.24604245, g: 0.8107484, b: 0.9176471, a: 1}
-    - _SunColor: {r: 0, g: 0, b: 0, a: 1}
-    - _SunVector: {r: 0.269, g: 0.615, b: 0.74, a: 0}
