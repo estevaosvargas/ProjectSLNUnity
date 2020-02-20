@@ -196,7 +196,8 @@ public enum TakeGO : byte
     Pine, Oak,
     Bush, BigTree, BigTree2,
     Cactu, Cactu2, PalmTree,
-    PalmTree2, PineSnow, Weed01, WeedTall, WeedTall_Jungle, WeedTall_Snow, RockProp, Grass, RockWall
+    PalmTree2, PineSnow, Weed01, WeedTall, WeedTall_Jungle, WeedTall_Snow, RockProp, Grass, RockWall,
+    Pine_Tall, PineSnow_Tall
 }
 
 public enum Placer : byte

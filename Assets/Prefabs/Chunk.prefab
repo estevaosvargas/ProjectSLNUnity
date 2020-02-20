@@ -59,3 +59,9 @@ MonoBehaviour:
   WaterTileMaterial: {fileID: 2100000, guid: 42ddd616eefa7cb42bfb158bbb19b996, type: 2}
   MeshTile: {fileID: 0}
   WaterMeshTile: {fileID: 0}
+  DebugOcean: 0
+  scale: 1
+  speed: 1
+  waveDistance: 1
+  noiseStrength: 1
+  noiseWalk: 1

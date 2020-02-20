@@ -154,6 +154,14 @@ public static class Biome
                     tile.typeVariante = TypeVariante.GrassRC;
                     return TypeBlock.Grass;
                 }
+                else if (randnum == 9)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.Pine_Tall;
+                    }
+                    return TypeBlock.Grass;
+                }
                 else
                 {
                     return TypeBlock.Grass;
@@ -242,6 +250,14 @@ public static class Biome
                     else if (randnum == 8)
                     {
                         tile.typeVariante = TypeVariante.GrassRC;
+                        return TypeBlock.Grass;
+                    }
+                    else if (randnum == 9)
+                    {
+                        if (tile.typego == TakeGO.empty && tile.z != 0)
+                        {
+                            tile.typego = TakeGO.Pine_Tall;
+                        }
                         return TypeBlock.Grass;
                     }
                     else
@@ -1222,6 +1238,14 @@ public static class Biome
                         tile.typego = TakeGO.PineSnow;
                     }
                     return TypeBlock.Snow;
+                }
+                else if (randnum == 9)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.PineSnow_Tall;
+                    }
+                    return TypeBlock.Grass;
                 }
                 else
                 {

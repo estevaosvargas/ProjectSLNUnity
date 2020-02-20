@@ -99,8 +99,11 @@ public class CityManager : MonoBehaviour
 
         if (save != null)
         {
-            CityList.Add(save.citypoint, new City(save));
-            return true;
+            if (!CityList.ContainsKey(save.citypoint))
+            {
+                CityList.Add(save.citypoint, new City(save));
+                return true;
+            }
         }
 
         return false;

@@ -20,6 +20,9 @@ TextureImporter:
   - first:
       213: 6220352319987539042
     second: XP_Empty
+  - first:
+      213: 8055082816779072642
+    second: CrossAir
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -175,7 +178,7 @@ TextureImporter:
         width: 30
         height: 30
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -196,7 +199,7 @@ TextureImporter:
         width: 30
         height: 30
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -217,7 +220,7 @@ TextureImporter:
         width: 30
         height: 30
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -225,6 +228,27 @@ TextureImporter:
       bones: []
       spriteID: f91ed658b127365448acb4911d9b73a3
       internalID: 6220352319987539042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrossAir
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 470
+        width: 30
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5160614, y: 0.4887563}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 284387ae42769cf60800000000000000
+      internalID: 8055082816779072642
       vertices: []
       indices: 
       edges: []

@@ -66,6 +66,8 @@ public class Chunk : MonoBehaviour
             GenerateWaterLayer(tiles);
             //_BeanchDeep
 
+            WaterMeshTile.GetComponent<MeshRenderer>().material = WaterTileMaterial;
+
             float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(transform.position.x, transform.position.z, 0);
 
             sample = sample / 150;
@@ -289,7 +291,7 @@ public class Chunk : MonoBehaviour
 
         MeshFilter filter = meshGO.AddComponent<MeshFilter>();
         MeshRenderer render = meshGO.AddComponent<MeshRenderer>();
-        render.material = new Material(WaterTileMaterial);
+        render.material = WaterTileMaterial;
 
         Mesh mesh = filter.mesh;
 
@@ -378,7 +380,7 @@ public class Chunk : MonoBehaviour
             {
                 if (!TransTile.ContainsKey(tile))
                 {
-                    GameObject TileGo = new GameObject("Tile_Transition_" + tile.TileTran[i].Name);
+                    /*GameObject TileGo = new GameObject("Tile_Transition_" + tile.TileTran[i].Name);
 
                     SpriteRenderer Render = TileGo.AddComponent<SpriteRenderer>();
                     Render.material = DefaultTransMaterial;
@@ -392,7 +394,7 @@ public class Chunk : MonoBehaviour
 
                     Render.sortingOrder = Get.GetTileRenIndex(tile.TileTran[i].type);
 
-                    TransTile.Add(tile, TileGo);
+                    TransTile.Add(tile, TileGo);*/
                 }
             }
         }
@@ -610,6 +612,8 @@ public class Chunk : MonoBehaviour
 
     public void UpdateChunk()
     {
+        WaterMeshTile.GetComponent<MeshRenderer>().material = WaterTileMaterial;
+
         for (int i = 0; i < Size; i++)
         {
             for (int j = 0; j < Size; j++)
@@ -898,7 +902,7 @@ public class MeshData
             {
                 if (item != null)
                 {
-                    if (item.type == TypeBlock.BeachSand)
+                    if (item.type != TypeBlock.WaterFloor)
                     {
                         return true;
                     }

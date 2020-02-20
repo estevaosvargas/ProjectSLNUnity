@@ -496,7 +496,7 @@ public class Tile
         }
         else
         {
-            Debug.Log("BiomeNum : " + (int)sample2);
+            //Debug.Log("BiomeNum : " + (int)sample2);
             TileBiome = BiomeType.ForestNormal;
             return Biome.ForestNormal(x, z, this, sample);
         }
