@@ -8,3 +8,5 @@ Assembly-CSharp-firstpass.csproj
 obj/
 Assembly-CSharp.csproj
 Saves./
+Assets/_TerrainAutoUpgrade/
+Assets/_TerrainAutoUpgrade.meta

@@ -380,7 +380,7 @@ public class Chunk : MonoBehaviour
             {
                 if (!TransTile.ContainsKey(tile))
                 {
-                    /*GameObject TileGo = new GameObject("Tile_Transition_" + tile.TileTran[i].Name);
+                    GameObject TileGo = new GameObject("Tile_Transition_" + tile.TileTran[i].Name);
 
                     SpriteRenderer Render = TileGo.AddComponent<SpriteRenderer>();
                     Render.material = DefaultTransMaterial;
@@ -394,7 +394,7 @@ public class Chunk : MonoBehaviour
 
                     Render.sortingOrder = Get.GetTileRenIndex(tile.TileTran[i].type);
 
-                    TransTile.Add(tile, TileGo);*/
+                    TransTile.Add(tile, TileGo);
                 }
             }
         }
@@ -512,7 +512,7 @@ public class Chunk : MonoBehaviour
                     {
                         if (tile.typego != TakeGO.RockProp)
                         {
-                            System.Random randomValue = new System.Random(Game.GameManager.Seed + tile.x + tile.z);
+                            System.Random randomValue = new System.Random(Game.GameManager.Seed + (int)tile.x + (int)tile.z);
                             float size = Random.Range(0f, 0.5f);
                             trees.transform.position = new Vector3(tile.x + (float)randomValue.NextDouble(), tile.y, tile.z + (float)randomValue.NextDouble());
                             trees.transform.localScale = new Vector3(trees.transform.localScale.x + size, trees.transform.localScale.y + size, trees.transform.localScale.z + size);
@@ -658,8 +658,8 @@ public class Chunk : MonoBehaviour
 
         for (int v = 0; v < tile.Length; v++)
         {
-            int i = tile[v].x - (int)transform.position.x;
-            int j = tile[v].z - (int)transform.position.z;
+            int i = (int)tile[v].x - (int)transform.position.x;
+            int j = (int)tile[v].z - (int)transform.position.z;
 
             tiles[i, j] = new Tile(tile[v]);
 
@@ -730,7 +730,7 @@ public class MeshData
                 }
                 else
                 {
-                    CreateSquare(tile[x, z].x, tile[x, z].y, tile[x, z].z, tile[x, z]);
+                    CreateSquare(tile[x, z].x, tile[x, z].y, tile[x, z].z, tile[x, z], tile);
                 }
             }
         }
@@ -748,7 +748,7 @@ public class MeshData
             {
                 if (tile[x, z].type == TypeBlock.WaterFloor)
                 {
-                    CreateSquare(tile[x, z].x, tile[x, z].y, tile[x, z].z, tile[x, z]);
+                    SquareWater(tile[x, z].x, 0, tile[x, z].z, tile[x, z]);
                 }
             }
         }
@@ -770,12 +770,20 @@ public class MeshData
         }
     }
 
-    void CreateSquare(int x, float y,int z, Tile tile)
+    void CreateSquare(float x, float y, float z, Tile tile, Tile[,] tiles)
     {
-        vertices.Add(new Vector3(x + 0, y, z + 0));
-        vertices.Add(new Vector3(x + 1, y, z + 0));
-        vertices.Add(new Vector3(x + 0, y, z + 1));
-        vertices.Add(new Vector3(x + 1, y, z + 1));
+        LibNoise.Unity.Generator.Perlin sample = new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low);
+
+        float one = testeGetTile((int)x, (int)z, tile.y);
+        float two = testeGetTile((int)x + 1, (int)z, tile.y);
+        float three = testeGetTile((int)x, (int)z + 1, tile.y);
+        float foure = testeGetTile((int)x + 1, (int)z + 1,tile.y);
+
+
+        vertices.Add(new Vector3(x, one, z));
+        vertices.Add(new Vector3(x + 1, two, z));
+        vertices.Add(new Vector3(x, three, z + 1));
+        vertices.Add(new Vector3(x + 1, foure, z + 1));
 
         triangles.Add(vertices.Count - 1);
         triangles.Add(vertices.Count - 3);
@@ -788,45 +796,56 @@ public class MeshData
         UVs.AddRange(Game.SpriteManager.GetTileUVs(tile));
     }
 
-    void CreateSquareWater(int x, float y, int z, Tile[,] tile, Vector3 currenttile, Tile thistile)
+    float testeGetTile(int x,int z,float defaultvalue)
+    {
+        if (Game.WorldGenerator.GetTileAt(x,z) != null)
+        {
+            return Game.WorldGenerator.GetTileAt(x, z).y;
+        }
+        else
+        {
+            return defaultvalue;
+        }
+    }
+
+    Tile testeGetTile(int x, int z)
+    {
+        if (Game.WorldGenerator.GetTileAt(x, z) != null)
+        {
+            return Game.WorldGenerator.GetTileAt(x, z);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    void SquareWater(float x, float y, float z, Tile tile)
+    {
+        vertices.Add(new Vector3(x, 0, z));
+        vertices.Add(new Vector3(x + 1, 0, z));
+        vertices.Add(new Vector3(x, 0, z + 1));
+        vertices.Add(new Vector3(x + 1, 0, z + 1));
+
+        triangles.Add(vertices.Count - 1);
+        triangles.Add(vertices.Count - 3);
+        triangles.Add(vertices.Count - 4);
+
+        triangles.Add(vertices.Count - 2);
+        triangles.Add(vertices.Count - 1);
+        triangles.Add(vertices.Count - 4);
+
+        UVs.AddRange(Game.SpriteManager.GetTileUVs(tile));
+    }
+
+    void CreateSquareWater(float x, float y, float z, Tile[,] tile, Vector3 currenttile, Tile thistile)
     {
         LibNoise.Unity.Generator.Perlin sample = new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low);
 
-        if (HaveTile(x, z))
-        {
-            vertices.Add(new Vector3(x, y, z));
-        }
-        else 
-        {
-            vertices.Add(new Vector3(x, (float)sample.GetValue(x, z, 0) / 45, z));
-        }
-
-        if (HaveTile(x + 1, z))
-        {
-            vertices.Add(new Vector3(x + 1, y, z));
-        }
-        else
-        {
-            vertices.Add(new Vector3(x + 1, (float)sample.GetValue(x + 1, z, 0) / 45, z));
-        }
-
-        if (HaveTile(x, z + 1))
-        {
-            vertices.Add(new Vector3(x, y, z + 1));
-        }
-        else
-        {
-            vertices.Add(new Vector3(x, (float)sample.GetValue(x, z + 1, 0) / 45, z + 1));
-        }
-
-        if (HaveTile(x + 1, z + 1))
-        {
-            vertices.Add(new Vector3(x + 1, y, z + 1));
-        }
-        else
-        {
-            vertices.Add(new Vector3(x + 1, (float)sample.GetValue(x + 1, z + 1, 0) / 45, z + 1));
-        }
+        vertices.Add(new Vector3(x, y, z));
+        vertices.Add(new Vector3(x + 1, y, z));
+        vertices.Add(new Vector3(x, y, z + 1));
+        vertices.Add(new Vector3(x + 1, y, z + 1));
 
         triangles.Add(vertices.Count - 1);
         triangles.Add(vertices.Count - 3);
@@ -839,7 +858,7 @@ public class MeshData
         UVs.AddRange(Game.SpriteManager.GetTileUVs(thistile));
     }
 
-    void CreateSquareWaterLow(int x, float y, int z, Tile[,] tile, Vector3 currenttile, Tile thistile)
+    void CreateSquareWaterLow(float x, float y, float z, Tile[,] tile, Vector3 currenttile, Tile thistile)
     {
         LibNoise.Unity.Generator.Perlin sample = new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low);
 
@@ -858,7 +877,7 @@ public class MeshData
         }
         else
         {
-            vertices.Add(new Vector3(x + 1, y- 1, z));
+            vertices.Add(new Vector3(x + 1, y - 1, z));
         }
 
         if (HaveTile(x, z + 1))
@@ -890,9 +909,9 @@ public class MeshData
         UVs.AddRange(Game.SpriteManager.GetTileUVs(thistile));
     }
 
-    public bool HaveTile(int x, int z)
+    public bool HaveTile(float x, float z)
     {
-        Tile currenttile = Game.WorldGenerator.GetTileAt(x, z);
+        Tile currenttile = Game.WorldGenerator.GetTileAt((int)x, (int)z);
 
         if (currenttile != null)
         {

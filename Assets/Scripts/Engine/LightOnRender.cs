@@ -4,21 +4,26 @@ using UnityEngine;
 
 public class LightOnRender : MonoBehaviour
 {
-    private Light _Light;
+    public GameObject[] DisableEnableList;
 
     private void Start()
     {
-        gameObject.AddComponent<MeshRenderer>();
-        _Light = GetComponent<Light>();
+        
     }
 
     private void OnBecameVisible()
     {
-        _Light.enabled = true;
+        foreach (var item in DisableEnableList)
+        {
+            item.SetActive(true);
+        }
     }
 
     private void OnBecameInvisible()
     {
-        _Light.enabled = false;
+        foreach (var item in DisableEnableList)
+        {
+            item.SetActive(false);
+        }
     }
 }

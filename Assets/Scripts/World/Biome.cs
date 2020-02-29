@@ -20,7 +20,222 @@ public static class Biome
     public static float amplitude = 79.12f;
     public static int octaves = 26;
 
-    public static TypeBlock ForestNormal(int x, int z, Tile tile, float sample)
+    public static TypeBlock GetBiome(int x, int z, Tile tile, float sample, BiomeType biomeType)
+    {
+        float ForestNormalPerlin = Get_PerlinForestNormal(x, z);
+        float ForestNormal_DensePerlin = Get_PerlinForestNormal_Dense(x, z);
+        float DesertPerlin = Get_PerlinDesert(x, z);
+        //float OceanNormalPerlin = ForestNormal(x, z);
+        //float BenchPerlin = ForestNormal(x, z);
+        float JunglePerlin = Get_PerlinJungle(x, z);
+        float PlainePerlin = Get_PerlinPlaine(x, z);
+        float ForestSnowPerlin = Get_PerlinForestSnow(x, z);
+        float MontanhasPerlin = Get_PerlinMontanhas(x, z);
+
+        //https://github.com/RedHenDev/Unity_scripts/blob/master/simpleVoxels_expanded_tuts/Assets/simpleVoxels/seeding/lerpTerrain.cs usa isso aqui como um exemplo
+
+        //float noise + simplexnoise + simplexnoise_high;
+
+        float last = 0;
+
+        float finalheight = 0;
+        float distance = 0;
+        float divide = 0;
+
+        //essse tile = 0
+        //
+
+        switch (biomeType)
+        {
+            case BiomeType.ForestNormal:
+                tile.y = ForestNormalPerlin;
+                tile.y += GetHeight(x, z, ForestNormalPerlin * 5, biomeType)+ sample / 50;
+                return ForestNormal(x, z, tile, sample, ForestNormalPerlin);
+            case BiomeType.Desert:
+                tile.y = DesertPerlin;
+                tile.y += GetHeight(x, z, DesertPerlin * 5, biomeType) + sample / 50;
+                return Desert(x, z, tile, sample, DesertPerlin);
+            case BiomeType.OceanNormal:
+                return OceanNormal(x, z, tile, sample);
+            case BiomeType.Jungle:
+                tile.y = JunglePerlin;
+                tile.y += GetHeight(x, z, JunglePerlin * 5, biomeType) + sample / 50;
+                return Jungle(x, z, tile, sample, JunglePerlin);
+            case BiomeType.Plain:
+                tile.y = PlainePerlin;
+                tile.y += GetHeight(x, z, PlainePerlin * 5, biomeType) + sample / 50;
+                return Plaine(x, z, tile, sample, PlainePerlin);
+            case BiomeType.Snow:
+                tile.y = ForestSnowPerlin;
+                tile.y += GetHeight(x, z, ForestSnowPerlin * 5, biomeType) + sample / 50;
+                return ForestSnow(x, z, tile, sample, ForestSnowPerlin);
+            case BiomeType.Bench:
+                return Bench(x, z, tile, sample);
+            case BiomeType.Montahas:
+                tile.y = MontanhasPerlin;
+                tile.y += GetHeight(x, z, MontanhasPerlin * 5, biomeType) + sample / 50;
+                return Montanhas(x, z, tile, sample, MontanhasPerlin);
+            case BiomeType.ForestNormal_Dense:
+                tile.y = ForestNormal_DensePerlin;
+                tile.y += GetHeight(x, z, ForestNormal_DensePerlin * 5, biomeType) + sample / 50;
+                return ForestNormal_Dense(x, z, tile, sample, ForestNormal_DensePerlin);
+            default:
+                return TypeBlock.Air;
+        }
+    }
+
+    public static float GetHeight(int x, int z, float height, BiomeType biomeType)
+    {
+        float high = height;
+
+        /*for (int i = 1; i < 5; i++)
+        {
+            if (GetVizinhos(x + i, z) != biomeType)
+            {
+                float high2 = MakeTransition(x + i, z);
+                high = lerp(high, high2, 0.125f);
+            }
+            else if(GetVizinhos(x - i, z) != biomeType)
+            {
+                float high2 = MakeTransition(x - i, z);
+                high = lerp(high, high2, 0.125f);
+            }
+            else if(GetVizinhos(x, z + i) != biomeType)
+            {
+                float high2 = MakeTransition(x, z + i);
+                high = lerp(high, high2, 0.125f);
+            }
+            else if (GetVizinhos(x, z - i) != biomeType)
+            {
+                float high2 = MakeTransition(x, z - i);
+                high = lerp(high, high2, 0.125f);
+            }
+        }*/
+
+        float i = 0;
+
+        for (int cx = -4; cx < 5; ++cx)
+        {
+            for (int cz = -4; cz < 5; ++cz)
+            {
+                if (GetVizinhos(x + cx, z + cz) != biomeType)
+                {
+                    float high2 = MakeTransition(x + cx, z + cz);
+                    high = Mathf.Lerp(high, high2, 0.125f);
+                    //high *= 1.16f;
+                }
+                i++;
+            }
+        }
+
+
+        return high;
+    }
+
+    static float lerp(float point1, float point2, float alpha)
+    {
+        return point1 + alpha * (point2 - point1);
+    }
+
+    public static float MakeTransition(int x, int z)
+    {
+        switch (GetVizinhos(x, z))
+        {
+            case BiomeType.ForestNormal:
+                return Get_PerlinForestNormal(x, z);
+            case BiomeType.Desert:
+                return Get_PerlinDesert(x, z);
+            case BiomeType.OceanNormal:
+                return 0;
+            case BiomeType.Jungle:
+                return Get_PerlinJungle(x, z);
+            case BiomeType.Plain:
+                return Get_PerlinPlaine(x, z);
+            case BiomeType.Snow:
+                return Get_PerlinForestSnow(x, z);
+            case BiomeType.Bench:
+                return 0;
+            case BiomeType.Montahas:
+                return Get_PerlinMontanhas(x, z);
+            case BiomeType.ForestNormal_Dense:
+                return Get_PerlinForestNormal_Dense(x, z);
+            default:
+                return 0;
+        }
+    }
+
+    static BiomeType GetVizinhos(int x, int z)
+    {
+        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 1, Game.GameManager.Seed, false).GetValue(x, z, 0);
+        sample2 *= 10;
+
+
+        if ((int)sample2 == 0)
+        {
+            return BiomeType.ForestNormal;
+        }
+        else if ((int)sample2 == 1)
+        {
+            //Jungle
+            return BiomeType.Jungle;
+        }
+        else if ((int)sample2 == 2)
+        {
+            //ForestNormal
+            return BiomeType.ForestNormal;
+        }
+        else if ((int)sample2 == 3)
+        {
+            //Montahas
+            return BiomeType.Montahas;
+        }
+        else if ((int)sample2 == 4)
+        {
+            //Plain
+            return BiomeType.Plain;
+        }
+        else if ((int)sample2 == 5)
+        {
+            //Snow
+            return BiomeType.Snow;
+        }
+        else if ((int)sample2 == 6)
+        {
+            //Jungle
+            return BiomeType.Jungle;
+        }
+        else if ((int)sample2 == 7)
+        {
+            //Desert
+            return BiomeType.Desert;
+        }
+        else if ((int)sample2 == -4)
+        {
+            //ForestNormal_Dense
+            return BiomeType.ForestNormal_Dense;
+        }
+        else if ((int)sample2 == 8)
+        {
+            //ForestNormal_Dense
+            return BiomeType.ForestNormal_Dense;
+        }
+        else if ((int)sample2 == -8)
+        {
+            //ForestNormal_Dense
+            return BiomeType.ForestNormal_Dense;
+        }
+        else if ((int)sample2 == -2)
+        {
+            //ForestNormal_Dense
+            return BiomeType.ForestNormal_Dense;
+        }
+        else
+        {
+            return BiomeType.ForestNormal_Dense;
+        }
+    }
+
+    private static float Get_PerlinForestNormal(int x, int z)
     {
         Scale = 30f;
         height = 50;
@@ -31,22 +246,118 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+        return Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+    }
 
-        LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false);
+    private static float Get_PerlinForestNormal_Dense(int x, int z)
+    {
+        Scale = 30f;
+        height = 50;
+        width = 50;
 
+        noisefactor = 0.1f;
+
+        float xCorde = (float)x / width * Scale;
+        float zCorde = (float)z / height * Scale;
+
+        return Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+    }
+
+    private static float Get_PerlinDesert(int x, int z)
+    {
+        Scale = 30f;
+        height = 50;
+        width = 50;
+
+        noisefactor = 0.1f;
+
+        float xCorde = (float)x / width * Scale + Game.GameManager.Small_Seed;
+        float zCorde = (float)z / height * Scale + Game.GameManager.Small_Seed;
+
+        return Mathf.PerlinNoise(xCorde * noisefactor, zCorde * noisefactor);
+    }
+
+    private static float Get_PerlinJungle(int x, int z)
+    {
+        Scale = 5f;
+        height = 50;
+        width = 50;
+
+        noisefactor = 0.1f;
+
+        float xCorde = (float)x / width * Scale;
+        float zCorde = (float)z / height * Scale;
+
+        return Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+    }
+
+    private static float Get_PerlinPlaine(int x, int z)
+    {
+        Scale = 30f;
+        height = 50;
+        width = 50;
+
+        noisefactor = 0.1f;
+
+        float xCorde = (float)x / width * Scale;
+        float zCorde = (float)z / height * Scale;
+
+        return Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+    }
+
+    private static float Get_PerlinForestSnow(int x, int z)
+    {
+        Scale = 30f;
+        height = 50;
+        width = 50;
+
+        noisefactor = 0.1f;
+
+        float xCorde = (float)x / width * Scale;
+        float zCorde = (float)z / height * Scale;
+
+        return Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+    }
+
+    private static float Get_PerlinMontanhas(int x, int z)
+    {
+        Scale = 20f;
+        height = 50;
+        width = 50;
+
+        noisefactor = 0.01f;
+
+        float persistence = 39.9f;
+        float frequency = 0.001f;
+        float amplitude = 52.79f;
+        int octaves = 184;
+
+        float xCordee = (float)octaves * x / width * Scale + Game.GameManager.Small_Seed;
+        float zCordee = (float)octaves * z / height * Scale + Game.GameManager.Small_Seed;
+
+        // modify with frequency
+        xCordee *= frequency;
+        zCordee *= frequency;
+
+        return Mathf.PerlinNoise(xCordee, zCordee) * amplitude / persistence;
+    }
+
+
+    private static TypeBlock ForestNormal(int x, int z, Tile tile, float sample, float perlin)
+    {
+        LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 1, Game.GameManager.Seed, false);
         VeronoiStruc sample2 = CityNoise.GetValueNPoint(x, z, 0);
 
         tile.CityPoint = new DataVector3(CityNoise.GetPoint(x, z, 0));
-
-        //Debug.Log("village Chance : " + (int)sample2);
-
-        //sample2 *= 10;
 
         VeronoiStruc Tile_Vila_Up = CityNoise.GetValueNPoint(x, z + 1, 0);
         VeronoiStruc Tile_Vila_Down = CityNoise.GetValueNPoint(x, z - 1, 0);
         VeronoiStruc Tile_Vila_Left = CityNoise.GetValueNPoint(x - 1, z, 0);
         VeronoiStruc Tile_Vila_Right = CityNoise.GetValueNPoint(x + 1, z, 0);
+
+        sample2.Value *= 10;
+
+        //float noise + simplexnoise + simplexnoise_high;
 
         /*Tile_Vila_Up.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x, z + 1);
         Tile_Vila_Down.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x, z - 1);
@@ -59,7 +370,7 @@ public static class Biome
 
             tile.OwnedByCity = true;
 
-            /*if (Tile_Vila_Up.Point != sample2.Point || Tile_Vila_Down.Point != sample2.Point || Tile_Vila_Left.Point != sample2.Point || Tile_Vila_Right.Point != sample2.Point)
+            if (Tile_Vila_Up.Point != sample2.Point || Tile_Vila_Down.Point != sample2.Point || Tile_Vila_Left.Point != sample2.Point || Tile_Vila_Right.Point != sample2.Point)
             {
                 if (Tile_Vila_Up.TileType != Game.Color("FFFFFF") || Tile_Vila_Down.TileType != Game.Color("FFFFFF") || Tile_Vila_Left.TileType != Game.Color("FFFFFF") || Tile_Vila_Right.TileType != Game.Color("FFFFFF"))
                 {
@@ -69,26 +380,46 @@ public static class Biome
                     }
                     return TypeBlock.Rock;
                 }
-            }*/
+            }
 
             if (color == Game.Color("FF0000") || color == Game.Color("7F7F7F"))//Somthing Is On this tile
             {
-                return TypeBlock.Dirt;
+                return TypeBlock.Grass;
             }
             else if (color == Game.Color("FF0048"))//House Spawn Origin
             {
-                tile.PLACER_DATA = Placer.MainBuild2;
-                return TypeBlock.Dirt;
+                tile.PLACER_DATA = Placer.VillagerHouse;
+                return TypeBlock.Grass;
             }
             else if (color == Game.Color("2D92FF"))//Spawn Chest(TesteOnly)
             {
                 tile.PLACER_DATA = Placer.BauWood;
-                return TypeBlock.Dirt;
+                return TypeBlock.Grass;
             }
             else if (color == Game.Color("303030"))//Spawn BlackSmith
             {
                 tile.PLACER_DATA = Placer.BlackSmith;
-                return TypeBlock.Dirt;
+                return TypeBlock.Grass;
+            }
+            else if (color == Game.Color("FF6A00"))//Spawn AlchemistHouse
+            {
+                tile.PLACER_DATA = Placer.AlchemistHouse;
+                return TypeBlock.Grass;
+            }
+            else if (color == Game.Color("FFD800"))//Spawn PostLight
+            {
+                tile.PLACER_DATA = Placer.PostLight;
+                return TypeBlock.Grass;
+            }
+            else if (color == Game.Color("00FF90"))//Spawn HumanTradeTand
+            {
+                tile.PLACER_DATA = Placer.TendaHumanos;
+                return TypeBlock.Grass;
+            }
+            else if (color == Game.Color("7FC9FF"))//Spawn TradeCart
+            {
+                tile.PLACER_DATA = Placer.TradeCart;
+                return TypeBlock.Grass;
             }
             else if (color == Game.Color("FFFFFF"))//Road
             {
@@ -325,33 +656,20 @@ public static class Biome
         }
     }
 
-    public static TypeBlock ForestNormal_Dense(int x, int z, Tile tile, float sample)
+    private static TypeBlock ForestNormal_Dense(int x, int z, Tile tile, float sample, float perlin)
     {
-        Scale = 30f;
-        height = 50;
-        width = 50;
-
-        noisefactor = 0.1f;
-
-        float xCorde = (float)x / width * Scale;
-        float zCorde = (float)z / height * Scale;
-
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
-
-        LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false);
-
+        LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 1, Game.GameManager.Seed, false);
         VeronoiStruc sample2 = CityNoise.GetValueNPoint(x, z, 0);
 
         tile.CityPoint = new DataVector3(CityNoise.GetPoint(x, z, 0));
-
-        //Debug.Log("village Chance : " + (int)sample2);
-
-        //sample2 *= 10;
 
         VeronoiStruc Tile_Vila_Up = CityNoise.GetValueNPoint(x, z + 1, 0);
         VeronoiStruc Tile_Vila_Down = CityNoise.GetValueNPoint(x, z - 1, 0);
         VeronoiStruc Tile_Vila_Left = CityNoise.GetValueNPoint(x - 1, z, 0);
         VeronoiStruc Tile_Vila_Right = CityNoise.GetValueNPoint(x + 1, z, 0);
+
+        tile.CityPoint = new DataVector3(CityNoise.GetPoint(x, z, 0));
+
 
         /*Tile_Vila_Up.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x, z + 1);
         Tile_Vila_Down.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x, z - 1);
@@ -364,7 +682,7 @@ public static class Biome
 
             tile.OwnedByCity = true;
 
-            /*if (Tile_Vila_Up.Point != sample2.Point || Tile_Vila_Down.Point != sample2.Point || Tile_Vila_Left.Point != sample2.Point || Tile_Vila_Right.Point != sample2.Point)
+            if (Tile_Vila_Up.Point != sample2.Point || Tile_Vila_Down.Point != sample2.Point || Tile_Vila_Left.Point != sample2.Point || Tile_Vila_Right.Point != sample2.Point)
             {
                 if (Tile_Vila_Up.TileType != Game.Color("FFFFFF") || Tile_Vila_Down.TileType != Game.Color("FFFFFF") || Tile_Vila_Left.TileType != Game.Color("FFFFFF") || Tile_Vila_Right.TileType != Game.Color("FFFFFF"))
                 {
@@ -374,26 +692,46 @@ public static class Biome
                     }
                     return TypeBlock.Rock;
                 }
-            }*/
+            }
 
             if (color == Game.Color("FF0000") || color == Game.Color("7F7F7F"))//Somthing Is On this tile
             {
-                return TypeBlock.Dirt;
+                return TypeBlock.Grass;
             }
             else if (color == Game.Color("FF0048"))//House Spawn Origin
             {
-                tile.PLACER_DATA = Placer.MainBuild2;
-                return TypeBlock.Dirt;
+                tile.PLACER_DATA = Placer.VillagerHouse;
+                return TypeBlock.Grass;
             }
             else if (color == Game.Color("2D92FF"))//Spawn Chest(TesteOnly)
             {
                 tile.PLACER_DATA = Placer.BauWood;
-                return TypeBlock.Dirt;
+                return TypeBlock.Grass;
             }
             else if (color == Game.Color("303030"))//Spawn BlackSmith
             {
                 tile.PLACER_DATA = Placer.BlackSmith;
-                return TypeBlock.Dirt;
+                return TypeBlock.Grass;
+            }
+            else if (color == Game.Color("FF6A00"))//Spawn AlchemistHouse
+            {
+                tile.PLACER_DATA = Placer.AlchemistHouse;
+                return TypeBlock.Grass;
+            }
+            else if (color == Game.Color("FFD800"))//Spawn PostLight
+            {
+                tile.PLACER_DATA = Placer.PostLight;
+                return TypeBlock.Grass;
+            }
+            else if (color == Game.Color("00FF90"))//Spawn HumanTradeTand
+            {
+                tile.PLACER_DATA = Placer.TendaHumanos;
+                return TypeBlock.Grass;
+            }
+            else if (color == Game.Color("7FC9FF"))//Spawn TradeCart
+            {
+                tile.PLACER_DATA = Placer.TradeCart;
+                return TypeBlock.Grass;
             }
             else if (color == Game.Color("FFFFFF"))//Road
             {
@@ -614,19 +952,8 @@ public static class Biome
         }
     }
 
-    public static TypeBlock Desert(int x, int z, Tile tile, float sample)
+    private static TypeBlock Desert(int x, int z, Tile tile, float sample, float perlin)
     {
-        Scale = 30f;
-        height = 50;
-        width = 50;
-
-        noisefactor = 0.1f;
-
-        float xCorde = (float)x / width * Scale + Game.GameManager.Small_Seed;
-        float zCorde = (float)z / height * Scale + Game.GameManager.Small_Seed;
-
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor, zCorde * noisefactor);
-
         float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetValue(x, z, 0);
 
         if ((int)sample2 == 1)
@@ -641,13 +968,23 @@ public static class Biome
             }
             else if (color == Game.Color("FF0048"))//House Spawn Origin
             {
-                tile.PLACER_DATA = Placer.MainBuild2;
-                return TypeBlock.Sand;
+                tile.PLACER_DATA = Placer.VillagerHouse;
+                return TypeBlock.Dirt;
             }
             else if (color == Game.Color("2D92FF"))//Spawn Chest(TesteOnly)
             {
                 tile.PLACER_DATA = Placer.BauWood;
-                return TypeBlock.Sand;
+                return TypeBlock.Dirt;
+            }
+            else if (color == Game.Color("303030"))//Spawn BlackSmith
+            {
+                tile.PLACER_DATA = Placer.BlackSmith;
+                return TypeBlock.Dirt;
+            }
+            else if (color == Game.Color("FF6A00"))//Spawn BlackSmith
+            {
+                tile.PLACER_DATA = Placer.AlchemistHouse;
+                return TypeBlock.Dirt;
             }
             else if (color == Game.Color("FFFFFF"))//Road
             {
@@ -822,7 +1159,7 @@ public static class Biome
         }
     }
 
-    public static TypeBlock OceanNormal(int x, int z, Tile tile, float sample)
+    private static TypeBlock OceanNormal(int x, int z, Tile tile, float sample)
     {
         float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetValue(x, z, 0);
 
@@ -844,7 +1181,7 @@ public static class Biome
         }
     }
 
-    public static TypeBlock Bench(int x, int z, Tile tile, float sample)
+    private static TypeBlock Bench(int x, int z, Tile tile, float sample)
     {
         System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.TileChunk.x + tile.TileChunk.z));
         int randnum = (rand.Next(1, 100));
@@ -871,18 +1208,9 @@ public static class Biome
         }
     }
 
-    public static TypeBlock Jungle(int x, int z, Tile tile, float sample)
+    private static TypeBlock Jungle(int x, int z, Tile tile, float sample, float perlin)
     {
-        Scale = 30f;
-        height = 50;
-        width = 50;
-
-        noisefactor = 0.1f;
-
-        float xCorde = (float)x / width * Scale;
-        float zCorde = (float)z / height * Scale;
-
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+        //tile.y *= perlin;
 
         if (perlin >= 0.0f && perlin <= 0.15f)
         {
@@ -971,19 +1299,8 @@ public static class Biome
         return TypeBlock.JungleGrass;
     }
 
-    public static TypeBlock Plaine(int x, int z, Tile tile, float sample)
+    private static TypeBlock Plaine(int x, int z, Tile tile, float sample, float perlin)
     {
-        Scale = 30f;
-        height = 50;
-        width = 50;
-
-        noisefactor = 0.1f;
-
-        float xCorde = (float)x / width * Scale;
-        float zCorde = (float)z / height * Scale;
-
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
-
         float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetValue(x, z, 0);
 
         if ((int)sample2 == 1)
@@ -998,13 +1315,23 @@ public static class Biome
             }
             else if (color == Game.Color("FF0048"))//House Spawn Origin
             {
-                tile.PLACER_DATA = Placer.MainBuild2;
-                return TypeBlock.Grass;
+                tile.PLACER_DATA = Placer.VillagerHouse;
+                return TypeBlock.Dirt;
             }
             else if (color == Game.Color("2D92FF"))//Spawn Chest(TesteOnly)
             {
                 tile.PLACER_DATA = Placer.BauWood;
-                return TypeBlock.Grass;
+                return TypeBlock.Dirt;
+            }
+            else if (color == Game.Color("303030"))//Spawn BlackSmith
+            {
+                tile.PLACER_DATA = Placer.BlackSmith;
+                return TypeBlock.Dirt;
+            }
+            else if (color == Game.Color("FF6A00"))//Spawn BlackSmith
+            {
+                tile.PLACER_DATA = Placer.AlchemistHouse;
+                return TypeBlock.Dirt;
             }
             else if (color == Game.Color("FFFFFF"))//Road
             {
@@ -1192,18 +1519,9 @@ public static class Biome
 
     }
 
-    public static TypeBlock ForestSnow(int x, int z, Tile tile, float sample)
+    private static TypeBlock ForestSnow(int x, int z, Tile tile, float sample, float perlin)
     {
-        Scale = 30f;
-        height = 50;
-        width = 50;
-
-        noisefactor = 0.1f;
-
-        float xCorde = (float)x / width * Scale;
-        float zCorde = (float)z / height * Scale;
-
-        float perlin = Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+        //tile.y *= perlin;
 
         if (perlin >= 0.0f && perlin <= 0.15f)
         {
@@ -1296,38 +1614,18 @@ public static class Biome
 
     }
 
-    public static TypeBlock Montanhas(int x, int z, Tile tile, float sample)
+    private static TypeBlock Montanhas(int x, int z, Tile tile, float sample, float perlin)
     {
-        Scale = 20f;
-        height = 50;
-        width = 50;
-
-        noisefactor = 0.01f;
-
-        float persistence = 39.9f;
-        float frequency = 0.001f;
-        float amplitude = 52.79f;
-        int octaves = 184;
-
-        float xCordee = (float)octaves * x / width * Scale + Game.GameManager.Small_Seed;
-        float zCordee = (float)octaves * z / height * Scale + Game.GameManager.Small_Seed;
-
-        // modify with frequency
-        xCordee *= frequency;
-        zCordee *= frequency;
-
-        float perlin = Mathf.PerlinNoise(xCordee, zCordee) * amplitude / persistence;
-
 
         if (perlin >= 0.0f && perlin <= 0.15f)
         {
             //Water
-            return TypeBlock.Grass;
+            return TypeBlock.Air;
         }
         else if (perlin > 0.15f && perlin < 0.2f)
         {
             //Sand Bench
-            return TypeBlock.Grass;
+            return TypeBlock.Air;
         }
         else if (perlin > 0.2f && perlin <= 0.7f)
         {
@@ -1343,7 +1641,7 @@ public static class Biome
                     {
                         tile.typego = TakeGO.Weed01;
                     }
-                    return TypeBlock.Grass;
+                    return TypeBlock.Air;
                 }
                 else if (randnum == 2)
                 {
@@ -1351,7 +1649,7 @@ public static class Biome
                     {
                         tile.typego = TakeGO.RockProp;
                     }
-                    return TypeBlock.Grass;
+                    return TypeBlock.Air;
                 }
                 else if (randnum == 3)
                 {
@@ -1359,7 +1657,7 @@ public static class Biome
                     {
                         tile.typego = TakeGO.WeedTall;
                     }
-                    return TypeBlock.Grass;
+                    return TypeBlock.Air;
                 }
                 else if (randnum == 4)
                 {
@@ -1367,7 +1665,7 @@ public static class Biome
                     {
                         tile.typego = TakeGO.Pine;
                     }
-                    return TypeBlock.Grass;
+                    return TypeBlock.Air;
                 }
                 else if (randnum == 5)
                 {
@@ -1375,42 +1673,42 @@ public static class Biome
                     {
                         tile.typego = TakeGO.Oak;
                     }
-                    return TypeBlock.Grass;
+                    return TypeBlock.Air;
                 }
                 else if (randnum == 6)
                 {
                     tile.typeVariante = TypeVariante.GrassFL1;
-                    return TypeBlock.Grass;
+                    return TypeBlock.Air;
                 }
                 else if (randnum == 7)
                 {
                     tile.typeVariante = TypeVariante.GrassFL2;
-                    return TypeBlock.Grass;
+                    return TypeBlock.Air;
                 }
                 else if (randnum == 8)
                 {
                     tile.typeVariante = TypeVariante.GrassRC;
-                    return TypeBlock.Grass;
+                    return TypeBlock.Air;
                 }
                 else
                 {
-                    return TypeBlock.Grass;
+                    return TypeBlock.Air;
                 }
             }
             else if (perlin > 0.6f && perlin < 0.605f)
             {
                 //grass
-                return TypeBlock.Grass;
+                return TypeBlock.Air;
             }
             else if (perlin > 0.62f && perlin < 0.63f)
             {
                 //grass
-                return TypeBlock.Grass;
+                return TypeBlock.Air;
             }
             else
             {
                 //tall grass
-                return TypeBlock.Grass;
+                 return TypeBlock.Air;
             }
 
         }
@@ -1439,5 +1737,123 @@ public static class Biome
             return TypeBlock.Rock;
         }
 
+    }
+
+
+
+    public static float GetBiomeMap(float x, float z, Tile tile, float sample)
+    {
+        float readysample = sample;
+
+        float Scale = 30f;
+        int height = 50;
+        int width = 50;
+        float noisefactor = 0.1f;
+
+        float xCorde = 0;
+        float zCorde = 0;
+
+        switch (tile.TileBiome)
+        {
+            case BiomeType.ForestNormal:
+                Scale = 30f;
+                height = 50;
+                width = 50;
+
+                noisefactor = 0.1f;
+
+                xCorde = (float)x / width * Scale;
+                zCorde = (float)z / height * Scale;
+                readysample *= Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+
+                return readysample;
+            case BiomeType.Desert:
+                Scale = 30f;
+                height = 50;
+                width = 50;
+
+                noisefactor = 0.1f;
+
+                xCorde = (float)x / width * Scale;
+                zCorde = (float)z / height * Scale;
+                readysample *= Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+                return readysample;
+            case BiomeType.OceanNormal:
+
+                return readysample;
+            case BiomeType.Jungle:
+                Scale = 30f;
+                height = 50;
+                width = 50;
+
+                noisefactor = 0.1f;
+
+                xCorde = (float)x / width * Scale;
+                zCorde = (float)z / height * Scale;
+                readysample *= Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+                return readysample;
+            case BiomeType.Plain:
+                Scale = 30f;
+                height = 50;
+                width = 50;
+
+                noisefactor = 0.1f;
+
+                xCorde = (float)x / width * Scale;
+                zCorde = (float)z / height * Scale;
+                readysample /= Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+                return readysample;
+            case BiomeType.Snow:
+                Scale = 30f;
+                height = 50;
+                width = 50;
+
+                noisefactor = 0.1f;
+
+                xCorde = (float)x / width * Scale;
+                zCorde = (float)z / height * Scale;
+                readysample *= Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+                return readysample;
+            case BiomeType.Bench:
+                return readysample;
+            case BiomeType.None:
+                return readysample;
+            case BiomeType.Montahas:
+                Scale = 20f;
+                height = 50;
+                width = 50;
+
+                noisefactor = 0.01f;
+
+                float persistence = 39.9f;
+                float frequency = 0.001f;
+                float amplitude = 52.79f;
+                int octaves = 184;
+
+                xCorde = (float)octaves * x / width * Scale + Game.GameManager.Small_Seed;
+                zCorde = (float)octaves * z / height * Scale + Game.GameManager.Small_Seed;
+
+                // modify with frequency
+                xCorde *= frequency;
+                zCorde *= frequency;
+
+                readysample *= Mathf.PerlinNoise(xCorde, zCorde) * amplitude / persistence;
+                return readysample;
+            case BiomeType.Cave:
+                return readysample;
+            case BiomeType.ForestNormal_Dense:
+                Scale = 30f;
+                height = 50;
+                width = 50;
+
+                noisefactor = 0.1f;
+
+                xCorde = (float)x / width * Scale;
+                zCorde = (float)z / height * Scale;
+                readysample *= Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+                return readysample;
+            default:
+                return readysample;
+        }
     }
 }

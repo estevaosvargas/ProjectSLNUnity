@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 114771100780316526}
   - component: {fileID: 4506224577811022067}
   - component: {fileID: -1190274183264762068}
+  - component: {fileID: -1229550289214030020}
   m_Layer: 0
   m_Name: BauWood
   m_TagString: Untagged
@@ -100,6 +101,8 @@ MonoBehaviour:
   Drop: {fileID: 1982240538145316, guid: 2045fdc92c4eeaf4c8f37b44ba29e320, type: 3}
   IsPlayer: 0
   Net: {fileID: 0}
+  HandOneIndex: 0
+  HandTwoIndex: 0
 --- !u!114 &4506224577811022067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,6 +116,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Net: {fileID: 0}
+  Cuerrent_Chunk: {fileID: 0}
+  PrefabName: 
+  ID: 
   HP: 100
   MaxHP: 100
   IsAlive: 0
@@ -132,8 +138,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Owner: 0
   ViewID: 0
-  DeliveModo: 1
   IdMode: 1
+  DefaultNetDeliveryMethod: 1
+--- !u!205 &-1229550289214030020
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268213067446220}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.5180002, y: 0.34153435, z: 0.48799992}
+  m_Size: 0.8012035
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.037740238
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 2354136357514081882}
+  m_Enabled: 1
 --- !u!65 &2412021447606352759
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -154,11 +179,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4092558812483922}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: 5f7017c1ab3e0ad4d813847c1c6df51f,
-        type: 3}
-      propertyPath: m_Name
-      value: woodchest
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 5f7017c1ab3e0ad4d813847c1c6df51f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -234,6 +254,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 4511d2aa3ab82c7428fc0df581605e17, type: 2}
+    - target: {fileID: -927199367670048503, guid: 5f7017c1ab3e0ad4d813847c1c6df51f,
+        type: 3}
+      propertyPath: m_Name
+      value: woodchest
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5f7017c1ab3e0ad4d813847c1c6df51f, type: 3}
 --- !u!1 &4077803338176348806 stripped
@@ -245,6 +270,12 @@ GameObject:
 --- !u!4 &1066259505713623189 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 5f7017c1ab3e0ad4d813847c1c6df51f,
+    type: 3}
+  m_PrefabInstance: {fileID: 5455734441087867791}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &2354136357514081882 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -1504981713932161579, guid: 5f7017c1ab3e0ad4d813847c1c6df51f,
     type: 3}
   m_PrefabInstance: {fileID: 5455734441087867791}
   m_PrefabAsset: {fileID: 0}

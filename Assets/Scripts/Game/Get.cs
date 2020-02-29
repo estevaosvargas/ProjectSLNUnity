@@ -168,7 +168,7 @@ public static class Get
     {
         switch (placer)
         {
-            case Placer.MainBuild2:
+            case Placer.VillagerHouse:
                 return new Vector3(6,0,4);
             default:
                 return Vector3.zero;
@@ -202,7 +202,8 @@ public enum TakeGO : byte
 
 public enum Placer : byte
 {
-    empty, BauWood, BauGold, BauDiamond, BauDark, CampTend, CampFire, MainBuild1, MainBuild2, CityHall, BlackSmith
+    empty, BauWood, BauGold, BauDiamond, BauDark, CampTend, CampFire, CityHall, BlackSmith, AlchemistHouse, VillagerHouse, PostLight,
+    TendaHumanos, TradeCart
 }
 
 public enum MaterialHitType: byte

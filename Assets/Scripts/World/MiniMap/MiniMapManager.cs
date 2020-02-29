@@ -40,7 +40,7 @@ public class MiniMapManager : MonoBehaviour
 
     Color CalculateColor(int x, int y)
     {
-        Tile tile = new Tile();
+        /*Tile tile = new Tile();
 
         x = x + (int)Game.GameManager.Player.PlayerObj.transform.position.x -25;
         y = y + (int)Game.GameManager.Player.PlayerObj.transform.position.y -25;
@@ -86,7 +86,7 @@ public class MiniMapManager : MonoBehaviour
             {
                 return GetWhatBlocks(Biome.OceanNormal(x, y, tile, sample));
             }
-        }
+        }*/
         return Color.black;
     }
 
@@ -107,7 +107,7 @@ public class MiniMapManager : MonoBehaviour
         }
     }
 
-    public TypeBlock SetUpBiome(int x, int y, Tile tile, float sample, float sample2)
+    /*public TypeBlock SetUpBiome(int x, int y, Tile tile, float sample, float sample2)
     {
         if ((int)sample2 == 0)
         {
@@ -158,5 +158,5 @@ public class MiniMapManager : MonoBehaviour
         {
             return Biome.ForestNormal(x, y, tile, sample);
         }
-    }
+    }*/
 }

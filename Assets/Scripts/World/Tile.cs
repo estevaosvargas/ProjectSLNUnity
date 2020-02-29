@@ -14,9 +14,9 @@ public class Tile
     public bool ConnecyToNightboors = false;
     public bool IsColider = false;
 
-    public int x { get; private set; }
-    public int y { get; private set; }
-    public int z { get; private set; }
+    public float x { get; set; }
+    public float y { get; set; }
+    public float z { get; set; }
 
     public int RenderLevel = 0;
 
@@ -163,6 +163,9 @@ public class Tile
 
         float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(x, z, 0);
         OceanHight = sample;
+
+        //this.y = sample / 50;
+
         if (Game.WorldGenerator.CurrentWorld == WorldType.Caves)
         {
             Debug.LogError("Sorry Caves Is Not enable in alpha!");
@@ -174,7 +177,6 @@ public class Tile
             if (sample >= 50f)
             {
                 float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 1, Game.GameManager.Seed, false).GetValue(x, z, 0);
-
                 sample2 *= 10;
 
                 PerlinSetType(SetUpBiome(x, z, sample, sample2));
@@ -182,12 +184,12 @@ public class Tile
             else if (sample > 0.08f)
             {
                 TileBiome = BiomeType.Bench;
-                PerlinSetType(Biome.Bench(x, z, this, sample));
+                PerlinSetType(Biome.GetBiome(x, z, this, sample, BiomeType.Bench));
             }
             else
             {
                 TileBiome = BiomeType.OceanNormal;
-                PerlinSetType(Biome.OceanNormal(x, z, this, sample));
+                PerlinSetType(Biome.GetBiome(x, z, this, sample, BiomeType.OceanNormal));
             }
         }
     }
@@ -426,80 +428,69 @@ public class Tile
         {
             //sem nemhum
             TileBiome = BiomeType.ForestNormal;
-            return Biome.ForestNormal(x, z, this, sample);
         }
         else if ((int)sample2 == 1)
         {
             //Jungle
             TileBiome = BiomeType.Jungle;
-            return Biome.Jungle(x, z, this, sample);
         }
         else if ((int)sample2 == 2)
         {
             //Oceano Normal
             TileBiome = BiomeType.ForestNormal;
-            return Biome.ForestNormal(x, z, this, sample);
         }
         else if ((int)sample2 == 3)
         {
             //Deserto
             TileBiome = BiomeType.Montahas;
-            return Biome.Montanhas(x, z, this, sample);
         }
         else if ((int)sample2 == 4)
         {
             //sem nemhum
             TileBiome = BiomeType.Plain;
-            return Biome.Plaine(x, z, this, sample);
         }
         else if ((int)sample2 == 5)
         {
             //sem nemhum
             TileBiome = BiomeType.Snow;
-            return Biome.ForestSnow(x, z, this, sample);
         }
         else if ((int)sample2 == 6)
         {
             //sem nemhum
             TileBiome = BiomeType.Jungle;
-            return Biome.Jungle(x, z, this, sample);
         }
         else if ((int)sample2 == 7)
         {
             //sem nemhum
             TileBiome = BiomeType.Desert;
-            return Biome.Desert(x, z, this, sample);
         }
         else if ((int)sample2 == -4)
         {
             //sem nemhum
             TileBiome = BiomeType.ForestNormal_Dense;
-            return Biome.ForestNormal_Dense(x, z, this, sample);
         }
         else if ((int)sample2 == 8)
         {
             //sem nemhum
             TileBiome = BiomeType.ForestNormal_Dense;
-            return Biome.ForestNormal_Dense(x, z, this, sample);
         }
         else if ((int)sample2 == -8)
         {
             //sem nemhum
             TileBiome = BiomeType.ForestNormal_Dense;
-            return Biome.ForestNormal_Dense(x, z, this, sample);
         }
         else if ((int)sample2 == -2)
         {
             //sem nemhum
             TileBiome = BiomeType.ForestNormal_Dense;
-            return Biome.ForestNormal_Dense(x, z, this, sample);
         }
         else
         {
             //Debug.Log("BiomeNum : " + (int)sample2);
             TileBiome = BiomeType.ForestNormal;
-            return Biome.ForestNormal(x, z, this, sample);
         }
+
+        return Biome.GetBiome(x, z, this, sample, TileBiome);
     }
 
     private void DamageSetUp(Tile tile)

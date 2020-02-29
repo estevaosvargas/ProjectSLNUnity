@@ -79,7 +79,7 @@ public class MenuChunk : MonoBehaviour
 
             if (tile.type != TypeBlock.Rock)
             {
-                System.Random randomValue = new System.Random(Game.GameManager.Seed + tile.x + tile.z);
+                System.Random randomValue = new System.Random(Game.GameManager.Seed + (int)tile.x + (int)tile.z);
                 trees.transform.position = new Vector3(tile.x + (float)randomValue.NextDouble(), tile.y, tile.z + (float)randomValue.NextDouble());
             }
 

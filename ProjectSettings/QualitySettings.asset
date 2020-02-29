@@ -10,7 +10,7 @@ QualitySettings:
     name: Change In Game
     pixelLightCount: 0
     shadows: 0
-    shadowResolution: 2
+    shadowResolution: 1
     shadowProjection: 1
     shadowCascades: 4
     shadowDistance: 100
