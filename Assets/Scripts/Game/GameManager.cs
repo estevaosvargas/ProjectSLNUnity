@@ -1074,6 +1074,7 @@ public class SavePlayerInfo
     public SaveInventory Inve;
     public LifeStatus Status;
     public float x;
+    public float y;
     public float z;
     public float Life;
 
@@ -1081,6 +1082,7 @@ public class SavePlayerInfo
     {
         Inve = inve;
         x = pos.x;
+        y = pos.y;
         z = pos.z;
         Life = life;
         Status = status;

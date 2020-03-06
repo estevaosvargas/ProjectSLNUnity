@@ -7,6 +7,7 @@ using UnityStandardAssets.CrossPlatformInput;
 public class EntityPlayer : EntityLife
 {
     public Animator Anim;
+    public AudioSource audioSource;
     public CharacterController body;
     public Inventory Inve;
     public Transform World;
@@ -62,12 +63,12 @@ public class EntityPlayer : EntityLife
 
             IsAlive = true;
 
-            Game.WorldGenerator.Setplayer_data();
+            Game.WorldGenerator.StartWorld();//start generation world, and set the player reference to worldmanager
 
             Game.MenuManager.LifeBar.RefreshBar(HP);
             Game.MenuManager.EnergyBar.RefreshBar(Status.Energy);
 
-            
+
         }
         else
         {
@@ -76,7 +77,7 @@ public class EntityPlayer : EntityLife
                 Destroy(item);
             }
 
-           
+
         }
     }
 
@@ -87,6 +88,7 @@ public class EntityPlayer : EntityLife
         {
             Net.RPC("UpdatePosition", DarckNet.RPCMode.AllNoOwner, new Vector3(transform.position.x, transform.position.y, transform.position.z));
         }
+
 
         if (tile != null)
         {
@@ -121,9 +123,7 @@ public class EntityPlayer : EntityLife
     {
         if (Game.WorldGenerator)
         {
-           //Game.WorldGenerator.UpdateFindChunk();
-
-            
+            //Game.WorldGenerator.UpdateFindChunk();
             var main = FootPArticle.main;
 
             tile = Game.WorldGenerator.GetTileAt(transform.position.x, transform.position.z);
@@ -392,11 +392,19 @@ public class EntityPlayer : EntityLife
 
     public void FootPrintRight()
     {
+        //audioSource.PlayOneShot(Game.AudioManager.GetFootSound(tile.type));
         FootPArticle.Emit(FootParticleCount);
     }
 
     public void FootPrintLeft()
     {
+        audioSource.PlayOneShot(Game.AudioManager.GetFootSound(tile.type));
+        FootPArticle.Emit(FootParticleCount);
+    }
+
+    private void Step()
+    {
+        audioSource.PlayOneShot(Game.AudioManager.GetFootSound(tile.type));
         FootPArticle.Emit(FootParticleCount);
     }
 

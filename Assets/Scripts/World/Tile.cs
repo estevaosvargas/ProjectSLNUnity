@@ -40,6 +40,11 @@ public class Tile
     public DataVector3 CityPoint;
 
     [NonSerialized]
+    public int chunkX = 0;
+    public int chunkZ = 0;
+    public Chunk tileChunk;
+
+    [NonSerialized]
     public bool OwnedByCity;
     [NonSerialized]
     public float OceanHight = 0;
@@ -64,9 +69,6 @@ public class Tile
 
     [NonSerialized]
     public SpriteRenderer spritetile;
-
-    [NonSerialized]
-    public ChunkInfo TileChunk;
 
     [NonSerialized]
     public TileObj TileObj;
@@ -130,19 +132,25 @@ public class Tile
         Mes = newtile.Mes;
     }
 
-    public Tile(int x, int y, TypeBlock Type, ChunkInfo ChunkInfo)
+    public Tile(int x, int y, TypeBlock Type, int chunkX, int chunkZ, Chunk tileChunk)
     {
-        TileChunk = ChunkInfo;
+        this.chunkX = chunkX;
+        this.chunkZ = chunkZ;
+        this.tileChunk = tileChunk;
+
         this.x = x;
         //this.y = y;
         type = Type;
     }
 
-    public Tile(int x, int y, int z, ChunkInfo ChunkInfo)
+    public Tile(int x, int z, int chunkX, int chunkZ, Chunk tileChunk)
     {
-        TileChunk = ChunkInfo;
+        this.chunkX = chunkX;
+        this.chunkZ = chunkZ;
+        this.tileChunk = tileChunk;
+
+
         this.x = x;
-        //this.y = y;
         this.z = z;
 
         float persistence = 39.9f;
@@ -181,24 +189,21 @@ public class Tile
 
                 PerlinSetType(SetUpBiome(x, z, sample, sample2));
             }
-            else if (sample > 0.08f)
+            else
             {
                 TileBiome = BiomeType.Bench;
                 PerlinSetType(Biome.GetBiome(x, z, this, sample, BiomeType.Bench));
             }
-            else
-            {
-                TileBiome = BiomeType.OceanNormal;
-                PerlinSetType(Biome.GetBiome(x, z, this, sample, BiomeType.OceanNormal));
-            }
         }
     }
 
-    public Tile(int x, int y, int z, ChunkInfo ChunkInfo, bool menu)
+    public Tile(int x, int y, int z, int chunkX, int chunkZ, Chunk tileChunk, bool menu)
     {
-        TileChunk = ChunkInfo;
+        this.chunkX = chunkX;
+        this.chunkZ = chunkZ;
+        this.tileChunk = tileChunk;
+
         this.x = x;
-        //this.y = y;
         this.z = z;
 
         float persistence = 39.9f;
@@ -308,13 +313,13 @@ public class Tile
         {
             GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.Getplacerbyname(PLACER_DATA.ToString()), new Vector3(x, y, z), Quaternion.identity, Game.WorldGenerator.World_ID);
             ObjThis = obj;
-            TileChunk.ThisChunk.Entitys.Add(obj.GetComponent<ObjectEntity>());
+            tileChunk.Entitys.Add(obj.GetComponent<ObjectEntity>());
         }
         else
         {
             GameObject obj = GameObject.Instantiate(Game.SpriteManager.Getplacerbyname(PLACER_DATA.ToString()), new Vector3(x, y, z), Quaternion.identity);
             ObjThis = obj;
-            TileChunk.ThisChunk.Entitys.Add(obj.GetComponent<ObjectEntity>());
+            tileChunk.Entitys.Add(obj.GetComponent<ObjectEntity>());
         }
 
         SaveChunk();
@@ -336,19 +341,19 @@ public class Tile
         DamageSetUp(this);
         SaveChunk();
         OnTileTypeChange(this);
-        TileChunk.ThisChunk.TileTransitionChange(this);
+        tileChunk.TileTransitionChange(this);
 
 
         Tile[] neighbor = GetNeighboors(true);
 
         for (int i = 0; i < neighbor.Length; i++)
         {
-            neighbor[i].TileChunk.ThisChunk.TileTransitionChange(neighbor[i]);
+            neighbor[i].tileChunk.TileTransitionChange(neighbor[i]);
             neighbor[i].OnTileTypeChange(neighbor[i]);
-            TileChunk.ThisChunk.RefreshChunkTile();
+            tileChunk.RefreshChunkTile();
         }
 
-        TileChunk.ThisChunk.RefreshChunkTile();
+        tileChunk.RefreshChunkTile();
     }
 
     public void PlaceBlockSet(TypeBlock type)
@@ -364,13 +369,13 @@ public class Tile
         SaveChunk();
 
         OnTileTypeChange(this);
-        TileChunk.ThisChunk.TileTransitionChange(this);
+        tileChunk.TileTransitionChange(this);
 
         Tile[] neighbor = GetNeighboors(true);
 
         for (int i = 0; i < neighbor.Length; i++)
         {
-            neighbor[i].TileChunk.ThisChunk.TileTransitionChange(neighbor[i]);
+            neighbor[i].tileChunk.TileTransitionChange(neighbor[i]);
             neighbor[i].OnTileTypeChange(neighbor[i]);
         }
 
@@ -380,7 +385,7 @@ public class Tile
     //Save all chunk
     public void SaveChunk()
     {
-        TileChunk.ThisChunk.SaveChunk();
+        tileChunk.SaveChunk();
     }
 
     public void RegisterOnTileTypeChange(Action<Tile> callback)
@@ -607,13 +612,13 @@ public class Tile
         Tile[] neighbor = GetNeighboors();
 
         OnTileTypeChange(this);
-        TileChunk.ThisChunk.TileTransitionChange(this);
+        tileChunk.TileTransitionChange(this);
 
         for (int i = 0; i < neighbor.Length; i++)
         {
             if (neighbor[i] != null)
             {
-                neighbor[i].TileChunk.ThisChunk.TileTransitionChange(neighbor[i]);
+                neighbor[i].tileChunk.TileTransitionChange(neighbor[i]);
                 neighbor[i].OnTileTypeChange(neighbor[i]);
             }
         }

@@ -151,7 +151,7 @@ CGINCLUDE
 			_GDirectionCD												// direction # 3, 4
 		);
 		
-		v.vertex.xyz += offsets * _BeanchDeep;
+		v.vertex.xyz += offsets;
 		
 		// one can also use worldSpaceVertex.xz here (speed!), albeit it'll end up a little skewed
 		half2 tileableUv = mul(unity_ObjectToWorld,(v.vertex)).xz;

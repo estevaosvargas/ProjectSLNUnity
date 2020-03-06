@@ -33,7 +33,7 @@ public class MenuChunk : MonoBehaviour
         {
             for (int j = 0; j < Size; j++)
             {
-                tiles[i, j] = new Tile(i + (int)transform.position.x, 0, j + (int)transform.position.z, new ChunkInfo((int)transform.position.x, (int)transform.position.z, null), true);
+                tiles[i, j] = new Tile(i + (int)transform.position.x, 0, j + (int)transform.position.z, (int)transform.position.x, (int)transform.position.z, null, true);
 
                 Vector3 point = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetPoint(tiles[i, j].x, tiles[i, j].z, 0);
 

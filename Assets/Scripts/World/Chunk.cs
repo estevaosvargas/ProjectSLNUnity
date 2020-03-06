@@ -3,20 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-public class ChunkInfo
-{
-    public int x = 0;
-    public int z = 0;
-    public Chunk ThisChunk;
-
-    public ChunkInfo(int x, int z, Chunk chu)
-    {
-        this.x = x;
-        this.z = z;
-        this.ThisChunk = chu;
-    }
-}
-
 public class Chunk : MonoBehaviour
 {
     public GameObject lightobj;
@@ -52,8 +38,7 @@ public class Chunk : MonoBehaviour
 
     void Awake()
     {
-        if (Game.GameManager.SinglePlayer)
-            MakeChunk();
+        
     }
 
     void Start()
@@ -141,7 +126,7 @@ public class Chunk : MonoBehaviour
         }
     }
 
-    public Tile[] MakeChunk()
+    public Tile[] MakeChunk(Tile[,] tileReady)
     {
         tileGOmap = new Dictionary<Tile, GameObject>();
         tiles = new Tile[Size, Size];
@@ -156,19 +141,17 @@ public class Chunk : MonoBehaviour
             havesave = true;
         }
 
+        if (!havesave)
+        {
+            tiles = tileReady;
+        }
+
         #region TileGen
         for (int i = 0; i < Size; i++)
         {
             for (int j = 0; j < Size; j++)
             {
-                if (!havesave) 
-                { 
-                    tiles[i, j] = new Tile(i + (int)transform.position.x, 0, j + (int)transform.position.z, new ChunkInfo((int)transform.position.x, (int)transform.position.z, this)); 
-                } 
-                else 
-                { 
-                    tiles[i, j].TileChunk = new ChunkInfo((int)transform.position.x, (int)transform.position.z, this); 
-                }
+                tiles[i, j].tileChunk = this; 
 
                 Vector3 point = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetPoint(tiles[i, j].x, tiles[i, j].z, 0);
 
@@ -252,6 +235,27 @@ public class Chunk : MonoBehaviour
             mesh.RecalculateNormals();
 
             mMeshcollider.sharedMesh = mesh;
+
+            filter.mesh = mesh;
+        }
+
+        if (WaterMeshTile != null)
+        {
+            MeshData data = new MeshData(tiles, true);
+
+            MeshFilter filter = WaterMeshTile.GetComponent<MeshFilter>();
+            MeshRenderer render = WaterMeshTile.GetComponent<MeshRenderer>();
+            render.material = WaterTileMaterial;
+
+            Mesh mesh = filter.mesh;
+
+            mesh.vertices = data.vertices.ToArray();
+            mesh.triangles = data.triangles.ToArray();
+            mesh.uv = data.UVs.ToArray();
+
+            mesh.RecalculateNormals();
+
+            filter.mesh = mesh;
         }
     }
 
@@ -648,60 +652,6 @@ public class Chunk : MonoBehaviour
             }
         }
     }
-
-    public void ClientSetUpChunk(Tile[] tile)
-    {
-        #region TileGen
-        tileGOmap = new Dictionary<Tile, GameObject>();
-        tiles = new Tile[Size, Size];
-        Game.WorldGenerator.ChunksList.Add(this);
-
-        for (int v = 0; v < tile.Length; v++)
-        {
-            int i = (int)tile[v].x - (int)transform.position.x;
-            int j = (int)tile[v].z - (int)transform.position.z;
-
-            tiles[i, j] = new Tile(tile[v]);
-
-            tiles[i, j].TileChunk = new ChunkInfo((int)transform.position.x, (int)transform.position.z, this);
-
-            Vector3 point = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetPoint(tiles[i, j].x, tiles[i, j].z, 0);
-
-            tiles[i, j].CityPoint = new DataVector3((int)point.x, (int)point.y, 0);
-
-            tiles[i, j].SetUpTile(tiles[i, j]);
-            tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
-
-            if (!Game.GameManager.SinglePlayer || !DarckNet.Network.IsClient)
-            {
-                tiles[i, j].IsServerTile = true;
-            }
-
-            if (tiles[i, j] == null)
-            {
-                Debug.Log("Null tiles[x, y]");
-            }
-
-            //Set Up Tree OBject
-            SetupObjects(tiles[i, j]);
-            SetUpTileTree(tiles[i, j]);
-
-            OnTileTypeChange(tiles[i, j]);
-        }
-
-        /*for (int i = 0; i < Size; i++)
-        {
-            for (int j = 0; j < Size; j++)
-            {
-                tiles[i, j].RefreshTile();
-            }
-        }*/
-
-        //GenerateTilesLayer(tiles);
-
-        Game.WorldGenerator.LoadNewChunks(this);
-        #endregion
-    }
 }
 
 public class MeshData
@@ -720,7 +670,7 @@ public class MeshData
         {
             for (int z = 0; z < Chunk.Size; z++)
             {
-                if (tile[x,z].TileBiome == BiomeType.OceanNormal)
+                if (tile[x,z].TileBiome == BiomeType.Bench)
                 {
                     CreateSquareWater(tile[x, z].x, tile[x, z].y, tile[x, z].z, tile,new Vector3(x, 0, z), tile[x, z]);
                 }
@@ -748,7 +698,7 @@ public class MeshData
             {
                 if (tile[x, z].type == TypeBlock.WaterFloor)
                 {
-                    SquareWater(tile[x, z].x, 0, tile[x, z].z, tile[x, z]);
+                    SquareWater(tile[x, z].x, tile[x, z].y, tile[x, z].z, tile[x, z]);
                 }
             }
         }
@@ -772,15 +722,12 @@ public class MeshData
 
     void CreateSquare(float x, float y, float z, Tile tile, Tile[,] tiles)
     {
-        LibNoise.Unity.Generator.Perlin sample = new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low);
-
-        float one = testeGetTile((int)x, (int)z, tile.y);
-        float two = testeGetTile((int)x + 1, (int)z, tile.y);
-        float three = testeGetTile((int)x, (int)z + 1, tile.y);
-        float foure = testeGetTile((int)x + 1, (int)z + 1,tile.y);
+        float two = testeGetTile((int)x + 1, (int)z, y);
+        float three = testeGetTile((int)x, (int)z + 1, y);
+        float foure = testeGetTile((int)x + 1, (int)z + 1, y);
 
 
-        vertices.Add(new Vector3(x, one, z));
+        vertices.Add(new Vector3(x, y, z));
         vertices.Add(new Vector3(x + 1, two, z));
         vertices.Add(new Vector3(x, three, z + 1));
         vertices.Add(new Vector3(x + 1, foure, z + 1));
@@ -822,10 +769,25 @@ public class MeshData
 
     void SquareWater(float x, float y, float z, Tile tile)
     {
-        vertices.Add(new Vector3(x, 0, z));
-        vertices.Add(new Vector3(x + 1, 0, z));
-        vertices.Add(new Vector3(x, 0, z + 1));
-        vertices.Add(new Vector3(x + 1, 0, z + 1));
+        if (tile.TileBiome == BiomeType.Bench)
+        {
+            vertices.Add(new Vector3(x, 1.03f, z));
+            vertices.Add(new Vector3(x + 1, 1.03f, z));
+            vertices.Add(new Vector3(x, 1.03f, z + 1));
+            vertices.Add(new Vector3(x + 1, 1.03f, z + 1));
+        }
+        else
+        {
+            float one = testeGetTile((int)x, (int)z, y);
+            float two = testeGetTile((int)x + 1, (int)z, y);
+            float three = testeGetTile((int)x, (int)z + 1, y);
+            float foure = testeGetTile((int)x + 1, (int)z + 1, y);
+
+            vertices.Add(new Vector3(x, one, z));
+            vertices.Add(new Vector3(x + 1, two, z));
+            vertices.Add(new Vector3(x, three, z + 1));
+            vertices.Add(new Vector3(x + 1, foure, z + 1));
+        }
 
         triangles.Add(vertices.Count - 1);
         triangles.Add(vertices.Count - 3);
@@ -840,12 +802,15 @@ public class MeshData
 
     void CreateSquareWater(float x, float y, float z, Tile[,] tile, Vector3 currenttile, Tile thistile)
     {
-        LibNoise.Unity.Generator.Perlin sample = new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low);
+        float one = testeGetTile((int)x, (int)z, y);
+        float two = testeGetTile((int)x + 1, (int)z, y);
+        float three = testeGetTile((int)x, (int)z + 1, y);
+        float foure = testeGetTile((int)x + 1, (int)z + 1, y);
 
-        vertices.Add(new Vector3(x, y, z));
-        vertices.Add(new Vector3(x + 1, y, z));
-        vertices.Add(new Vector3(x, y, z + 1));
-        vertices.Add(new Vector3(x + 1, y, z + 1));
+        vertices.Add(new Vector3(x, one, z));
+        vertices.Add(new Vector3(x + 1, two, z));
+        vertices.Add(new Vector3(x, three, z + 1));
+        vertices.Add(new Vector3(x + 1, foure, z + 1));
 
         triangles.Add(vertices.Count - 1);
         triangles.Add(vertices.Count - 3);
@@ -860,42 +825,45 @@ public class MeshData
 
     void CreateSquareWaterLow(float x, float y, float z, Tile[,] tile, Vector3 currenttile, Tile thistile)
     {
-        LibNoise.Unity.Generator.Perlin sample = new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low);
+        float one = testeGetTile((int)x, (int)z, y);
+        float two = testeGetTile((int)x + 1, (int)z, y);
+        float three = testeGetTile((int)x, (int)z + 1, y);
+        float foure = testeGetTile((int)x + 1, (int)z + 1, y);
 
         if (HaveTile(x, z))
         {
-            vertices.Add(new Vector3(x, y, z));
+            vertices.Add(new Vector3(x, one, z));
         }
         else
         {
-            vertices.Add(new Vector3(x, y - 1, z));
+            vertices.Add(new Vector3(x, one - 1, z));
         }
 
         if (HaveTile(x + 1, z))
         {
-            vertices.Add(new Vector3(x + 1, y, z));
+            vertices.Add(new Vector3(x + 1, two, z));
         }
         else
         {
-            vertices.Add(new Vector3(x + 1, y - 1, z));
+            vertices.Add(new Vector3(x + 1, two - 1, z));
         }
 
         if (HaveTile(x, z + 1))
         {
-            vertices.Add(new Vector3(x, y, z + 1));
+            vertices.Add(new Vector3(x, three, z + 1));
         }
         else
         {
-            vertices.Add(new Vector3(x, y - 1, z + 1));
+            vertices.Add(new Vector3(x, three - 1, z + 1));
         }
 
         if (HaveTile(x + 1, z + 1))
         {
-            vertices.Add(new Vector3(x + 1, y, z + 1));
+            vertices.Add(new Vector3(x + 1, foure, z + 1));
         }
         else
         {
-            vertices.Add(new Vector3(x + 1, y - 1, z + 1));
+            vertices.Add(new Vector3(x + 1, foure - 1, z + 1));
         }
 
         triangles.Add(vertices.Count - 1);

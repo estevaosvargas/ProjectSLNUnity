@@ -42,6 +42,9 @@ public class WorldGenerator : MapManager
 
     public static int Snap(float i, int v) => (int)(Mathf.Round(i / v) * v);
 
+    private bool isFirstFinished = false;
+    private bool doneFirstCheck = false;
+
     void Awake()
     {
         Game.WorldGenerator = this;
@@ -68,24 +71,24 @@ public class WorldGenerator : MapManager
     {
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
-            Player = Game.GameManager.Player.RequestSpawnPlayer(new Vector3(0, 55, 0), World_ID).transform;
-            Game.ConsoleInGame.LoadingScreen_Hide();
+            Player = Game.GameManager.Player.RequestSpawnPlayer(Biome.GetBiomeYPosition(UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100)), World_ID).transform;
             //StartCoroutine("StrartGenerator");
-        }
-        if (!IsMainMenu)
-        {
-            WorldRuning = true;
-            PlayerPos = new Vector3((int)Player.position.x, 0, (int)Player.position.z);
-            worldGenerator = new Thread(new ThreadStart(MadeChunks));
-            worldGenerator.Name = "WorldGenerator";
-            worldGenerator.IsBackground = true;
-            worldGenerator.Start();
         }
     }
 
     void Update()
     {
         PlayerPos = new Vector3(Player.position.x, 0, Player.position.z);
+
+        if (!doneFirstCheck)
+        {
+            if (isFirstFinished)
+            {
+                Game.GameManager.Player.PlayerObj.body.enabled = true;
+                Game.ConsoleInGame.LoadingScreen_Hide();
+                doneFirstCheck = false;
+            }
+        }
 
         while (pendingchunks.Count > 0)
         {
@@ -97,6 +100,10 @@ public class WorldGenerator : MapManager
                 obj.name = "Chunk : " + chunk.position.x + " : " + chunk.position.z;
 
                 obj.GetComponent<Chunk>().position = new Vector3(chunk.position.x, 0, chunk.position.z);
+
+                obj.GetComponent<Chunk>().MakeChunk(chunk.tiles);
+
+                LoadNewChunks(obj.GetComponent<Chunk>());
 
                 chunkMap.Add(new Chunk2(chunk.position.x, chunk.position.z), obj.GetComponent<Chunk>());
             }
@@ -128,23 +135,41 @@ public class WorldGenerator : MapManager
         worldGenerator = null;
     }
 
-    public void Setplayer_data()
+    /// <summary>
+    /// this start the world generation(start the thread), this is called by player
+    /// </summary>
+    public void StartWorld()
     {
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
             Player = Game.GameManager.Player.PlayerObj.transform;
             Player.GetComponent<EntityPlayer>().World = this.transform;
         }
+
+        WorldRuning = true;
+        PlayerPos = new Vector3((int)Player.position.x, 0, (int)Player.position.z);
+        worldGenerator = new Thread(new ThreadStart(MadeChunks));
+        worldGenerator.Name = "WorldGenerator";
+        worldGenerator.IsBackground = true;
+        worldGenerator.Start();
     }
 
     public void LoadNewChunks(Chunk current_chunk)
     {
         List<Chunk> chunks = new List<Chunk>();
 
+        current_chunk.RefreshChunkTile();
+
         chunks.Add(GetChunkAt((int)current_chunk.transform.position.x, (int)current_chunk.transform.position.z + 10));//Cima
         chunks.Add(GetChunkAt((int)current_chunk.transform.position.x, (int)current_chunk.transform.position.z - 10));//Baixo
         chunks.Add(GetChunkAt((int)current_chunk.transform.position.x + 10, (int)current_chunk.transform.position.z));//Direita
         chunks.Add(GetChunkAt((int)current_chunk.transform.position.x - 10, (int)current_chunk.transform.position.z));//Esquerda
+
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x + 10, (int)current_chunk.transform.position.z + 10));//Cima Direita
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x + 10, (int)current_chunk.transform.position.z - 10));//Baixo Direita
+
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x - 10, (int)current_chunk.transform.position.z + 10));//Cima Esquerda
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x - 10, (int)current_chunk.transform.position.z - 10));//Baixo Esquerda
 
         foreach (var item in chunks)
         {
@@ -157,7 +182,11 @@ public class WorldGenerator : MapManager
 
     public override void OnRespawn()
     {
-        Setplayer_data();
+        if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
+        {
+            Player = Game.GameManager.Player.PlayerObj.transform;
+            Player.GetComponent<EntityPlayer>().World = this.transform;
+        }
         base.OnRespawn();
     }
 
@@ -180,6 +209,17 @@ public class WorldGenerator : MapManager
                     if (chunkMap.ContainsKey(vector) == false)
                     {
                         ChunkData nchunk = new ChunkData();
+
+                        nchunk.tiles = new Tile[Chunk.Size, Chunk.Size];
+
+                        for (int i = 0; i < Chunk.Size; i++)
+                        {
+                            for (int j = 0; j < Chunk.Size; j++)
+                            {
+                                nchunk.tiles[i,j] = new Tile(i + (int)vector.x, j + (int)vector.z, (int)vector.x, (int)vector.z, null);
+                            }
+                        }
+
                         nchunk.position = vector;
                         pendingchunks.Enqueue(nchunk);
                     }
@@ -200,6 +240,8 @@ public class WorldGenerator : MapManager
                     }
                 }
             }
+
+            isFirstFinished = true;
         }
     }
 
@@ -396,7 +438,7 @@ public class WorldGenerator : MapManager
         {
             GameObject go = Instantiate(ChunkGO, new Vector3(x, 0, z), Quaternion.identity);
             chunkMap.Add(new Chunk2(x, z), go.GetComponent<Chunk>());
-            go.GetComponent<Chunk>().ClientSetUpChunk(tile);
+            //go.GetComponent<Chunk>().ClientSetUpChunk(tile);
         }
     }
 
@@ -414,7 +456,7 @@ public class WorldGenerator : MapManager
 
             go.GetComponent<Chunk>().Players.Add(unique);
 
-            return go.GetComponent<Chunk>().MakeChunk();
+            return go.GetComponent<Chunk>().MakeChunk(null);
         }
         else
         {
@@ -453,6 +495,7 @@ public struct ChunkData
     internal Chunk2 position;
     internal Chunk ChunkC;
     internal GameObject obj;
+    public Tile[,] tiles;
 }
 
 public struct Chunk2

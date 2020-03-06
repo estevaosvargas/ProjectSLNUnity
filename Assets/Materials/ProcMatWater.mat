@@ -73,17 +73,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - PixelSnap: 0
-    - _BeanchDeep: 1.3
+    - _BeanchDeep: 2.85
     - _Cutoff: 0.5
     - _DepthMaxDistance: 1
     - _EnableExternalAlpha: 0
     - _FoamMaxDistance: 0
     - _FoamMinDistance: 0
-    - _FresnelScale: 0.57
+    - _FresnelScale: 0.39
     - _GerstnerIntensity: 1
     - _ReflDistort: 0.12
     - _RefrDistort: 0
-    - _Shininess: 149
+    - _Shininess: 33
     - _SurfaceDistortionAmount: 1
     - _SurfaceNoiseCutoff: 1
     - _WaterDistance: 1.23
@@ -97,29 +97,29 @@ Material:
     - WaveSpeed: {r: 19, g: 9, b: -16, a: -7}
     - _AnimationDirection: {r: 2, g: 4, b: 2, a: -1}
     - _AnimationTiling: {r: 0, g: 0, b: 0, a: 0}
-    - _BaseColor: {r: 0.16855067, g: 0.5874586, b: 0.5568281, a: 1}
+    - _BaseColor: {r: 0.9401113, g: 0.97005904, b: 0.9756307, a: 1}
     - _BumpDirection: {r: -10, g: -5, b: 10, a: 2}
-    - _BumpTiling: {r: 0.2, g: 0.2, b: 0.2, a: 0.2}
+    - _BumpTiling: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DepthGradientDeep: {r: 0.16850874, g: 0.5870343, b: 0.5568092, a: 1}
     - _DepthGradientShallow: {r: 0.5044938, g: 0.5044938, b: 0.5044938, a: 0}
     - _DistortParams: {r: 7.72, g: 1.08, b: 0.7, a: 0.25}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
-    - _Foam: {r: 0.42666668, g: 0.48666668, b: 0, a: 0}
+    - _Foam: {r: 0.71, g: 0.48666668, b: 0, a: 0}
     - _FoamColor: {r: 0, g: 0, b: 0, a: 0}
-    - _GAmplitude: {r: 0, g: 0, b: 0, a: 0}
+    - _GAmplitude: {r: 0.05, g: 0.1, b: 0.1, a: 0}
     - _GDirectionAB: {r: 0.46914357, g: 0.35405126, b: 0.4, a: 0}
-    - _GDirectionCD: {r: 0.7033888, g: -0.6799999, b: 0.7175735, a: -0.2}
-    - _GFrequency: {r: 2.12, g: 2.12, b: 2.12, a: 0.79}
-    - _GSpeed: {r: 2, g: 1, b: 1, a: 1}
+    - _GDirectionCD: {r: 0.7033888, g: -0.6799999, b: 0.7175735, a: -0.99}
+    - _GFrequency: {r: 2, g: 2, b: 1.5, a: 0.79}
+    - _GSpeed: {r: 2, g: 2, b: 2, a: 0}
     - _GSteepness: {r: 7.66, g: 2, b: 4.4, a: 2}
     - _HorizonColor: {r: 0.172, g: 0.463, b: 0.435, a: 1}
-    - _InvFadeParemeter: {r: 1, g: 1, b: 1, a: 1}
-    - _ReflectionColor: {r: 0.5108663, g: 0.5108663, b: 0.5108663, a: 0}
+    - _InvFadeParemeter: {r: 0.37, g: 0.03, b: 1, a: 1}
+    - _ReflectionColor: {r: 0.14527594, g: 0.7764456, b: 0.886345, a: 1}
     - _RefrColor: {r: 0.35506406, g: 0.8801289, b: 0.9528302, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _SpecularColor: {r: 0.38679248, g: 0.35426244, b: 0.26820046, a: 1}
     - _SurfaceNoiseScroll: {r: 0.27, g: 0.03, b: 0, a: 0}
-    - _WorldLightDir: {r: 0, g: 0, b: -1.0000005, a: 0}
+    - _WorldLightDir: {r: -0.030375138, g: -0.20139083, b: -0.97903997, a: 0}
     - _horizonColor: {r: 0.172, g: 0.463, b: 0.435, a: 0}

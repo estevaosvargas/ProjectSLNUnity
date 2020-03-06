@@ -138,9 +138,9 @@ public class TimeOfDay : MonoBehaviour
 
             RenderSettings.ambientLight = CurrentAmbientColor;
             RenderSettings.fogColor = CurrentFogColor;
-            ////Shader.SetGlobalColor("_BaseColor", Get_BaseColor);
-            //Shader.SetGlobalColor("_ReflectionColor", Get_ReflectionColor);
-            //Shader.SetGlobalColor("_SpecularColor", Get_SpecularColor);
+            WaterMat.SetColor("_BaseColor", Get_BaseColor);
+            WaterMat.SetColor("_ReflectionColor", Get_ReflectionColor);
+            WaterMat.SetColor("_SpecularColor", Get_SpecularColor);
 
             SkyMaterial.SetColor("_SkyColor1", Get_TopSkyColor);
             SkyMaterial.SetColor("_SkyColor2", Get_HorizonColor);

@@ -35,7 +35,7 @@ public class Inventory : MonoBehaviour
 
                 if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Inside")
                 {
-                    transform.position = new Vector3(inve.x, 1, inve.z);
+                    transform.position = new Vector3(inve.x, inve.y, inve.z);
                 }
 
                 GetComponent<EntityPlayer>().Status = inve.Status;
