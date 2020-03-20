@@ -41,7 +41,9 @@ public class Tile
 
     [NonSerialized]
     public int chunkX = 0;
+    [NonSerialized]
     public int chunkZ = 0;
+    [NonSerialized]
     public Chunk tileChunk;
 
     [NonSerialized]
@@ -251,6 +253,18 @@ public class Tile
 
         if (HP <= 0)
         {
+            Tile[] neighbor = GetNeighboors(true);
+
+            y = y - 0.1f;
+
+            for (int i = 0; i < neighbor.Length; i++)
+            {
+                neighbor[i].tileChunk.TileTransitionChange(neighbor[i]);
+                neighbor[i].OnTileTypeChange(neighbor[i]);
+                neighbor[i].y = y - 0.1f;
+                tileChunk.RefreshChunkTile();
+            }
+
             switch (type)
             {
                 case TypeBlock.Grass:
@@ -272,17 +286,11 @@ public class Tile
                 case TypeBlock.GoldStone:
                     DamageTypeSet(TypeBlock.RockGround);
                     break;
-                case TypeBlock.RockGround:
-                    
-                    break;
                 case TypeBlock.DirtGrass:
                     DamageTypeSet(TypeBlock.Dirt);
                     break;
-                case TypeBlock.Dirt:
-                    
-                    break;
                 default:
-                    DamageTypeSet(TypeBlock.Air);
+                    RefreshTileMesh();
                     break;
             }
         }
@@ -364,12 +372,37 @@ public class Tile
         }
 
         this.type = type;
-        Reset();
-        SetUpTile(this);
-        SaveChunk();
 
+        Tile[] neighbor = GetNeighboors(true);
+
+        y = y + 0.1f;
+
+        for (int i = 0; i < neighbor.Length; i++)
+        {
+            neighbor[i].tileChunk.TileTransitionChange(neighbor[i]);
+            neighbor[i].OnTileTypeChange(neighbor[i]);
+            neighbor[i].y = y + 0.1f;
+            tileChunk.RefreshChunkTile();
+        }
+
+        RefreshTileMesh();
+    }
+
+    private void RefreshTileMesh()
+    {
+        if (typego != TakeGO.empty || PLACER_DATA != Placer.empty)//only to remove or change this tile, need are empty, dont have any object placed on this tile 
+        {
+            return;
+        }
+
+        Reset();
+
+        SetUpTile(this);
+        DamageSetUp(this);
+        SaveChunk();
         OnTileTypeChange(this);
         tileChunk.TileTransitionChange(this);
+
 
         Tile[] neighbor = GetNeighboors(true);
 
@@ -377,9 +410,10 @@ public class Tile
         {
             neighbor[i].tileChunk.TileTransitionChange(neighbor[i]);
             neighbor[i].OnTileTypeChange(neighbor[i]);
+            neighbor[i].tileChunk.RefreshChunkTile();
         }
 
-        //TileChunk.ThisChunk.RefreshChunk();
+        tileChunk.RefreshChunkTile();
     }
 
     //Save all chunk

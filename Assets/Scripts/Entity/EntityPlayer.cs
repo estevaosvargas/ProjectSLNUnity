@@ -89,6 +89,14 @@ public class EntityPlayer : EntityLife
             Net.RPC("UpdatePosition", DarckNet.RPCMode.AllNoOwner, new Vector3(transform.position.x, transform.position.y, transform.position.z));
         }
 
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            Anim.speed = 1.5f;
+        }
+        else
+        {
+            Anim.speed = 1;
+        }
 
         if (tile != null)
         {

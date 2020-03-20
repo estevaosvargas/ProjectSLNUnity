@@ -335,24 +335,18 @@ public class HandManager : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            Game.GameManager.t.DamageBloco(500);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            Game.GameManager.t.PlaceBlockSet(Game.GameManager.t.type);
+        }
+
         if (MouselockFake.IsLock == false && CurrentItem != null && Distance <= CurrentItem.About.Distance && OnHand == false)
         {
-            if (Game.GameManager.t != null)
-            {
-                if (Game.WorldGenerator.SlectedBlock != null)
-                {
-                    if (CurrentItem.ITEMTYPE == ItemType.Block || CurrentItem.ITEMTYPE == ItemType.Tools || CurrentItem.ITEMTYPE == ItemType.Placer)
-                    {
-                        Game.WorldGenerator.SlectedBlock.gameObject.SetActive(true);
-                        Game.WorldGenerator.SlectedBlock.position = new Vector3(Game.GameManager.t.x, 0, Game.GameManager.t.z);
-                    }
-                    else
-                    {
-                        Game.WorldGenerator.SlectedBlock.gameObject.SetActive(false);
-                    }
-                }
-            }
-
             if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Joystick1Button5))
             {
                 FirstAction();
@@ -379,19 +373,6 @@ public class HandManager : MonoBehaviour
         }
         else if (MouselockFake.IsLock == false && OnHand == true && Distance <= Hand.Distance)
         {
-            if (Game.GameManager.t != null)
-            {
-                if (Game.WorldGenerator.SlectedBlock != null)
-                {
-                    Game.WorldGenerator.SlectedBlock.gameObject.SetActive(true);
-                    Game.WorldGenerator.SlectedBlock.position = new Vector3(Game.GameManager.t.x, 0, Game.GameManager.t.z);
-                }
-                else
-                {
-                    Game.WorldGenerator.SlectedBlock.gameObject.SetActive(false);
-                }
-            }
-
             if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Joystick1Button5))
             {
                 FirstAction();
@@ -402,14 +383,6 @@ public class HandManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Joystick1Button5))
             {
                 FirstAction();
-            }
-
-            if (Game.WorldGenerator)
-            {
-                if (Game.WorldGenerator.SlectedBlock != null)
-                {
-                    Game.WorldGenerator.SlectedBlock.gameObject.SetActive(false);
-                }
             }
         }
     }

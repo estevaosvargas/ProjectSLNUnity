@@ -126,6 +126,7 @@ public class Chunk : MonoBehaviour
         }
     }
 
+
     public Tile[] MakeChunk(Tile[,] tileReady)
     {
         tileGOmap = new Dictionary<Tile, GameObject>();
@@ -739,6 +740,7 @@ public class MeshData
         triangles.Add(vertices.Count - 2);
         triangles.Add(vertices.Count - 1);
         triangles.Add(vertices.Count - 4);
+
 
         UVs.AddRange(Game.SpriteManager.GetTileUVs(tile));
     }
