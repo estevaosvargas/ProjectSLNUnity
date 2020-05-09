@@ -20,6 +20,8 @@ public class Tile
 
     public int RenderLevel = 0;
 
+    public float density = 0;
+
     public BiomeType TileBiome;
 
     [NonSerialized]
@@ -41,6 +43,8 @@ public class Tile
 
     [NonSerialized]
     public int chunkX = 0;
+    [NonSerialized]
+    public int chunkY = 0;
     [NonSerialized]
     public int chunkZ = 0;
     [NonSerialized]
@@ -145,92 +149,21 @@ public class Tile
         type = Type;
     }
 
-    public Tile(int x, int z, int chunkX, int chunkZ, Chunk tileChunk)
+    public Tile(int x, int y, int z, int chunkX, int chunkY, int chunkZ, VoxelDataItem voxeldata, Chunk tileChunk)
     {
         this.chunkX = chunkX;
+        this.chunkY = chunkY;
         this.chunkZ = chunkZ;
         this.tileChunk = tileChunk;
 
 
         this.x = x;
+        this.y = y;
         this.z = z;
 
-        float persistence = 39.9f;
-        float frequency = 0.001f;
-        float amplitude = 52.79f;
-        int octaves = 184;
+        density = voxeldata.density;
 
-        int width = 50;
-        int height = 50;
-
-        float Scale = 1f;
-
-        float xCordee = (float)octaves * x / width * Scale;
-        float zCordee = (float)octaves * z / height * Scale;
-
-        xCordee *= frequency;
-        zCordee *= frequency;
-
-        float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(x, z, 0);
-        OceanHight = sample;
-
-        //this.y = sample / 50;
-
-        if (Game.WorldGenerator.CurrentWorld == WorldType.Caves)
-        {
-            Debug.LogError("Sorry Caves Is Not enable in alpha!");
-        }
-        else if (Game.WorldGenerator.CurrentWorld == WorldType.Normal)
-        {
-            // normal 0.8f
-            
-            if (sample >= 50f)
-            {
-                float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 1, Game.GameManager.Seed, false).GetValue(x, z, 0);
-                sample2 *= 10;
-
-                PerlinSetType(SetUpBiome(x, z, sample, sample2));
-            }
-            else
-            {
-                TileBiome = BiomeType.Bench;
-                PerlinSetType(Biome.GetBiome(x, z, this, sample, BiomeType.Bench));
-            }
-        }
-    }
-
-    public Tile(int x, int y, int z, int chunkX, int chunkZ, Chunk tileChunk, bool menu)
-    {
-        this.chunkX = chunkX;
-        this.chunkZ = chunkZ;
-        this.tileChunk = tileChunk;
-
-        this.x = x;
-        this.z = z;
-
-        float persistence = 39.9f;
-        float frequency = 0.001f;
-        float amplitude = 52.79f;
-        int octaves = 184;
-
-        int width = 50;
-        int height = 50;
-
-        float Scale = 1f;
-
-        float xCordee = (float)octaves * x / width * Scale;
-        float zCordee = (float)octaves * z / height * Scale;
-
-        xCordee *= frequency;
-        zCordee *= frequency;
-
-        float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(x, z, 0);
-
-        float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 1, Game.GameManager.Seed, false).GetValue(x, z, 0);
-
-        sample2 *= 10;
-
-        PerlinSetType(SetUpBiome(x, z, sample, sample2));
+        PerlinSetType(voxeldata.typeBlock);
     }
 
     public void PerlinSetType(TypeBlock type)
@@ -458,78 +391,6 @@ public class Tile
         }
 
         return neighbors;
-    }
-
-    //Valus to determine whear what biome is on the positions
-    public TypeBlock SetUpBiome(int x, int z, float sample, float sample2)
-    {
-        if ((int)sample2 == 0)
-        {
-            //sem nemhum
-            TileBiome = BiomeType.ForestNormal;
-        }
-        else if ((int)sample2 == 1)
-        {
-            //Jungle
-            TileBiome = BiomeType.Jungle;
-        }
-        else if ((int)sample2 == 2)
-        {
-            //Oceano Normal
-            TileBiome = BiomeType.ForestNormal;
-        }
-        else if ((int)sample2 == 3)
-        {
-            //Deserto
-            TileBiome = BiomeType.Montahas;
-        }
-        else if ((int)sample2 == 4)
-        {
-            //sem nemhum
-            TileBiome = BiomeType.Plain;
-        }
-        else if ((int)sample2 == 5)
-        {
-            //sem nemhum
-            TileBiome = BiomeType.Snow;
-        }
-        else if ((int)sample2 == 6)
-        {
-            //sem nemhum
-            TileBiome = BiomeType.Jungle;
-        }
-        else if ((int)sample2 == 7)
-        {
-            //sem nemhum
-            TileBiome = BiomeType.Desert;
-        }
-        else if ((int)sample2 == -4)
-        {
-            //sem nemhum
-            TileBiome = BiomeType.ForestNormal_Dense;
-        }
-        else if ((int)sample2 == 8)
-        {
-            //sem nemhum
-            TileBiome = BiomeType.ForestNormal_Dense;
-        }
-        else if ((int)sample2 == -8)
-        {
-            //sem nemhum
-            TileBiome = BiomeType.ForestNormal_Dense;
-        }
-        else if ((int)sample2 == -2)
-        {
-            //sem nemhum
-            TileBiome = BiomeType.ForestNormal_Dense;
-        }
-        else
-        {
-            //Debug.Log("BiomeNum : " + (int)sample2);
-            TileBiome = BiomeType.ForestNormal;
-        }
-
-        return Biome.GetBiome(x, z, this, sample, TileBiome);
     }
 
     private void DamageSetUp(Tile tile)

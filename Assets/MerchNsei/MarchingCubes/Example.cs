@@ -12,25 +12,12 @@ namespace MarchingCubesProject
 
     public enum MARCHING_MODE {  CUBES, TETRAHEDRON };
 
-    [System.Serializable]
-    public struct TileNew
-    {
-        public int x;
-        public int y;
-        public int z;
-
-        public List<Vector3> vertsTile;
-
-        public float density;
-        public TypeBlocks typeblock;
-        public TakeGO tileObject;
-    }
-
     public class Example : MonoBehaviour
     {
         public static int Size = 10;
-        public TileNew[,,] Tiles;
+        public Tile[,,] Tiles;
 
+        public Material m_Dev;
         public Material m_material;
         public Material m_Grass;
 
@@ -39,7 +26,24 @@ namespace MarchingCubesProject
             List<CombineInstance> combine = new List<CombineInstance>();
             List<Material> Meterials = new List<Material>();
 
-            Tiles = tilethred.voxels;
+            Tiles = new Tile[Size, Size, Size];
+
+            for (int x = 0; x < Size; x++)
+            {
+                for (int y = 0; y < Size; y++)
+                {
+                    for (int z = 0; z < Size; z++)
+                    {
+                        Tiles[x,y,z] = new Tile(x + (int)transform.position.x, y + (int)transform.position.y, z + (int)transform.position.z, (int)transform.position.x, (int)transform.position.y, (int)transform.position.z, tilethred.voxels[x, y, z], null);
+                        SetUpTileTree(Tiles[x, y, z]);
+                    }
+                }
+            }
+
+            if (tilethred.MeshList == null)
+            {
+                return;
+            }
 
             for (int m = 0; m < tilethred.MeshList.Count; m++)
             {
@@ -54,8 +58,6 @@ namespace MarchingCubesProject
                     splitIndices.Add(j);
                 }
 
-                if (splitVerts.Count == 0) continue;
-
                 Mesh mesh = new Mesh();
 
                 mesh.SetVertices(splitVerts);
@@ -67,18 +69,25 @@ namespace MarchingCubesProject
                 intancecombine.mesh = mesh;
                 intancecombine.transform = Matrix4x4.identity;
 
-                if (tilethred.MeshList.Keys.ToArray()[m] == TypeBlocks.grass)
+                if (tilethred.MeshList.Keys.ToArray()[m] == TypeBlock.Grass)
                 {
                     if (!Meterials.Contains(m_Grass))
                     {
                         Meterials.Add(m_Grass);
                     }
                 }
-                else
+                else if (tilethred.MeshList.Keys.ToArray()[m] == TypeBlock.Rock)
                 {
                     if (!Meterials.Contains(m_material))
                     {
                         Meterials.Add(m_material);
+                    }
+                }
+                else
+                {
+                    if (!Meterials.Contains(m_Dev))
+                    {
+                        Meterials.Add(m_Dev);
                     }
                 }
 
@@ -90,44 +99,36 @@ namespace MarchingCubesProject
             finalmesh.AddComponent<MeshRenderer>().materials = Meterials.ToArray();
             finalmesh.transform.SetParent(transform, true);
 
-
             finalmesh.GetComponent<MeshFilter>().mesh = new Mesh();
             finalmesh.GetComponent<MeshFilter>().mesh.CombineMeshes(combine.ToArray(), false);
+
             finalmesh.AddComponent<MeshCollider>().sharedMesh = finalmesh.GetComponent<MeshFilter>().mesh;
             finalmesh.transform.localPosition = Vector3.zero;
 
             //The chunk terrain is finished, nos is the datails
-
-            for (int x = 0; x < Size; x++)
-            {
-                for (int y = 0; y < Size; y++)
-                {
-                    for (int z = 0; z < Size; z++)
-                    {
-                        SetUpTileTree(Tiles[x, y, z]);
-                    }
-                }
-            }
         }
 
-        private void SetUpTileTree(TileNew tile)
+        private void SetUpTileTree(Tile tile)
         {
             System.Random ran = new System.Random(0);
 
-            if (tile.tileObject != TakeGO.empty)
+            if (tile.typego != TakeGO.empty)
             {
-                GameObject trees = Instantiate(GetPrefabOnRecources("Prefabs/Trees/" + tile.tileObject.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
-                trees.transform.SetParent(this.transform, true);
-
-
-                System.Random randomValue = new System.Random((int)tile.x + (int)tile.z);
-                float size = ran.Next((int)0f, (int)0.5f);
-                trees.transform.position = new Vector3(tile.x, tile.y, tile.z);
-                //trees.transform.localScale = new Vector3(trees.transform.localScale.x + size, trees.transform.localScale.y + size, trees.transform.localScale.z + size);
-
-                if (trees.GetComponent<Trees>())
+                if (TileMeshProcedural.Instance.GetTileAt(tile.x, tile.y + 1, tile.z) != null && TileMeshProcedural.Instance.GetTileAt(tile.x, tile.y + 1, tile.z).density < 0)
                 {
-                    trees.GetComponent<Trees>().ThisTreeTile = null;
+                    GameObject trees = Instantiate(GetPrefabOnRecources("Prefabs/Trees/" + tile.typego.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
+                    trees.transform.SetParent(this.transform, true);
+
+
+                    System.Random randomValue = new System.Random((int)tile.x + (int)tile.z);
+                    float size = ran.Next((int)0f, (int)0.5f);
+                    trees.transform.position = new Vector3(tile.x, tile.y, tile.z);
+                    //trees.transform.localScale = new Vector3(trees.transform.localScale.x + size, trees.transform.localScale.y + size, trees.transform.localScale.z + size);
+
+                    if (trees.GetComponent<Trees>())
+                    {
+                        trees.GetComponent<Trees>().ThisTreeTile = null;
+                    }
                 }
             }
         }
@@ -147,17 +148,12 @@ namespace MarchingCubesProject
     }
 }
 
-public enum TypeBlocks : byte
-{
-    none, grass, stone
-}
-
 public struct VerticeVoxel
 {
     public Vector3 vert;
-    public TypeBlocks type;
+    public TypeBlock type;
 
-    public VerticeVoxel(Vector3 _vert, TypeBlocks _typeBlocks)
+    public VerticeVoxel(Vector3 _vert, TypeBlock _typeBlocks)
     {
         vert = _vert;
         type = _typeBlocks;
@@ -167,9 +163,9 @@ public struct VerticeVoxel
 public struct VoxelData
 {
     public float value;
-    public TypeBlocks type;
+    public TypeBlock type;
 
-    public VoxelData(float _value, TypeBlocks _typeBlocks)
+    public VoxelData(float _value, TypeBlock _typeBlocks)
     {
         value = _value;
         type = _typeBlocks;

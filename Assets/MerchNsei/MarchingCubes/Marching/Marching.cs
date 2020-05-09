@@ -11,25 +11,21 @@ namespace MarchingCubesProject
 
         public float Surface { get; set; }
 
-        private TileNew[] Cube { get; set; }
+        private VoxelDataItem[] Cube { get; set; }
 
         /// <summary>
         /// Winding order of triangles use 2,1,0 or 0,1,2
         /// </summary>
         protected int[] WindingOrder { get; private set; }
 
-        private float tUnit = 0.25f;
-        private Vector2 tStone = new Vector2(0, 0);
-        private Vector2 tGrass = new Vector2(0, 1);
-
         public Marching(float surface = 0.5f)
         {
             Surface = surface;
-            Cube = new TileNew[8];
+            Cube = new VoxelDataItem[8];
             WindingOrder = new int[] { 0, 1, 2 };
         }
 
-        public virtual void Generate(TileNew[,,] voxels, int width, int height, int depth, IList<VerticeVoxel> verts, IList<int> indices, IList<Vector2> uv)
+        public virtual void Generate(VoxelDataItem[,,] voxels, int width, int height, int depth, IList<VerticeVoxel> verts, IList<int> indices, IList<Vector2> uv)
         {
             
             if (Surface > 0.0f)
@@ -75,7 +71,7 @@ namespace MarchingCubesProject
          /// <summary>
         /// MarchCube performs the Marching algorithm on a single cube
         /// </summary>
-        protected abstract void March(float x, float y, float z, TileNew[] cube, IList<VerticeVoxel> vertList, IList<int> indexList, IList<Vector2> uv, TileNew voxelsTile);
+        protected abstract void March(float x, float y, float z, VoxelDataItem[] cube, IList<VerticeVoxel> vertList, IList<int> indexList, IList<Vector2> uv, VoxelDataItem voxelsTile);
 
         /// <summary>
         /// GetOffset finds the approximate point of intersection of the surface

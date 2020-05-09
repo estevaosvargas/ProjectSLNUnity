@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Mathematics;
 using LibNoise.Unity.Generator;
 
 public enum BiomeType { ForestNormal = 0, Desert = 1, OceanNormal = 2, Jungle = 3, Plain = 4, Snow = 5, Bench = 6 , None, Montahas, Cave, ForestNormal_Dense }
@@ -19,6 +20,18 @@ public struct BiomeOnly
     }
 }
 
+public struct VoxelDataItem
+{
+    public float density;
+    public TypeBlock typeBlock;
+
+    public VoxelDataItem(float _density, TypeBlock _typeBlock)
+    {
+        density = _density;
+        typeBlock = _typeBlock;
+    }
+}
+
 public static class Biome
 {
     public static int width = 50;
@@ -34,309 +47,177 @@ public static class Biome
     public static float amplitude = 79.12f;
     public static int octaves = 26;
 
-    public static TypeBlock GetBiome(int x, int z, Tile tile, float sample, BiomeType biomeType)
+    public static BiomeType[] Biomeslayers = new BiomeType[8] { BiomeType.ForestNormal, BiomeType.Desert, BiomeType.Jungle, BiomeType.Plain, BiomeType.Snow, BiomeType.Bench, BiomeType.Montahas, BiomeType.ForestNormal_Dense };
+
+
+    public static VoxelDataItem GetDensity(int x, int y, int z)
     {
-        float ForestNormalPerlin = Get_PerlinForestNormal(x, z);
-        float ForestNormal_DensePerlin = Get_PerlinForestNormal_Dense(x, z);
-        float DesertPerlin = Get_PerlinDesert(x, z);
-        //float OceanNormalPerlin = ForestNormal(x, z);
-        //float BenchPerlin = ForestNormal(x, z);
-        float JunglePerlin = Get_PerlinJungle(x, z);
-        float PlainePerlin = Get_PerlinPlaine(x, z);
-        float ForestSnowPerlin = Get_PerlinForestSnow(x, z);
-        float MontanhasPerlin = Get_PerlinMontanhas(x, z);
+        FastNoise globalNoise = new FastNoise();
 
-        //https://github.com/RedHenDev/Unity_scripts/blob/master/simpleVoxels_expanded_tuts/Assets/simpleVoxels/seeding/lerpTerrain.cs usa isso aqui como um exemplo
+        globalNoise.SetFrequency(0.001f);
 
-        //float noise + simplexnoise + simplexnoise_high;
+        int n = Biomeslayers.Length;
+        float l = globalNoise.GetPerlin(x, z);
+        float YY = 0;
 
-        float last = 0;
-
-        float finalheight = 0;
-        float distance = 0;
-        float divide = 0;
-
-        //essse tile = 0
-        //
-
-        switch (biomeType)
+        for (int i = 0; i < Biomeslayers.Length; i++)
         {
-            case BiomeType.ForestNormal:
-                tile.y = ForestNormalPerlin;
-                tile.y += GetHeight(x, z, ForestNormalPerlin * 5, biomeType) + sample / 50;
-                return ForestNormal(x, z, tile, sample, ForestNormalPerlin);
-            case BiomeType.Desert:
-                tile.y = DesertPerlin;
-                tile.y += GetHeight(x, z, DesertPerlin * 5, biomeType) + sample / 50;
-                return Desert(x, z, tile, sample, DesertPerlin);
-            case BiomeType.Jungle:
-                tile.y = JunglePerlin;
-                tile.y += GetHeight(x, z, JunglePerlin * 5, biomeType) + sample / 50;
-                return Jungle(x, z, tile, sample, JunglePerlin);
-            case BiomeType.Plain:
-                tile.y = PlainePerlin;
-                tile.y += GetHeight(x, z, PlainePerlin * 5, biomeType) + sample / 50;
-                return Plaine(x, z, tile, sample, PlainePerlin);
-            case BiomeType.Snow:
-                tile.y = ForestSnowPerlin;
-                tile.y += GetHeight(x, z, ForestSnowPerlin * 5, biomeType) + sample / 50;
-                return ForestSnow(x, z, tile, sample, ForestSnowPerlin);
-            case BiomeType.Bench:
-                tile.y = sample / 200;
-                tile.y += GetHeight(x, z, sample / 200, biomeType) + 1;
-                return Bench(x, z, tile, sample);
-            case BiomeType.Montahas:
-                tile.y = MontanhasPerlin;
-                tile.y += GetHeight(x, z, MontanhasPerlin * 5, biomeType) + sample / 50;
-                return Montanhas(x, z, tile, sample, MontanhasPerlin);
-            case BiomeType.ForestNormal_Dense:
-                tile.y = ForestNormal_DensePerlin;
-                tile.y += GetHeight(x, z, ForestNormal_DensePerlin * 5, biomeType) + sample / 50;
-                return ForestNormal_Dense(x, z, tile, sample, ForestNormal_DensePerlin);
-            default:
-                return TypeBlock.Air;
+            if ((i - 1f) / n <= l && l <= (i + 1f) / n)
+            {
+                switch (Biomeslayers[i])
+                {
+                    case BiomeType.ForestNormal:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestNormal(x, z) * 25;
+                        break;
+                    case BiomeType.Desert:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinDesert(x, z) * 2;
+                        break;
+                    case BiomeType.Jungle:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinJungle(x, z) * 15;
+                        break;
+                    case BiomeType.Plain:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinPlaine(x, z) * 30;
+                        break;
+                    case BiomeType.Snow:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestSnow(x, z) * 20;
+                        break;
+                    case BiomeType.Bench:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * l * 50;
+                        break;
+                    case BiomeType.Montahas:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinMontanhas(x, z) * 80;
+                        break;
+                    case BiomeType.ForestNormal_Dense:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestNormal_Dense(x, z) * 35;
+                        break;
+                }
+            }
+        }
+
+        TypeBlock blocktype = Teste(y - YY);
+
+        return new VoxelDataItem(-(y - YY), blocktype);
+    }
+
+    public static TypeBlock Teste(float perlin)
+    {
+        if (perlin <= 0.15f)
+        {
+            //Water
+            return TypeBlock.WaterFloor;
+        }
+        else if (perlin > 0.15f && perlin < 0.2f)
+        {
+            //Sand Bench
+            return TypeBlock.BeachSand;
+        }
+        else if (perlin > 0.2f && perlin <= 0.7f)
+        {
+            if (perlin > 0.2f && perlin < 0.6f)
+            {
+
+                return TypeBlock.Grass;
+            }
+            else if (perlin > 0.6f && perlin < 0.605f)
+            {
+                //grass
+                return TypeBlock.Grass;
+            }
+            else if (perlin > 0.62f && perlin < 0.63f)
+            {
+                //grass
+                return TypeBlock.Grass;
+            }
+            else
+            {
+                //tall grass
+                return TypeBlock.Grass;
+            }
+
+        }
+        else if (perlin > 0.7f && perlin <= 0.8f)
+        {
+            if (perlin > 0.7f && perlin < 0.72f)
+            {
+                //grama do pe do morro com arvores
+                return TypeBlock.Rock;
+            }
+            else if (perlin > 0.72f && perlin < 0.74f)
+            {
+                //grama do pe do morro
+                return TypeBlock.Rock;
+            }
+            else
+            {
+                //pe do morro
+                return TypeBlock.Rock;
+            }
+
+        }
+        else
+        {
+            //topo do morro
+            return TypeBlock.Rock;
         }
     }
 
-    public static Vector3 GetBiomeYPosition(int x, int z)
+    public static Vector3 GetBiomeYPosition(int x, int y,int z)
     {
-        float ForestNormalPerlin = Get_PerlinForestNormal(x, z);
-        float ForestNormal_DensePerlin = Get_PerlinForestNormal_Dense(x, z);
-        float DesertPerlin = Get_PerlinDesert(x, z);
-        //float OceanNormalPerlin = ForestNormal(x, z);
-        //float BenchPerlin = ForestNormal(x, z);
-        float JunglePerlin = Get_PerlinJungle(x, z);
-        float PlainePerlin = Get_PerlinPlaine(x, z);
-        float ForestSnowPerlin = Get_PerlinForestSnow(x, z);
-        float MontanhasPerlin = Get_PerlinMontanhas(x, z);
-
-        BiomeType biomeType = GetVizinhos(x,z);
-        float sample = Get_PerlinGlobal(x, z);
-
         Vector3 final = new Vector3();
 
-        switch (biomeType)
+        /*switch (biomeType)
         {
             case BiomeType.ForestNormal:
+                float ForestNormalPerlin = Get_PerlinForestNormal(x, z);
                 final.y = ForestNormalPerlin;
-                final.y += GetHeight(x, z, ForestNormalPerlin * 5, biomeType) + sample / 50;
+                final.y += GetHeight(x, y, z, ForestNormalPerlin * 5, biomeType) + sample / 50;
                 break;
             case BiomeType.Desert:
+                float DesertPerlin = Get_PerlinDesert(x, z);
                 final.y = DesertPerlin;
-                final.y += GetHeight(x, z, DesertPerlin * 5, biomeType) + sample / 50;
+                final.y += GetHeight(x, y, z, DesertPerlin * 5, biomeType) + sample / 50;
                 break;
             case BiomeType.Jungle:
+                float JunglePerlin = Get_PerlinJungle(x, z);
                 final.y = JunglePerlin;
-                final.y += GetHeight(x, z, JunglePerlin * 5, biomeType) + sample / 50;
+                final.y += GetHeight(x, y, z, JunglePerlin * 5, biomeType) + sample / 50;
                 break;
             case BiomeType.Plain:
+                float PlainePerlin = Get_PerlinPlaine(x, z);
                 final.y = PlainePerlin;
-                final.y += GetHeight(x, z, PlainePerlin * 5, biomeType) + sample / 50;
+                final.y += GetHeight(x, y, z, PlainePerlin * 5, biomeType) + sample / 50;
                 break;
             case BiomeType.Snow:
+                float ForestSnowPerlin = Get_PerlinForestSnow(x, z);
                 final.y = ForestSnowPerlin;
-                final.y += GetHeight(x, z, ForestSnowPerlin * 5, biomeType) + sample / 50;
+                final.y += GetHeight(x, y, z, ForestSnowPerlin * 5, biomeType) + sample / 50;
                 break;
             case BiomeType.Bench:
                 final.y = sample / 200;
-                final.y += GetHeight(x, z, sample / 200, biomeType) + 1;
+                final.y += GetHeight(x, y, z, sample / 200, biomeType) + 1;
                 break;
             case BiomeType.Montahas:
+                float MontanhasPerlin = Get_PerlinMontanhas(x, z);
                 final.y = MontanhasPerlin;
-                final.y += GetHeight(x, z, MontanhasPerlin * 5, biomeType) + sample / 50;
+                final.y += GetHeight(x, y, z, MontanhasPerlin * 5, biomeType) + sample / 50;
                 break;
             case BiomeType.ForestNormal_Dense:
+                float ForestNormal_DensePerlin = Get_PerlinForestNormal_Dense(x, z);
                 final.y = ForestNormal_DensePerlin;
-                final.y += GetHeight(x, z, ForestNormal_DensePerlin * 5, biomeType) + sample / 50;
+                final.y += GetHeight(x,y ,z, ForestNormal_DensePerlin * 5, biomeType) + sample / 50;
                 break;
-        }
+        }*/
 
         return final;
     }
 
-    public static float GetHeight(int x, int z, float height, BiomeType biomeType)
+    public static float GetHeight(int x, int y,int z, float height, BiomeType biomeType)
     {
         float high = height;
 
-        if (biomeType != BiomeType.OceanNormal)
-        {
-            high = high + 0.5f;
-        }
-
-        /*for (int i = 1; i < 10; i++)
-        {
-            BiomeType biome = GetVizinhos(x + i, z);
-            BiomeType biome1 = GetVizinhos(x - i, z);
-            BiomeType biome2 = GetVizinhos(x, z + i);
-            BiomeType biome3 = GetVizinhos(x, z - i);
-
-            if (biome != biomeType)
-            {
-                float high2 = MakeTransition(x + i, z, biome);
-                high = lerp(height, high2, 0.1f);
-            }
-            else if(biome1 != biomeType)
-            {
-                float high2 = MakeTransition(x - i, z, biome1);
-                high = lerp(height, high2, 0.1f);
-            }
-            else if(biome2 != biomeType)
-            {
-                float high2 = MakeTransition(x, z + i, biome2);
-                high = lerp(height, high2, 0.1f);
-            }
-            else if (biome3 != biomeType)
-            {
-                float high2 = MakeTransition(x, z - i, biome3);
-                high = lerp(height, high2, 0.1f);
-            }
-        }*/
-
-        /*float i = 0;
-        for (int cx = -2; cx < 3; ++cx)
-        {
-            for (int cz = -2; cz < 3; ++cz)
-            {
-                BiomeType biome = GetVizinhos(x + cx, z + cz);
-
-                if (biome != BiomeType.OceanNormal)
-                {
-                    if (biome != biomeType)
-                    {
-                        i++;
-                        float high2 = MakeTransition(x + cx, z + cz, biome);
-                        high += lerp(height, high2, 0.25f);
-                        //high = high * 1.05f;
-                        high /= 1.7f;
-                    }
-                }
-            }
-        }*/
-
-        for (int cx = -3; cx < 4; ++cx) for (int cz = -3; cz < 4; ++cz)
-                high += getBiomeHeiughtThingy(x + cx, z + cz);
-        high /= 25;
-
-        return high;
+        return y - high;
     }
 
-    private static float getBiomeHeiughtThingy(int x, int z)
-    {
-        return MakeTransition(x, z, GetVizinhos(x, z));
-    }
-
-    static float lerp(float point1, float point2, float alpha)
-    {
-        return point1 + alpha * (point2 - point1);
-    }
-
-    public static float MakeTransition(int x, int z, BiomeType tilebiome)
-    {
-        switch (tilebiome)
-        {
-            case BiomeType.ForestNormal:
-                return Get_PerlinForestNormal(x, z) * 5;
-            case BiomeType.Desert:
-                return Get_PerlinDesert(x, z) * 5;
-            case BiomeType.Jungle:
-                return Get_PerlinJungle(x, z) * 5;
-            case BiomeType.Plain:
-                return Get_PerlinPlaine(x, z) * 5;
-            case BiomeType.Snow:
-                return Get_PerlinForestSnow(x, z) * 5;
-            case BiomeType.Montahas:
-                return Get_PerlinMontanhas(x, z) * 5;
-            case BiomeType.ForestNormal_Dense:
-                return Get_PerlinForestNormal_Dense(x, z) * 5;
-            case BiomeType.Bench:
-                return Get_PerlinGlobal(x, z);
-            default:
-                return Get_PerlinGlobal(x, z);
-        }
-    }
-
-    static BiomeType GetVizinhos(int x, int z)
-    {
-        float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(x, z, 0);
-
-        if (sample >= 50f)
-        {
-            float sample2 = (float)new LibNoise.Unity.Generator.Voronoi(0.01f, 1, Game.GameManager.Seed, false).GetValue(x, z, 0);
-            sample2 *= 10;
-
-            if ((int)sample2 == 0)
-            {
-                return BiomeType.ForestNormal;
-            }
-            else if ((int)sample2 == 1)
-            {
-                //Jungle
-                return BiomeType.Jungle;
-            }
-            else if ((int)sample2 == 2)
-            {
-                //ForestNormal
-                return BiomeType.ForestNormal;
-            }
-            else if ((int)sample2 == 3)
-            {
-                //Montahas
-                return BiomeType.Montahas;
-            }
-            else if ((int)sample2 == 4)
-            {
-                //Plain
-                return BiomeType.Plain;
-            }
-            else if ((int)sample2 == 5)
-            {
-                //Snow
-                return BiomeType.Snow;
-            }
-            else if ((int)sample2 == 6)
-            {
-                //Jungle
-                return BiomeType.Jungle;
-            }
-            else if ((int)sample2 == 7)
-            {
-                //Desert
-                return BiomeType.Desert;
-            }
-            else if ((int)sample2 == -4)
-            {
-                //ForestNormal_Dense
-                return BiomeType.ForestNormal_Dense;
-            }
-            else if ((int)sample2 == 8)
-            {
-                //ForestNormal_Dense
-                return BiomeType.ForestNormal_Dense;
-            }
-            else if ((int)sample2 == -8)
-            {
-                //ForestNormal_Dense
-                return BiomeType.ForestNormal_Dense;
-            }
-            else if ((int)sample2 == -2)
-            {
-                //ForestNormal_Dense
-                return BiomeType.ForestNormal_Dense;
-            }
-            else
-            {
-                return BiomeType.ForestNormal_Dense;
-            }
-        }
-        else if (sample > 0.08f)
-        {
-            return BiomeType.Bench;
-        }
-        else
-        {
-            return BiomeType.Bench;
-        }
-    }
 
     private static float Get_PerlinForestNormal(int x, int z)
     {
@@ -349,7 +230,7 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        return Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+        return Mathf.PerlinNoise(xCorde * noisefactor + GameManager.Small_Seed, zCorde * noisefactor + GameManager.Small_Seed);
     }
 
     private static float Get_PerlinForestNormal_Dense(int x, int z)
@@ -363,7 +244,7 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        return Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+        return Mathf.PerlinNoise(xCorde * noisefactor + GameManager.Small_Seed, zCorde * noisefactor + GameManager.Small_Seed);
     }
 
     private static float Get_PerlinDesert(int x, int z)
@@ -374,8 +255,8 @@ public static class Biome
 
         noisefactor = 0.1f;
 
-        float xCorde = (float)x / width * Scale + Game.GameManager.Small_Seed;
-        float zCorde = (float)z / height * Scale + Game.GameManager.Small_Seed;
+        float xCorde = (float)x / width * Scale + GameManager.Small_Seed;
+        float zCorde = (float)z / height * Scale + GameManager.Small_Seed;
 
         return Mathf.PerlinNoise(xCorde * noisefactor, zCorde * noisefactor);
     }
@@ -391,7 +272,7 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        return Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+        return Mathf.PerlinNoise(xCorde * noisefactor + GameManager.Small_Seed, zCorde * noisefactor + GameManager.Small_Seed);
     }
 
     private static float Get_PerlinPlaine(int x, int z)
@@ -405,7 +286,7 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        return Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+        return Mathf.PerlinNoise(xCorde * noisefactor + GameManager.Small_Seed, zCorde * noisefactor +GameManager.Small_Seed);
     }
 
     private static float Get_PerlinForestSnow(int x, int z)
@@ -419,7 +300,7 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        return Mathf.PerlinNoise(xCorde * noisefactor + Game.GameManager.Small_Seed, zCorde * noisefactor + Game.GameManager.Small_Seed);
+        return Mathf.PerlinNoise(xCorde * noisefactor + GameManager.Small_Seed, zCorde * noisefactor + GameManager.Small_Seed);
     }
 
     private static float Get_PerlinMontanhas(int x, int z)
@@ -435,8 +316,8 @@ public static class Biome
         float amplitude = 52.79f;
         int octaves = 184;
 
-        float xCordee = (float)octaves * x / width * Scale + Game.GameManager.Small_Seed;
-        float zCordee = (float)octaves * z / height * Scale + Game.GameManager.Small_Seed;
+        float xCordee = (float)octaves * x / width * Scale + GameManager.Small_Seed;
+        float zCordee = (float)octaves * z / height * Scale + GameManager.Small_Seed;
 
         // modify with frequency
         xCordee *= frequency;
@@ -447,13 +328,13 @@ public static class Biome
 
     private static float Get_PerlinGlobal(int x, int z)
     {
-        return (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(x, z, 0) / 200;
+        return (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(x, z, 0) / 200;
     }
 
 
     private static TypeBlock ForestNormal(int x, int z, Tile tile, float sample, float perlin)
     {
-        LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 1, Game.GameManager.Seed, false);
+        LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 1, GameManager.Seed, false);
         VeronoiStruc sample2 = CityNoise.GetValueNPoint(x, z, 0);
 
         tile.CityPoint = new DataVector3(CityNoise.GetPoint(x, z, 0));
@@ -497,7 +378,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                System.Random rand = new System.Random(Game.GameManager.Seed + x * z + (tile.chunkX + tile.chunkZ));
+                System.Random rand = new System.Random(GameManager.Seed + x * z + (tile.chunkX + tile.chunkZ));
                 int randnum = (rand.Next(1, 50));
 
                 if (randnum == 1)
@@ -630,7 +511,7 @@ public static class Biome
 
     private static TypeBlock ForestNormal_Dense(int x, int z, Tile tile, float sample, float perlin)
     {
-        LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 1, Game.GameManager.Seed, false);
+        LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 1, GameManager.Seed, false);
         VeronoiStruc sample2 = CityNoise.GetValueNPoint(x, z, 0);
 
         tile.CityPoint = new DataVector3(CityNoise.GetPoint(x, z, 0));
@@ -672,7 +553,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                System.Random rand = new System.Random(Game.GameManager.Seed + x * z + (tile.chunkX + tile.chunkZ));
+                System.Random rand = new System.Random(GameManager.Seed + x * z + (tile.chunkX + tile.chunkZ));
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)
@@ -813,7 +694,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.chunkX + tile.chunkZ));
+                System.Random rand = new System.Random(GameManager.Seed * x + z * (tile.chunkX + tile.chunkZ));
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)
@@ -883,7 +764,7 @@ public static class Biome
     {
         if (sample > 0.08f)
         {
-            System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.chunkX + tile.chunkZ));
+            System.Random rand = new System.Random(GameManager.Seed * x + z * (tile.chunkX + tile.chunkZ));
             int randnum = (rand.Next(1, 100));
 
             if (randnum == 1)
@@ -932,7 +813,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.chunkX + tile.chunkZ));
+                System.Random rand = new System.Random(GameManager.Seed * x + z * (tile.chunkX + tile.chunkZ));
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)
@@ -1153,7 +1034,7 @@ public static class Biome
             {
                 //grass and bushs and trees
 
-                System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.chunkX + tile.chunkZ));
+                System.Random rand = new System.Random(GameManager.Seed * x + z * (tile.chunkX + tile.chunkZ));
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)
@@ -1243,7 +1124,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.chunkX + tile.chunkZ));
+                System.Random rand = new System.Random(GameManager.Seed * x + z * (tile.chunkX + tile.chunkZ));
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)
@@ -1337,7 +1218,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                System.Random rand = new System.Random(Game.GameManager.Seed * x + z * (tile.chunkX + tile.chunkZ));
+                System.Random rand = new System.Random(GameManager.Seed * x + z * (tile.chunkX + tile.chunkZ));
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)

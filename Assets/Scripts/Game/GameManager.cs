@@ -41,8 +41,8 @@ public class GameManager : UIElements
     public Text versioningameText;
     public PlayerManager Player;
     public string Version = "1.0.0";
-    public int Seed = 0;
-    public int Small_Seed = 0;
+    public static int Seed = 0;
+    public static int Small_Seed = 0;
     public string WorldName = "YourWorldName";
     public static bool Playing = false;
     public bool SinglePlayer = false;
@@ -133,7 +133,7 @@ public class GameManager : UIElements
             Seed = int.Parse(seed);
         }
 
-        System.Random randvilla = new System.Random(Game.GameManager.Seed);
+        System.Random randvilla = new System.Random(GameManager.Seed);
 
          Small_Seed = randvilla.Next(-9999, 9999);
 
@@ -1054,7 +1054,7 @@ public static class DataTime
         {
             if (DarckNet.Network.IsServer || Game.GameManager.SinglePlayer)
             {
-                WorldInfo newinfo = new WorldInfo { Seed = Game.GameManager.Seed, h = Hora, d = Dia, m = Mes, skytime = skytime };
+                WorldInfo newinfo = new WorldInfo { Seed = GameManager.Seed, h = Hora, d = Dia, m = Mes, skytime = skytime };
 
                 SaveWorld.SaveInfo(newinfo, "World");
             }

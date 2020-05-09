@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ProcMatTran
+  m_Name: ProcDev
   m_Shader: {fileID: 4800000, guid: 670bc4c895989854bad837f21c299e3a, type: 3}
-  m_ShaderKeywords: ACTIVATE_WIND ETC1_EXTERNAL_ALPHA
+  m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -23,27 +23,47 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Atlas:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BotTex:
-        m_Texture: {fileID: 2800000, guid: 6a736b350b7a18944abdc3cbb8cf738c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 12ef7cbdfe0e143fa858a324456c8979, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Bump:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _BumpMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Detail:
+        m_Texture: {fileID: 2800000, guid: cbbabe9e292f5604897926494bb38fef, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 6a736b350b7a18944abdc3cbb8cf738c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 12ef7cbdfe0e143fa858a324456c8979, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
+    - _MainTex2:
+        m_Texture: {fileID: 2800000, guid: 95dcd197dfaa27d40b466b875dd4eedc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SurfaceDistortion:
+    - _OcclusionMap2:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SurfaceNoise:
+    - _SecondTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -52,48 +72,38 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TopTex:
-        m_Texture: {fileID: 2800000, guid: 6a736b350b7a18944abdc3cbb8cf738c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 12ef7cbdfe0e143fa858a324456c8979, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WallTex:
+        m_Texture: {fileID: 2800000, guid: 95dcd197dfaa27d40b466b875dd4eedc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - PixelSnap: 0
-    - _ActivateWind: 1
-    - _Amount: 1
     - _BotPower: 0
-    - _Brightness: 1
-    - _Contrast: 1
+    - _BumpMultX: 0
+    - _BumpMultY: 0
+    - _BumpMultZ: 0
+    - _BumpScale: 1
     - _Cutoff: 0.5
-    - _DepthMaxDistance: 1
     - _EnableExternalAlpha: 0
-    - _FoamMaxDistance: 0.4
-    - _FoamMinDistance: 0.04
-    - _Hue: 0
-    - _NoiseSpeed: 0.25
-    - _NoiseStrength: 0.25
-    - _Parallax: 0.02
-    - _Positioned: 0
-    - _Saturation: 1
-    - _Sharpness: 0
-    - _Shininess: 0.078125
-    - _SurfaceDistortionAmount: 0.27
-    - _SurfaceNoiseCutoff: 0.777
-    - _TexPower: 20
+    - _Glossiness: 0
+    - _Metallic: 0
+    - _OcclusionStrength: 1
+    - _Shininess: 0.01
+    - _TexPower: 17
+    - _TexScale: 1
     - _TopPower: 0
-    - _WindSpeed: 0.25
-    - _WindStrength: 0.25
-    - _WindYShake: 5
+    - _X_RowCount: 0
+    - _Y_ColumnCount: 0
     m_Colors:
     - _BotColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DepthGradientDeep: {r: 0.086, g: 0.407, b: 1, a: 0.749}
-    - _DepthGradientShallow: {r: 0.325, g: 0.807, b: 0.971, a: 0.725}
+    - _Emission: {r: 0, g: 0, b: 0, a: 0}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
-    - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
-    - _HueVariation: {r: 1, g: 0.25, b: 0, a: 0.1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
-    - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _SurfaceNoiseScroll: {r: 0.03, g: 0.03, b: 0, a: 0}
+    - _SpecColor: {r: 0, g: 0, b: 0, a: 1}
     - _Tint: {r: 1, g: 1, b: 1, a: 1}
     - _TopColor: {r: 1, g: 1, b: 1, a: 1}
-    - _WindFreq: {r: 1, g: 1, b: 1, a: 0}
-    - _WindVector: {r: 1, g: 1, b: 1, a: 0}
+    - _UV: {r: 0.08, g: 0.08, b: 0, a: 0}

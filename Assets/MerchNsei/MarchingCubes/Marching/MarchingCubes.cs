@@ -19,7 +19,7 @@ namespace MarchingCubesProject
 		/// <summary>
 		/// MarchCube performs the Marching Cubes algorithm on a single cube
 		/// </summary>
-		protected override void March(float x, float y, float z, TileNew[] cube, IList<VerticeVoxel> vertList, IList<int> indexList, IList<Vector2> uv, TileNew voxelsTile)
+		protected override void March(float x, float y, float z, VoxelDataItem[] cube, IList<VerticeVoxel> vertList, IList<int> indexList, IList<Vector2> uv, VoxelDataItem voxelsTile)
         {
             int i, j, vert, idx;
             int flagIndex = 0;
@@ -45,8 +45,7 @@ namespace MarchingCubesProject
 			//If the cube is entirely inside or outside of the surface, then there will be no intersections
 			if (edgeFlags == 0)
 			{
-				voxelsTile.typeblock = TypeBlocks.none;
-				voxelsTile.tileObject = TakeGO.empty;
+				voxelsTile.typeBlock = TypeBlock.Air;
 				return;
 			}
 
@@ -75,7 +74,7 @@ namespace MarchingCubesProject
 				{
 					vert = TriangleConnectionTable[flagIndex, 3 * i + j];
 					indexList.Add(idx + WindingOrder[j]);
-					vertList.Add(new VerticeVoxel(EdgeVertex[vert], voxelsTile.typeblock));
+					vertList.Add(new VerticeVoxel(EdgeVertex[vert], voxelsTile.typeBlock));
 				}
 			}
 		}

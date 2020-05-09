@@ -145,7 +145,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 193855155}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -90, y: 0, z: -60}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -182,8 +182,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ChunkGO: {fileID: 8335507364872317035, guid: 5fa81e6397cd9694db8159b9513dc1d7, type: 3}
   Player: {fileID: 193855156}
-  renderDistance: 20
-  ThickRate: 1
+  renderDistance: 5
+  ThickRate: 60
+  seed: 0
 --- !u!4 &1512522251
 Transform:
   m_ObjectHideFlags: 0

@@ -53,7 +53,7 @@ public class Chunk : MonoBehaviour
 
             WaterMeshTile.GetComponent<MeshRenderer>().material = WaterTileMaterial;
 
-            float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, Game.GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(transform.position.x, transform.position.z, 0);
+            float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(transform.position.x, transform.position.z, 0);
 
             sample = sample / 150;
 
@@ -154,7 +154,7 @@ public class Chunk : MonoBehaviour
             {
                 tiles[i, j].tileChunk = this; 
 
-                Vector3 point = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, Game.GameManager.Seed, false).GetPoint(tiles[i, j].x, tiles[i, j].z, 0);
+                Vector3 point = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, GameManager.Seed, false).GetPoint(tiles[i, j].x, tiles[i, j].z, 0);
 
                 tiles[i, j].CityPoint = new DataVector3((int)point.x, (int)point.y, 0);
 
@@ -517,7 +517,7 @@ public class Chunk : MonoBehaviour
                     {
                         if (tile.typego != TakeGO.RockProp)
                         {
-                            System.Random randomValue = new System.Random(Game.GameManager.Seed + (int)tile.x + (int)tile.z);
+                            System.Random randomValue = new System.Random(GameManager.Seed + (int)tile.x + (int)tile.z);
                             float size = Random.Range(0f, 0.5f);
                             trees.transform.position = new Vector3(tile.x + (float)randomValue.NextDouble(), tile.y, tile.z + (float)randomValue.NextDouble());
                             trees.transform.localScale = new Vector3(trees.transform.localScale.x + size, trees.transform.localScale.y + size, trees.transform.localScale.z + size);

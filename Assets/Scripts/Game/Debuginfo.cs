@@ -21,10 +21,12 @@ public class Debuginfo : MonoBehaviour
 
     void Update()
     {
+        
+
         if (Game.GameManager.Player.PlayerObj != null)
         {
             Version.text = Application.productName + " On ("+ Game.GameManager.Version + ")" + " On (" + SystemInfo.graphicsDeviceName + ") - (" + SystemInfo.operatingSystem + ")";
-            WorldSeed.text = "WorldSeed : " + Game.GameManager.Seed;
+            WorldSeed.text = "WorldSeed : " + GameManager.Seed;
             EntityLoade.text = "Entity : " + Game.Entity_viewing.Count;
             ChunksLoade.text = "Chunks Loaded : " + Game.WorldGenerator.ChunksList.Count;
             Biome.text = "Biome : " + Game.GameManager.Player.PlayerObj.NetStats.CurrentBiome;

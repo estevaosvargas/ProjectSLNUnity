@@ -12,11 +12,13 @@ using MarchingCubesProject;
 
  public class TileMeshProcedural : MonoBehaviour
 {
+    public static TileMeshProcedural Instance;
     public GameObject ChunkGO;
     public bool WorldRuning { get; private set; }
     public Vector3 PlayerPos { get; private set; }
     public Transform Player;
     private Thread worldGenerator;
+    private Thread chunksPopulate;
 
     private Queue<Chunk3> pendingDeletions = new Queue<Chunk3>();
     private Queue<ChunkData2> pendingchunks = new Queue<ChunkData2>();
@@ -30,6 +32,11 @@ using MarchingCubesProject;
 
     public static int Snap(float i, int v) => (int)(Mathf.Round(i / v) * v);
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void Start()
     {
         WorldRuning = true;
@@ -38,6 +45,19 @@ using MarchingCubesProject;
         worldGenerator.Name = "WorldGenerator";
         worldGenerator.IsBackground = true;
         worldGenerator.Start();
+
+        /*chunksPopulate = new Thread(new ThreadStart(MadeChunks));
+        chunksPopulate.Name = "chunksPopulate";
+        chunksPopulate.IsBackground = true;
+        chunksPopulate.Start();*/
+    }
+
+    private void OnGUI()
+    {
+        GUI.Label(new Rect(10, 10, 200, 20), "WorldSeed: " + GameManager.Seed);
+        GUI.Label(new Rect(10, 30, 200, 20), "Chunks: " + chunkMap.Count);
+        GUI.Label(new Rect(10, 50, 200, 20), "ChunksCache: " + pendingchunks.Count);
+        GUI.Label(new Rect(10, 70, 200, 20), "ChunksDeleteCache: " + pendingDeletions.Count);
     }
 
     void Update()
@@ -59,7 +79,7 @@ using MarchingCubesProject;
                 chunk.TileThreadHelp.voxels = null;
                 chunk.TileThreadHelp.MeshList.Clear();
 
-                chunkMap.Add(new Chunk3(chunk.position.x, chunk.position.y, chunk.position.z), new ChunkSeria(chunk.position, obj));
+                chunkMap.Add(new Chunk3(chunk.position.x, chunk.position.y, chunk.position.z), new ChunkSeria(chunk.position, obj, obj.GetComponent<MarchingCubesProject.Example>()));
             }
         }
         while (pendingDeletions.Count > 0)
@@ -138,23 +158,25 @@ using MarchingCubesProject;
 
     public TileThreadHelp MakeMarching(int chunkx, int chunky, int chunkz)
     {
-       
-
-        //Set the mode used to create the mesh.
-        //Cubes is faster and creates less verts, tetrahedrons is slower and creates more verts but better represents the mesh surface.
-        Marching marching = new MarchingCubesProject.MarchingCubes();
-
-        //Surface is the value that represents the surface of mesh
-        //For example the perlin noise has a range of -1 to 1 so the mid point is where we want the surface to cut through.
-        //The target value does not have to be the mid point it can be any value with in the range.
-        marching.Surface = 0.0f;
-
         //The size of voxel array.
         int width = 11;
         int height = 11;
         int length = 11;
 
-        TileNew[,,] voxels = new TileNew[width, height, length];
+        //Set the mode used to create the mesh.
+        //Cubes is faster and creates less verts, tetrahedrons is slower and creates more verts but better represents the mesh surface.
+        Marching marching = new MarchingCubesProject.MarchingCubes();
+        VoxelDataItem[,,] voxels = new VoxelDataItem[width, height, length];
+        List<VerticeVoxel> verts = new List<VerticeVoxel>();
+        List<int> indices = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
+        TileThreadHelp tileThreadHelp = new TileThreadHelp();
+        tileThreadHelp.MeshList = new Dictionary<TypeBlock, List<Vector3>>();
+
+        //Surface is the value that represents the surface of mesh
+        //For example the perlin noise has a range of -1 to 1 so the mid point is where we want the surface to cut through.
+        //The target value does not have to be the mid point it can be any value with in the range.
+        marching.Surface = 0.0f;
 
         //Fill voxels with values. Im using perlin noise but any method to create voxels will work.
         for (int x = 0; x < width; x++)
@@ -163,121 +185,14 @@ using MarchingCubesProject;
             {
                 for (int z = 0; z < length; z++)
                 {
-                    float fx = x / (width - 1.0f);
-                    float fy = y / (height - 1.0f);
-                    float fz = z / (length - 1.0f);
-
-                    int idx = x + y * width + z * width * height;
-
-                    float density = (float)new LibNoise.Unity.Generator.Perlin(5f, 0.6f, 2.15f, 10, seed, LibNoise.Unity.QualityMode.Low).GetValue(x + chunkx, y + chunky, z + chunkz) / 50;
-
-                    voxels[x, y, z].x = x + chunkx;
-                    voxels[x, y, z].y = y + chunky;
-                    voxels[x, y, z].z = z + chunkz;
-
-
-                    if ((y + chunky) <= -10 && (y + chunky) <= 10)
-                    {
-                        voxels[x, y, z].typeblock = TypeBlocks.stone;
-                        voxels[x, y, z].tileObject = TakeGO.empty;
-                    }
-                    else
-                    {
-                        density = -CalculateDensity(x + chunkx, y + chunky, z + chunkz) + -CalculateDensity2(x + chunkx, y + chunky, z + chunkz);
-
-                        float perlin = 1f - 100f / (100f + density);
-
-                        if (perlin <= 0.15f)
-                        {
-                            voxels[x, y, z].typeblock = TypeBlocks.grass;
-                        }
-                        else if (perlin > 0.15f && perlin < 0.2f)
-                        {
-                            voxels[x, y, z].typeblock = TypeBlocks.grass;
-                        }
-                        else if (perlin > 0.2f && perlin <= 0.7f)
-                        {
-                            if (perlin > 0.2f && perlin < 0.6f)
-                            {
-                                voxels[x, y, z].typeblock = TypeBlocks.grass;
-                            }
-                            else if (perlin > 0.6f && perlin < 0.605f)
-                            {
-                                voxels[x, y, z].typeblock = TypeBlocks.grass;
-                            }
-                            else if (perlin > 0.62f && perlin < 0.63f)
-                            {
-                                voxels[x, y, z].typeblock = TypeBlocks.grass;
-                            }
-                            else
-                            {
-                                voxels[x, y, z].typeblock = TypeBlocks.grass;
-                            }
-
-                        }
-                        else if (perlin > 0.7f && perlin <= 0.8f)
-                        {
-                            if (perlin > 0.7f && perlin < 0.72f)
-                            {
-                                voxels[x, y, z].typeblock = TypeBlocks.stone;
-                            }
-                            else if (perlin > 0.72f && perlin < 0.74f)
-                            {
-                                voxels[x, y, z].typeblock = TypeBlocks.stone;
-                            }
-                            else
-                            {
-                                voxels[x, y, z].typeblock = TypeBlocks.stone;
-                            }
-
-                        }
-                        else
-                        {
-                            voxels[x, y, z].typeblock = TypeBlocks.stone;
-                        }
-
-                    }
-
-                    voxels[x, y, z].density = math.clamp(density, -1, 1);
-
-
-                    if (voxels[x, y, z].density >= -0.9f && voxels[x, y, z].density <= 0)
-                    {
-                        if (voxels[x, y, z].typeblock == TypeBlocks.grass)
-                        {
-                            System.Random ran = new System.Random(0 + voxels[x, y, z].x * voxels[x, y, z].y * voxels[x, y, z].z);
-
-                            if (ran.Next(0, 20) == 5)
-                            {
-                                voxels[x, y, z].tileObject = TakeGO.Oak;
-                            }
-                            else if (ran.Next(0, 20) == 3)
-                            {
-                                voxels[x, y, z].tileObject = TakeGO.Pine;
-                            }
-                        }
-                    }
-                    //Debug.Log("Desntisy " + voxels[x, y, z].density);
+                    voxels[x, y, z] = Biome.GetDensity(x + chunkx, y + chunky, z + chunkz);
                 }
             }
         }
 
-        List<VerticeVoxel> verts = new List<VerticeVoxel>();
-        List<int> indices = new List<int>();
-        List<Vector2> uvs = new List<Vector2>();
-
         //The mesh produced is not optimal. There is one vert for each index.
         //Would need to weld vertices for better quality mesh.
         marching.Generate(voxels, width, height, length, verts, indices, uvs);
-
-        //A mesh in unity can only be made up of 65000 verts.
-        //Need to split the verts between multiple meshes.
-
-        int maxVertsPerMesh = 30000; //must be divisible by 3, ie 3 verts == 1 triangle
-        int numMeshes = verts.Count / maxVertsPerMesh + 1;
-
-        TileThreadHelp tileThreadHelp = new TileThreadHelp();
-        tileThreadHelp.MeshList = new Dictionary<TypeBlocks, List<Vector3>>();
 
         for (int i = 0; i < verts.Count; i++)
         {
@@ -294,6 +209,50 @@ using MarchingCubesProject;
         tileThreadHelp.voxels = voxels;
 
         return tileThreadHelp;
+    }
+
+    public MarchingCubesProject.Example GetChunkAt(int xx, int yy,int zz)
+    {
+        xx = Mathf.FloorToInt(xx / (float)Chunk.Size) * Chunk.Size;
+        yy = Mathf.FloorToInt(yy / (float)Chunk.Size) * Chunk.Size;
+        zz = Mathf.FloorToInt(zz / (float)Chunk.Size) * Chunk.Size;
+
+        Chunk3 chunkpos = new Chunk3(xx,yy, zz);
+
+        if (chunkMap.ContainsKey(chunkpos))
+        {
+            return chunkMap[chunkpos].ChunkScript;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public Tile GetTileAt(int x, int y,int z)
+    {
+        MarchingCubesProject.Example chunk = GetChunkAt(x, y,z);
+
+        if (chunk != null)
+        {
+            return chunk.Tiles[x - (int)chunk.transform.position.x, y - (int)chunk.transform.position.y, z - (int)chunk.transform.position.z];
+        }
+        return null;
+    }
+
+    public Tile GetTileAt(float x, float y,float z)
+    {
+        int mx = Mathf.FloorToInt(x);
+        int my = Mathf.FloorToInt(y);
+        int mz = Mathf.FloorToInt(z);
+
+        MarchingCubesProject.Example chunk = GetChunkAt(mx, my,mz);
+
+        if (chunk != null)
+        {
+            return chunk.Tiles[mx - (int)chunk.transform.position.x, my - (int)chunk.transform.position.y, mz - (int)chunk.transform.position.z];
+        }
+        return null;
     }
 
     protected static readonly int[,] VertexOffset = new int[,]
@@ -334,16 +293,18 @@ public struct ChunkSeria
 {
     public Chunk3 Position;
     public GameObject obj;
+    public MarchingCubesProject.Example ChunkScript;
 
-    public ChunkSeria(Chunk3 _Position, GameObject _obj)
+    public ChunkSeria(Chunk3 _Position, GameObject _obj, MarchingCubesProject.Example _ChunkScript)
     {
         Position = _Position;
         obj = _obj;
+        ChunkScript = _ChunkScript;
     }
 }
 
 public struct TileThreadHelp
 {
-    public TileNew[,,] voxels;
-    public Dictionary<TypeBlocks, List<Vector3>> MeshList;
+    public VoxelDataItem[,,] voxels;
+    public Dictionary<TypeBlock, List<Vector3>> MeshList;
 }

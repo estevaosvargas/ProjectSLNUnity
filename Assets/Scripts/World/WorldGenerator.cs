@@ -59,7 +59,7 @@ public class WorldGenerator : MapManager
                 Debug.Log("SERVER: Sun Spawned");
             }
 
-            randomValue = new System.Random(Game.GameManager.Seed);
+            randomValue = new System.Random(GameManager.Seed);
         }
         else
         {
@@ -71,7 +71,7 @@ public class WorldGenerator : MapManager
     {
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
-            Player = Game.GameManager.Player.RequestSpawnPlayer(Biome.GetBiomeYPosition(UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100)), World_ID).transform;
+            Player = Game.GameManager.Player.RequestSpawnPlayer(Biome.GetBiomeYPosition(UnityEngine.Random.Range(-100, 100), 0,UnityEngine.Random.Range(-100, 100)), World_ID).transform;
             //StartCoroutine("StrartGenerator");
         }
     }
@@ -225,7 +225,7 @@ public class WorldGenerator : MapManager
                         {
                             for (int j = 0; j < Chunk.Size; j++)
                             {
-                                nchunk.tiles[i,j] = new Tile(i + (int)vector.x, j + (int)vector.z, (int)vector.x, (int)vector.z, null);
+                                //nchunk.tiles[i,j] = new Tile(i + (int)vector.x, j + (int)vector.z, (int)vector.x, (int)vector.z, null);
                             }
                         }
 
