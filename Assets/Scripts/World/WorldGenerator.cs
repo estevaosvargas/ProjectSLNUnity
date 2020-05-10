@@ -90,15 +90,6 @@ public class WorldGenerator : MapManager
             }
         }
 
-        if (Game.GameManager.t != null)
-        {
-            if (Game.WorldGenerator.SlectedBlock != null)
-            {
-                Game.WorldGenerator.SlectedBlock.gameObject.SetActive(true);
-                Game.WorldGenerator.SlectedBlock.position = new Vector3(Game.GameManager.t.x, Game.GameManager.t.y, Game.GameManager.t.z);
-            }
-        }
-
         while (pendingchunks.Count > 0)
         {
             ChunkData chunk = pendingchunks.Dequeue();
@@ -507,15 +498,6 @@ public struct ChunkData
     public Tile[,] tiles;
 }
 
-
-[System.Serializable]
-public struct ChunkData2
-{
-    internal bool isReady;
-    internal Chunk3 position;
-    public TileThreadHelp TileThreadHelp;
-}
-
 public struct Chunk2
 {
     public int x;
@@ -524,21 +506,6 @@ public struct Chunk2
     public Chunk2(int _x, int _z)
     {
         x = _x;
-        z = _z;
-    }
-}
-
-
-public struct Chunk3
-{
-    public int x;
-    public int y;
-    public int z;
-
-    public Chunk3(int _x, int _y,int _z)
-    {
-        x = _x;
-        y = _y;
         z = _z;
     }
 }
