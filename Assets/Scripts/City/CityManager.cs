@@ -77,7 +77,7 @@ public class CityManager : MonoBehaviour
 
     public GameObject SpawnNewEntity(CitzenCredential citzenCredential, Vector3 spawnPosition)
     {
-        GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/Villager"), spawnPosition, Quaternion.identity, Game.WorldGenerator.World_ID);
+        GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/Villager"), spawnPosition, Quaternion.identity, Game.World.World_ID);
 
         Vilanger villanger = obj.GetComponent<Vilanger>();
 

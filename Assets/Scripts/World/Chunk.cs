@@ -1,913 +1,104 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
 
 public class Chunk : MonoBehaviour
 {
-    public GameObject lightobj;
-    public GameObject TileObj;
-    public static int Size = 10;
-    public Tile[,] tiles { get; private set; }
-    public List<Tile> tilelist = new List<Tile>();
+    public Vector3 chunkPosition;
 
-    public Vector3 position;
-
-    public List<Entity> Entitys = new List<Entity>();
-    public List<long> Players = new List<long>();
-    public Dictionary<Tile, GameObject> TransTile = new Dictionary<Tile, GameObject>();
-    Dictionary<Tile, GameObject> tileGOmap;
-
-    private float timetemp = 0;
-    private float timetemp2 = 0;
-    public float TimeUpdate = 10;
-
+    public MeshFilter meshFilter;
+    public MeshRenderer meshRenderer;
+    public MeshCollider meshCollider;
     public float QueeTime = 5;
+    public Block[,,] Blocks;
 
-    public bool HaveAnyBuild = false;
-    public bool AsSave = false;
+    private List<Entity> Entitys = new List<Entity>();
+    private List<long> Players = new List<long>();
 
-    public Material DefaultTileMaterial;
-    public Material DefaultTransMaterial;
-    public Material WaterTileMaterial;
-
-    public GameObject MeshTile;
-    public GameObject WaterMeshTile;
-
-    public float DebugOcean = 0;
-
-    void Awake()
-    {
-        
-    }
+    public Material m_Grass;
 
     void Start()
     {
-        if (Game.GameManager.SinglePlayer)
-        {
-            StartCoroutine(QueeObjects());
 
-            GenerateTilesLayer(tiles);
-            GenerateWaterLayer(tiles);
-            //_BeanchDeep
-
-            WaterMeshTile.GetComponent<MeshRenderer>().material = WaterTileMaterial;
-
-            float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(transform.position.x, transform.position.z, 0);
-
-            sample = sample / 150;
-
-            Vector2 samplee = new Vector2(sample, sample);
-
-            samplee.Normalize();
-
-            DebugOcean = samplee.x;
-
-            if (samplee.x > 1 || samplee.x < -1)
-            {
-                samplee.x = 1;
-            }
-
-            WaterMeshTile.GetComponent<MeshRenderer>().material.SetFloat("_BeanchDeep", samplee.x);
-
-            Game.WorldGenerator.LoadNewChunks(this);
-
-            if (HaveAnyBuild)
-            {
-                SaveChunk();
-            }
-        }
-        else if (DarckNet.Network.IsServer)
-        {
-            for (int i = 0; i < Size; i++)
-            {
-                for (int j = 0; j < Size; j++)
-                {
-                    #region SetUpPathGrid
-                    if (!Game.PathGrid.tiles.ContainsKey(new Vector2(tiles[i, j].x, tiles[i, j].z)))
-                    {
-                        if (tiles[i, j].CanWalk)
-                        {
-                            if (tiles[i, j].typego == TakeGO.empty && tiles[i, j].PLACER_DATA == Placer.empty)
-                            {
-                                int coust = tiles[i, j].CanWalk ? 0 : 1;
-                                Game.PathGrid.tiles.Add(new Vector2(tiles[i, j].x, tiles[i, j].z), new Node(tiles[i, j].CanWalk, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), coust));
-                            }
-                            else
-                            {
-                                Game.PathGrid.tiles.Add(new Vector2(tiles[i, j].x, tiles[i, j].z), new Node(false, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), 1));
-                            }
-                        }
-                        else
-                        {
-                            Game.PathGrid.tiles.Add(new Vector2(tiles[i, j].x, tiles[i, j].z), new Node(false, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), 1));
-                        }
-                    }
-                    else
-                    {
-                        if (tiles[i, j].typego == TakeGO.empty && tiles[i, j].PLACER_DATA == Placer.empty)
-                        {
-                            int coust = tiles[i, j].CanWalk ? 0 : 1;
-                            Game.PathGrid.tiles[new Vector2(tiles[i, j].x, tiles[i, j].z)] = new Node(tiles[i, j].CanWalk, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), coust);
-                        }
-                        else
-                        {
-                            Game.PathGrid.tiles[new Vector2(tiles[i, j].x, tiles[i, j].z)] = new Node(false, new Vector3(tiles[i, j].x, tiles[i, j].y, tiles[i, j].z), 1);
-                        }
-                    }
-                    #endregion
-                }
-            }
-
-            if (HaveAnyBuild)
-            {
-                SaveChunk();
-            }
-        }
     }
 
-    public Tile[] MakeChunk(Tile[,] tileReady)
+    public void MakeMesh(VoxelDataItem[,,] voxelData)
     {
-        tileGOmap = new Dictionary<Tile, GameObject>();
-        tiles = new Tile[Size, Size];
-        Game.WorldGenerator.ChunksList.Add(this);
-        bool havesave = false;
+        chunkPosition = transform.position;
+        Blocks = new Block[World.ChunkSize, World.ChunkSize, World.ChunkSize];
 
-        if (File.Exists(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + Game.WorldGenerator.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z) + ".chunkdata"))
+        for (int x = 0; x < World.ChunkSize; x++)
         {
-            ChunkSerializable chunkloaded = SaveWorld.Load(Game.WorldGenerator.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z);
-            tiles = chunkloaded.tiles;
-            AsSave = true;
-            havesave = true;
-        }
-
-        if (!havesave)
-        {
-            tiles = tileReady;
-        }
-
-        #region TileGen
-        for (int i = 0; i < Size; i++)
-        {
-            for (int j = 0; j < Size; j++)
+            for (int y = 0; y < World.ChunkSize; y++)
             {
-                tiles[i, j].tileChunk = this; 
-
-                Vector3 point = new LibNoise.Unity.Generator.Voronoi(0.009f, 2, GameManager.Seed, false).GetPoint(tiles[i, j].x, tiles[i, j].z, 0);
-
-                tiles[i, j].CityPoint = new DataVector3((int)point.x, (int)point.y, 0);
-
-                if (tiles[i, j].OwnedByCity)
+                for (int z = 0; z < World.ChunkSize; z++)
                 {
-                    Game.CityManager.SetUpCity(tiles[i, j].CityPoint);//Spawn the vilangers, in world, out side the buildings
-                }
-
-                tiles[i, j].SetUpTile(tiles[i, j]);
-                tiles[i, j].RegisterOnTileTypeChange(OnTileTypeChange);
-
-                if (DarckNet.Network.IsServer && !Game.GameManager.SinglePlayer)
-                {
-                    tiles[i, j].IsServerTile = true;
-
-                    SetUpTileTree(tiles[i, j]);
-                    SpawnCityEntity(tiles[i, j]);
-                    SetupObjects(tiles[i, j]);
-
-                    if (tiles[i, j].CanWalk)
+                    Blocks[x, y, z] = new Block(x + (int)transform.position.x, y + (int)transform.position.y, z + (int)transform.position.z, voxelData[x, y, z].density, voxelData[x, y, z].typeBlock);
+                    Blocks[x, y, z].CurrentChunk = transform.position;//Set this chunk to the tile
+                    /*if (Blocks[x, y, z].HaveTree)
                     {
-                        if (Random.Range(1, 125) > 123)
-                        {
-                            SpawnNetWorkObject(tiles[i, j]);
-                        }
-                    }
+                        GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                        obj.transform.position = new Vector3(Blocks[x, y, z].x, Blocks[x, y, z].y, Blocks[x, y, z].z);
+                        obj.transform.SetParent(transform, true);
+                    }*/
                 }
-
-                //OnTileTypeChange(tiles[i, j]);
-                //TileTransitionChange(tiles[i, j]);
-                tilelist.Add(tiles[i, j]);
             }
         }
-        #endregion
 
-        return tilelist.ToArray();
+        UpdateMeshChunk();
     }
 
-    IEnumerator QueeObjects()
+    public void UpdateMeshData(MeshDataThread meshDataThread)
     {
-        for (int i = 0; i < Size; i++)
-        {
-            for (int j = 0; j < Size; j++)
-            {
-                yield return new WaitForSeconds(QueeTime);
-                SetUpTileTree(tiles[i, j]);
-                SpawnCityEntity(tiles[i, j]);
-                SetupObjects(tiles[i, j]);
-
-                if (tiles[i, j].CanWalk)
-                {
-                    if (Random.Range(1, 125) > 123)
-                    {
-                        SpawnNetWorkObject(tiles[i, j]);
-                    }
-                }
-
-                tiles[i, j].RefreshTile();
-            }
-        }
-    }
-
-    public void RefreshChunkTile()
-    {
-        if (MeshTile != null)
-        {
-            MeshData data = new MeshData(tiles);
-
-            MeshFilter filter = MeshTile.GetComponent<MeshFilter>();
-            MeshRenderer render = MeshTile.GetComponent<MeshRenderer>();
-            MeshCollider mMeshcollider = MeshTile.GetComponent<MeshCollider>();
-
-            Mesh mesh = filter.mesh;
-
-            mesh.vertices = data.vertices.ToArray();
-            mesh.triangles = data.triangles.ToArray();
-            mesh.uv = data.UVs.ToArray();
-
-            mesh.RecalculateNormals();
-
-            mMeshcollider.sharedMesh = mesh;
-
-            filter.mesh = mesh;
-        }
-
-        if (WaterMeshTile != null)
-        {
-            MeshData data = new MeshData(tiles, true);
-
-            MeshFilter filter = WaterMeshTile.GetComponent<MeshFilter>();
-            MeshRenderer render = WaterMeshTile.GetComponent<MeshRenderer>();
-            render.material = WaterTileMaterial;
-
-            Mesh mesh = filter.mesh;
-
-            mesh.vertices = data.vertices.ToArray();
-            mesh.triangles = data.triangles.ToArray();
-            mesh.uv = data.UVs.ToArray();
-
-            mesh.RecalculateNormals();
-
-            filter.mesh = mesh;
-        }
-    }
-
-    void GenerateTilesLayer(Tile[,] tiles)
-    {
-        MeshData data = new MeshData(tiles);
-
         GameObject meshGO = new GameObject("TileLayer_" + transform.position.x + "_" + transform.position.z);
         meshGO.transform.SetParent(this.transform, true);
 
         MeshFilter filter = meshGO.AddComponent<MeshFilter>();
         MeshRenderer render = meshGO.AddComponent<MeshRenderer>();
         MeshCollider mMeshcollider = meshGO.AddComponent<MeshCollider>();
-        render.material = DefaultTileMaterial;
+
+        render.material = m_Grass;
 
         Mesh mesh = filter.mesh;
 
-        mesh.vertices = data.vertices.ToArray();
-        mesh.triangles = data.triangles.ToArray();
-        mesh.uv = data.UVs.ToArray();
+        mesh.vertices = meshDataThread.vertices;
+        mesh.triangles = meshDataThread.triangles;
+        mesh.uv = meshDataThread.uvs;
 
         mesh.RecalculateNormals();
 
         mMeshcollider.sharedMesh = mesh;
-
-        MeshTile = meshGO;
     }
 
-    void GenerateWaterLayer(Tile[,] tiles)
+
+    public void UpdateMeshChunk()
     {
-        MeshData data = new MeshData(tiles, true);
-
-        GameObject meshGO = new GameObject("WaterLayer_" + transform.position.x + "_" + transform.position.z);
-        meshGO.transform.SetParent(this.transform);
-
-        meshGO.transform.position = new Vector3(meshGO.transform.position.x, -0.1f, meshGO.transform.position.z);
-
-        MeshFilter filter = meshGO.AddComponent<MeshFilter>();
-        MeshRenderer render = meshGO.AddComponent<MeshRenderer>();
-        render.material = WaterTileMaterial;
-
-        Mesh mesh = filter.mesh;
-
-        mesh.vertices = data.vertices.ToArray();
-        mesh.triangles = data.triangles.ToArray();
-        mesh.uv = data.UVs.ToArray();
-
-        mesh.RecalculateNormals();
-
-        WaterMeshTile = meshGO;
+        Game.World.UpdateMesh(this);
     }
 
-    private void SpawnNetWorkObject(Tile tile)
+    public void AddEntity(Entity entity)
     {
-        GameObject cardinal = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/cardinal"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
-        Entitys.Add(cardinal.GetComponent<EntityLife>());
-        cardinal.GetComponent<EntityLife>().PrefabName = "cardinal";
-
-        GameObject sparrow = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/sparrow"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
-        Entitys.Add(sparrow.GetComponent<EntityLife>());
-        sparrow.GetComponent<EntityLife>().PrefabName = "sparrow";
-
-        GameObject Cow = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/Cow"), new Vector3(tile.x + Random.Range(1, 5), tile.y, tile.z + Random.Range(1, 5)), Quaternion.identity, Game.WorldGenerator.World_ID);
-        Entitys.Add(Cow.GetComponent<EntityLife>());
-        Cow.GetComponent<EntityLife>().PrefabName = "Cow";
-        Cow.GetComponent<SmartEntity>().Cuerrent_Chunk = this;
-    }
-
-    public void OnTileTypeChange(Tile tile)
-    {
-        /*SpriteRenderer spritee = tileGOmap[tile].GetComponent<SpriteRenderer>();
-        TileObj tilescript = tileGOmap[tile].GetComponentInChildren<TileObj>();*/
-
-        //spritee.color = Get.ColorBiome(tile.TileBiome, tile.type);
-        //spritee.sprite = Game.SpriteManager.GetSprite(tile);
-        //tile.spritetile = spritee;
-
-        #region SetUpPathGrid
-        if (!Game.PathGrid.tiles.ContainsKey(new Vector2(tile.x, tile.z)))
+        if (!Entitys.Contains(entity))
         {
-            if (tile.CanWalk)
-            {
-                if (tile.typego == TakeGO.empty && tile.PLACER_DATA == Placer.empty)
-                {
-                    int coust = tile.CanWalk ? 0 : 1;
-                    Game.PathGrid.tiles.Add(new Vector2(tile.x, tile.z), new Node(tile.CanWalk, new Vector3(tile.x, tile.y, tile.z), coust));
-                }
-                else
-                {
-                    Game.PathGrid.tiles.Add(new Vector2(tile.x, tile.z), new Node(false, new Vector3(tile.x, tile.y, tile.z), 1));
-                }
-            }
-            else
-            {
-                Game.PathGrid.tiles.Add(new Vector2(tile.x, tile.z), new Node(false, new Vector3(tile.x, tile.y, tile.z), 1));
-            }
-        }
-        else
-        {
-            if (tile.typego == TakeGO.empty && tile.PLACER_DATA == Placer.empty)
-            {
-                int coust = tile.CanWalk ? 0 : 1;
-                Game.PathGrid.tiles[new Vector2(tile.x, tile.z)] = new Node(tile.CanWalk, new Vector3(tile.x, tile.y, tile.z), coust);
-            }
-            else
-            {
-                Game.PathGrid.tiles[new Vector2(tile.x, tile.z)] = new Node(false, new Vector3(tile.x, tile.y, tile.z), 1);
-            }
-        }
-        #endregion
-    }
-
-    public void TileTransitionChange(Tile tile)
-    {
-        if (tile != null)
-        {
-            Game.SpriteManager.GetTranssition(tile);
-
-            if (TransTile.ContainsKey(tile))
-            {
-                Destroy(TransTile[tile]);
-                TransTile.Remove(tile);
-            }
-
-            for (int i = 0; i < tile.TileTran.Length; i++)
-            {
-                if (!TransTile.ContainsKey(tile))
-                {
-                    GameObject TileGo = new GameObject("Tile_Transition_" + tile.TileTran[i].Name);
-
-                    SpriteRenderer Render = TileGo.AddComponent<SpriteRenderer>();
-                    Render.material = DefaultTransMaterial;
-                    TileGo.transform.position = new Vector3(tile.x, tile.y + 0.0001f, tile.z);
-                    TileGo.transform.Rotate(new Vector3(90,0,0), Space.Self);
-                    TileGo.transform.SetParent(this.transform, true);
-
-                    Render.sprite = Game.SpriteManager.GetSprite(tile.TileTran[i].Name);
-
-                    Render.color = Render.color * Get.ColorBiome(tile.TileTran[i].Biome, tile.TileTran[i].type);
-
-                    Render.sortingOrder = Get.GetTileRenIndex(tile.TileTran[i].type);
-
-                    TransTile.Add(tile, TileGo);
-                }
-            }
-        }
-
-        if (tile.type == TypeBlock.Water)
-        {
-            /*tilescript.TILEANIMATED = true;
-            if (tilescript.TILEANIMATOR == null)
-            {
-                /*tilescript.TILEANIMATOR = tilescript.gameObject.AddComponent<Animator>();
-                tilescript.TILEANIMATOR.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("Animations/WaterAnimator");
-            }*/
+            Entitys.Add(entity);
         }
     }
 
-    public void DestroyChunk()
+    public void RemoveEntity(Entity entity)
     {
-
-    }
-
-    void OnDestroy()
-    {
-        for (int i = 0; i < Size * TileObj.transform.localScale.x; i++)
+        if (Entitys.Contains(entity))
         {
-            for (int j = 0; j < Size * TileObj.transform.localScale.y; j++)
-            {
-                if (Game.PathGrid.tiles.ContainsKey(new Vector2(tiles[i, j].x, tiles[i, j].z)))
-                {
-                    Game.PathGrid.tiles.Remove(new Vector2(tiles[i, j].x, tiles[i, j].z));
-                }
-            }
-        }
-
-        foreach (var ai in Entitys)
-        {
-            if (ai != null)
-            {
-                DarckNet.Network.Destroy(ai.gameObject);
-            }
-        }
-
-        Game.WorldGenerator.ChunksList.Remove(this);
-    }
-
-    /// <summary>
-    /// Setup ChunksObject, if the obejct is a entity, they need to be spawned on network, if dont just in local chunk
-    /// </summary>
-    /// <param name="tile"></param>
-    private void SetupObjects(Tile tile)
-    {
-        if (Get.GetPlacerEntity(tile.PLACER_DATA))//Network Entity
-        {
-            if (tile.PLACER_DATA != Placer.empty)
-            {
-                GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.Getplacerbyname(tile.PLACER_DATA.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity, Game.WorldGenerator.World_ID);
-                tile.ObjThis = obj;
-                Entitys.Add(obj.GetComponent<ObjectEntity>());
-            }
-        }
-        else//Local Object, Spawned inside of chunk
-        {
-            if (tile.PLACER_DATA != Placer.empty)
-            {
-                string buildid = ((int)tile.CityPoint.x + (int)tile.CityPoint.y * tile.x + tile.z).ToString();
-
-                GameObject PLACER_OBJ = Instantiate(Game.SpriteManager.Getplacerbyname(tile.PLACER_DATA.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
-                PLACER_OBJ.transform.SetParent(this.transform, true);
-                tile.ObjThis = PLACER_OBJ;
-
-                if (PLACER_OBJ.GetComponent<CityBase>())
-                {
-                    City Currentcitty = Game.CityManager.GetCity(tile.CityPoint);
-
-                    if (Currentcitty != null)
-                    {
-                        Currentcitty.IsLoaded = true;
-
-                        PLACER_OBJ.GetComponent<CityBase>().BuildId = buildid;
-                        PLACER_OBJ.GetComponent<CityBase>().citypoint = tile.CityPoint;
-
-                        if (!Currentcitty.CityBuildings.ContainsKey(buildid))
-                        {
-                            Currentcitty.CityBuildings.Add(buildid, new CityBaseSerialization(buildid, tile.CityPoint, new DataVector3(tile.x, tile.y, tile.z), tile.PLACER_DATA));
-                            Currentcitty.CityBuildings[buildid].Temp_objc = PLACER_OBJ.GetComponent<CityBase>();
-                            PLACER_OBJ.GetComponent<CityBase>().NewBuild();
-                        }
-                        else
-                        {
-                            Currentcitty.CityBuildings[buildid].Temp_objc = PLACER_OBJ.GetComponent<CityBase>();
-                            Currentcitty.CityBuildings[buildid].BuildType = tile.PLACER_DATA;
-                            PLACER_OBJ.GetComponent<CityBase>().LoadBuild();
-                        }
-
-                        HaveAnyBuild = true;
-                    }
-                }
-            }
+            Entitys.Remove(entity);
         }
     }
 
-    private void SetUpTileTree(Tile tile)
+    private void OnDestroy()
     {
-        if (tile.typego != TakeGO.empty)
-        {
-            GameObject trees = null;
-            trees = Instantiate(Game.SpriteManager.GetPrefabbyname(tile.typego.ToString()), new Vector3(tile.x, tile.y, tile.z), Quaternion.identity);
-            trees.transform.SetParent(this.transform, true);
-            tile.ObjThis = trees;
-
-            if (tile.type != TypeBlock.Rock)
-            {
-                if (tile.typego != TakeGO.WeedTall)
-                {
-                    if (tile.typego != TakeGO.Weed01)
-                    {
-                        if (tile.typego != TakeGO.RockProp)
-                        {
-                            System.Random randomValue = new System.Random(GameManager.Seed + (int)tile.x + (int)tile.z);
-                            float size = Random.Range(0f, 0.5f);
-                            trees.transform.position = new Vector3(tile.x + (float)randomValue.NextDouble(), tile.y, tile.z + (float)randomValue.NextDouble());
-                            trees.transform.localScale = new Vector3(trees.transform.localScale.x + size, trees.transform.localScale.y + size, trees.transform.localScale.z + size);
-                        }
-                    }
-                }
-            }
-
-            if (trees.GetComponent<Trees>())
-            {
-                trees.GetComponent<Trees>().ThisTreeTile = tile;
-            }
-        }
+        Blocks = null;
     }
 
-    private void SpawnCityEntity(Tile tile)
+    private void OnDrawGizmos()
     {
-        if (tile.OwnedByCity)
-        {
-            CitzenCredential entity = Game.CityManager.GetOutSideEntity(tile.CityPoint, new DataVector3(tile.x, tile.y, tile.z));
-            if (entity != null)
-            {
-                Game.CityManager.SpawnNewEntity(entity, new Vector3(tile.x, 0, tile.z));
-            }
-        }
-    }
-
-    public Tile GetTileAt(int x, int z)
-    {
-        return tiles[x - (int)transform.position.x, z - (int)transform.position.z];
-    }
-
-    public void SaveChunk()
-    {
-        if (Game.GameManager.SinglePlayer)
-        {
-            SaveWorld.Save(new ChunkSerializable(this), Game.WorldGenerator.CurrentWorld.ToString() + (int)transform.position.x + "," + (int)transform.position.z);
-            AsSave = true;
-        }
-        else if (Game.GameManager.MultiPlayer)
-        {
-
-        }
-    }
-
-    void Update()
-    {
-        if (Time.time > timetemp + TimeUpdate)
-        {
-            UpdateChunk();
-
-            if (AsSave)// if this chunk can be saved.
-            {
-                SaveChunk();
-            }
-            timetemp = Time.time;
-        }
-
-#if Client
-        /*if (Time.time > timetemp2 + 1)
-        {
-            //UpdateLiquid();
-
-            //Debug.Log("Liquid Updated!");
-            timetemp2 = Time.time;
-        }*/
-#endif
-#if Server
-
-#endif
-    }
-
-    public void UpdateLiquid()
-    {
-        for (int i = 0; i < Size; i++)
-        {
-            for (int j = 0; j < Size; j++)
-            {
-                if (tiles[i, j].type == TypeBlock.Dirt)
-                {
-                    Tile[] ney = tiles[i, j].GetNeighboors();
-
-#region Water
-                    if (ney[0] != null && ney[0].type == TypeBlock.Water || ney[1] != null && ney[1].type == TypeBlock.Water || ney[2] != null && ney[2].type == TypeBlock.Water || ney[3] != null && ney[3].type == TypeBlock.Water)
-                    {
-                        //tiles[i, j].SetTileType(TypeBlock.Water);
-                        tiles[i, j].Reset();
-                        return;
-                    }
-#endregion Water
-                }
-            }
-        }
-    }
-
-    int maxia = 0;
-
-    public void UpdateChunk()
-    {
-        WaterMeshTile.GetComponent<MeshRenderer>().material = WaterTileMaterial;
-
-        for (int i = 0; i < Size; i++)
-        {
-            for (int j = 0; j < Size; j++)
-            {
-                if (tiles[i, j].type == TypeBlock.DirtGrass)
-                {
-                    if (DataTime.Hora >= tiles[i, j].Hora && DataTime.Dia >= tiles[i, j].Dia && DataTime.Mes >= tiles[i, j].Mes)
-                    {
-                        Tile[] ney = tiles[i, j].GetNeighboors();
-
-#region Grama
-                        if (ney[0] != null && ney[0].type == TypeBlock.Grass || ney[1] != null && ney[1].type == TypeBlock.Grass || ney[2] != null && ney[2].type == TypeBlock.Grass || ney[3] != null && ney[3].type == TypeBlock.Grass)
-                        {
-                            tiles[i, j].PerlinSetType(TypeBlock.Grass);
-                            tiles[i, j].Reset();
-                        }
-#endregion
-                    }
-                    else if (DataTime.Hora <= tiles[i, j].Hora && DataTime.Dia > tiles[i, j].Dia && DataTime.Mes > tiles[i, j].Mes)
-                    {
-                        Tile[] ney = tiles[i, j].GetNeighboors();
-
-#region Grama
-                        if (ney[0] != null && ney[0].type == TypeBlock.Grass || ney[1] != null && ney[1].type == TypeBlock.Grass || ney[2] != null && ney[2].type == TypeBlock.Grass || ney[3] != null && ney[3].type == TypeBlock.Grass)
-                        {
-                            tiles[i, j].PerlinSetType(TypeBlock.Grass);
-                            tiles[i, j].Reset();
-                        }
-#endregion
-                    }
-                }
-            }
-        }
-    }
-}
-
-public class MeshData
-{
-    public List<Vector3> vertices;
-    public List<Vector2> UVs;
-    public List<int> triangles;
-
-    public MeshData(Tile[,] tile)
-    {
-        vertices = new List<Vector3>();
-        UVs = new List<Vector2>();
-        triangles = new List<int>();
-
-        for (int x = 0; x < Chunk.Size; x++)
-        {
-            for (int z = 0; z < Chunk.Size; z++)
-            {
-                if (tile[x,z].TileBiome == BiomeType.Bench)
-                {
-                    CreateSquareWater(tile[x, z].x, tile[x, z].y, tile[x, z].z, tile,new Vector3(x, 0, z), tile[x, z]);
-                }
-                else if (tile[x, z].type == TypeBlock.WaterFloor)
-                {
-                    CreateSquareWaterLow(tile[x, z].x, tile[x, z].y, tile[x, z].z, tile, new Vector3(x, 0, z), tile[x, z]);
-                }
-                else
-                {
-                    CreateSquare(tile[x, z].x, tile[x, z].y, tile[x, z].z, tile[x, z], tile);
-                }
-            }
-        }
-    }
-
-    public MeshData(Tile[,] tile, bool iswater)
-    {
-        vertices = new List<Vector3>();
-        UVs = new List<Vector2>();
-        triangles = new List<int>();
-
-        for (int x = 0; x < Chunk.Size; x++)
-        {
-            for (int z = 0; z < Chunk.Size; z++)
-            {
-                if (tile[x, z].type == TypeBlock.WaterFloor)
-                {
-                    SquareWater(tile[x, z].x, tile[x, z].y, tile[x, z].z, tile[x, z]);
-                }
-            }
-        }
-    }
-
-    public MeshData()
-    {
-        UVs = new List<Vector2>();
-    }
-
-    public void UpdateUv(Tile[,] tile)
-    {
-        for (int x = 0; x < Chunk.Size; x++)
-        {
-            for (int z = 0; z < Chunk.Size; z++)
-            {
-                UVs.AddRange(Game.SpriteManager.GetTileUVs(tile[x, z]));
-            }
-        }
-    }
-
-    void CreateSquare(float x, float y, float z, Tile tile, Tile[,] tiles)
-    {
-        float two = testeGetTile((int)x + 1, (int)z, y);
-        float three = testeGetTile((int)x, (int)z + 1, y);
-        float foure = testeGetTile((int)x + 1, (int)z + 1, y);
-
-
-        vertices.Add(new Vector3(x, y, z));
-        vertices.Add(new Vector3(x + 1, two, z));
-        vertices.Add(new Vector3(x, three, z + 1));
-        vertices.Add(new Vector3(x + 1, foure, z + 1));
-
-        triangles.Add(vertices.Count - 1);
-        triangles.Add(vertices.Count - 3);
-        triangles.Add(vertices.Count - 4);
-
-        triangles.Add(vertices.Count - 2);
-        triangles.Add(vertices.Count - 1);
-        triangles.Add(vertices.Count - 4);
-
-        UVs.AddRange(Game.SpriteManager.GetTileUVs(tile));
-    }
-
-    float testeGetTile(int x,int z,float defaultvalue)
-    {
-        if (Game.WorldGenerator.GetTileAt(x,z) != null)
-        {
-            return Game.WorldGenerator.GetTileAt(x, z).y;
-        }
-        else
-        {
-            return defaultvalue;
-        }
-    }
-
-    Tile testeGetTile(int x, int z)
-    {
-        if (Game.WorldGenerator.GetTileAt(x, z) != null)
-        {
-            return Game.WorldGenerator.GetTileAt(x, z);
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    void SquareWater(float x, float y, float z, Tile tile)
-    {
-        if (tile.TileBiome == BiomeType.Bench)
-        {
-            vertices.Add(new Vector3(x, 1.03f, z));
-            vertices.Add(new Vector3(x + 1, 1.03f, z));
-            vertices.Add(new Vector3(x, 1.03f, z + 1));
-            vertices.Add(new Vector3(x + 1, 1.03f, z + 1));
-        }
-        else
-        {
-            float one = testeGetTile((int)x, (int)z, y);
-            float two = testeGetTile((int)x + 1, (int)z, y);
-            float three = testeGetTile((int)x, (int)z + 1, y);
-            float foure = testeGetTile((int)x + 1, (int)z + 1, y);
-
-            vertices.Add(new Vector3(x, one, z));
-            vertices.Add(new Vector3(x + 1, two, z));
-            vertices.Add(new Vector3(x, three, z + 1));
-            vertices.Add(new Vector3(x + 1, foure, z + 1));
-        }
-
-        triangles.Add(vertices.Count - 1);
-        triangles.Add(vertices.Count - 3);
-        triangles.Add(vertices.Count - 4);
-
-        triangles.Add(vertices.Count - 2);
-        triangles.Add(vertices.Count - 1);
-        triangles.Add(vertices.Count - 4);
-
-        UVs.AddRange(Game.SpriteManager.GetTileUVs(tile));
-    }
-
-    void CreateSquareWater(float x, float y, float z, Tile[,] tile, Vector3 currenttile, Tile thistile)
-    {
-        float one = testeGetTile((int)x, (int)z, y);
-        float two = testeGetTile((int)x + 1, (int)z, y);
-        float three = testeGetTile((int)x, (int)z + 1, y);
-        float foure = testeGetTile((int)x + 1, (int)z + 1, y);
-
-        vertices.Add(new Vector3(x, one, z));
-        vertices.Add(new Vector3(x + 1, two, z));
-        vertices.Add(new Vector3(x, three, z + 1));
-        vertices.Add(new Vector3(x + 1, foure, z + 1));
-
-        triangles.Add(vertices.Count - 1);
-        triangles.Add(vertices.Count - 3);
-        triangles.Add(vertices.Count - 4);
-
-        triangles.Add(vertices.Count - 2);
-        triangles.Add(vertices.Count - 1);
-        triangles.Add(vertices.Count - 4);
-
-        UVs.AddRange(Game.SpriteManager.GetTileUVs(thistile));
-    }
-
-    void CreateSquareWaterLow(float x, float y, float z, Tile[,] tile, Vector3 currenttile, Tile thistile)
-    {
-        float one = testeGetTile((int)x, (int)z, y);
-        float two = testeGetTile((int)x + 1, (int)z, y);
-        float three = testeGetTile((int)x, (int)z + 1, y);
-        float foure = testeGetTile((int)x + 1, (int)z + 1, y);
-
-        if (HaveTile(x, z))
-        {
-            vertices.Add(new Vector3(x, one, z));
-        }
-        else
-        {
-            vertices.Add(new Vector3(x, one - 1, z));
-        }
-
-        if (HaveTile(x + 1, z))
-        {
-            vertices.Add(new Vector3(x + 1, two, z));
-        }
-        else
-        {
-            vertices.Add(new Vector3(x + 1, two - 1, z));
-        }
-
-        if (HaveTile(x, z + 1))
-        {
-            vertices.Add(new Vector3(x, three, z + 1));
-        }
-        else
-        {
-            vertices.Add(new Vector3(x, three - 1, z + 1));
-        }
-
-        if (HaveTile(x + 1, z + 1))
-        {
-            vertices.Add(new Vector3(x + 1, foure, z + 1));
-        }
-        else
-        {
-            vertices.Add(new Vector3(x + 1, foure - 1, z + 1));
-        }
-
-        triangles.Add(vertices.Count - 1);
-        triangles.Add(vertices.Count - 3);
-        triangles.Add(vertices.Count - 4);
-
-        triangles.Add(vertices.Count - 2);
-        triangles.Add(vertices.Count - 1);
-        triangles.Add(vertices.Count - 4);
-
-        UVs.AddRange(Game.SpriteManager.GetTileUVs(thistile));
-    }
-
-    public bool HaveTile(float x, float z)
-    {
-        Tile currenttile = Game.WorldGenerator.GetTileAt((int)x, (int)z);
-
-        if (currenttile != null)
-        {
-            Tile[] neighbor = currenttile.GetNeighboors(true);
-
-            foreach (var item in neighbor)
-            {
-                if (item != null)
-                {
-                    if (item.type != TypeBlock.WaterFloor)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-        return false;
-    }
-}
-
-[System.Serializable]
-public class ChunkSerializable
-{
-    public Tile[,] tiles;
-
-    public ChunkSerializable(Chunk chunk)
-    {
-        tiles = chunk.tiles;
+        Gizmos.DrawWireCube(transform.position + new Vector3(World.ChunkSize / 2, World.ChunkSize / 2, World.ChunkSize / 2), new Vector3(World.ChunkSize, World.ChunkSize, World.ChunkSize));
     }
 }

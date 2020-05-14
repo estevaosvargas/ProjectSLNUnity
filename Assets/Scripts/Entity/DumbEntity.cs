@@ -19,7 +19,7 @@ public class DumbEntity : EntityLife
         body = GetComponent<Rigidbody>();
         Anim = GetComponent<Animator>();
 
-        target = Game.WorldGenerator.Player;
+        target = Game.World.Player;
     }
 
     void FixedUpdate()

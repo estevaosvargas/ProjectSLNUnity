@@ -63,7 +63,7 @@ public class SmartEntity : Pathfindingentity
 
     public override void OnDead()
     {
-        Cuerrent_Chunk.Entitys.Remove(this);
+        Cuerrent_Chunk.RemoveEntity(this);
         DarckNet.Network.Destroy(this.gameObject);
         base.OnDead();
     }
@@ -95,7 +95,7 @@ public class SmartEntity : Pathfindingentity
                     }
                 }
 
-                Chunk chunk = Game.WorldGenerator.GetChunkAt((int)transform.position.x, (int)transform.position.z);
+                Chunk chunk = Game.World.GetChunkAt((int)transform.position.x, (int)transform.position.y, (int)transform.position.z);
 
                 //Game.CityManager.UpdatePositionStaus(transform.position, CurrentCity, ID);
 
@@ -104,11 +104,11 @@ public class SmartEntity : Pathfindingentity
                     if (chunk != Cuerrent_Chunk)
                     {
                         Chunk lastchunk = Cuerrent_Chunk;
-                        lastchunk.Entitys.Remove(this);
+                        lastchunk.RemoveEntity(this);
 
 
                         Cuerrent_Chunk = chunk;
-                        Cuerrent_Chunk.Entitys.Add(this);
+                        Cuerrent_Chunk.AddEntity(this);
                     }
                 }
 

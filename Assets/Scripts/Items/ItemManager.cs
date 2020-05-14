@@ -179,7 +179,7 @@ public class ItemManager : MonoBehaviour {
     {
         ItemData item = ItemManager.Instance.GetItem(index);
 
-        GameObject obj = DarckNet.Network.Instantiate(Drop, world_position, Quaternion.identity, Game.WorldGenerator.World_ID);
+        GameObject obj = DarckNet.Network.Instantiate(Drop, world_position, Quaternion.identity, Game.World.World_ID);
 
         obj.GetComponent<ItemDrop>().SetDrop(item, quanty);
     }

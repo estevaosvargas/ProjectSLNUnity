@@ -147,7 +147,7 @@ public class HandManager : MonoBehaviour
 
     public void PlaceBlock()
     {
-        if (CurrentItem.ITEMTYPE == ItemType.Block)
+        /*if (CurrentItem.ITEMTYPE == ItemType.Block)
         {
             Game.GameManager.t.PlaceBlockSet(CurrentItem.About.BlockType);
             Inve.RemoveQuanty(SlotIndex, 1);
@@ -156,7 +156,7 @@ public class HandManager : MonoBehaviour
         {
             Game.GameManager.t.SetPlacer(CurrentItem.About.placer);
             Inve.RemoveQuanty(SlotIndex, 1);
-        }
+        }*/
     }
 
     public void FirstAction()
@@ -291,7 +291,7 @@ public class HandManager : MonoBehaviour
             {
                 if (Get.OpenInveTile(Game.GameManager.t))
                 {
-                    Game.MenuManager.OpenInveContainer(Game.GameManager.t.ObjThis.GetComponent<Inventory>());
+                    Game.MenuManager.OpenInveContainer(Game.GameManager.t.BlockObject.GetComponent<Inventory>());
                 }
             }
         }
@@ -337,22 +337,6 @@ public class HandManager : MonoBehaviour
 
         if (MouselockFake.IsLock == false && CurrentItem != null && Distance <= CurrentItem.About.Distance && OnHand == false)
         {
-            if (Game.GameManager.t != null)
-            {
-                if (Game.WorldGenerator.SlectedBlock != null)
-                {
-                    if (CurrentItem.ITEMTYPE == ItemType.Block || CurrentItem.ITEMTYPE == ItemType.Tools || CurrentItem.ITEMTYPE == ItemType.Placer)
-                    {
-                        Game.WorldGenerator.SlectedBlock.gameObject.SetActive(true);
-                        Game.WorldGenerator.SlectedBlock.position = new Vector3(Game.GameManager.t.x, 0, Game.GameManager.t.z);
-                    }
-                    else
-                    {
-                        Game.WorldGenerator.SlectedBlock.gameObject.SetActive(false);
-                    }
-                }
-            }
-
             if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Joystick1Button5))
             {
                 FirstAction();
@@ -379,19 +363,6 @@ public class HandManager : MonoBehaviour
         }
         else if (MouselockFake.IsLock == false && OnHand == true && Distance <= Hand.Distance)
         {
-            if (Game.GameManager.t != null)
-            {
-                if (Game.WorldGenerator.SlectedBlock != null)
-                {
-                    Game.WorldGenerator.SlectedBlock.gameObject.SetActive(true);
-                    Game.WorldGenerator.SlectedBlock.position = new Vector3(Game.GameManager.t.x, 0, Game.GameManager.t.z);
-                }
-                else
-                {
-                    Game.WorldGenerator.SlectedBlock.gameObject.SetActive(false);
-                }
-            }
-
             if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Joystick1Button5))
             {
                 FirstAction();
@@ -402,14 +373,6 @@ public class HandManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Joystick1Button5))
             {
                 FirstAction();
-            }
-
-            if (Game.WorldGenerator)
-            {
-                if (Game.WorldGenerator.SlectedBlock != null)
-                {
-                    Game.WorldGenerator.SlectedBlock.gameObject.SetActive(false);
-                }
             }
         }
     }

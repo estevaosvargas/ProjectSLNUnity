@@ -6,7 +6,7 @@ public class Trees : StaticLife
 {
     public GameObject FX;
     float color = 0;
-    public Tile ThisTreeTile;
+    public Block ThisTreeTile;
     public int ItemDrop = 2;
     public int DropQuanty = 10;
     public MaterialHitType MaterialHit;

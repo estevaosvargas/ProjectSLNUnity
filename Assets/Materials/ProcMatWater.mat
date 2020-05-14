@@ -97,11 +97,7 @@ Material:
     - WaveSpeed: {r: 19, g: 9, b: -16, a: -7}
     - _AnimationDirection: {r: 2, g: 4, b: 2, a: -1}
     - _AnimationTiling: {r: 0, g: 0, b: 0, a: 0}
-<<<<<<< HEAD
-    - _BaseColor: {r: 0.9317791, g: 0.9658934, b: 0.97224027, a: 1}
-=======
-    - _BaseColor: {r: 0.9401113, g: 0.97005904, b: 0.9756307, a: 1}
->>>>>>> parent of 67432a6... Some backups, working in merching cube generation
+    - _BaseColor: {r: 0.9493997, g: 0.887784, b: 0.769897, a: 1}
     - _BumpDirection: {r: -10, g: -5, b: 10, a: 2}
     - _BumpTiling: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -119,15 +115,11 @@ Material:
     - _GSteepness: {r: 7.66, g: 2, b: 4.4, a: 2}
     - _HorizonColor: {r: 0.172, g: 0.463, b: 0.435, a: 1}
     - _InvFadeParemeter: {r: 0.37, g: 0.03, b: 1, a: 1}
-<<<<<<< HEAD
-    - _ReflectionColor: {r: 0.14511564, g: 0.77646816, b: 0.8862815, a: 1}
-=======
-    - _ReflectionColor: {r: 0.14527594, g: 0.7764456, b: 0.886345, a: 1}
->>>>>>> parent of 67432a6... Some backups, working in merching cube generation
+    - _ReflectionColor: {r: 0.3472149, g: 0.72820765, b: 0.7101873, a: 1}
     - _RefrColor: {r: 0.35506406, g: 0.8801289, b: 0.9528302, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _SpecularColor: {r: 0.38679248, g: 0.35426244, b: 0.26820046, a: 1}
+    - _SpecularColor: {r: 0.30660757, g: 0.280258, b: 0.2115469, a: 1}
     - _SurfaceNoiseScroll: {r: 0.27, g: 0.03, b: 0, a: 0}
     - _WorldLightDir: {r: -0.030375138, g: -0.20139083, b: -0.97903997, a: 0}
     - _horizonColor: {r: 0.172, g: 0.463, b: 0.435, a: 0}

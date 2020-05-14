@@ -228,7 +228,7 @@ public class MenuManager : Menus
     {
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
-            Game.GameManager.Player.RequestSpawnPlayer(new Vector3(UnityEngine.Random.Range(-100, 100), 0, UnityEngine.Random.Range(-100, 100)), Game.WorldGenerator.World_ID);
+            Game.GameManager.Player.RequestSpawnPlayer(new Vector3(UnityEngine.Random.Range(-100, 100), 0, UnityEngine.Random.Range(-100, 100)), Game.World.World_ID);
 
             DCallBack.Call(CallType.OnRespawn);
             CloseMenuName("Respawn");
@@ -240,7 +240,7 @@ public class MenuManager : Menus
     {
         if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
         {
-            Game.GameManager.Player.RequestSpawnPlayer(new Vector3(UnityEngine.Random.Range(-100, 100), 0, UnityEngine.Random.Range(-100, 100)), Game.WorldGenerator.World_ID);
+            Game.GameManager.Player.RequestSpawnPlayer(new Vector3(UnityEngine.Random.Range(-100, 100), 0, UnityEngine.Random.Range(-100, 100)), Game.World.World_ID);
 
             DCallBack.Call(CallType.OnRespawn);
             CloseMenuName("Respawn");

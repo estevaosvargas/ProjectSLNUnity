@@ -10,6 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4894482176488452}
   - component: {fileID: 114536837246406512}
+  - component: {fileID: -1315176593803180141}
+  - component: {fileID: 2759499135099512380}
+  - component: {fileID: 5164710375439433996}
   m_Layer: 10
   m_Name: Chunk
   m_TagString: Untagged
@@ -40,28 +43,73 @@ MonoBehaviour:
   m_GameObject: {fileID: 1728794627388856}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d3e02274c96fd94c9e01b5765d4202b, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e62d4d8cdabcad43a60e0e1ce51ae73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightobj: {fileID: 1082545043444032, guid: 9bcfda63da215ed41bf7a2a05d070fbf, type: 3}
-  TileObj: {fileID: 1635427906649808, guid: 82fde870c2d818744ba97904da40f2c7, type: 3}
-  tilelist: []
-  position: {x: 0, y: 0, z: 0}
-  Entitys: []
-  Players: 
-  TimeUpdate: 10
-  QueeTime: 0
-  HaveAnyBuild: 0
-  AsSave: 0
-  DefaultTileMaterial: {fileID: 2100000, guid: 043170319843d8445983b4dcebd92201, type: 2}
-  DefaultTransMaterial: {fileID: 2100000, guid: eb8bd7a799865d043ad533d09292f68a,
-    type: 2}
-  WaterTileMaterial: {fileID: 2100000, guid: 42ddd616eefa7cb42bfb158bbb19b996, type: 2}
-  MeshTile: {fileID: 0}
-  WaterMeshTile: {fileID: 0}
-  DebugOcean: 0
-  scale: 1
-  speed: 1
-  waveDistance: 1
-  noiseStrength: 1
-  noiseWalk: 1
+  chunkPosition: {x: 0, y: 0, z: 0}
+  meshFilter: {fileID: -1315176593803180141}
+  meshRenderer: {fileID: 2759499135099512380}
+  meshCollider: {fileID: 5164710375439433996}
+  QueeTime: 5
+  m_Grass: {fileID: 2100000, guid: 043170319843d8445983b4dcebd92201, type: 2}
+--- !u!33 &-1315176593803180141
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728794627388856}
+  m_Mesh: {fileID: 0}
+--- !u!23 &2759499135099512380
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728794627388856}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!64 &5164710375439433996
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728794627388856}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}

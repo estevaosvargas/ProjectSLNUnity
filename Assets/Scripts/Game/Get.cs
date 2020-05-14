@@ -4,9 +4,9 @@ using UnityEngine;
 
 public static class Get
 {
-    public static bool GetMouseIteract(Tile t)
+    public static bool GetMouseIteract(Block t)
     {
-        if (t.type == TypeBlock.LightBlockON)
+        if (t.Type == TypeBlock.LightBlockON)
         {
             return true;
         }
@@ -20,7 +20,7 @@ public static class Get
         }
     }
 
-    public static bool OpenInveTile(Tile t)
+    public static bool OpenInveTile(Block t)
     {
         switch (t.PLACER_DATA)
         {

@@ -58,7 +58,7 @@ public class GameManager : UIElements
     public static List<DCallBack> CallBacks = new List<DCallBack>();
     public static AudioSource AudioSourceGlobal;
     public float SaveUpdateTime = 5;
-    public Tile t;
+    public Block t;
     public Ray ray;
     public RaycastHit hit;
     public float mouseX;
@@ -136,6 +136,8 @@ public class GameManager : UIElements
         System.Random randvilla = new System.Random(GameManager.Seed);
 
          Small_Seed = randvilla.Next(-9999, 9999);
+
+        Seed = 0;
 
         WorldInfo info = SaveWorld.LoadInfo("World");
         if (info != null)
@@ -256,9 +258,9 @@ public class GameManager : UIElements
                 mouseY = hit.point.y;
                 mouseZ = hit.point.z;
 
-                if (Game.WorldGenerator)
+                if (Game.World)
                 {
-                    t = Game.WorldGenerator.GetTileAt(hit.point.x, hit.point.z);
+                    t = Game.World.GetTileAt(hit.point.x, hit.point.y, hit.point.z);
                 }
 
                 if (Input.GetKeyDown(KeyCode.Mouse1))
@@ -329,8 +331,8 @@ public class GameManager : UIElements
     [RPC]
     void ChunkData(Vector2 pos, string data)
     {
-        Tile[] tile = SaveWorld.DeserializeString<Tile>(data);
-        Game.WorldGenerator.ClientMakeChunkAt((int)pos.x, (int)pos.y, tile);
+       /* Tile[] tile = SaveWorld.DeserializeString<Tile>(data);
+        Game.WorldGenerator.ClientMakeChunkAt((int)pos.x, (int)pos.y, tile);*/
     }
     #endregion
 
@@ -339,15 +341,15 @@ public class GameManager : UIElements
     [RPC]
     void ChunkDataNet(int x, int y, DarckNet.DNetConnection peer)
     {
-        string Tile = SaveWorld.SerializeDataToString(Game.WorldGenerator.ServerMakeChunkAt(x, y, peer.unique));
+        /*string Tile = SaveWorld.SerializeDataToString(Game.WorldGenerator.ServerMakeChunkAt(x, y, peer.unique));
 
-        Net.RPC("ChunkData", peer.NetConnection, new Vector2(x,y), Tile);
+        Net.RPC("ChunkData", peer.NetConnection, new Vector2(x,y), Tile);*/
     }
 
     [RPC]
     void DeleteChunk(int x, int y, DarckNet.DNetConnection peer)
     {
-        Game.WorldGenerator.NetDeleteChunk(x, y, peer.unique);
+        //Game.WorldGenerator.NetDeleteChunk(x, y, peer.unique);
     }
 
     [RPC]
@@ -730,7 +732,6 @@ public class PlayerInfo : MonoBehaviour
 {
     public string UserName = "";
     public string UserID = "";
-    public WorldType CurrentWorld = WorldType.Normal;
     public Transform PlayerRoot;
     public Lidgren.Network.NetConnection Peer;
 }
@@ -813,7 +814,7 @@ public class SaveWorld
     }
 
     #region ChunkSave
-    public static void Save(ChunkSerializable tile, string filename)
+    /*public static void Save(ChunkSerializable tile, string filename)
     {
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Create(Path.GetFullPath("Saves./" + Game.GameManager.WorldName + "./" + "chunks./" + filename + ".chunkdata"));
@@ -835,7 +836,7 @@ public class SaveWorld
         }
 
         return null;
-    }
+    }*/
     #endregion
 
     #region City
@@ -1521,12 +1522,11 @@ public static class Game
     public static GameManager GameManager;
     public static PathGrid PathGrid;
     public static DebugGUI DebugGUI;
-    public static TileAnimations TileAnimations;
     public static MenuManager MenuManager;
     public static AudioManager AudioManager = new AudioManager();
     public static TimeOfDay TimeOfDay;
     public static ConsoleInGame ConsoleInGame;
-    public static WorldGenerator WorldGenerator;
+    public static World World;
     public static SpriteManager SpriteManager;
     public static InventoryGUI InventoryGUI;
     public static CityManager CityManager;

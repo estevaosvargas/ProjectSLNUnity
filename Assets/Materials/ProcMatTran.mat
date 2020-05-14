@@ -8,13 +8,10 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ProcMatTran
-<<<<<<< HEAD
   m_Shader: {fileID: 4800000, guid: 670bc4c895989854bad837f21c299e3a, type: 3}
   m_ShaderKeywords: ACTIVATE_WIND ETC1_EXTERNAL_ALPHA
-=======
   m_Shader: {fileID: 51, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
->>>>>>> parent of 67432a6... Some backups, working in merching cube generation
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -38,17 +35,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - PixelSnap: 0
-<<<<<<< HEAD
     - _ActivateWind: 1
     - _Amount: 1
     - _BotPower: 0
     - _Brightness: 1
     - _Contrast: 1
-=======
->>>>>>> parent of 67432a6... Some backups, working in merching cube generation
     - _Cutoff: 0.5
     - _EnableExternalAlpha: 0
-<<<<<<< HEAD
     - _FoamMaxDistance: 0.4
     - _FoamMinDistance: 0.04
     - _Hue: 0
@@ -66,13 +59,10 @@ Material:
     - _WindSpeed: 0.25
     - _WindStrength: 0.25
     - _WindYShake: 5
-=======
     - _Shininess: 0.078125
->>>>>>> parent of 67432a6... Some backups, working in merching cube generation
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
-<<<<<<< HEAD
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
     - _HueVariation: {r: 1, g: 0.25, b: 0, a: 0.1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
@@ -82,7 +72,5 @@ Material:
     - _TopColor: {r: 1, g: 1, b: 1, a: 1}
     - _WindFreq: {r: 1, g: 1, b: 1, a: 0}
     - _WindVector: {r: 1, g: 1, b: 1, a: 0}
-=======
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
->>>>>>> parent of 67432a6... Some backups, working in merching cube generation

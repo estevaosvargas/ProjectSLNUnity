@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -163,26 +163,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1440289436}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 285773b3297ac5c48aaf939e8e699784, type: 3}
+  m_Script: {fileID: 11500000, guid: e5293ba951fb5f745b5779761ebc3671, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   World_ID: 0
-  SlectedBlock: {fileID: 1639277418}
-  CurrentWorld: 0
-  VillaPorcetage: 10
-  HeightTeste: {fileID: 2800000, guid: 6af08647a7710034081e990525d85b91, type: 3}
-  IsMainMenu: 0
-  Player: {fileID: 0}
-  renderDistance: 50
-  ThickRate: 1
-  PlayerPos: {x: 0, y: 0, z: 0}
-  WorldRuning: 0
   ChunkGO: {fileID: 1728794627388856, guid: 30810d7135128834fbab67c15393ed24, type: 3}
-  SUN: {fileID: 5965577152830102322, guid: 4e487a1d7286b914fb5b80b808c32e37, type: 3}
-  ChunksList: []
-  h: 0
-  d: 0
-  m: 0
+  Player: {fileID: 0}
+  renderDistance: 20
+  ThickRate: 60
 --- !u!114 &1440289439
 MonoBehaviour:
   m_ObjectHideFlags: 0

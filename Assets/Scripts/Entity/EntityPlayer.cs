@@ -20,7 +20,7 @@ public class EntityPlayer : EntityLife
     public List<GameObject> ObjectToDisable = new List<GameObject>();
     public Transform Vector;
     public Animator AttackSword;
-    Tile tile;
+    Block block;
     public int animstatus;
     public float Speed = 5;
     public float DashSpeed = 10;
@@ -56,14 +56,14 @@ public class EntityPlayer : EntityLife
         {
             //Game.TileAnimations.StartTileAnimation();//disabel for now
 
-            if (Game.WorldGenerator != null)
+            if (Game.World != null)
             {
-                World = Game.WorldGenerator.transform;
+                World = Game.World.transform;
             }
 
             IsAlive = true;
 
-            Game.WorldGenerator.StartWorld();//start generation world, and set the player reference to worldmanager
+            Game.World.StartWorld();//start generation world, and set the player reference to worldmanager
 
             Game.MenuManager.LifeBar.RefreshBar(HP);
             Game.MenuManager.EnergyBar.RefreshBar(Status.Energy);
@@ -90,7 +90,7 @@ public class EntityPlayer : EntityLife
         }
 
 
-        if (tile != null)
+        if (block != null)
         {
             if (transform.position.y <= -0.8f)
             {
@@ -100,7 +100,7 @@ public class EntityPlayer : EntityLife
                 NetStats.swiming = true;
                 Anim.SetBool("swing", true);
             }
-            else if (tile.type == TypeBlock.IceWater)
+            else if (block.Type == TypeBlock.IceWater)
             {
                 Speed = 5f;
                 enableGravity = true;
@@ -121,37 +121,37 @@ public class EntityPlayer : EntityLife
 
     void UpdateOnMoveInt()
     {
-        if (Game.WorldGenerator)
+        if (Game.World)
         {
             //Game.WorldGenerator.UpdateFindChunk();
             var main = FootPArticle.main;
 
-            tile = Game.WorldGenerator.GetTileAt(transform.position.x, transform.position.z);
+            block = Game.World.GetTileAt(transform.position.x, transform.position.y, transform.position.z);
 
-            NetStats.CurrentTile = tile;
-            NetStats.CurrentBiome = tile.TileBiome;
+            NetStats.CurrentBlock = block;
+            NetStats.CurrentBiome = block.TileBiome;
 
-            if (tile.type == TypeBlock.Grass)
+            if (block.Type == TypeBlock.Grass)
             {
                 main.startColor = Color.green;
             }
-            else if (tile.type == TypeBlock.Dirt)
+            else if (block.Type == TypeBlock.Dirt)
             {
                 main.startColor = Color.magenta;
             }
-            else if (tile.type == TypeBlock.DirtRoad)
+            else if (block.Type == TypeBlock.DirtRoad)
             {
                 main.startColor = Color.magenta;
             }
-            else if (tile.type == TypeBlock.Sand || tile.type == TypeBlock.BeachSand)
+            else if (block.Type == TypeBlock.Sand || block.Type == TypeBlock.BeachSand)
             {
                 main.startColor = Color.yellow;
             }
-            else if (tile.type == TypeBlock.Rock || tile.type == TypeBlock.RockGround)
+            else if (block.Type == TypeBlock.Rock || block.Type == TypeBlock.RockGround)
             {
                 main.startColor = Color.gray;
             }
-            else if (tile.type == TypeBlock.Snow)
+            else if (block.Type == TypeBlock.Snow)
             {
                 main.startColor = Color.white;
             }
@@ -398,13 +398,13 @@ public class EntityPlayer : EntityLife
 
     public void FootPrintLeft()
     {
-        audioSource.PlayOneShot(Game.AudioManager.GetFootSound(tile.type));
+        audioSource.PlayOneShot(Game.AudioManager.GetFootSound(block.Type));
         FootPArticle.Emit(FootParticleCount);
     }
 
     private void Step()
     {
-        audioSource.PlayOneShot(Game.AudioManager.GetFootSound(tile.type));
+        audioSource.PlayOneShot(Game.AudioManager.GetFootSound(block.Type));
         FootPArticle.Emit(FootParticleCount);
     }
 
@@ -506,9 +506,9 @@ public class EntityPlayer : EntityLife
 
 
 
-    public bool IsOnWater(int x, int y)
+    public bool IsOnWater(int x, int y, int z)
     {
-        if (Game.WorldGenerator.GetTileAt(x, y) .type == TypeBlock.Water)
+        if (Game.World.GetTileAt(x, y, z).Type == TypeBlock.Water)
         {
             return true;
         }
@@ -785,7 +785,7 @@ public class PlayerNetStats
     public bool swiming = false;
     public float angle = 0;
     public int HandLayer = 5;
-    public Tile CurrentTile;
+    public Block CurrentBlock;
     public BiomeType CurrentBiome;
 
     public int Side = -1;
