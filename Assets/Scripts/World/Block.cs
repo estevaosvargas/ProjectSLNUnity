@@ -40,63 +40,11 @@ public class Block
     [System.NonSerialized]
     public GameObject BlockObject;
 
-    public Block(int _x, int _y, int _z, float _density, TypeBlock _Type)
+    public Block(int _x, int _y, int _z)
     {
         x = _x;
         y = _y;
         z = _z;
-
-        Type = _Type;
-
-        density = _density;
-
-        /*if (y <= 0)
-        {
-            
-        }
-        else
-        {
-            float thisHeight = VoxelStruct.GetTerrainHeight(x, z);
-
-            // Set the value of this point in the terrainMap.
-            density = (float)y - thisHeight;
-
-            if (density <= 0.6f && density >= 0.5f)
-            {
-                isSurface = true;
-
-                System.Random rand = new System.Random(World.Instance.seed + x * y * z);
-
-                if (rand.Next(0,10) <= 3)
-                {
-                    HaveTree = true;
-                }
-
-                SetBlock(BlockType.Grass);
-            }
-            else if (density < 0.5f)
-            {
-                FastNoise noise = new FastNoise(0);
-
-                noise.SetFrequency(0.2f);
-                noise.SetInterp(FastNoise.Interp.Quintic);
-
-                density = noise.GetPerlin(x, y, z);
-
-                if (density <= 0.5f)
-                {
-                    SetBlock(BlockType.DirtRoad);
-                }
-                else
-                {
-                    SetBlock(BlockType.Air);
-                }
-            }
-            else
-            {
-                SetBlock(BlockType.Air);
-            }
-        }*/
     }
 
     public void RemoveBlock()

@@ -7,25 +7,30 @@ using UnityEngine;
 public class World : MonoBehaviour
 {
     public static int ChunkSize = 10;
-    public int World_ID = 0;
     public GameObject ChunkGO;
     public bool WorldRuning { get; private set; }
     public Vector3 PlayerPos { get; private set; }
-    public Transform Player;
     private Vector3 LastPlayerP;
+
+    public int renderDistance = 20;
+    public int ThickRate = 1;
 
     private Thread chunkGenerate;
     private Thread chunkMeshGenerate;
 
-    public int renderDistance = 20;
-    public int ThickRate = 1;
     public static int Snap(float i, int v) => (int)(Mathf.Round(i / v) * v);
 
-    private Queue<Vector3> pendingDeletions = new Queue<Vector3>();
-    private Queue<MapData> pendingchunks = new Queue<MapData>();
-    private Queue<Vector3> pendingUpdateMesh = new Queue<Vector3>();
-    private Queue<MeshDataThread> pendingUpdateMeshFinal = new Queue<MeshDataThread>();
+    public Queue<Vector3> pendingDeletions = new Queue<Vector3>();
+    public Queue<MapData> pendingchunks = new Queue<MapData>();
+    public Queue<Vector3> pendingUpdateMesh = new Queue<Vector3>();
+    public Queue<MeshDataThread> pendingUpdateMeshFinal = new Queue<MeshDataThread>();
     Dictionary<Vector3, Chunk> chunkMap = new Dictionary<Vector3, Chunk>();
+
+    public int ChunksLoaded { get { return chunkMap.Count; } }
+    public int ChunksQueue { get { return pendingchunks.Count; } }
+    public int MeshDataQueue { get { return pendingUpdateMeshFinal.Count; } }
+    public int UpdateMeshQueue { get { return pendingUpdateMesh.Count; } }
+    public int ChunksDeleteQueue { get { return pendingDeletions.Count; } }
 
     private void Awake()
     {
@@ -37,7 +42,7 @@ public class World : MonoBehaviour
         NoiseData.StartData();
 
         WorldRuning = true;
-        PlayerPos = new Vector3((int)Player.position.x, (int)Player.position.y, (int)Player.position.z);
+        PlayerPos = new Vector3((int)Game.GameManager.Player.PlayerObj.transform.position.x, (int)Game.GameManager.Player.PlayerObj.transform.position.y, (int)Game.GameManager.Player.PlayerObj.transform.position.z);
 
         chunkGenerate = new Thread(new ThreadStart(MadeChunks));
         chunkGenerate.Name = "chunkGenerate";
@@ -50,26 +55,9 @@ public class World : MonoBehaviour
         chunkMeshGenerate.Start();
     }
 
-    private void OnGUI()
-    {
-        GUI.Label(new Rect(10, 10, 500, 20), "©2020 - Darkcomsoft. | Chunks-Size: " + ChunkSize + " | WorldSeed: " + GameManager.Seed);
-        GUI.Label(new Rect(10, 30, 200, 20), "Chunks Loaded: " + chunkMap.Count);
-        GUI.Label(new Rect(10, 50, 200, 20), "ChunksQueue: " + pendingchunks.Count);
-        GUI.Label(new Rect(10, 70, 200, 20), "MeshDataQueue: " + pendingUpdateMeshFinal.Count);
-
-        GUI.Label(new Rect(10, 90, 200, 20), "UpdateMeshQueue: " + pendingUpdateMesh.Count);
-        GUI.Label(new Rect(10, 110, 200, 20), "ChunksDeleteQueue: " + pendingDeletions.Count);
-
-        GUI.Label(new Rect(10, 130, 500, 20), "Player Position: " + PlayerPos.ToString());
-
-        GUI.Label(new Rect(10, 150, 500, 20), "VideoCard: " + SystemInfo.graphicsDeviceName + " Runing on " + SystemInfo.graphicsShaderLevel + " OS: " + SystemInfo.operatingSystem);
-
-        GUI.Label(new Rect(10, 170, 500, 20), "renderDistance: " + renderDistance);
-    }
-
     void Update()
     {
-        PlayerPos = new Vector3((int)Player.position.x, (int)Player.position.y, (int)Player.position.z);
+        PlayerPos = new Vector3((int)Game.GameManager.Player.PlayerObj.transform.position.x, (int)Game.GameManager.Player.PlayerObj.transform.position.y, (int)Game.GameManager.Player.PlayerObj.transform.position.z);
 
         while (pendingchunks.Count > 0)
         {
@@ -112,6 +100,11 @@ public class World : MonoBehaviour
                chunkser.UpdateMeshData(chunk);
             }
         }
+
+        if (!Game.MapManager.readyPlayer)
+        {
+            Game.MapManager.FinishedLoading();
+        }
     }
 
     private void OnDestroy()
@@ -152,7 +145,7 @@ public class World : MonoBehaviour
                             {
                                 MapData nchunk = new MapData();
 
-                                nchunk.density = new VoxelDataItem[ChunkSize, ChunkSize, ChunkSize];
+                                nchunk.density = new Block[ChunkSize, ChunkSize, ChunkSize];
                                 GenerateVoxelData(nchunk.density, vector);
 
                                 nchunk.position = vector;
@@ -213,7 +206,7 @@ public class World : MonoBehaviour
         }
     }
 
-    private void GenerateVoxelData(VoxelDataItem[,,] voxels, Vector3 chunkPos)
+    private void GenerateVoxelData(Block[,,] voxels, Vector3 chunkPos)
     {
         for (int x = 0; x < ChunkSize; x++)
         {
@@ -221,7 +214,10 @@ public class World : MonoBehaviour
             {
                 for (int z = 0; z < ChunkSize; z++)
                 {
-                    voxels[x, y, z] = Biome.GetDensity(x + (int)chunkPos.x, y + (int)chunkPos.y, z + (int)chunkPos.z);
+                   
+                    voxels[x, y, z] = new Block(x + (int)chunkPos.x, y + (int)chunkPos.y, z + (int)chunkPos.z);
+
+                    voxels[x, y, z].Type = Biome.GetDensity(voxels[x, y, z].x, voxels[x, y, z].y, voxels[x, y, z].z, 0, voxels[x, y, z]);
                 }
             }
         }
@@ -298,7 +294,7 @@ public class World : MonoBehaviour
 public struct MapData
 {
     public Vector3 position;
-    public VoxelDataItem[,,] density;
+    public Block[,,] density;
 }
 
 public struct MeshDataThread
@@ -319,13 +315,11 @@ public struct MeshGroup
 public struct VoxelDataItem
 {
     public float density;
-    public TypeBlock typeBlock;
-
-    public VoxelDataItem(float _density, TypeBlock _typeBlock)
-    {
-        density = _density;
-        typeBlock = _typeBlock;
-    }
+    public TypeBlock Type;
+    public BiomeType TileBiome;
+    public TypeVariante typeVariante;
+    public Placer PLACER_DATA;
+    public TakeGO typego;
 }
 
 public struct VertVoxel
@@ -364,25 +358,30 @@ public class MeshData
             {
                 for (int z = 0; z < World.ChunkSize; z++)
                 {
-                    if (tile[x, y, z].density > 0f && tile[x, y, z].density <= 1f)
+                    if (tile[x, y, z].density > 0f && tile[x, y, z].density <= 2f)
                     {
-                        CreateSquare(tile[x, y, z].x, tile[x, y, z].y, tile[x, y, z].z, tile[x, y, z].density);
+                        CreateSquare(tile[x, y, z].x, tile[x, y, z].y, tile[x, y, z].z, tile[x, y, z]);
+                    }
+                    else
+                    {
+                        tile[x, y, z].Type = TypeBlock.Air;
                     }
                 }
             }
         }
     }
 
-    void CreateSquare(int x, int y, int z, float densityDefault)
+    void CreateSquare(int x, int y, int z, Block block)
     {
+        float firts = GetTile(x, y, z);
         float Right = GetTile(x + 1, y, z);
         float FrenteRight = GetTile(x, y, z + 1);
         float FrenteLeft = GetTile(x + 1, y, z + 1);
 
-        vertices.Add(new Vector3(x, GetTile(x, y, z), z));
-        vertices.Add(new Vector3(x + 1,     Right,          z));
-        vertices.Add(new Vector3(x,         FrenteRight,    z + 1));
-        vertices.Add(new Vector3(x + 1,     FrenteLeft,     z + 1));
+        vertices.Add(new Vector3(x,      firts,         z));
+        vertices.Add(new Vector3(x + 1,  Right,         z));
+        vertices.Add(new Vector3(x,      FrenteRight,   z + 1));
+        vertices.Add(new Vector3(x + 1,  FrenteLeft,    z + 1));
 
         triangles.Add(vertices.Count - 1);
         triangles.Add(vertices.Count - 3);
@@ -392,7 +391,7 @@ public class MeshData
         triangles.Add(vertices.Count - 1);
         triangles.Add(vertices.Count - 4);
 
-        //UVs.AddRange(Game.SpriteManager.GetTileUVs(tile));
+        UVs.AddRange(Game.SpriteManager.GetTileUVs(block));
     }
 
     float GetTile(int x, int y, int z)

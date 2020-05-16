@@ -43,6 +43,8 @@ public class Inventory : MonoBehaviour
             }
             Game.MenuManager.InveGui.Inve = this;
             Game.MenuManager.InveGui.OpenInev(this);
+
+            Game.MapManager.PlayerFinishedLoad();
         }
         else
         {

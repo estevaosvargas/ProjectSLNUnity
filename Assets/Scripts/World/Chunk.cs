@@ -17,15 +17,17 @@ public class Chunk : MonoBehaviour
 
     public Material m_Grass;
 
+    private List<Block> BlocksList = new List<Block>();
+
     void Start()
     {
 
     }
 
-    public void MakeMesh(VoxelDataItem[,,] voxelData)
+    public void MakeMesh(Block[,,] voxelData)
     {
         chunkPosition = transform.position;
-        Blocks = new Block[World.ChunkSize, World.ChunkSize, World.ChunkSize];
+        Blocks = voxelData;
 
         for (int x = 0; x < World.ChunkSize; x++)
         {
@@ -33,7 +35,6 @@ public class Chunk : MonoBehaviour
             {
                 for (int z = 0; z < World.ChunkSize; z++)
                 {
-                    Blocks[x, y, z] = new Block(x + (int)transform.position.x, y + (int)transform.position.y, z + (int)transform.position.z, voxelData[x, y, z].density, voxelData[x, y, z].typeBlock);
                     Blocks[x, y, z].CurrentChunk = transform.position;//Set this chunk to the tile
                     /*if (Blocks[x, y, z].HaveTree)
                     {
@@ -41,6 +42,8 @@ public class Chunk : MonoBehaviour
                         obj.transform.position = new Vector3(Blocks[x, y, z].x, Blocks[x, y, z].y, Blocks[x, y, z].z);
                         obj.transform.SetParent(transform, true);
                     }*/
+
+                    BlocksList.Add(Blocks[x, y, z]);
                 }
             }
         }
@@ -95,10 +98,19 @@ public class Chunk : MonoBehaviour
     private void OnDestroy()
     {
         Blocks = null;
+        BlocksList.Clear();
     }
 
     private void OnDrawGizmos()
     {
+        foreach (var item in BlocksList)
+        {
+            if (item.Type != TypeBlock.Air)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawCube(new Vector3(item.x + 0.5f, item.y + 0.5f, item.z + 0.5f), Vector3.one);
+            }
+        }
         Gizmos.DrawWireCube(transform.position + new Vector3(World.ChunkSize / 2, World.ChunkSize / 2, World.ChunkSize / 2), new Vector3(World.ChunkSize, World.ChunkSize, World.ChunkSize));
     }
 }

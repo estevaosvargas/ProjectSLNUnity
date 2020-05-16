@@ -37,112 +37,81 @@ public static class Biome
 
     public static BiomeType[] Biomeslayers = new BiomeType[8] { BiomeType.ForestNormal, BiomeType.Desert, BiomeType.Jungle, BiomeType.Plain, BiomeType.Snow, BiomeType.Bench, BiomeType.Montahas, BiomeType.ForestNormal_Dense };
 
-    public static TypeBlock GetBiome(int x, int y, int z, Block tile)
+    public static TypeBlock GetDensity(int x, int y,int z, float sample, Block tile)
     {
-        int n = Biomeslayers.Length;
-        float l = Get_PerlinGlobal(x, z);
-        float YY = 0;
+        TypeBlock type = TypeBlock.Air;
 
-        for (int i = 0; i < Biomeslayers.Length; i++)
-        {
-            if ((i - 1f) / n <= l && l <= (i + 1f) / n)
-            {
-                switch (Biomeslayers[i])
-                {
-                    case BiomeType.ForestNormal:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestNormal(x, z);
-                        break;
-                    case BiomeType.Desert:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinDesert(x, z);
-                        break;
-                    case BiomeType.Jungle:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinJungle(x, z);
-                        break;
-                    case BiomeType.Plain:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinPlaine(x, z);
-                        break;
-                    case BiomeType.Snow:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestSnow(x, z);
-                        break;
-                    case BiomeType.Bench:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinGlobal(x, z) * 50 / 50;
-                        break;
-                    case BiomeType.Montahas:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinMontanhas(x, z);
-                        break;
-                    case BiomeType.ForestNormal_Dense:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestNormal(x, z);
-                        break;  
-                }
-            }
-        }
-
-        tile.density = YY;
-        return TypeBlock.Air;
-    }
-
-    public static VoxelDataItem GetDensity(int x, int y, int z)
-    {
         FastNoise globalNoise = new FastNoise();
 
-        globalNoise.SetFrequency(0.001f);
+        globalNoise.SetFrequency(0.002f);
 
         int n = Biomeslayers.Length;
-        float l = globalNoise.GetPerlin(x, z);
+        float l = globalNoise.GetPerlinFractal(x, z);
         float YY = 0;
-
-        TypeBlock blocktype = TypeBlock.Air;
 
         for (int i = 0; i < Biomeslayers.Length; i++)
         {
             if ((i - 1f) / n <= l && l <= (i + 1f) / n)
             {
+                float perlin = 0;
+
                 switch (Biomeslayers[i])
                 {
                     case BiomeType.ForestNormal:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestNormal(x, z) * 20;
-                        blocktype = Teste(Get_PerlinForestNormal(x, z) * 20);
+                        perlin = Get_PerlinForestNormal(x, z);
+                        type = ForestNormal(x, z, tile, sample, perlin);
+                        YY += (-Mathf.Abs(n * l - i) + 1) * perlin * 25;
+                        tile.TileBiome = Biomeslayers[i];
                         break;
                     case BiomeType.Desert:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinDesert(x, z);
-                        blocktype = Teste(Get_PerlinDesert(x, z));
+                        perlin = Get_PerlinDesert(x, z);
+                        type = Desert(x, z, tile, sample, perlin);
+                        YY += (-Mathf.Abs(n * l - i) + 1) * perlin * 2;
+                        tile.TileBiome = Biomeslayers[i];
                         break;
                     case BiomeType.Jungle:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinJungle(x, z);
-                        blocktype = Teste(Get_PerlinJungle(x, z));
+                        perlin = Get_PerlinJungle(x, z);
+                        type = Jungle(x, z, tile, sample, perlin);
+                        YY += (-Mathf.Abs(n * l - i) + 1) * perlin * 15;
+                        tile.TileBiome = Biomeslayers[i];
                         break;
                     case BiomeType.Plain:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinPlaine(x, z);
-                        blocktype = Teste(Get_PerlinPlaine(x, z));
+                        perlin = Get_PerlinPlaine(x, z);
+                        type = Plaine(x, z, tile, sample, perlin);
+                        YY += (-Mathf.Abs(n * l - i) + 1) * perlin * 30;
+                        tile.TileBiome = Biomeslayers[i];
                         break;
                     case BiomeType.Snow:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestSnow(x, z);
-                        blocktype = Snow(Get_PerlinForestSnow(x, z));
+                        perlin = Get_PerlinForestSnow(x, z);
+                        type = ForestSnow(x, z, tile, sample, perlin);
+                        YY += (-Mathf.Abs(n * l - i) + 1) * perlin * 20;
+                        tile.TileBiome = Biomeslayers[i];
                         break;
                     case BiomeType.Bench:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * l;
-                        blocktype = Teste(l);
+                        YY += (-Mathf.Abs(n * l - i) + 1) * sample / 50;
+                        type = Bench(x, z, tile, sample / 50);
+                        tile.TileBiome = Biomeslayers[i];
                         break;
                     case BiomeType.Montahas:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinMontanhas(x, z);
-                        blocktype = Teste(Get_PerlinMontanhas(x, z));
+                        perlin = Get_PerlinMontanhas(x, z);
+                        type = Montanhas(x, z, tile, sample, perlin);
+                        YY += (-Mathf.Abs(n * l - i) + 1) * perlin * 80;
+                        tile.TileBiome = Biomeslayers[i];
                         break;
                     case BiomeType.ForestNormal_Dense:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestNormal_Dense(x, z);
-                        blocktype = Teste(Get_PerlinForestNormal_Dense(x, z));
-                        break;  
+                        perlin = Get_PerlinForestNormal_Dense(x, z);
+                        type = ForestNormal_Dense(x, z, tile, sample, perlin);
+                        YY += (-Mathf.Abs(n * l - i) + 1) * perlin * 35;
+                        tile.TileBiome = Biomeslayers[i];
+                        break;
                 }
             }
         }
 
-        if ((y - YY) < -1)
-        {
-            blocktype = TypeBlock.Air;
-        }
+        tile.density = Mathf.Abs(y - YY);
 
-        return new VoxelDataItem(y - YY, blocktype);
+        return type;
     }
-
 
     public static float GetDensityRaw(int x, int y, int z)
     {
@@ -161,37 +130,36 @@ public static class Biome
                 switch (Biomeslayers[i])
                 {
                     case BiomeType.ForestNormal:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestNormal(x, z) * 20;
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestNormal(x, z) * 25;
                         break;
                     case BiomeType.Desert:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinDesert(x, z);
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinDesert(x, z) * 2;
                         break;
                     case BiomeType.Jungle:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinJungle(x, z);
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinJungle(x, z) * 15;
                         break;
                     case BiomeType.Plain:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinPlaine(x, z);
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinPlaine(x, z) * 30;
                         break;
                     case BiomeType.Snow:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestSnow(x, z);
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestSnow(x, z) * 20;
                         break;
                     case BiomeType.Bench:
                         YY += (-Mathf.Abs(n * l - i) + 1) * l;
                         break;
                     case BiomeType.Montahas:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinMontanhas(x, z);
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinMontanhas(x, z) * 80;
                         break;
                     case BiomeType.ForestNormal_Dense:
-                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestNormal_Dense(x, z);
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestNormal_Dense(x, z) * 35;
                         break;
                 }
             }
         }
 
 
-        return YY;
+        return Mathf.Abs(YY);
     }
-
 
     /// <summary>
     /// Get Position on surface
@@ -203,6 +171,50 @@ public static class Biome
     public static Vector3 GetBiomeYPosition(int x, int y, int z)
     {
         Vector3 final = new Vector3();
+
+        FastNoise globalNoise = new FastNoise();
+
+        globalNoise.SetFrequency(0.001f);
+
+        int n = Biomeslayers.Length;
+        float l = globalNoise.GetPerlin(x, z);
+        float YY = 0;
+
+        for (int i = 0; i < Biomeslayers.Length; i++)
+        {
+            if ((i - 1f) / n <= l && l <= (i + 1f) / n)
+            {
+                switch (Biomeslayers[i])
+                {
+                    case BiomeType.ForestNormal:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestNormal(x, z) * 25;
+                        break;
+                    case BiomeType.Desert:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinDesert(x, z) * 2;
+                        break;
+                    case BiomeType.Jungle:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinJungle(x, z) * 15;
+                        break;
+                    case BiomeType.Plain:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinPlaine(x, z) * 30;
+                        break;
+                    case BiomeType.Snow:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestSnow(x, z) * 20;
+                        break;
+                    case BiomeType.Bench:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * l;
+                        break;
+                    case BiomeType.Montahas:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinMontanhas(x, z) * 80;
+                        break;
+                    case BiomeType.ForestNormal_Dense:
+                        YY += (-Mathf.Abs(n * l - i) + 1) * Get_PerlinForestNormal_Dense(x, z) * 35;
+                        break;
+                }
+            }
+        }
+
+        final = new Vector3(x, YY, z);
 
         return final;
     }
@@ -232,7 +244,7 @@ public static class Biome
         float xCorde = (float)x / width * Scale;
         float zCorde = (float)z / height * Scale;
 
-        return Mathf.PerlinNoise(xCorde * noisefactor + GameManager.Seed, zCorde * noisefactor + GameManager.Seed) * 20;
+        return Mathf.PerlinNoise(xCorde * noisefactor + GameManager.Seed, zCorde * noisefactor + GameManager.Seed);
     }
 
     private static float Get_PerlinDesert(int x, int z)
@@ -246,7 +258,7 @@ public static class Biome
         float xCorde = (float)x / width * Scale + GameManager.Seed;
         float zCorde = (float)z / height * Scale + GameManager.Seed;
 
-        return Mathf.PerlinNoise(xCorde * noisefactor, zCorde * noisefactor) * 5;
+        return Mathf.PerlinNoise(xCorde * noisefactor, zCorde * noisefactor);
     }
 
     private static float Get_PerlinJungle(int x, int z)
@@ -311,7 +323,7 @@ public static class Biome
         xCordee *= frequency;
         zCordee *= frequency;
 
-        return Mathf.PerlinNoise(xCordee, zCordee) * amplitude / persistence * 35;
+        return Mathf.PerlinNoise(xCordee, zCordee) * amplitude / persistence;
     }
 
     private static float Get_PerlinGlobal(int x, int z)
@@ -319,157 +331,13 @@ public static class Biome
         return (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(x, z, 0) / 200;
     }
 
-    public static TypeBlock Teste(float perlin)
-    {
-        if (perlin <= 0.15f)
-        {
-            //Water
-            return TypeBlock.WaterFloor;
-        }
-        else if (perlin > 0.15f && perlin < 0.2f)
-        {
-            //Sand Bench
-            return TypeBlock.BeachSand;
-        }
-        else if (perlin > 0.2f && perlin <= 0.7f)
-        {
-            if (perlin > 0.2f && perlin < 0.6f)
-            {
-
-                return TypeBlock.Grass;
-            }
-            else if (perlin > 0.6f && perlin < 0.605f)
-            {
-                //grass
-                return TypeBlock.Grass;
-            }
-            else if (perlin > 0.62f && perlin < 0.63f)
-            {
-                //grass
-                return TypeBlock.Grass;
-            }
-            else
-            {
-                //tall grass
-                return TypeBlock.Grass;
-            }
-
-        }
-        else if (perlin > 0.7f && perlin <= 0.8f)
-        {
-            if (perlin > 0.7f && perlin < 0.72f)
-            {
-                //grama do pe do morro com arvores
-                return TypeBlock.Rock;
-            }
-            else if (perlin > 0.72f && perlin < 0.74f)
-            {
-                //grama do pe do morro
-                return TypeBlock.Rock;
-            }
-            else
-            {
-                //pe do morro
-                return TypeBlock.Rock;
-            }
-
-        }
-        else
-        {
-            //topo do morro
-            return TypeBlock.Rock;
-        }
-    }
-
-    public static TypeBlock Snow(float perlin)
-    {
-        if (perlin <= 0.15f)
-        {
-            //Water
-            return TypeBlock.WaterFloor;
-        }
-        else if (perlin > 0.15f && perlin < 0.2f)
-        {
-            //Sand Bench
-            return TypeBlock.BeachSand;
-        }
-        else if (perlin > 0.2f && perlin <= 0.7f)
-        {
-            if (perlin > 0.2f && perlin < 0.6f)
-            {
-
-                return TypeBlock.Snow;
-            }
-            else if (perlin > 0.6f && perlin < 0.605f)
-            {
-                //grass
-                return TypeBlock.Snow;
-            }
-            else if (perlin > 0.62f && perlin < 0.63f)
-            {
-                //grass
-                return TypeBlock.Snow;
-            }
-            else
-            {
-                //tall grass
-                return TypeBlock.Snow;
-            }
-
-        }
-        else if (perlin > 0.7f && perlin <= 0.8f)
-        {
-            if (perlin > 0.7f && perlin < 0.72f)
-            {
-                //grama do pe do morro com arvores
-                return TypeBlock.Rock;
-            }
-            else if (perlin > 0.72f && perlin < 0.74f)
-            {
-                //grama do pe do morro
-                return TypeBlock.Rock;
-            }
-            else
-            {
-                //pe do morro
-                return TypeBlock.Rock;
-            }
-
-        }
-        else
-        {
-            //topo do morro
-            return TypeBlock.Rock;
-        }
-    }
 
     private static TypeBlock ForestNormal(int x, int z, Block tile, float sample, float perlin)
     {
-        LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 1, GameManager.Seed, false);
+        /*LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 1, GameManager.Seed, false);
         VeronoiStruc sample2 = CityNoise.GetValueNPoint(x, z, 0);
 
-        //tile.CityPoint = new DataVector3(CityNoise.GetPoint(x, z, 0));
-
-        VeronoiStruc Tile_Vila_Up = CityNoise.GetValueNPoint(x, z + 1, 0);
-        VeronoiStruc Tile_Vila_Down = CityNoise.GetValueNPoint(x, z - 1, 0);
-        VeronoiStruc Tile_Vila_Left = CityNoise.GetValueNPoint(x - 1, z, 0);
-        VeronoiStruc Tile_Vila_Right = CityNoise.GetValueNPoint(x + 1, z, 0);
-
-        sample2.Value *= 10;
-
-        //float noise + simplexnoise + simplexnoise_high;
-
-        /*Tile_Vila_Up.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x, z + 1);
-        Tile_Vila_Down.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x, z - 1);
-        Tile_Vila_Left.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x - 1, z);
-        Tile_Vila_Right.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x + 1, z);*/
-
-
-        if ((int)Tile_Vila_Up.Value == 1 || (int)Tile_Vila_Down.Value == 1 || (int)Tile_Vila_Left.Value == 1 || (int)Tile_Vila_Right.Value == 1)
-        {
-
-            return TypeBlock.Rock;
-        }
+        tile.CityPoint = new DataVector3(CityNoise.GetPoint(x, z, 0));*/
 
         if (perlin <= 0.15f)
         {
@@ -485,8 +353,77 @@ public static class Biome
         {
             if (perlin > 0.2f && perlin < 0.6f)
             {
-                
+                //grass and bushs and trees
+                System.Random rand = new System.Random(GameManager.Seed + x * z + ((int)tile.CurrentChunk.x + (int)tile.CurrentChunk.y + (int)tile.CurrentChunk.x));
+                int randnum = (rand.Next(1, 50));
+
+                if (randnum == 1)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.Weed01;
+                    }
                     return TypeBlock.Grass;
+                }
+                else if (randnum == 2)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.RockProp;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 3)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.WeedTall;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 4)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.Pine;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 5)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.Oak;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 6)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL1;
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 7)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL2;
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 8)
+                {
+                    tile.typeVariante = TypeVariante.GrassRC;
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 9)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.Pine_Tall;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else
+                {
+                    return TypeBlock.Grass;
+                }
             }
             else if (perlin > 0.6f && perlin < 0.605f)
             {
@@ -510,16 +447,28 @@ public static class Biome
             if (perlin > 0.7f && perlin < 0.72f)
             {
                 //grama do pe do morro com arvores
+                if (tile.typego == TakeGO.empty && tile.z != 0)
+                {
+                    tile.typego = TakeGO.RockWall;
+                }
                 return TypeBlock.Rock;
             }
             else if (perlin > 0.72f && perlin < 0.74f)
             {
                 //grama do pe do morro
+                if (tile.typego == TakeGO.empty && tile.z != 0)
+                {
+                    tile.typego = TakeGO.RockWall;
+                }
                 return TypeBlock.Rock;
             }
             else
             {
                 //pe do morro
+                if (tile.typego == TakeGO.empty && tile.z != 0)
+                {
+                    tile.typego = TakeGO.RockWall;
+                }
                 return TypeBlock.Rock;
             }
 
@@ -527,6 +476,10 @@ public static class Biome
         else
         {
             //topo do morro
+            if (tile.typego == TakeGO.empty && tile.z != 0)
+            {
+                tile.typego = TakeGO.RockWall;
+            }
             return TypeBlock.Rock;
         }
 
@@ -534,29 +487,10 @@ public static class Biome
 
     private static TypeBlock ForestNormal_Dense(int x, int z, Block tile, float sample, float perlin)
     {
-        LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 1, GameManager.Seed, false);
+        /*LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 1, GameManager.Seed, false);
         VeronoiStruc sample2 = CityNoise.GetValueNPoint(x, z, 0);
 
-        //tile.CityPoint = new DataVector3(CityNoise.GetPoint(x, z, 0));
-
-        VeronoiStruc Tile_Vila_Up = CityNoise.GetValueNPoint(x, z + 1, 0);
-        VeronoiStruc Tile_Vila_Down = CityNoise.GetValueNPoint(x, z - 1, 0);
-        VeronoiStruc Tile_Vila_Left = CityNoise.GetValueNPoint(x - 1, z, 0);
-        VeronoiStruc Tile_Vila_Right = CityNoise.GetValueNPoint(x + 1, z, 0);
-
-        //tile.CityPoint = new Vector3(CityNoise.GetPoint(x, z, 0));
-
-
-        /*Tile_Vila_Up.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x, z + 1);
-        Tile_Vila_Down.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x, z - 1);
-        Tile_Vila_Left.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x - 1, z);
-        Tile_Vila_Right.TileType = Game.WorldGenerator.HeightTeste.GetPixel(x + 1, z);*/
-
-        if ((int)Tile_Vila_Up.Value == 1 || (int)Tile_Vila_Down.Value == 1 || (int)Tile_Vila_Left.Value == 1 || (int)Tile_Vila_Right.Value == 1)
-        {
-
-            return TypeBlock.Rock;
-        }
+        tile.CityPoint = new DataVector3(CityNoise.GetPoint(x, z, 0));*/
 
         if (perlin <= 0.15f)
         {
@@ -570,14 +504,127 @@ public static class Biome
         }
         else if (perlin > 0.2f && perlin <= 0.7f)
         {
-            return TypeBlock.Grass;
+            if (perlin > 0.2f && perlin < 0.6f)
+            {
+                //grass and bushs and trees
+                System.Random rand = new System.Random(GameManager.Seed + x * z + ((int)tile.CurrentChunk.x + (int)tile.CurrentChunk.y + (int)tile.CurrentChunk.x));
+                int randnum = (rand.Next(1, 20));
+
+                if (randnum == 1)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.Weed01;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 2)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.RockProp;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 3)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.WeedTall;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 4)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.Pine;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 5)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.Oak;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 6)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL1;
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 7)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL2;
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 8)
+                {
+                    tile.typeVariante = TypeVariante.GrassRC;
+                    return TypeBlock.Grass;
+                }
+                else
+                {
+                    return TypeBlock.Grass;
+                }
+            }
+            else if (perlin > 0.6f && perlin < 0.605f)
+            {
+                //grass
+                return TypeBlock.Grass;
+            }
+            else if (perlin > 0.62f && perlin < 0.63f)
+            {
+                //grass
+                return TypeBlock.Grass;
+            }
+            else
+            {
+                //tall grass
+                return TypeBlock.Grass;
+            }
+
         }
         else if (perlin > 0.7f && perlin <= 0.8f)
         {
-            return TypeBlock.Rock;
+            if (perlin > 0.7f && perlin < 0.72f)
+            {
+                //grama do pe do morro com arvores
+                if (tile.typego == TakeGO.empty && tile.z != 0)
+                {
+                    tile.typego = TakeGO.RockWall;
+                }
+                return TypeBlock.Rock;
+            }
+            else if (perlin > 0.72f && perlin < 0.74f)
+            {
+                //grama do pe do morro
+                if (tile.typego == TakeGO.empty && tile.z != 0)
+                {
+                    tile.typego = TakeGO.RockWall;
+                }
+                return TypeBlock.Rock;
+            }
+            else
+            {
+                //pe do morro
+                if (tile.typego == TakeGO.empty && tile.z != 0)
+                {
+                    tile.typego = TakeGO.RockWall;
+                }
+                return TypeBlock.Rock;
+            }
+
         }
         else
         {
+            //topo do morro
+            if (tile.typego == TakeGO.empty && tile.z != 0)
+            {
+                tile.typego = TakeGO.RockWall;
+            }
             return TypeBlock.Rock;
         }
 
@@ -600,6 +647,27 @@ public static class Biome
         {
             if (perlin > 0.2f && perlin < 0.6f)
             {
+                //grass and bushs and trees
+                System.Random rand = new System.Random(GameManager.Seed * x + z * ((int)tile.CurrentChunk.x + (int)tile.CurrentChunk.y + (int)tile.CurrentChunk.x));
+                int randnum = (rand.Next(1, 20));
+
+                if (randnum == 1)
+                {
+                    if (tile.typego == TakeGO.empty)
+                    {
+                        tile.typego = TakeGO.Cactu;
+                    }
+                    return TypeBlock.Sand;
+                }
+                else if (randnum == 5)
+                {
+                    if (tile.typego == TakeGO.empty)
+                    {
+                        tile.typego = TakeGO.Cactu2;
+                    }
+                    return TypeBlock.Sand;
+                }
+
                 return TypeBlock.Sand;
 
             }
@@ -650,7 +718,29 @@ public static class Biome
     {
         if (sample > 0.08f)
         {
+            System.Random rand = new System.Random(GameManager.Seed * x + z * ((int)tile.CurrentChunk.x + (int)tile.CurrentChunk.y + (int)tile.CurrentChunk.x));
+            int randnum = (rand.Next(1, 100));
+
+            if (randnum == 1)
+            {
+                if (tile.typego == TakeGO.empty)
+                {
+                    tile.typego = TakeGO.PalmTree;
+                }
                 return TypeBlock.BeachSand;
+            }
+            else if (randnum == 5)
+            {
+                if (tile.typego == TakeGO.empty)
+                {
+                    tile.typego = TakeGO.PalmTree2;
+                }
+                return TypeBlock.BeachSand;
+            }
+            else
+            {
+                return TypeBlock.BeachSand;
+            }
         }
         else
         {
@@ -676,8 +766,34 @@ public static class Biome
         {
             if (perlin > 0.2f && perlin < 0.6f)
             {
-                
+                //grass and bushs and trees
+                System.Random rand = new System.Random(GameManager.Seed * x + z * ((int)tile.CurrentChunk.x + (int)tile.CurrentChunk.y + (int)tile.CurrentChunk.x));
+                int randnum = (rand.Next(1, 20));
+
+                if (randnum == 1)
+                {
+                    if (tile.typego == TakeGO.empty)
+                    {
+                        tile.typego = TakeGO.BigTree;
+                    }
                     return TypeBlock.JungleGrass;
+                }
+                else if (randnum == 3)
+                {
+                    if (tile.typego == TakeGO.empty)
+                    {
+                        tile.typego = TakeGO.BigTree2;
+                    }
+                    return TypeBlock.JungleGrass;
+                }
+                else if (randnum == 5)
+                {
+                    if (tile.typego == TakeGO.empty)
+                    {
+                        tile.typego = TakeGO.WeedTall_Jungle;
+                    }
+                    return TypeBlock.JungleGrass;
+                }
             }
             else if (perlin > 0.6f && perlin < 0.605f)
             {
@@ -871,7 +987,29 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
+
+                System.Random rand = new System.Random(GameManager.Seed * x + z * ((int)tile.CurrentChunk.x + (int)tile.CurrentChunk.y + (int)tile.CurrentChunk.x));
+                int randnum = (rand.Next(1, 20));
+
+                if (randnum == 1)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL1;
                     return TypeBlock.Grass;
+                }
+                else if (randnum == 3)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL2;
+                    return TypeBlock.Grass;
+                }
+                else if (randnum == 5)
+                {
+                    tile.typeVariante = TypeVariante.GrassRC;
+                    return TypeBlock.Grass;
+                }
+                else
+                {
+                    return TypeBlock.Grass;
+                }
             }
             else if (perlin > 0.6f && perlin < 0.605f)
             {
@@ -940,7 +1078,37 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
+                System.Random rand = new System.Random(GameManager.Seed * x + z * ((int)tile.CurrentChunk.x + (int)tile.CurrentChunk.y + (int)tile.CurrentChunk.x));
+                int randnum = (rand.Next(1, 20));
+
+                if (randnum == 1)
+                {
+                    if (tile.typego == TakeGO.empty)
+                    {
+                        tile.typego = TakeGO.WeedTall_Snow;
+                    }
                     return TypeBlock.Snow;
+                }
+                else if (randnum == 5)
+                {
+                    if (tile.typego == TakeGO.empty)
+                    {
+                        tile.typego = TakeGO.PineSnow;
+                    }
+                    return TypeBlock.Snow;
+                }
+                else if (randnum == 9)
+                {
+                    if (tile.typego == TakeGO.empty && tile.z != 0)
+                    {
+                        tile.typego = TakeGO.PineSnow_Tall;
+                    }
+                    return TypeBlock.Grass;
+                }
+                else
+                {
+                    return TypeBlock.Snow;
+                }
             }
             else if (perlin > 0.6f && perlin < 0.605f)
             {
@@ -1004,7 +1172,68 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
+                System.Random rand = new System.Random(GameManager.Seed * x + z * ((int)tile.CurrentChunk.x + (int)tile.CurrentChunk.y + (int)tile.CurrentChunk.x));
+                int randnum = (rand.Next(1, 20));
+
+                if (randnum == 1)
+                {
+                    if (tile.typego == TakeGO.empty && tile.y != 0)
+                    {
+                        tile.typego = TakeGO.Weed01;
+                    }
                     return TypeBlock.Air;
+                }
+                else if (randnum == 2)
+                {
+                    if (tile.typego == TakeGO.empty && tile.y != 0)
+                    {
+                        tile.typego = TakeGO.RockProp;
+                    }
+                    return TypeBlock.Air;
+                }
+                else if (randnum == 3)
+                {
+                    if (tile.typego == TakeGO.empty && tile.y != 0)
+                    {
+                        tile.typego = TakeGO.WeedTall;
+                    }
+                    return TypeBlock.Air;
+                }
+                else if (randnum == 4)
+                {
+                    if (tile.typego == TakeGO.empty && tile.y != 0)
+                    {
+                        tile.typego = TakeGO.Pine;
+                    }
+                    return TypeBlock.Air;
+                }
+                else if (randnum == 5)
+                {
+                    if (tile.typego == TakeGO.empty && tile.y != 0)
+                    {
+                        tile.typego = TakeGO.Oak;
+                    }
+                    return TypeBlock.Air;
+                }
+                else if (randnum == 6)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL1;
+                    return TypeBlock.Air;
+                }
+                else if (randnum == 7)
+                {
+                    tile.typeVariante = TypeVariante.GrassFL2;
+                    return TypeBlock.Air;
+                }
+                else if (randnum == 8)
+                {
+                    tile.typeVariante = TypeVariante.GrassRC;
+                    return TypeBlock.Air;
+                }
+                else
+                {
+                    return TypeBlock.Air;
+                }
             }
             else if (perlin > 0.6f && perlin < 0.605f)
             {
@@ -1049,7 +1278,6 @@ public static class Biome
         }
 
     }
-
 }
 public static class NoiseData
 {

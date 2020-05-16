@@ -10,7 +10,6 @@ public class EntityPlayer : EntityLife
     public AudioSource audioSource;
     public CharacterController body;
     public Inventory Inve;
-    public Transform World;
     public LifeStatus Status;
     public Transform HandRoot;
     public PlayerNetStats NetStats;
@@ -54,21 +53,10 @@ public class EntityPlayer : EntityLife
 
         if (Net.isMine)
         {
-            //Game.TileAnimations.StartTileAnimation();//disabel for now
-
-            if (Game.World != null)
-            {
-                World = Game.World.transform;
-            }
-
             IsAlive = true;
-
-            Game.World.StartWorld();//start generation world, and set the player reference to worldmanager
 
             Game.MenuManager.LifeBar.RefreshBar(HP);
             Game.MenuManager.EnergyBar.RefreshBar(Status.Energy);
-
-
         }
         else
         {
@@ -76,8 +64,6 @@ public class EntityPlayer : EntityLife
             {
                 Destroy(item);
             }
-
-
         }
     }
 
@@ -126,7 +112,7 @@ public class EntityPlayer : EntityLife
             //Game.WorldGenerator.UpdateFindChunk();
             var main = FootPArticle.main;
 
-            block = Game.World.GetTileAt(transform.position.x, transform.position.y, transform.position.z);
+            block = Game.World.GetTileAt(transform.position.x, transform.position.y , transform.position.z);
 
             NetStats.CurrentBlock = block;
             NetStats.CurrentBiome = block.TileBiome;
@@ -188,6 +174,10 @@ public class EntityPlayer : EntityLife
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            body.enabled = true;
+        }
         if (IsVisible)//Do the Client Update, and Server.
         {
             if (DarckNet.Network.IsClient || Game.GameManager.SinglePlayer)///Client Update
@@ -363,8 +353,6 @@ public class EntityPlayer : EntityLife
                         LastPostitionIntX = (int)transform.position.x;
                         LastPostitionIntZ = (int)transform.position.z;
                         #endregion
-
-                        UpdateNetStatus();
                     }
                     #endregion
                 }
@@ -383,11 +371,6 @@ public class EntityPlayer : EntityLife
     public bool IsWalking()
     {
         return NetStats.walking;
-    }
-
-    void UpdateNetStatus()//for now is every frame send to all, just for stress test
-    {
-        Net.RPC("RPC_Syncplayervalues", DarckNet.RPCMode.AllNoOwner, NetStats.angle, NetStats.Side, NetStats.walking);
     }
 
     public void FootPrintRight()
@@ -476,7 +459,7 @@ public class EntityPlayer : EntityLife
     {
         DarckNet.Network.Destroy(this.gameObject);
         Inve.DeletSave();
-        Game.MenuManager.OpenRespawn();
+        Game.MapManager.PlayerDead(this);
         base.OnDead();
     }
 
@@ -532,38 +515,6 @@ public class EntityPlayer : EntityLife
     void UpdatePosition(Vector3 pos)
     {
         transform.position = pos;
-    }
-
-    [RPC]
-    void RPC_Syncplayervalues(float angle, int side, bool iswalking)
-    {
-        if (IsVisible)// if this player is showing on the camera, the can do any update
-        {
-            int realside = 0;//is gone show the real direction of player in graus EX: 180, 90, 360 etc.
-
-            switch (side)
-            {
-                case 0:
-                    realside = 0;
-                    break;
-                case 1:
-                    realside = 180;
-                    break;
-                case 2:
-                    realside = 90;
-                    break;
-                case 3:
-                    realside = -90;
-                    break;
-            } //Decode side of player, with this we can save transfer data
-
-            Anim.SetInteger("Walk", iswalking ? 1 : 0);
-            Anim.SetFloat("X", realside);
-
-            NetStats.angle = angle;
-            NetStats.Side = side;
-            NetStats.walking = iswalking;
-        }
     }
 #endregion
 }

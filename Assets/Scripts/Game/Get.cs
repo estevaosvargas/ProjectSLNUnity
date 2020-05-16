@@ -200,6 +200,11 @@ public enum TakeGO : byte
     Pine_Tall, PineSnow_Tall
 }
 
+public enum WorldType
+{
+    none, Procedural, Plain, Dev, DevProcedural
+}
+
 public enum Placer : byte
 {
     empty, BauWood, BauGold, BauDiamond, BauDark, CampTend, CampFire, CityHall, BlackSmith, AlchemistHouse, VillagerHouse, PostLight,

@@ -12,6 +12,7 @@ using System;
 using darckcomsoft.itch;
 using System.Threading;
 using System.Collections;
+using UnityEngine.Profiling;
 
 public class UIElements : DarckNet.DarckMonoBehaviour
 {
@@ -296,6 +297,24 @@ public class GameManager : UIElements
                     result.callback(result.path, result.success);
                 }
             }
+        }
+    }
+    StringBuilder tx;
+    private void OnGUI()
+    {
+        if (Game.World != null)
+        {
+            GUI.Label(new Rect(10, 10, 500, 20), "©2020 - Darkcomsoft. | Chunks-Size: " + World.ChunkSize + " | WorldSeed: " + Seed);
+            GUI.Label(new Rect(10, 30, 200, 20), "Chunks Loaded: " + Game.World.ChunksLoaded);
+            GUI.Label(new Rect(10, 50, 200, 20), "ChunksQueue: " + Game.World.ChunksQueue);
+            GUI.Label(new Rect(10, 70, 200, 20), "MeshDataQueue: " + Game.World.MeshDataQueue);
+            GUI.Label(new Rect(10, 90, 200, 20), "UpdateMeshQueue: " + Game.World.UpdateMeshQueue);
+            GUI.Label(new Rect(10, 110, 200, 20), "ChunksDeleteQueue: " + Game.World.ChunksDeleteQueue);
+            GUI.Label(new Rect(10, 130, 500, 20), "Player Position: " + Game.World.PlayerPos.ToString());
+            GUI.Label(new Rect(10, 150, 500, 20), "VideoCard: " + SystemInfo.graphicsDeviceName + " Runing on " + SystemInfo.graphicsShaderLevel + " OS: " + SystemInfo.operatingSystem);
+            GUI.Label(new Rect(10, 170, 500, 20), "renderDistance: " + Game.World.renderDistance);
+            GUI.Label(new Rect(10, 200, 500, 20), "FootBlock: coming soon (:");
+
         }
     }
 
@@ -1509,11 +1528,6 @@ public class CustomizationCharacter
     public CharColorStruc CurrentEyesColor;
 }
 
-public class MapManager : DCallBack
-{
-    public int World_ID = 0;
-}
-
 /// <summary>
 /// Use to get instance, of the scripts
 /// </summary>
@@ -1532,6 +1546,7 @@ public static class Game
     public static CityManager CityManager;
     public static NPCConvercetion NPCTALK;
     public static InteriorManager InteriorManager;
+    public static MapManager MapManager;
 
     public static List<Entity> Entity_viewing = new List<Entity>();
 

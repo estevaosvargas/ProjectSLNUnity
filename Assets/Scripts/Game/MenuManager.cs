@@ -224,30 +224,6 @@ public class MenuManager : Menus
         MouselockFake.LockUnlock(true);
     }
 
-    public void Respawn()
-    {
-        if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
-        {
-            Game.GameManager.Player.RequestSpawnPlayer(new Vector3(UnityEngine.Random.Range(-100, 100), 0, UnityEngine.Random.Range(-100, 100)), Game.World.World_ID);
-
-            DCallBack.Call(CallType.OnRespawn);
-            CloseMenuName("Respawn");
-            MouselockFake.LockUnlock(false);
-        }
-    }
-
-    public void RespawnBed()
-    {
-        if (Game.GameManager.SinglePlayer || Game.GameManager.MultiPlayer)
-        {
-            Game.GameManager.Player.RequestSpawnPlayer(new Vector3(UnityEngine.Random.Range(-100, 100), 0, UnityEngine.Random.Range(-100, 100)), Game.World.World_ID);
-
-            DCallBack.Call(CallType.OnRespawn);
-            CloseMenuName("Respawn");
-            MouselockFake.LockUnlock(false);
-        }
-    }
-
     public void OpenInveContainer(Inventory cont)
     {
         if (CheckifEnable("Inventory") == true)
