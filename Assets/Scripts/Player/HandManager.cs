@@ -282,7 +282,7 @@ public class HandManager : MonoBehaviour
     {
         if (Game.GameManager.t != null)
         {
-            Distance = (int)Vector3.Distance(transform.position, new Vector3(Game.GameManager.t.x, Game.GameManager.t.y, Game.GameManager.t.z));
+            Distance = (int)Vector3.Distance(transform.position, new Vector3(Game.GameManager.t.x, Game.GameManager.t.h, Game.GameManager.t.z));
         }
 
         if (Distance <= 3)

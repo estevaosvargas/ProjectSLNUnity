@@ -138,7 +138,7 @@ public static class Get
     {
         switch (tilebiome)
         {
-            case BiomeType.Jungle:
+            case BiomeType.TropicalRainforest:
                 if (tile == TypeBlock.Grass)
                 {
                     return new Color(0.3128338f, 0.6981132f, 0.3446094f, 1);
@@ -174,6 +174,22 @@ public static class Get
                 return Vector3.zero;
         }
     }
+}
+
+public enum BiomeType
+{
+    None,
+    Bench,
+    Desert,
+    Savanna,
+    TropicalRainforest,
+    Grassland,
+    Woodland,
+    SeasonalForest,
+    TemperateRainforest,
+    BorealForest,
+    Tundra,
+    Ice
 }
 
 public enum TypeBlock : byte

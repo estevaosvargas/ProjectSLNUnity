@@ -39,7 +39,6 @@ public class GameManager : UIElements
 #endif
     Queue<PathResult> results = new Queue<PathResult>();
     public GameObject Cnavas;
-    public Text versioningameText;
     public PlayerManager Player;
     public string Version = "1.0.0";
     public static int Seed = 0;
@@ -70,10 +69,10 @@ public class GameManager : UIElements
     private int LastMouseY;
     private float timetemp;
 
+    private GUIStyle BigText = new GUIStyle();
+
     void Awake()
     {
-        Application.targetFrameRate = 60;
-
         Game.GameManager = this;
         DontDestroyOnLoad(this.gameObject);
         Client.IP = "127.0.0.1";
@@ -87,18 +86,20 @@ public class GameManager : UIElements
 
     void Start()
     {
+        Application.targetFrameRate = 60;
 #if UNITY_EDITOR
         if (!Game.ConsoleInGame)
         {
             Instantiate(Console);
         }
 #endif
-        versioningameText.text = Version;
 
         AudioSourceGlobal = GetComponent<AudioSource>();
         Game.AudioManager.LoadAudio();
 		ItchAPi.StartItchApi();
-        
+
+        BigText.wordWrap = true;
+
         if (!Directory.Exists(Path.GetFullPath("Saves./")))
         {
             Directory.CreateDirectory(Path.GetFullPath("Saves./"));
@@ -261,7 +262,7 @@ public class GameManager : UIElements
 
                 if (Game.World)
                 {
-                    t = Game.World.GetTileAt(hit.point.x, hit.point.y, hit.point.z);
+                    t = Game.World.GetTileAt(hit.point.x, hit.point.z);
                 }
 
                 if (Input.GetKeyDown(KeyCode.Mouse1))
@@ -302,19 +303,21 @@ public class GameManager : UIElements
     StringBuilder tx;
     private void OnGUI()
     {
+        GUI.Label(new Rect(10, 10, 500, 20), "Villagers and Kings INDEV " + Version);
+
         if (Game.World != null)
         {
-            GUI.Label(new Rect(10, 10, 500, 20), "©2020 - Darkcomsoft. | Chunks-Size: " + World.ChunkSize + " | WorldSeed: " + Seed);
-            GUI.Label(new Rect(10, 30, 200, 20), "Chunks Loaded: " + Game.World.ChunksLoaded);
-            GUI.Label(new Rect(10, 50, 200, 20), "ChunksQueue: " + Game.World.ChunksQueue);
-            GUI.Label(new Rect(10, 70, 200, 20), "MeshDataQueue: " + Game.World.MeshDataQueue);
-            GUI.Label(new Rect(10, 90, 200, 20), "UpdateMeshQueue: " + Game.World.UpdateMeshQueue);
-            GUI.Label(new Rect(10, 110, 200, 20), "ChunksDeleteQueue: " + Game.World.ChunksDeleteQueue);
-            GUI.Label(new Rect(10, 130, 500, 20), "Player Position: " + Game.World.PlayerPos.ToString());
-            GUI.Label(new Rect(10, 150, 500, 20), "VideoCard: " + SystemInfo.graphicsDeviceName + " Runing on " + SystemInfo.graphicsShaderLevel + " OS: " + SystemInfo.operatingSystem);
-            GUI.Label(new Rect(10, 170, 500, 20), "renderDistance: " + Game.World.renderDistance);
-            GUI.Label(new Rect(10, 200, 500, 20), "FootBlock: coming soon (:");
-
+            GUI.skin.label.wordWrap = true;
+            GUI.Label(new Rect(10, 30, 200, 20), "Chunks-Size: " + World.ChunkSize + " | WorldSeed: " + Seed);
+            GUI.Label(new Rect(10, 50, 200, 20), "Chunks Loaded: " + Game.World.ChunksLoaded);
+            GUI.Label(new Rect(10, 70, 200, 20), "ChunksQueue: " + Game.World.ChunksQueue);
+            GUI.Label(new Rect(10, 90, 200, 20), "MeshDataQueue: " + Game.World.MeshDataQueue);
+            GUI.Label(new Rect(10, 110, 200, 20), "UpdateMeshQueue: " + Game.World.UpdateMeshQueue);
+            GUI.Label(new Rect(10, 130, 500, 20), "ChunksDeleteQueue: " + Game.World.ChunksDeleteQueue);
+            GUI.Label(new Rect(10, 150, 500, 20), "Player Position: " + Game.World.PlayerPos.ToString());
+            GUI.Label(new Rect(10, 170, 500, 20), "VideoCard: " + SystemInfo.graphicsDeviceName + " Runing on " + SystemInfo.graphicsShaderLevel + " OS: " + SystemInfo.operatingSystem);
+            GUI.Label(new Rect(10, 190, 600, 20), "renderDistance: " + Game.World.renderDistance);
+            GUI.Label(new Rect(10, 210, 600, 20), "FootBlock: " + Player.PlayerObj.block.ToString());
         }
     }
 

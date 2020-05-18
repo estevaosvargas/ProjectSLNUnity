@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TreeLeafs01
+  m_Name: Tree01
   m_Shader: {fileID: -6465566751694194690, guid: e3bc6815168b25a4ab4011399dc53006,
     type: 3}
   m_ShaderKeywords: ACTIVATE_WIND EFFECT_HUE_VARIATION ETC1_EXTERNAL_ALPHA GEOM_TYPE_LEAF
@@ -182,6 +182,7 @@ Material:
     - _value: 0
     - _wind_size: 5
     m_Colors:
+    - Color_1DDE97C7: {r: 0.6509434, g: 0.4222755, b: 0.1443129, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Couleur: {r: 1, g: 1, b: 1, a: 1}
     - _Emission: {r: 0, g: 0, b: 0, a: 0}

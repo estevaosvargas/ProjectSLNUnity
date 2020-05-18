@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TreeSnow01
+  m_Name: Tree01Snow
   m_Shader: {fileID: -6465566751694194690, guid: e3bc6815168b25a4ab4011399dc53006,
     type: 3}
   m_ShaderKeywords: ACTIVATE_WIND EFFECT_HUE_VARIATION ETC1_EXTERNAL_ALPHA GEOM_TYPE_LEAF
@@ -22,11 +22,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - Texture2D_A5B951A6:
-        m_Texture: {fileID: 2800000, guid: 0dada85335b780c40b9b288646ff5ef7, type: 3}
+        m_Texture: {fileID: 2800000, guid: de097f145dbf2ad478cdc31b447abdb0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_B0A8D70E:
-        m_Texture: {fileID: 2800000, guid: 0dada85335b780c40b9b288646ff5ef7, type: 3}
+        m_Texture: {fileID: 2800000, guid: de097f145dbf2ad478cdc31b447abdb0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _AlphaTex:
@@ -70,7 +70,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 0dada85335b780c40b9b288646ff5ef7, type: 3}
+        m_Texture: {fileID: 2800000, guid: de097f145dbf2ad478cdc31b447abdb0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -159,29 +159,18 @@ Material:
     - _WindStrength: 0.156
     - _WindYShake: 0
     - _ZWrite: 1
-    - _amplitude: 1.5
     - _b_influence: 0
     - _branches_disp: 0
-    - _frequency: 2
-    - _gain: 0.5
-    - _lacunarity: 2
     - _leaves_wiggle_disp: 0
     - _leaves_wiggle_speed: 0
-    - _monochromatic: 0
-    - _octaves: 7
-    - _offsetX: 0
-    - _offsetY: 0
-    - _power: 1
     - _r_influence: 0
-    - _range: 0.5
-    - _scale: 1
     - _tree_sway_disp: 0
     - _tree_sway_speed: 0
     - _tree_sway_stutter: 0
     - _tree_sway_stutter_influence: 0
-    - _value: 0
-    - _wind_size: 5
+    - _wind_size: 50
     m_Colors:
+    - Color_1DDE97C7: {r: 0.6509434, g: 0.4222755, b: 0.1443129, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Couleur: {r: 1, g: 1, b: 1, a: 1}
     - _Emission: {r: 0, g: 0, b: 0, a: 0}

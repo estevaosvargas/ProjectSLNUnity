@@ -53,20 +53,18 @@ MonoBehaviour:
   LastAttacker: 
   FX: {fileID: 1836075418772876, guid: c5d28b2a147fed64186e44abb61799fd, type: 3}
   ThisTreeTile:
-    type: 0
+    x: 0
+    h: 0
+    z: 0
+    Type: 0
+    TileBiome: 0
     typeVariante: 0
     PLACER_DATA: 0
     typego: 0
-    ConnecyToNightboors: 0
-    IsColider: 0
-    RenderLevel: 0
-    TileBiome: 0
-    Emessive: 0
-    OcupedByOther: 0
+    HP: 100
     Hora: 0
     Dia: 0
     Mes: 0
-    HP: 100
   ItemDrop: 0
   DropQuanty: 45
   MaterialHit: 4
@@ -165,7 +163,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 26561c10d2b231543b264c6edbdd7547, type: 2}
+  - {fileID: 2100000, guid: 13c3e3e45788df64997b9aed000893d9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -244,7 +242,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 26561c10d2b231543b264c6edbdd7547, type: 2}
+  - {fileID: 2100000, guid: 13c3e3e45788df64997b9aed000893d9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -68,13 +68,22 @@ public class World : MonoBehaviour
                 GameObject obj = Instantiate(ChunkGO, new Vector3(chunk.position.x, chunk.position.y, chunk.position.z), Quaternion.identity);
                 obj.name = "Chunk - X:" + chunk.position.x + " Y:" + chunk.position.y + " Z:" + chunk.position.z;
 
-                obj.GetComponent<Chunk>().MakeMesh(chunk.density);
+                if (chunk.isTerrain)
+                {
+                    obj.GetComponent<Chunk>().StartUpChunk(chunk.blocksArray);
+                }
+                else
+                {
+                    obj.GetComponent<Chunk>().chunkPosition = chunk.position;
+                }
 
                 lock (chunkMap)
                 {
                     chunkMap.Add(chunk.position, obj.GetComponent<Chunk>());
                 }
             }
+
+            chunk.blocksArray = null;
         }
 
         while (pendingDeletions.Count > 0)
@@ -99,6 +108,10 @@ public class World : MonoBehaviour
             {
                chunkser.UpdateMeshData(chunk);
             }
+
+            chunk.triangles = null;
+            chunk.uvs = null;
+            chunk.vertices = null;
         }
 
         if (!Game.MapManager.readyPlayer)
@@ -145,10 +158,19 @@ public class World : MonoBehaviour
                             {
                                 MapData nchunk = new MapData();
 
-                                nchunk.density = new Block[ChunkSize, ChunkSize, ChunkSize];
-                                GenerateVoxelData(nchunk.density, vector);
-
                                 nchunk.position = vector;
+
+                                if (y == 0)
+                                {
+                                    nchunk.isTerrain = true;
+
+                                    nchunk.blocksArray = new Block[ChunkSize, ChunkSize];
+                                    GenerateVoxelData(nchunk.blocksArray, vector);
+                                }
+                                else
+                                {
+                                    nchunk.isTerrain = false;
+                                }
 
                                 pendingchunks.Enqueue(nchunk);
                             }
@@ -199,6 +221,10 @@ public class World : MonoBehaviour
 
 
                     pendingUpdateMeshFinal.Enqueue(meshDataThread);
+
+                    data.vertices = null;
+                    data.triangles = null;
+                    data.UVs = null;
                 }
             }
 
@@ -206,19 +232,13 @@ public class World : MonoBehaviour
         }
     }
 
-    private void GenerateVoxelData(Block[,,] voxels, Vector3 chunkPos)
+    private void GenerateVoxelData(Block[,] voxels, Vector3 chunkPos)
     {
         for (int x = 0; x < ChunkSize; x++)
         {
-            for (int y = 0; y < ChunkSize; y++)
+            for (int z = 0; z < ChunkSize; z++)
             {
-                for (int z = 0; z < ChunkSize; z++)
-                {
-                   
-                    voxels[x, y, z] = new Block(x + (int)chunkPos.x, y + (int)chunkPos.y, z + (int)chunkPos.z);
-
-                    voxels[x, y, z].Type = Biome.GetDensity(voxels[x, y, z].x, voxels[x, y, z].y, voxels[x, y, z].z, 0, voxels[x, y, z]);
-                }
+                voxels[x, z] = new Block(x + (int)chunkPos.x, z + (int)chunkPos.z, chunkPos);
             }
         }
     }
@@ -239,28 +259,59 @@ public class World : MonoBehaviour
         }
     }
 
-    public Block GetTileAt(int x, int y, int z)
+    public void LoadNewChunks(Chunk current_chunk)
     {
-        Chunk chunk = GetChunkAt(x, y, z);
+        List<Chunk> chunks = new List<Chunk>();
+
+        current_chunk.UpdateMeshChunk();
+
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x, 0, (int)current_chunk.transform.position.z + 10));//Cima
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x, 0,(int)current_chunk.transform.position.z - 10));//Baixo
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x + 10, 0, (int)current_chunk.transform.position.z));//Direita
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x - 10, 0, (int)current_chunk.transform.position.z));//Esquerda
+
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x + 10, 0, (int)current_chunk.transform.position.z + 10));//Cima Direita
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x + 10, 0, (int)current_chunk.transform.position.z - 10));//Baixo Direita
+
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x - 10, 0, (int)current_chunk.transform.position.z + 10));//Cima Esquerda
+        chunks.Add(GetChunkAt((int)current_chunk.transform.position.x - 10, 0, (int)current_chunk.transform.position.z - 10));//Baixo Esquerda
+
+        foreach (var item in chunks)
+        {
+            if (item != null)
+            {
+                item.UpdateMeshChunk();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Get tile tarrain not the block voxel
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="z"></param>
+    /// <returns></returns>
+    public Block GetTileAt(int x, int z)
+    {
+        Chunk chunk = GetChunkAt(x, 0, z);
 
         if (chunk != null)
         {
-            return chunk.Blocks[x - (int)chunk.chunkPosition.x, y - (int)chunk.chunkPosition.y, z - (int)chunk.chunkPosition.z];
+            return chunk.Blocks[x - (int)chunk.chunkPosition.x, z - (int)chunk.chunkPosition.z];
         }
         return null;
     }
 
-    public Block GetTileAt(float x, float y, float z)
+    public Block GetTileAt(float x, float z)
     {
         int mx = Mathf.FloorToInt(x);
-        int my = Mathf.FloorToInt(y);
         int mz = Mathf.FloorToInt(z);
 
-        Chunk chunk = GetChunkAt(mx, my, mz);
+        Chunk chunk = GetChunkAt(mx, 0, mz);
 
         if (chunk != null)
         {
-            return chunk.Blocks[mx - (int)chunk.chunkPosition.x, my - (int)chunk.chunkPosition.y, mz - (int)chunk.chunkPosition.z];
+            return chunk.Blocks[mx - (int)chunk.chunkPosition.x,  mz - (int)chunk.chunkPosition.z];
         }
         return null;
     }
@@ -293,8 +344,9 @@ public class World : MonoBehaviour
 
 public struct MapData
 {
+    public bool isTerrain;
     public Vector3 position;
-    public Block[,,] density;
+    public Block[,] blocksArray;
 }
 
 public struct MeshDataThread
@@ -346,7 +398,7 @@ public class MeshData
     public List<Vector2> UVs;
     public List<int> triangles;
 
-    public MeshData(Block[,,] tile)
+    public MeshData(Block[,] tile)
     {
         vertices = new List<Vector3>();
         UVs = new List<Vector2>();
@@ -354,34 +406,23 @@ public class MeshData
         
         for (int x = 0; x < World.ChunkSize; x++)
         {
-            for (int y = 0; y < World.ChunkSize; y++)
+            for (int z = 0; z < World.ChunkSize; z++)
             {
-                for (int z = 0; z < World.ChunkSize; z++)
-                {
-                    if (tile[x, y, z].density > 0f && tile[x, y, z].density <= 2f)
-                    {
-                        CreateSquare(tile[x, y, z].x, tile[x, y, z].y, tile[x, y, z].z, tile[x, y, z]);
-                    }
-                    else
-                    {
-                        tile[x, y, z].Type = TypeBlock.Air;
-                    }
-                }
+                CreateSquare(tile[x, z].x, tile[x, z].z, x,z,tile[x, z], tile);
             }
         }
     }
 
-    void CreateSquare(int x, int y, int z, Block block)
+    void CreateSquare(int x, int z, int xR, int zR, Block block, Block[,] blocks)
     {
-        float firts = GetTile(x, y, z);
-        float Right = GetTile(x + 1, y, z);
-        float FrenteRight = GetTile(x, y, z + 1);
-        float FrenteLeft = GetTile(x + 1, y, z + 1);
+        float Right = GetTile(x + 1, z, xR + 1,zR, block.h, blocks);
+        float FrenteRight = GetTile(x, z + 1, xR, zR + 1, block.h, blocks);
+        float FrenteLeft = GetTile(x + 1, z + 1, xR + 1, zR + 1, block.h, blocks);
 
-        vertices.Add(new Vector3(x,      firts,         z));
-        vertices.Add(new Vector3(x + 1,  Right,         z));
-        vertices.Add(new Vector3(x,      FrenteRight,   z + 1));
-        vertices.Add(new Vector3(x + 1,  FrenteLeft,    z + 1));
+        vertices.Add(new Vector3(x,     block.h,       z));
+        vertices.Add(new Vector3(x + 1, Right,         z));
+        vertices.Add(new Vector3(x,     FrenteRight,   z + 1));
+        vertices.Add(new Vector3(x + 1, FrenteLeft,    z + 1));
 
         triangles.Add(vertices.Count - 1);
         triangles.Add(vertices.Count - 3);
@@ -394,8 +435,22 @@ public class MeshData
         UVs.AddRange(Game.SpriteManager.GetTileUVs(block));
     }
 
-    float GetTile(int x, int y, int z)
+    float GetTile(int x, int z, int xR, int zR, float hDeafult,Block[,] array)
     {
-        return Biome.GetDensityRaw(x, y, z);
+        if (xR < World.ChunkSize && zR < World.ChunkSize)
+        {
+            return array[xR, zR].h;
+        }
+        else
+        {
+            Block block = Game.World.GetTileAt(x, z);
+
+            if (block != null)
+            {
+                return block.h;
+            }
+        }
+
+        return hDeafult;
     }
 }

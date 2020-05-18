@@ -19,7 +19,7 @@ public class EntityPlayer : EntityLife
     public List<GameObject> ObjectToDisable = new List<GameObject>();
     public Transform Vector;
     public Animator AttackSword;
-    Block block;
+    public Block block;
     public int animstatus;
     public float Speed = 5;
     public float DashSpeed = 10;
@@ -69,12 +69,10 @@ public class EntityPlayer : EntityLife
 
     void UpdateOnMove()
     {
-
         if (DarckNet.Network.IsClient)
         {
             Net.RPC("UpdatePosition", DarckNet.RPCMode.AllNoOwner, new Vector3(transform.position.x, transform.position.y, transform.position.z));
         }
-
 
         if (block != null)
         {
@@ -82,7 +80,6 @@ public class EntityPlayer : EntityLife
             {
                 Speed = 0.8f;
                 enableGravity = false;
-                Anim.applyRootMotion = false;
                 NetStats.swiming = true;
                 Anim.SetBool("swing", true);
             }
@@ -90,7 +87,6 @@ public class EntityPlayer : EntityLife
             {
                 Speed = 5f;
                 enableGravity = true;
-                Anim.applyRootMotion = false;
                 NetStats.swiming = false;
                 Anim.SetBool("swing", false);
             }
@@ -98,7 +94,6 @@ public class EntityPlayer : EntityLife
             {
                 Speed = 2f;
                 enableGravity = true;
-                Anim.applyRootMotion = false;
                 NetStats.swiming = false;
                 Anim.SetBool("swing", false);
             }
@@ -112,7 +107,7 @@ public class EntityPlayer : EntityLife
             //Game.WorldGenerator.UpdateFindChunk();
             var main = FootPArticle.main;
 
-            block = Game.World.GetTileAt(transform.position.x, transform.position.y , transform.position.z);
+            block = Game.World.GetTileAt(transform.position.x, transform.position.z);
 
             NetStats.CurrentBlock = block;
             NetStats.CurrentBiome = block.TileBiome;
@@ -211,27 +206,14 @@ public class EntityPlayer : EntityLife
                         Vector3 lookPos = new Vector3(Game.GameManager.mouseX, Game.GameManager.mouseY, Game.GameManager.mouseZ);
                         lookPos = lookPos - transform.position;
                         
-                        if (Anim.GetCurrentAnimatorStateInfo(0).IsName("Roll"))
-                        {
-                            Anim.applyRootMotion = true;
-                            return;
-                        }
-                        else
-                        {
-                            Anim.applyRootMotion = false;
-                        }
-
                         if (Input.GetKeyDown(KeyCode.Space))
                         {
                             if (!NetStats.swiming)
                             {
                                 if (Status.Energy > 0)
                                 {
-                                    Anim.applyRootMotion = true;
                                     Vector3 daPos = lookPos;
                                     //lookPos = lookPos - transform.position;
-
-                                    Anim.SetTrigger("Dash");
 
                                     Status.Energy -= 35;
                                     Game.MenuManager.EnergyBar.RefreshBar(Status.Energy);
@@ -491,7 +473,7 @@ public class EntityPlayer : EntityLife
 
     public bool IsOnWater(int x, int y, int z)
     {
-        if (Game.World.GetTileAt(x, y, z).Type == TypeBlock.Water)
+        if (Game.World.GetTileAt(x, z).Type == TypeBlock.Water)
         {
             return true;
         }
