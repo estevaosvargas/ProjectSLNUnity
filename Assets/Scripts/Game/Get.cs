@@ -108,6 +108,48 @@ public static class Get
         }
     }
 
+    public static bool EntityCanSpawn(Block block)
+    {
+        switch (block.Type)
+        {
+            case TypeBlock.Air:
+                return false;
+            case TypeBlock.RockGround:
+                return false;
+            case TypeBlock.Grass:
+                return true;
+            case TypeBlock.Water:
+                return false;
+            case TypeBlock.GoldStone:
+                return true;
+            case TypeBlock.IronStone:
+                return true;
+            case TypeBlock.Rock:
+                return false;
+            case TypeBlock.Sand:
+                return true;
+            case TypeBlock.Bloco:
+                return false;
+            case TypeBlock.Dirt:
+                return true;
+            case TypeBlock.DirtRoad:
+                return true;
+            case TypeBlock.IceWater:
+                return false;
+            case TypeBlock.Snow:
+                return true;
+            case TypeBlock.LightBlockON:
+                return false;
+            case TypeBlock.BeachSand:
+                return false;
+            case TypeBlock.WaterFloor:
+                return false;
+            case TypeBlock.JungleGrass:
+                return true;
+            default:
+                return false;
+        }
+    }
 
     /// <summary>
     /// Check if the Neighboors tile, can be tarsition by the main tile

@@ -2,14 +2,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public class Options : MonoBehaviour
 {
+    [Header("Screen/Graphics")]
     public Dropdown RESOLUTION_OPTION;
     public Dropdown SCREENTYPE_OPTION;
+    public Slider RENDERSCALE_OPTION;
+    public Text RENDERSCALE_TEXT_OPTION;
 
+    [Space(5)]
+    [Header("Sound")]
     public Slider GLOBALVOLUME_OPTION;
+
+    [Space(5)]
+    public UniversalRenderPipelineAsset URPAsset;
 
 
     private bool HaveSave = false;
@@ -60,6 +69,8 @@ public class Options : MonoBehaviour
 
             GLOBALVOLUME_OPTION.value = PlayerPrefs.GetFloat("GLOBALVOLUME_OPTION");
 
+            RENDERSCALE_OPTION.value = PlayerPrefs.GetFloat("RENDERSCALE_OPTION");
+
             ApplyAll();
         }
         else //Dont have options save
@@ -71,6 +82,7 @@ public class Options : MonoBehaviour
             RESOLUTION_OPTION.RefreshShownValue();
 
             GLOBALVOLUME_OPTION.value = 1;
+            RENDERSCALE_OPTION.value = 1;
 
             ApplyAll();
         }
@@ -82,6 +94,7 @@ public class Options : MonoBehaviour
         PlayerPrefs.SetInt("RESOLUTION_OPTION", RESOLUTION_OPTION.value);
         PlayerPrefs.SetInt("SCREENTYPE_OPTION", SCREENTYPE_OPTION.value);
         PlayerPrefs.SetFloat("GLOBALVOLUME_OPTION", GLOBALVOLUME_OPTION.value);
+        PlayerPrefs.SetFloat("RENDERSCALE_OPTION", RENDERSCALE_OPTION.value);
 
         PlayerPrefs.Save();
 
@@ -114,6 +127,14 @@ public class Options : MonoBehaviour
         }
 
         AudioListener.volume = GLOBALVOLUME_OPTION.value;
+        URPAsset.renderScale = RENDERSCALE_OPTION.value;
+        RENDERSCALE_TEXT_OPTION.text = RENDERSCALE_OPTION.value.ToString();
+    }
+
+    public void RENDERSCALE_OPTION_ValueChange()
+    {
+        URPAsset.renderScale = RENDERSCALE_OPTION.value;
+        RENDERSCALE_TEXT_OPTION.text = RENDERSCALE_OPTION.value.ToString();
     }
 }
 

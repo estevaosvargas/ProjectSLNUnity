@@ -15,8 +15,6 @@ public class ItemDrop : Entity
 
         name = item.Name + "(DROP)";
 
-        GetComponent<SpriteRenderer>().sprite = item.Icon;
-
         if (DarckNet.Network.IsServer)
         {
             Net.RPC("RPC_DROPSYNC", DarckNet.RPCMode.AllNoOwner, item.Index);
@@ -37,6 +35,7 @@ public class ItemDrop : Entity
             else
             {
                 Debug.LogWarning("Someone is trying to take items already taked!");
+                DarckNet.Network.Destroy(this.gameObject, 0.05f);
             }
         }
     }

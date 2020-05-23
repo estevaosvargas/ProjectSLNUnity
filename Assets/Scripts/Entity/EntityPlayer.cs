@@ -7,8 +7,10 @@ using UnityStandardAssets.CrossPlatformInput;
 public class EntityPlayer : EntityLife
 {
     public Animator Anim;
+    public Animator AnimBob;
+    public Animator AnimHand;
     public AudioSource audioSource;
-    public CharacterController body;
+    private Rigidbody body;
     public Inventory Inve;
     public LifeStatus Status;
     public Transform HandRoot;
@@ -20,13 +22,17 @@ public class EntityPlayer : EntityLife
     public Transform Vector;
     public Animator AttackSword;
     public Block block;
-    public int animstatus;
+    [Space(4)]
+    [Header("Player Movement")]
     public float Speed = 5;
-    public float DashSpeed = 10;
+    public float SlopeForce = 4;
+    public float SlopeRayLength = 2;
+    public bool isJumping = false;
+    private CapsuleCollider capsuleCollider;
+    [Space(4)]
     public bool IsVisible = false;
     public bool IsMe = false;
     public int FootParticleCount = 1;
-    public int pathsize = 20;
 
     public bool enableGravity = true;
 
@@ -35,28 +41,35 @@ public class EntityPlayer : EntityLife
     private int LastPostitionIntZ;
     private float timestep;
 
-    public bool IsOnDamageArea;
+    private bool IsOnDamageArea;
     public int DamageRate;
 
     public float StatusUpdateRate = 1;
     private float Statustimestep;
-
+    private Vector3 velocity;
     private Vector3 moveVector;
+    private Vector3 inputDirection;
 
     void Start()
     {
         Net = GetComponent<NetWorkView>();
         Anim = GetComponent<Animator>();
         Inve = GetComponent<Inventory>();
+        body = GetComponent<Rigidbody>();
+        capsuleCollider = GetComponent<CapsuleCollider>();
 
         IsMe = Net.isMine;
 
         if (Net.isMine)
         {
+            Game.entityPlayer = this;
+
             IsAlive = true;
 
             Game.MenuManager.LifeBar.RefreshBar(HP);
             Game.MenuManager.EnergyBar.RefreshBar(Status.Energy);
+
+            block = Game.World.GetTileAt(transform.position.x, transform.position.z);
         }
         else
         {
@@ -73,38 +86,12 @@ public class EntityPlayer : EntityLife
         {
             Net.RPC("UpdatePosition", DarckNet.RPCMode.AllNoOwner, new Vector3(transform.position.x, transform.position.y, transform.position.z));
         }
-
-        if (block != null)
-        {
-            if (transform.position.y <= -0.8f)
-            {
-                Speed = 0.8f;
-                enableGravity = false;
-                NetStats.swiming = true;
-                Anim.SetBool("swing", true);
-            }
-            else if (block.Type == TypeBlock.IceWater)
-            {
-                Speed = 5f;
-                enableGravity = true;
-                NetStats.swiming = false;
-                Anim.SetBool("swing", false);
-            }
-            else
-            {
-                Speed = 2f;
-                enableGravity = true;
-                NetStats.swiming = false;
-                Anim.SetBool("swing", false);
-            }
-        }
     }
 
     void UpdateOnMoveInt()
     {
         if (Game.World)
         {
-            //Game.WorldGenerator.UpdateFindChunk();
             var main = FootPArticle.main;
 
             block = Game.World.GetTileAt(transform.position.x, transform.position.z);
@@ -138,16 +125,14 @@ public class EntityPlayer : EntityLife
             }
         }
         
-        if (MiniMapManager.manager)
+        /*if (MiniMapManager.manager)
         {
-            //MiniMapManager.manager.UpdateMap();
-        }
+            MiniMapManager.manager.UpdateMap();
+        }*/
     }
-    public Vector3 inputDirection;
+
     public Vector3 Move(Vector3 directionVector)
     {
-        // move along with direction.
-
         inputDirection = directionVector;
         if (directionVector != Vector3.zero)
         {
@@ -167,12 +152,21 @@ public class EntityPlayer : EntityLife
         return rotation * directionVector;
     }
 
+    private Vector3 prevPos;
+
+    void FixedUpdate()
+    {
+        velocity = (transform.position - prevPos) / Time.deltaTime;
+        prevPos = transform.position;
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            body.enabled = true;
+            body.isKinematic = false;
         }
+
         if (IsVisible)//Do the Client Update, and Server.
         {
             if (DarckNet.Network.IsClient || Game.GameManager.SinglePlayer)///Client Update
@@ -182,7 +176,17 @@ public class EntityPlayer : EntityLife
                     #region MyPlayerFunctions
                     if (Game.GameManager.MultiPlayer || Game.GameManager.SinglePlayer)
                     {
+                        var fwdDotProduct = Vector3.Dot(transform.forward, velocity);
+                        var upDotProduct = Vector3.Dot(transform.up, velocity);
+                        var rightDotProduct = Vector3.Dot(transform.right, velocity);
+             
+                        Vector3 velocityVector = new Vector3(rightDotProduct, upDotProduct, fwdDotProduct);
+
                         Status.UpdateStatus();
+
+                        AnimBob.speed = 1f;
+
+                        //PlayerMovement();
 
                         if (Time.time > Statustimestep + StatusUpdateRate)
                         {
@@ -198,127 +202,32 @@ public class EntityPlayer : EntityLife
                         {
                             if (Time.time > timestep + DamageRate)
                             {
-                                DoDamage(5, Game.GameManager.Player.UserID, true);
+                                DoDamage(null, 5, Game.GameManager.Player.UserID, true);
                                 timestep = Time.time;
                             }
                         }
-
-                        Vector3 lookPos = new Vector3(Game.GameManager.mouseX, Game.GameManager.mouseY, Game.GameManager.mouseZ);
-                        lookPos = lookPos - transform.position;
-                        
-                        if (Input.GetKeyDown(KeyCode.Space))
-                        {
-                            if (!NetStats.swiming)
-                            {
-                                if (Status.Energy > 0)
-                                {
-                                    Vector3 daPos = lookPos;
-                                    //lookPos = lookPos - transform.position;
-
-                                    Status.Energy -= 35;
-                                    Game.MenuManager.EnergyBar.RefreshBar(Status.Energy);
-                                    return;
-                                }
-                                else
-                                {
-                                    Game.MenuManager.PopUpName("Out Of Stamina!");
-                                }
-                            }
-                        }
-                        
-                        Vector3 movement = new Vector3(CrossPlatformInputManager.GetAxisRaw("Horizontal"), 0, CrossPlatformInputManager.GetAxisRaw("Vertical"));
-
-                        moveVector = Move(movement.normalized);
-
                         if (enableGravity)
                         {
-                            if (body.isGrounded == false)
+                            /*if (body.isGrounded == false)
                             {
-                                //Add our gravity Vecotr
                                 moveVector += Physics.gravity;
-                            }
+                            }*/
                         }
 
-                        //body.Move(moveVector * Speed * Time.deltaTime);
-
-                        /*if (!MouselockFake.IsLock)
-                        {
-                            transform.LookAt(new Vector3(transform.position.x + lookPos.x, 0, transform.position.z + lookPos.z));
-                            transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
-                        }*/
-
-                        /*if (Input.GetKeyDown(KeyCode.Mouse1))
-                        {
-                            if (Game.GameManager.hit.collider != null)
-                            {
-                                Go(new Vector3(Game.GameManager.mouseX, Game.GameManager.mouseY, Game.GameManager.mouseZ));
-                            }
-                        }*/
-
-                        if (NetStats.handhide == true)
-                        {
-                            HandRoot.gameObject.SetActive(false);
-                        }
-                        else
-                        {
-                            HandRoot.gameObject.SetActive(true);
-                        }
-
-                        if (Input.GetAxis("Horizontal") > 0f)
+                        if (velocity.magnitude > 0)
                         {
                             Anim.SetInteger("Walk", 1);
-
+                            NetStats.walking = true;
                             Anim.SetFloat("X", Input.GetAxis("Horizontal"));
                             Anim.SetFloat("Y", Input.GetAxis("Vertical"));
-
-                            //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
-
-                            NetStats.walking = true;
-                            NetStats.Side = 0;
-                        }
-                        else if (Input.GetAxis("Horizontal") < 0f)
-                        {
-                            Anim.SetInteger("Walk", 1);
-
-                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
-                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
-
-                            //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
-
-
-                            NetStats.walking = true;
-                            NetStats.Side = 1;
-                        }
-                        else if (Input.GetAxis("Vertical") > 0)
-                        {
-                            Anim.SetInteger("Walk", 1);
-
-                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
-                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
-
-                            //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
-
-                            NetStats.walking = true;
-                            NetStats.Side = 2;
-                        }
-                        else if (Input.GetAxis("Vertical") < 0)
-                        {
-                            Anim.SetInteger("Walk", 1);
-
-                            Anim.SetFloat("X", Input.GetAxis("Horizontal"));
-                            Anim.SetFloat("Y", Input.GetAxis("Vertical"));
-
-                            //transform.LookAt(new Vector3(transform.position.x + Input.GetAxis("Horizontal"), 0, transform.position.z + Input.GetAxis("Vertical")));
-
-                            NetStats.walking = true;
-                            NetStats.Side = 3;
+                            AnimBob.SetBool("AnimBlend", true);
                         }
                         else
                         {
                             Anim.SetInteger("Walk", 0);
                             FootPArticle.Stop();
-
                             NetStats.walking = false;
+                            AnimBob.SetBool("AnimBlend", false);
                         }
 
                         #region UpDateOnMove
@@ -350,23 +259,11 @@ public class EntityPlayer : EntityLife
         }
     }
 
+
     public bool IsWalking()
     {
         return NetStats.walking;
     }
-
-    public void FootPrintRight()
-    {
-        //audioSource.PlayOneShot(Game.AudioManager.GetFootSound(tile.type));
-        FootPArticle.Emit(FootParticleCount);
-    }
-
-    public void FootPrintLeft()
-    {
-        audioSource.PlayOneShot(Game.AudioManager.GetFootSound(block.Type));
-        FootPArticle.Emit(FootParticleCount);
-    }
-
     private void Step()
     {
         audioSource.PlayOneShot(Game.AudioManager.GetFootSound(block.Type));
@@ -391,21 +288,13 @@ public class EntityPlayer : EntityLife
     {
         if (IsMe || DarckNet.Network.IsServer)
         {
-            if (collision.tag == "TreeTrigger")
-            {
-                Trees tree = collision.transform.GetComponentInParent<Trees>();
-            }
-            else if (collision.tag == "ItemDrop")
+            if (collision.tag == "ItemDrop")
             {
                 collision.GetComponent<ItemDrop>().GetThisItem(Inve);
             }
             else if (collision.tag == "City")
             {
                 Game.MenuManager.PopUpName("My Homes - City");
-            }
-            else if (collision.tag == "Entity")
-            {
-                //collision.GetComponent<Pathfindingentity>().Run(transform);
             }
             else if (collision.tag == "DamageArea")
             {
@@ -418,17 +307,9 @@ public class EntityPlayer : EntityLife
     {
         if (IsMe || DarckNet.Network.IsServer)
         {
-            if (collision.tag == "TreeTrigger")
-            {
-                Trees tree = collision.transform.GetComponentInParent<Trees>();
-            }
-            else if (collision.tag == "ItemDrop")
+            if (collision.tag == "ItemDrop")
             {
 
-            }
-            else if (collision.tag == "Entity")
-            {
-                //collision.GetComponent<Pathfindingentity>().Stop();
             }
             else if (collision.tag == "DamageArea")
             {
@@ -469,30 +350,12 @@ public class EntityPlayer : EntityLife
         base.FinishCura();
     }
 
-
-
-    public bool IsOnWater(int x, int y, int z)
+    public Vector3 GetVelocity()
     {
-        if (Game.World.GetTileAt(x, z).Type == TypeBlock.Water)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return velocity;
     }
 
-#region RPCs
-    [RPC]
-    void RPC_CURAITEM(int slot)
-    {
-        if (Inve.ItemList[slot].Index >= 0)
-        {
-
-        }
-    }
-
+    #region RPCs
     [RPC]
     void UpdatePosition(Vector3 pos)
     {
@@ -714,14 +577,9 @@ public class UniversalStatusPlayer
 public class PlayerNetStats
 {
     public bool walking = false;
-    public bool handhide = false;
     public bool swiming = false;
-    public float angle = 0;
-    public int HandLayer = 5;
     public Block CurrentBlock;
     public BiomeType CurrentBiome;
-
-    public int Side = -1;
 }
 
 public enum Skills : byte

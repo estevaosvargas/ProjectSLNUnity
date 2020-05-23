@@ -4,5 +4,15 @@ using UnityEngine;
 
 public class IsVisibleChild : MonoBehaviour
 {
-    public object RootScript;
+    public Entity Entity;
+
+    private void OnBecameVisible()
+    {
+        Entity.BecameVisible();
+    }
+
+    private void OnBecameInvisible()
+    {
+        Entity.BecameInvisible();
+    }
 }

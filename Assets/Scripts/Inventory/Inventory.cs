@@ -7,20 +7,19 @@ using UnityEngine.UI;
 public class Inventory : MonoBehaviour
 {
     public List<InveItem> ItemList = new List<InveItem>();
+    //public InveItem[,] ItemMap = new InveItem[5,5];
     public GameObject Drop;
     public bool IsPlayer = false;
     public NetWorkView Net;
-
+    public int XMax = 5;
+    public int YMax = 5;
     public List<Lidgren.Network.NetConnection> PlayerOpen = new List<Lidgren.Network.NetConnection>();
-
     public int HandOneIndex;
     public int HandTwoIndex;
-
     void Awake()
     {
 
     }
-
     void Start()
     {
         Net = GetComponent<NetWorkView>();
@@ -93,7 +92,52 @@ public class Inventory : MonoBehaviour
     {
 
     }
+    /*private void Add(ItemData item)
+    {
+        for (int xx = 0; xx < XMax; xx++)
+        {
+            for (int yy = 0; yy < YMax; yy++)
+            {
+                if (CheckSpace(xx, yy, item.SizeX, item.SizeY))
+                {
 
+                    return;
+                }
+            }
+        }
+    }
+
+    private bool CheckSpace(int x, int y, int maxX, int maxY)
+    {
+        for (int xx = 0; xx < maxX; xx++)
+        {
+            for (int yy = 0; yy < maxY; yy++)
+            {
+                if (xx < XMax || yy < YMax)
+                {
+                    if (ItemMap[xx, yy].Index != -1)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private void SetItemOnMap(int x, int y, ItemData item, int amount)
+    {
+        for (int xx = 0; xx < item.SizeX; xx++)
+        {
+            for (int yy = 0; yy < item.SizeY; yy++)
+            {
+                if (xx < XMax || yy < YMax)
+                {
+                    ItemMap[xx, yy] = new InveItem(item.Index, amount);
+                }
+            }
+        }
+    }*/
     void _RemoveQuanty(int slot, int quanty)
     {
         ItemList[slot].Amount -= quanty;

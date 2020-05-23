@@ -26,7 +26,6 @@ public class SmartEntity : Pathfindingentity
     private float timestep;
     public float UpdateRate = 20;
 
-    public bool ISVISIBLE = false;
 
     public int X;
     public int Z;
@@ -68,10 +67,10 @@ public class SmartEntity : Pathfindingentity
         base.OnDead();
     }
 
-    public override void OnHit()
+    public override void OnHit(int damage, string attckerid, ItemData item)
     {
         GetNewPostion();
-        base.OnHit();
+        base.OnHit(damage, attckerid, item);
     }
 
     public void Update()

@@ -65,6 +65,10 @@ MonoBehaviour:
     Hora: 0
     Dia: 0
     Mes: 0
+    HeatType: 0
+    MoistureType: 0
+    heatValue: 0
+    MoistureValue: 0
   ItemDrop: 0
   DropQuanty: 45
   MaterialHit: 4
@@ -96,7 +100,7 @@ LODGroup:
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.52750593
+  - screenRelativeHeight: 0.65136683
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 5511150582471916500}

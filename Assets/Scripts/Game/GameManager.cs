@@ -139,8 +139,6 @@ public class GameManager : UIElements
 
          Small_Seed = randvilla.Next(-9999, 9999);
 
-        Seed = 0;
-
         WorldInfo info = SaveWorld.LoadInfo("World");
         if (info != null)
         {
@@ -239,6 +237,11 @@ public class GameManager : UIElements
         SceneManager.LoadSceneAsync(worldname);
     }
 
+    public void Respawn()
+    {
+        Game.MapManager.SpawnPlayer(new Vector3(UnityEngine.Random.Range(-100,100), 20, UnityEngine.Random.Range(-100, 100)));
+    }
+
     public Vector3 testepos;
     void Update()
     {
@@ -305,19 +308,22 @@ public class GameManager : UIElements
     {
         GUI.Label(new Rect(10, 10, 500, 20), "Villagers and Kings INDEV " + Version);
 
-        if (Game.World != null)
+        if (MenuManager.ShowDebugMenu)
         {
-            GUI.skin.label.wordWrap = true;
-            GUI.Label(new Rect(10, 30, 200, 20), "Chunks-Size: " + World.ChunkSize + " | WorldSeed: " + Seed);
-            GUI.Label(new Rect(10, 50, 200, 20), "Chunks Loaded: " + Game.World.ChunksLoaded);
-            GUI.Label(new Rect(10, 70, 200, 20), "ChunksQueue: " + Game.World.ChunksQueue);
-            GUI.Label(new Rect(10, 90, 200, 20), "MeshDataQueue: " + Game.World.MeshDataQueue);
-            GUI.Label(new Rect(10, 110, 200, 20), "UpdateMeshQueue: " + Game.World.UpdateMeshQueue);
-            GUI.Label(new Rect(10, 130, 500, 20), "ChunksDeleteQueue: " + Game.World.ChunksDeleteQueue);
-            GUI.Label(new Rect(10, 150, 500, 20), "Player Position: " + Game.World.PlayerPos.ToString());
-            GUI.Label(new Rect(10, 170, 500, 20), "VideoCard: " + SystemInfo.graphicsDeviceName + " Runing on " + SystemInfo.graphicsShaderLevel + " OS: " + SystemInfo.operatingSystem);
-            GUI.Label(new Rect(10, 190, 600, 20), "renderDistance: " + Game.World.renderDistance);
-            GUI.Label(new Rect(10, 210, 600, 20), "FootBlock: " + Player.PlayerObj.block.ToString());
+            if (Game.World != null)
+            {
+                GUI.skin.label.wordWrap = true;
+                GUI.Label(new Rect(10, 30, 200, 20), "Chunks-Size: " + World.ChunkSize + " | WorldSeed: " + Seed);
+                GUI.Label(new Rect(10, 50, 200, 20), "Chunks Loaded: " + Game.World.ChunksLoaded);
+                GUI.Label(new Rect(10, 70, 200, 20), "ChunksQueue: " + Game.World.ChunksQueue);
+                GUI.Label(new Rect(10, 90, 200, 20), "MeshDataQueue: " + Game.World.MeshDataQueue);
+                GUI.Label(new Rect(10, 110, 200, 20), "UpdateMeshQueue: " + Game.World.UpdateMeshQueue);
+                GUI.Label(new Rect(10, 130, 500, 20), "ChunksDeleteQueue: " + Game.World.ChunksDeleteQueue);
+                GUI.Label(new Rect(10, 150, 500, 20), "Player Position: " + Game.World.PlayerPos.ToString());
+                GUI.Label(new Rect(10, 170, 500, 20), "VideoCard: " + SystemInfo.graphicsDeviceName + " Runing on " + SystemInfo.graphicsShaderLevel + " OS: " + SystemInfo.operatingSystem);
+                GUI.Label(new Rect(10, 190, 600, 20), "renderDistance: " + Game.World.renderDistance);
+                GUI.Label(new Rect(10, 210, 600, 20), "FootBlock: " + Player.PlayerObj.block.ToString());
+            }
         }
     }
 
@@ -581,9 +587,9 @@ public class EntityLife : Entity
     public string LastAttacker = "";
 
     // Logic of damage, remove damage of life qunty
-    public virtual bool DoDamage(int damage, string attckerid, bool isplayer)
+    public virtual bool DoDamage(ItemData item, int damage, string attckerid, bool isplayer)
     {
-        OnHit();
+        OnHit(damage, attckerid, item);
         HP -= damage;
         FinishDamage();
         LastAttacker = attckerid;
@@ -599,7 +605,7 @@ public class EntityLife : Entity
         return false;
     }
 
-    public virtual void OnHit()
+    public virtual void OnHit(int damage, string attckerid, ItemData item)
     {
 
     }
@@ -700,6 +706,8 @@ public class Entity : MonoBehaviour
     public string PrefabName;
     public string ID;
 
+    public bool ISVISIBLE = false;
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -728,6 +736,16 @@ public class Entity : MonoBehaviour
     }
 
     public virtual void Awakeoverride()
+    {
+
+    }
+
+    public virtual void BecameVisible()
+    {
+        
+    }
+
+    public virtual void BecameInvisible()
     {
 
     }
@@ -1453,26 +1471,8 @@ public class GameInput
     public static KeyCode CONSOLE_BUTTON = KeyCode.DoubleQuote;
     public static KeyCode DEBUG_BUTTON = KeyCode.F1;
     public static KeyCode STATUS_BUTTON = KeyCode.C;
+    public static bool IsLock = false;
 
-    public static bool EscButtonDown()
-    {
-        return Input.GetKeyDown(ESC_BUTTON);
-    }
-
-    public static bool EscButtonUp()
-    {
-        return Input.GetKeyUp(ESC_BUTTON);
-    }
-
-    public static bool STATUSButtonDown()
-    {
-        return Input.GetKeyDown(STATUS_BUTTON);
-    }
-
-    public static bool STATUSButtonUp()
-    {
-        return Input.GetKeyUp(STATUS_BUTTON);
-    }
 }
 
 public class AudioManager
@@ -1550,6 +1550,7 @@ public static class Game
     public static NPCConvercetion NPCTALK;
     public static InteriorManager InteriorManager;
     public static MapManager MapManager;
+    public static EntityPlayer entityPlayer;
 
     public static List<Entity> Entity_viewing = new List<Entity>();
 

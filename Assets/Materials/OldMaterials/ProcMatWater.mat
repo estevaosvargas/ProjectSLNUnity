@@ -1,0 +1,125 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ProcMatWater
+  m_Shader: {fileID: 4800000, guid: 475c4a4e617a8401b84ca7b32c7cc460, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: fb6566c21f717904f83743a5a76dd0b0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ColorControl:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Fresnel:
+        m_Texture: {fileID: 2800000, guid: 14f62ec1b1debb742896dd85fb8fc12d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseTex:
+        m_Texture: {fileID: 2800000, guid: ac6c3e519377b36499c1c9374a02db97, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ReflectionTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ReflectiveColor:
+        m_Texture: {fileID: 2800000, guid: 14f62ec1b1debb742896dd85fb8fc12d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RefractionTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ShoreTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SurfaceDistortion:
+        m_Texture: {fileID: 2800000, guid: a75e11d440529ea43b0df3c7f7a5199b, type: 3}
+        m_Scale: {x: 50, y: 50}
+        m_Offset: {x: 0, y: 0}
+    - _SurfaceNoise:
+        m_Texture: {fileID: 2800000, guid: ac6c3e519377b36499c1c9374a02db97, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TerrainHolesTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - PixelSnap: 0
+    - _BeanchDeep: 2.85
+    - _Cutoff: 0.5
+    - _DepthMaxDistance: 1
+    - _EnableExternalAlpha: 0
+    - _FoamMaxDistance: 0
+    - _FoamMinDistance: 0
+    - _FresnelScale: 0.39
+    - _GerstnerIntensity: 1
+    - _ReflDistort: 0.12
+    - _RefrDistort: 0
+    - _Shininess: 33
+    - _SurfaceDistortionAmount: 1
+    - _SurfaceNoiseCutoff: 1
+    - _WaterDistance: 1.23
+    - _WaterNoiseStrength: -1.93
+    - _WaterNoiseWalk: 4.17
+    - _WaterScale: 0.54
+    - _WaterSpeed: 4.54
+    - _WaterTime: 13.42
+    - _WaveScale: 0.053
+    m_Colors:
+    - WaveSpeed: {r: 19, g: 9, b: -16, a: -7}
+    - _AnimationDirection: {r: 2, g: 4, b: 2, a: -1}
+    - _AnimationTiling: {r: 0, g: 0, b: 0, a: 0}
+    - _BaseColor: {r: 0.95045024, g: 0.8834915, b: 0.75871176, a: 1}
+    - _BumpDirection: {r: -10, g: -5, b: 10, a: 2}
+    - _BumpTiling: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DepthGradientDeep: {r: 0.16850874, g: 0.5870343, b: 0.5568092, a: 1}
+    - _DepthGradientShallow: {r: 0.5044938, g: 0.5044938, b: 0.5044938, a: 0}
+    - _DistortParams: {r: 7.72, g: 1.08, b: 0.7, a: 0.25}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _Foam: {r: 0.71, g: 0.48666668, b: 0, a: 0}
+    - _FoamColor: {r: 0, g: 0, b: 0, a: 0}
+    - _GAmplitude: {r: 0.05, g: 0.1, b: 0.1, a: 0}
+    - _GDirectionAB: {r: 0.46914357, g: 0.35405126, b: 0.4, a: 0}
+    - _GDirectionCD: {r: 0.7033888, g: -0.6799999, b: 0.7175735, a: -0.99}
+    - _GFrequency: {r: 2, g: 2, b: 1.5, a: 0.79}
+    - _GSpeed: {r: 2, g: 2, b: 2, a: 0}
+    - _GSteepness: {r: 7.66, g: 2, b: 4.4, a: 2}
+    - _HorizonColor: {r: 0.172, g: 0.463, b: 0.435, a: 1}
+    - _InvFadeParemeter: {r: 0.37, g: 0.03, b: 1, a: 1}
+    - _ReflectionColor: {r: 0.35743773, g: 0.72576654, b: 0.7012811, a: 1}
+    - _RefrColor: {r: 0.35506406, g: 0.8801289, b: 0.9528302, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _SpecularColor: {r: 0.30216318, g: 0.2761562, b: 0.20840678, a: 1}
+    - _SurfaceNoiseScroll: {r: 0.27, g: 0.03, b: 0, a: 0}
+    - _WorldLightDir: {r: -0.030375138, g: -0.20139083, b: -0.97903997, a: 0}
+    - _horizonColor: {r: 0.172, g: 0.463, b: 0.435, a: 0}

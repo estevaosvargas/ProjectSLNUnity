@@ -19,6 +19,16 @@ public class ItemData
     public string Description = "";
     public int MaxAmount = 100;
     public bool Stack = false;
+
+    /// <summary>
+    /// quntidade de slote usado pelo item no eixo X
+    /// </summary>
+    public int SizeX = 0;
+    /// <summary>
+    /// quantidade de slote usado pelo item no eixo Y
+    /// </summary>
+    public int SizeY = 0;
+
     public ItemAbout About;
 
     public bool CanEquip = false;

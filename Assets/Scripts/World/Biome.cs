@@ -1035,7 +1035,7 @@ public static class Biome
                     {
                         tile.typego = TakeGO.PineSnow_Tall;
                     }
-                    return TypeBlock.Grass;
+                    return TypeBlock.Snow;
                 }
                 else
                 {

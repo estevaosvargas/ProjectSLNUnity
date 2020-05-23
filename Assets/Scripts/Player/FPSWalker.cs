@@ -32,10 +32,6 @@ namespace NesScripts.Controls
         // If true, diagonal speed (when strafing + moving forward or back) can't exceed normal move speed; otherwise it's about 1.4 times faster
         public bool limitDiagonalSpeed = true;
 
-        // If checked, the run key toggles between running and walking. Otherwise player runs if the key is held down and walks otherwise
-        // There must be a button set up in the Input Manager called "Run"
-        public bool toggleRun = false;
-
         // jumping speed
         public float jumpSpeed = 8.0f;
 
@@ -136,8 +132,7 @@ namespace NesScripts.Controls
                 }
 
                 // If running isn't on a toggle, then use the appropriate speed depending on whether the run button is down
-                if (!toggleRun)
-                    speed = Input.GetKeyDown(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+                speed = Input.GetKey(KeyCode.LeftShift)?runSpeed: walkSpeed;
 
                 // If sliding (and it's allowed), or if we're on an object tagged "Slide", get a vector pointing down the slope we're on
                 if ((sliding && slideWhenOverSlopeLimit) || (slideOnTaggedObjects && hit.collider.tag == "Slide"))
@@ -196,10 +191,6 @@ namespace NesScripts.Controls
         /// </summary>
         void Update()
         {
-            // If the run button is set to toggle, then switch between walk/run speed. (We use Update for this...
-            // FixedUpdate is a poor place to use GetButtonDown, since it doesn't necessarily run every frame and can miss the event)
-            if (toggleRun && grounded && Input.GetButtonDown("Run"))
-                speed = (speed == walkSpeed ? runSpeed : walkSpeed);
         }
 
         /// <summary>

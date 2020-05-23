@@ -82,6 +82,8 @@ public class HandManager : MonoBehaviour
     {
         Collider[] Entitys = Physics.OverlapSphere(attackPoint.position, range, EntitysLayer);
 
+        if (MouselockFake.IsLock) { return; }
+
         if (Time.time > timetemp + _CurrentItem.About.FireRate)
         {
             foreach (var item in Entitys)
@@ -94,19 +96,17 @@ public class HandManager : MonoBehaviour
                         {
                             if (item.GetComponent<EntityLife>() != null)
                             {
-                                item.GetComponent<EntityLife>().DoDamage(_CurrentItem.About.EntityDamage, "Player", true);
+                                item.GetComponent<EntityLife>().DoDamage(_CurrentItem, _CurrentItem.About.EntityDamage, "Player", true);
                             }
                             if (item.GetComponent<Trees>() != null)
                             {
                                 item.GetComponent<Trees>().Damage(_CurrentItem, _CurrentItem.About.BlockDamage);
                             }
-                            GetComponent<Animator>().SetTrigger("Attack");
                             Game.GameManager.PopUpDamage(Camera.main.WorldToScreenPoint(item.transform.position), _CurrentItem.About.EntityDamage);
                             Debug.Log("Attacked : " + item.name);
                         }
                         else
                         {
-                            GetComponent<Animator>().SetTrigger("Attack");
                             Debug.Log("Attacked : Air");
                         }
                     }
@@ -117,19 +117,17 @@ public class HandManager : MonoBehaviour
                     {
                         if (item.GetComponent<EntityLife>() != null)
                         {
-                            item.GetComponent<EntityLife>().DoDamage(_CurrentItem.About.EntityDamage, "Player", true);
+                            item.GetComponent<EntityLife>().DoDamage(_CurrentItem, _CurrentItem.About.EntityDamage, "Player", true);
                         }
                         if (item.GetComponent<Trees>() != null)
                         {
                             item.GetComponent<Trees>().Damage(_CurrentItem, _CurrentItem.About.BlockDamage);
                         }
-                        GetComponent<Animator>().SetTrigger("Attack");
                         Game.GameManager.PopUpDamage(Camera.main.WorldToScreenPoint(item.transform.position), _CurrentItem.About.EntityDamage);
                         Debug.Log("Attacked : " + item.name);
                     }
                     else
                     {
-                        GetComponent<Animator>().SetTrigger("Attack");
                         Debug.Log("Attacked : Air");
                     }
                 }
@@ -137,9 +135,11 @@ public class HandManager : MonoBehaviour
 
             if (Entitys.Length <= 0)
             {
-                GetComponent<Animator>().SetTrigger("Attack");
                 Debug.Log("Attacked : Air");
             }
+
+            GetComponent<Animator>().SetTrigger("Attack");
+            Game.entityPlayer.AnimHand.SetTrigger("Attack");
 
             timetemp = Time.time;
         }

@@ -9,7 +9,6 @@ public class BirdEntity : EntityLife
     public AudioSource Source;
     public AudioClip[] AudioLoop;
     public Vector3 NextTarget;
-    private bool ISVISIBLE;
     public bool HaveTarget = false;
     public int RandomRange = 10;
     public float Speed = 1;

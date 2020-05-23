@@ -15,7 +15,6 @@ public class Vilanger : Pathfindingentity
     public float damping = 1;
     public bool RunAway = false;
     public int direction = 0;
-    public bool ISVISIBLE = false;
     public Vector3 velocityVector; 
     public SkinnedMeshRenderer meshRenderer;
 

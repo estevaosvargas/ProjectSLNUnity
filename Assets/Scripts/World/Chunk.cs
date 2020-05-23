@@ -52,6 +52,18 @@ public class Chunk : MonoBehaviour
             {
                 Blocks[x, z].CurrentChunk = transform.position;//Set this chunk to the tile
                 SpawnTrees(Blocks[x, z]);
+
+                if (Get.EntityCanSpawn(Blocks[x, z]))
+                {
+                    if (Blocks[x, z].typego == TakeGO.empty)
+                    {
+                        System.Random randomValue = new System.Random((int)ChunkSeed + Blocks[x, z].x * Blocks[x, z].z);
+                        if (randomValue.Next(0, 100) == 10)
+                        {
+                            SpawnEntitys(Blocks[x, z]);
+                        }
+                    }
+                }
             }
         }
         //StartCoroutine(QueeObjects());
@@ -79,21 +91,12 @@ public class Chunk : MonoBehaviour
             trees.transform.SetParent(this.transform, true);
             block.BlockObject = trees;
 
-            if (block.Type != TypeBlock.Rock)
+            if (block.typego != TakeGO.RockProp)
             {
-                if (block.typego != TakeGO.WeedTall)
-                {
-                    if (block.typego != TakeGO.Weed01)
-                    {
-                        if (block.typego != TakeGO.RockProp)
-                        {
-                            System.Random randomValue = new System.Random(GameManager.Seed + (int)block.x + (int)block.z);
-                            float size = Random.Range(0f, 0.5f);
-                            trees.transform.position = new Vector3(block.x + (float)randomValue.NextDouble(), block.h, block.z + (float)randomValue.NextDouble());
-                            trees.transform.localScale = new Vector3(trees.transform.localScale.x + size, trees.transform.localScale.y + size, trees.transform.localScale.z + size);
-                        }
-                    }
-                }
+                System.Random randomValue = new System.Random(GameManager.Seed + (int)block.x + (int)block.z);
+                float size = Random.Range(0f, 0.5f);
+                trees.transform.position = new Vector3(block.x + (float)randomValue.NextDouble(), block.h, block.z + (float)randomValue.NextDouble());
+                trees.transform.localScale = new Vector3(trees.transform.localScale.x + size, trees.transform.localScale.y + size, trees.transform.localScale.z + size);
             }
 
             if (trees.GetComponent<Trees>())
@@ -101,6 +104,15 @@ public class Chunk : MonoBehaviour
                 trees.GetComponent<Trees>().ThisTreeTile = block;
             }
         }
+    }
+
+    public void SpawnEntitys(Block block)
+    {
+        Vector3 position = new Vector3(block.x, block.h, block.z);
+
+        GameObject obj = DarckNet.Network.Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/AI/Skeleton"), position, Quaternion.identity, Game.MapManager.World_ID);
+        AddEntity(obj.GetComponent<Entity>());
+        obj.GetComponent<DumbEntity>().SetUp(this);
     }
 
     public void UpdateMeshData(MeshDataThread meshDataThread)
@@ -196,6 +208,17 @@ public class Chunk : MonoBehaviour
 
     private void OnDestroy()
     {
+        foreach (var item in Entitys)
+        {
+            if (item != null)
+            {
+                DarckNet.Network.Destroy(item.gameObject);
+            }
+        }
+
+        Entitys.Clear();
+        Entitys = null;
+
         Blocks = null;
     }
 

@@ -52,20 +52,22 @@ MonoBehaviour:
   LastAttacker: 
   FX: {fileID: 1836075418772876, guid: c5d28b2a147fed64186e44abb61799fd, type: 3}
   ThisTreeTile:
-    type: 0
+    x: 0
+    h: 0
+    z: 0
+    Type: 0
+    TileBiome: 0
     typeVariante: 0
     PLACER_DATA: 0
     typego: 0
-    ConnecyToNightboors: 0
-    IsColider: 0
-    RenderLevel: 0
-    TileBiome: 0
-    Emessive: 0
-    OcupedByOther: 0
+    HP: 100
     Hora: 0
     Dia: 0
     Mes: 0
-    HP: 100
+    HeatType: 0
+    MoistureType: 0
+    heatValue: 0
+    MoistureValue: 0
   ItemDrop: 0
   DropQuanty: 5
   MaterialHit: 0
@@ -83,7 +85,7 @@ LODGroup:
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.04290023
+  - screenRelativeHeight: 0.079669446
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 2592336423423286839}

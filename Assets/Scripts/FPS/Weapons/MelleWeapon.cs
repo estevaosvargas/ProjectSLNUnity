@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class MelleWeapon : FPItemBase
 {
-    public Animator Anim;
     public EntityPlayer _Player;
     public HandManager _HandManager;
 
-    public float AttackRate = 1;
     public float Range = 0.5f;
 
     private bool HoldAttack = false;
-    private float timetemp;
 
     void Start()
     {
@@ -25,20 +22,12 @@ public class MelleWeapon : FPItemBase
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            if (Time.time > timetemp + AttackRate)
-            {
-                AttackTrigger();
-
-                timetemp = Time.time;
-            }
+            AttackTrigger();
         }
-
-        Anim.SetBool("Walking", _Player.IsWalking());
     }
 
     private void AttackTrigger()
     {
-        Anim.SetTrigger("Attack");
         _HandManager.PhysicDamage(GetItem(), Range);
     }
 }
