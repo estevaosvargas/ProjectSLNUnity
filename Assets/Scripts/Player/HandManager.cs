@@ -255,7 +255,7 @@ public class HandManager : MonoBehaviour
             {
                 if (Time.time > timetemp + CurrentItem.About.FireRate)
                 {
-                    Game.GameManager.t.DamageBloco(CurrentItem.About.BlockDamage);
+                    //Game.GameManager.t.DamageBloco(CurrentItem.About.BlockDamage);
                     GetComponent<Animator>().SetTrigger("Attack");
                     timetemp = Time.time;
                 }
@@ -264,7 +264,7 @@ public class HandManager : MonoBehaviour
             {
                 if (Time.time > timetemp + Hand.FireRate)
                 {
-                    Game.GameManager.t.DamageBloco(Hand.DamageBlock);
+                    //Game.GameManager.t.DamageBloco(Hand.DamageBlock);
                     GetComponent<Animator>().SetTrigger("Attack");
                     timetemp = Time.time;
                 }
@@ -280,12 +280,7 @@ public class HandManager : MonoBehaviour
 
     void Update()
     {
-        if (Game.GameManager.t != null)
-        {
-            Distance = (int)Vector3.Distance(transform.position, new Vector3(Game.GameManager.t.x, Game.GameManager.t.h, Game.GameManager.t.z));
-        }
-
-        if (Distance <= 3)
+        /*if (Distance <= 3)
         {
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
@@ -294,23 +289,26 @@ public class HandManager : MonoBehaviour
                     Game.MenuManager.OpenInveContainer(Game.GameManager.t.BlockObject.GetComponent<Inventory>());
                 }
             }
-        }
+        }*/
 
         if (Input.GetKeyDown(KeyCode.Alpha1))//Hand01
         {
             if (Inve.HandOneIndex >= 0)
             {
-                ItemData item = ItemManager.Instance.GetItem(Inve.ItemList[Inve.HandOneIndex].Index);
-
-                if (item.CanEquip)
+                if (Inve.ItemList[Inve.HandOneIndex].Index != -1)
                 {
-                    if (SlotIndex == Inve.HandOneIndex)
+                    ItemData item = ItemManager.Instance.GetItem(Inve.ItemList[Inve.HandOneIndex].Index);
+
+                    if (item.CanEquip)
                     {
-                        RemoveItem();
-                    }
-                    else
-                    {
-                        PutItem(item, Inve.HandOneIndex);
+                        if (SlotIndex == Inve.HandOneIndex)
+                        {
+                            RemoveItem();
+                        }
+                        else
+                        {
+                            PutItem(item, Inve.HandOneIndex);
+                        }
                     }
                 }
             }
@@ -319,17 +317,20 @@ public class HandManager : MonoBehaviour
         {
             if (Inve.HandTwoIndex >= 0)
             {
-                ItemData item = ItemManager.Instance.GetItem(Inve.ItemList[Inve.HandTwoIndex].Index);
-
-                if (item.CanEquip)
+                if (Inve.ItemList[Inve.HandTwoIndex].Index != -1) 
                 {
-                    if (SlotIndex == Inve.HandTwoIndex)
+                    ItemData item = ItemManager.Instance.GetItem(Inve.ItemList[Inve.HandTwoIndex].Index);
+
+                    if (item.CanEquip)
                     {
-                        RemoveItem();
-                    }
-                    else
-                    {
-                        PutItem(item, Inve.HandTwoIndex);
+                        if (SlotIndex == Inve.HandTwoIndex)
+                        {
+                            RemoveItem();
+                        }
+                        else
+                        {
+                            PutItem(item, Inve.HandTwoIndex);
+                        }
                     }
                 }
             }
@@ -344,21 +345,7 @@ public class HandManager : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.Joystick1Button4))
             {
-                if (Game.GameManager.hit.collider != null)
-                {
-                    if (Get.OpenInveTile(Game.GameManager.t))
-                    {
-                        
-                    }
-                    else
-                    {
-                        SecondAction();
-                    }
-                }
-                else
-                {
-                    SecondAction();
-                }
+                SecondAction();
             }
         }
         else if (MouselockFake.IsLock == false && OnHand == true && Distance <= Hand.Distance)

@@ -7,29 +7,21 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: test
-  m_Shader: {fileID: -6465566751694194690, guid: 01b3818f51f874846bec659eed29278c,
+  m_Name: Water
+  m_Shader: {fileID: -6465566751694194690, guid: 23319979e697a4942bea8431b49f06ed,
     type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - Texture2D_1770FDF4:
-        m_Texture: {fileID: 2800000, guid: c6e0767b1f8c34890ac245217f4b9731, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - Texture2D_AED8424E:
-        m_Texture: {fileID: 2800000, guid: 404004a5fe81172428b4ecfcded812bd, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - Texture2D_FD8C5F46:
-        m_Texture: {fileID: 2800000, guid: 88c58355c53bf1f4991d71e8222950d3, type: 3}
+    - Texture2D_B8E00BD4:
+        m_Texture: {fileID: 2800000, guid: 0701584265aaf2c409258d5796e1c1d6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -61,6 +53,20 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - FrenelStrengh: 10
+    - Vector1_1A28E29D: 0.53
+    - Vector1_319A9D4E: 2.24
+    - Vector1_44787E4: 1
+    - Vector1_45414B61: 0.38
+    - Vector1_4CE3609A: 0.1
+    - Vector1_5607FEE4: 0.28
+    - Vector1_62CCAF62: 22.09
+    - Vector1_83FDE968: 0
+    - Vector1_99B5315: 30
+    - Vector1_DA85DA44: 1.36
+    - Vector1_E1AD6A27: 0
+    - Vector1_E401BD5A: 1
+    - Vector1_EC67C66B: 0.07
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -83,12 +89,19 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Vector2_43DE0A92: {r: 1, g: 1, b: 1, a: 1}
+    - Color_294ABF40: {r: 0.2688679, g: 0.7274864, b: 1, a: 0.9843137}
+    - Color_32459A91: {r: 0.028880388, g: 0.4593371, b: 0.5566038, a: 1}
+    - Color_7B24AEB6: {r: 0.6462264, g: 0.9445061, b: 1, a: 1}
+    - Color_B3DDA30: {r: 0.13238695, g: 0.7211347, b: 0.8018868, a: 1}
+    - Color_FDCE5598: {r: 0.4816661, g: 0.7872936, b: 0.8301887, a: 0.56078434}
+    - Vector2_45CEBA83: {r: 50, g: 572.9, b: -1.55, a: 49.4}
+    - Vector2_554813DD: {r: 6.42, g: -5.13, b: 0, a: 0}
+    - Vector3_C3A23CB5: {r: -175.1, g: 145.8, b: 6.95, a: 9.55}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
---- !u!114 &105806539483915582
+--- !u!114 &7528406524352408436
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

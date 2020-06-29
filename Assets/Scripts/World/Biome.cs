@@ -46,14 +46,6 @@ public static class Biome
 
     public static TypeBlock GetDensity(int x, int z, float sample, Block tile)
     {
-        FastNoise globalNoise = new FastNoise();
-
-        globalNoise.SetFrequency(0.002f);
-
-
-        tile.h = globalNoise.GetPerlinFractal(x, z) + sample / 50;
-
-
         switch (tile.TileBiome)
         {
             case BiomeType.Grassland:
@@ -71,10 +63,9 @@ public static class Biome
             case BiomeType.Woodland:
                 return ForestNormal_Dense(x, z, tile, sample, Get_PerlinForestNormal_Dense(x, z));
             case BiomeType.Bench:
-                tile.h = sample / 50;
-               return Bench(x, z, tile, tile.h);
+               return Bench(x, z, tile, tile.hight);
             default:
-                return TypeBlock.IronStone;
+                return ForestNormal(x, z, tile, sample, Get_PerlinForestNormal(x, z));
         }
     }
 
@@ -264,6 +255,15 @@ public static class Biome
     }
 
 
+    /*public static bool CheckIfCanPlaceTree(float noise)
+    {
+        if (noise >= -1.0f && noise < 0)
+        {
+            return true;
+        }
+        return false;
+    }*/
+
     private static TypeBlock ForestNormal(int x, int z, Block tile, float sample, float perlin)
     {
         /*LibNoise.Unity.Generator.Voronoi CityNoise = new LibNoise.Unity.Generator.Voronoi(0.009f, 1, GameManager.Seed, false);
@@ -286,7 +286,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile.CurrentChunk) + x * z);
+                System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile._blockChunk) + x * z);
                 int randnum = (rand.Next(1, 50));
 
                 if (randnum == 1)
@@ -439,7 +439,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile.CurrentChunk) + x * z);
+                System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile._blockChunk) + x * z);
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)
@@ -579,7 +579,7 @@ public static class Biome
         {
             if (perlin > 0.2f && perlin < 0.6f)
             {
-                System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile.CurrentChunk) + x * z);
+                System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile._blockChunk) + x * z);
                 int randnum = (rand.Next(1, 50));
 
                 if (randnum == 1)
@@ -648,35 +648,28 @@ public static class Biome
 
     private static TypeBlock Bench(int x, int z, Block tile, float sample)
     {
-        if (sample > -0.3f)
-        {
-            System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile.CurrentChunk) + x * z);
-            int randnum = (rand.Next(1, 50));
+        System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile._blockChunk) + x * z);
+        int randnum = (rand.Next(1, 50));
 
-            if (randnum == 1)
+        if (randnum == 1)
+        {
+            if (tile.typego == TakeGO.empty)
             {
-                if (tile.typego == TakeGO.empty)
-                {
-                    tile.typego = TakeGO.PalmTree;
-                }
-                return TypeBlock.BeachSand;
+                tile.typego = TakeGO.PalmTree;
             }
-            else if (randnum == 2)
+            return TypeBlock.BeachSand;
+        }
+        else if (randnum == 2)
+        {
+            if (tile.typego == TakeGO.empty)
             {
-                if (tile.typego == TakeGO.empty)
-                {
-                    tile.typego = TakeGO.PalmTree2;
-                }
-                return TypeBlock.BeachSand;
+                tile.typego = TakeGO.PalmTree2;
             }
-            else
-            {
-                return TypeBlock.BeachSand;
-            }
+            return TypeBlock.BeachSand;
         }
         else
         {
-            return TypeBlock.WaterFloor;
+            return TypeBlock.BeachSand;
         }
     }
 
@@ -699,7 +692,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile.CurrentChunk) + x * z);
+                System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile._blockChunk) + x * z);
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)
@@ -919,8 +912,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-
-                System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile.CurrentChunk) + x * z);
+                System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile._blockChunk) + x * z);
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)
@@ -1010,7 +1002,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile.CurrentChunk) + x * z);
+                System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile._blockChunk) + x * z);
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)
@@ -1104,7 +1096,7 @@ public static class Biome
             if (perlin > 0.2f && perlin < 0.6f)
             {
                 //grass and bushs and trees
-                System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile.CurrentChunk) + x * z);
+                System.Random rand = new System.Random((int)Chunk.GetChunkSeed(tile._blockChunk) + x * z);
                 int randnum = (rand.Next(1, 20));
 
                 if (randnum == 1)
@@ -1209,47 +1201,5 @@ public static class Biome
             return TypeBlock.Rock;
         }
 
-    }
-}
-public static class NoiseData
-{
-    public static FastNoise MainNoise;
-    public static FastNoise BiomeNoise;
-    public static FastNoise BiomeNoiseTran;
-    public static FastNoise ForestNoise;
-
-    public static void StartData()
-    {
-        MainNoise = new FastNoise(GameManager.Seed);
-        BiomeNoise = new FastNoise(GameManager.Seed);
-        ForestNoise = new FastNoise(GameManager.Seed);
-        BiomeNoiseTran = new FastNoise(GameManager.Seed);
-
-        ForestNoise.SetNoiseType(FastNoise.NoiseType.PerlinFractal);
-
-        ForestNoise.SetFractalOctaves(2);
-        ForestNoise.SetFractalLacunarity(3.0f);
-        ForestNoise.SetFractalGain(0.2f);
-
-        ForestNoise.SetFrequency(0.01f);
-        ForestNoise.SetInterp(FastNoise.Interp.Quintic);
-
-        MainNoise.SetFrequency(0.01f);
-        MainNoise.SetInterp(FastNoise.Interp.Quintic);
-
-
-        ///Biome Noise
-        BiomeNoise.SetNoiseType(FastNoise.NoiseType.Cellular);
-
-        BiomeNoise.SetFrequency(0.001f);
-        BiomeNoise.SetCellularDistanceFunction(FastNoise.CellularDistanceFunction.Natural);
-        BiomeNoise.SetCellularReturnType(FastNoise.CellularReturnType.CellValue);
-
-        ///Biome Tran
-        BiomeNoiseTran.SetNoiseType(FastNoise.NoiseType.Cellular);
-
-        BiomeNoiseTran.SetFrequency(0.01f);
-        BiomeNoiseTran.SetCellularDistanceFunction(FastNoise.CellularDistanceFunction.Natural);
-        BiomeNoiseTran.SetCellularReturnType(FastNoise.CellularReturnType.Distance2Sub);
     }
 }

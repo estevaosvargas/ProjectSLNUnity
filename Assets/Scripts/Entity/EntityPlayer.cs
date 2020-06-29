@@ -9,8 +9,8 @@ public class EntityPlayer : EntityLife
     public Animator Anim;
     public Animator AnimBob;
     public Animator AnimHand;
+    public Camera camera;
     public AudioSource audioSource;
-    private Rigidbody body;
     public Inventory Inve;
     public LifeStatus Status;
     public Transform HandRoot;
@@ -24,17 +24,30 @@ public class EntityPlayer : EntityLife
     public Block block;
     [Space(4)]
     [Header("Player Movement")]
-    public float Speed = 5;
-    public float SlopeForce = 4;
-    public float SlopeRayLength = 2;
-    public bool isJumping = false;
+    public bool enableGravity = true;
+    public float shellOffset = 0.1f;
+    public bool isGrounded;
+    private bool m_PreviouslyGrounded;
+    public float groundCheckDistance = 0.01f;
+    public bool Jump;
+    [Header("Walk / Run Setting")] public float walkSpeed;
+    public float runSpeed;
+
+    [Header("Jump Settings")] public float playerJumpForce;
+    public ForceMode appliedForceMode;
+
+    [Header("Jumping State")] public bool playerIsJumping;
+
+    [Header("Current Player Speed")] public float currentSpeed;
+
+    private float _xAxis;
+    private float _zAxis;
+    private Rigidbody _rb;
     private CapsuleCollider capsuleCollider;
     [Space(4)]
     public bool IsVisible = false;
     public bool IsMe = false;
     public int FootParticleCount = 1;
-
-    public bool enableGravity = true;
 
     private Vector3 lastposition;
     private int LastPostitionIntX;
@@ -55,11 +68,10 @@ public class EntityPlayer : EntityLife
         Net = GetComponent<NetWorkView>();
         Anim = GetComponent<Animator>();
         Inve = GetComponent<Inventory>();
-        body = GetComponent<Rigidbody>();
         capsuleCollider = GetComponent<CapsuleCollider>();
+        _rb = GetComponent<Rigidbody>();
 
         IsMe = Net.isMine;
-
         if (Net.isMine)
         {
             Game.entityPlayer = this;
@@ -69,7 +81,7 @@ public class EntityPlayer : EntityLife
             Game.MenuManager.LifeBar.RefreshBar(HP);
             Game.MenuManager.EnergyBar.RefreshBar(Status.Energy);
 
-            block = Game.World.GetTileAt(transform.position.x, transform.position.z);
+            block = Game.World.GetTileAt(transform.position.x,  transform.position.z);
         }
         else
         {
@@ -93,35 +105,39 @@ public class EntityPlayer : EntityLife
         if (Game.World)
         {
             var main = FootPArticle.main;
+            Game.World.CheckViewDistance();
 
             block = Game.World.GetTileAt(transform.position.x, transform.position.z);
 
-            NetStats.CurrentBlock = block;
-            NetStats.CurrentBiome = block.TileBiome;
+            if (block == null)
+            {
+                NetStats.CurrentBlock = block;
+                NetStats.CurrentBiome = block.TileBiome;
 
-            if (block.Type == TypeBlock.Grass)
-            {
-                main.startColor = Color.green;
-            }
-            else if (block.Type == TypeBlock.Dirt)
-            {
-                main.startColor = Color.magenta;
-            }
-            else if (block.Type == TypeBlock.DirtRoad)
-            {
-                main.startColor = Color.magenta;
-            }
-            else if (block.Type == TypeBlock.Sand || block.Type == TypeBlock.BeachSand)
-            {
-                main.startColor = Color.yellow;
-            }
-            else if (block.Type == TypeBlock.Rock || block.Type == TypeBlock.RockGround)
-            {
-                main.startColor = Color.gray;
-            }
-            else if (block.Type == TypeBlock.Snow)
-            {
-                main.startColor = Color.white;
+                if (block.Type == TypeBlock.Grass)
+                {
+                    main.startColor = Color.green;
+                }
+                else if (block.Type == TypeBlock.Dirt)
+                {
+                    main.startColor = Color.magenta;
+                }
+                else if (block.Type == TypeBlock.DirtRoad)
+                {
+                    main.startColor = Color.magenta;
+                }
+                else if (block.Type == TypeBlock.Sand || block.Type == TypeBlock.BeachSand)
+                {
+                    main.startColor = Color.yellow;
+                }
+                else if (block.Type == TypeBlock.Rock || block.Type == TypeBlock.RockGround)
+                {
+                    main.startColor = Color.gray;
+                }
+                else if (block.Type == TypeBlock.Snow)
+                {
+                    main.startColor = Color.white;
+                }
             }
         }
         
@@ -158,14 +174,57 @@ public class EntityPlayer : EntityLife
     {
         velocity = (transform.position - prevPos) / Time.deltaTime;
         prevPos = transform.position;
+
+        m_PreviouslyGrounded = isGrounded;
+        RaycastHit hitInfo;
+        if (Physics.SphereCast(transform.position, capsuleCollider.radius * (1.0f - shellOffset), Vector3.down, out hitInfo,
+                               ((capsuleCollider.height / 2f) - capsuleCollider.radius) + groundCheckDistance, Physics.AllLayers, QueryTriggerInteraction.Ignore))
+        {
+            isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
+        }
+        if (isGrounded && playerIsJumping)
+        {
+            playerIsJumping = false;
+        }
+
+        if (isGrounded)
+        {
+            _rb.drag = 5f;
+            _rb.MovePosition(transform.position + Time.deltaTime * currentSpeed * transform.TransformDirection(_xAxis, 0f, _zAxis));
+            if (Jump)
+            {
+                _rb.drag = 0f;
+                PlayerJump(playerJumpForce, appliedForceMode);
+                playerIsJumping = true;
+            }
+        }
+        else
+        {
+            _rb.MovePosition(transform.position + Time.deltaTime * currentSpeed * transform.TransformDirection(_xAxis, 0f, _zAxis));
+        }
+        Jump = false;
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            body.isKinematic = false;
+            _rb.isKinematic = false;
+            //charbody.enabled = true;
         }
+
+        _xAxis = Input.GetAxis("Horizontal");
+        _zAxis = Input.GetAxis("Vertical");
+        currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+        if (isGrounded && !Jump)
+        {
+            Jump = Input.GetKeyDown(KeyCode.Space);
+        }
+
 
         if (IsVisible)//Do the Client Update, and Server.
         {
@@ -176,6 +235,32 @@ public class EntityPlayer : EntityLife
                     #region MyPlayerFunctions
                     if (Game.GameManager.MultiPlayer || Game.GameManager.SinglePlayer)
                     {
+                        UpdateplaceCursorBlocks();
+                       
+                        if (Input.GetKeyDown(KeyCode.Mouse0))
+                        {
+                            Block blockcurrent =  Game.World.GetTileAt(highlightBlock.x,  highlightBlock.z);
+                            
+                            if (blockcurrent != null)
+                            {
+                                blockcurrent.RemoveBlock();
+                            }
+                        }
+
+                        if (Input.GetKeyDown(KeyCode.Mouse1))
+                        {
+                            Block blockcurrent = Game.World.GetTileAt(highlightBlock.x, highlightBlock.z);
+
+                            if (blockcurrent != null)
+                            {
+                                blockcurrent.PlaceBlock();
+                            }
+                        }
+
+                        moveVector = new Vector3(Input.GetAxis("Horizontal"),0, Input.GetAxis("Vertical"));
+
+                        
+
                         var fwdDotProduct = Vector3.Dot(transform.forward, velocity);
                         var upDotProduct = Vector3.Dot(transform.up, velocity);
                         var rightDotProduct = Vector3.Dot(transform.right, velocity);
@@ -184,7 +269,14 @@ public class EntityPlayer : EntityLife
 
                         Status.UpdateStatus();
 
-                        AnimBob.speed = 1f;
+                        if (Input.GetKey(KeyCode.LeftShift))
+                        {
+                            AnimBob.speed = 1.5f;
+                        }
+                        else
+                        {
+                            AnimBob.speed = 1f;
+                        }
 
                         //PlayerMovement();
 
@@ -206,14 +298,15 @@ public class EntityPlayer : EntityLife
                                 timestep = Time.time;
                             }
                         }
-                        if (enableGravity)
+                        /*if (enableGravity)
                         {
-                            /*if (body.isGrounded == false)
+                            if (charbody.isGrounded == false)
                             {
                                 moveVector += Physics.gravity;
-                            }*/
-                        }
+                            }
+                        }*/
 
+                        //charbody.Move(velocity);
                         if (velocity.magnitude > 0)
                         {
                             Anim.SetInteger("Walk", 1);
@@ -259,6 +352,49 @@ public class EntityPlayer : EntityLife
         }
     }
 
+    public float checkIncrement = 0.1f;
+    public float reach = 8f;
+
+    public Vector3 highlightBlock;
+    public Vector3 placeBlock;
+
+    private void UpdateplaceCursorBlocks()
+    {
+        float step = checkIncrement;
+        Vector3 lastPos = new Vector3();
+
+        while (step < reach)
+        {
+            Vector3 pos = camera.transform.position + (camera.transform.forward * step);
+
+            Block block = Game.World.GetTileAt(pos.x, pos.z);
+
+            if (block != null)
+            {
+                if (block.Type != TypeBlock.Air || block.typego != TakeGO.empty)
+                {
+                    highlightBlock = new Vector3(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z));
+                    placeBlock = lastPos;
+
+                    Game.GameManager.blockHightLight.gameObject.SetActive(true);
+                    Game.GameManager.blockHightLight.position = highlightBlock + new Vector3(0.5f, 0.5f, 0.5f);
+                    //Game.GameManager.blockHightLight.localScale = new Vector3(Game.GameManager.blockHightLight.localScale.x, Get.GetLayerVerticesPlusY(block.LayerLevel), Game.GameManager.blockHightLight.localScale.z);
+                    return;
+
+                }
+            }
+            else
+            {
+                return;
+            }
+
+            lastPos = new Vector3(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z));
+
+            step += checkIncrement;
+
+        }
+        Game.GameManager.blockHightLight.gameObject.SetActive(false);
+    }
 
     public bool IsWalking()
     {
@@ -355,8 +491,13 @@ public class EntityPlayer : EntityLife
         return velocity;
     }
 
-    #region RPCs
-    [RPC]
+    private void PlayerJump(float jumpForce, ForceMode forceMode)
+    {
+        _rb.AddForce(new Vector3(0, jumpForce, 0), forceMode);
+    }
+
+#region RPCs
+[RPC]
     void UpdatePosition(Vector3 pos)
     {
         transform.position = pos;

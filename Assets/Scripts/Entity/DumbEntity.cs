@@ -17,6 +17,7 @@ public class DumbEntity : EntityLife
     public float damageCoolDown = 1;
     public float cooldown = 2;
     private bool knocked = false;
+    private bool attacking = false;
 
     public Transform attackPoint;
     public LayerMask EntitysLayer;
@@ -52,10 +53,11 @@ public class DumbEntity : EntityLife
             if (Time.time > timetemp + cooldown)
             {
                 knocked = false;
+                attacking = false;
                 timetemp = Time.time;
             }
 
-            if (target && !knocked)
+            if (target && !knocked && !attacking)
             {
                 float distances = Vector3.Distance(transform.position, target.position);
 
@@ -74,6 +76,7 @@ public class DumbEntity : EntityLife
                     {
                         if (Time.time > timetempD + damageCoolDown)
                         {
+                            attacking = true;
                             GetComponent<Animator>().SetTrigger("Attack1h1");
                             timetempD = Time.time;
                         }
@@ -130,14 +133,14 @@ public class DumbEntity : EntityLife
     public override void OnHit(int damage, string attckerid, ItemData item)
     {
         knocked = true;
-        Vector3 knockback = -transform.forward + new Vector3(0, 0.5f, 0);
+        GetComponent<Animator>().SetTrigger("Hit1");
+        Vector3 knockback = -transform.forward + new Vector3(0, 1f, 0);
 
-        knockback *= 300;
+        knockback *= 100;
 
         body.AddForce(knockback, ForceMode.Force);
 
         timetemp = Time.time;
-
         base.OnHit(damage, attckerid, item);
     }
 
@@ -157,6 +160,7 @@ public class DumbEntity : EntityLife
 
     public override void OnDead()
     {
+        Destroy(Instantiate(Game.SpriteManager.GetPrefabOnRecources("Prefabs/DeathParticle"), transform.position, Quaternion.identity), 2);
         Cuerrent_Chunk.RemoveEntity(this);
         DarckNet.Network.Destroy(this.gameObject);
         base.OnDead();

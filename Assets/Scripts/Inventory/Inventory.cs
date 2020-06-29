@@ -418,7 +418,7 @@ public class Inventory : MonoBehaviour
 
     public void DropItem(int slot)
     {
-        Net.RPC("RPC_DROP", DarckNet.RPCMode.Server, slot, new Vector3(Game.GameManager.hit.point.x, 0.5f, Game.GameManager.hit.point.z));
+        Net.RPC("RPC_DROP", DarckNet.RPCMode.Server, slot, new Vector3(transform.position.x + 1, 0.5f, transform.position.z));
     }
 
     public void RequestInveData()

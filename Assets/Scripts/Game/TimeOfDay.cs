@@ -137,14 +137,19 @@ public class TimeOfDay : MonoBehaviour
             //transform.localRotation = Quaternion.Euler(((timeOfDay / 24) * 360f) - 90, 90, 0);
 
             RenderSettings.ambientLight = CurrentAmbientColor;
+            RenderSettings.ambientEquatorColor = RenderSettings.ambientLight;
             RenderSettings.fogColor = CurrentFogColor;
-            WaterMat.SetColor("_BaseColor", Get_BaseColor);
-            WaterMat.SetColor("_ReflectionColor", Get_ReflectionColor);
-            WaterMat.SetColor("_SpecularColor", Get_SpecularColor);
+            //WaterMat.SetColor("_BaseColor", Get_BaseColor);
+            //WaterMat.SetColor("_ReflectionColor", Get_ReflectionColor);
+            //WaterMat.SetColor("_SpecularColor", Get_SpecularColor);
 
             SkyMaterial.SetColor("_SkyColor1", Get_TopSkyColor);
             SkyMaterial.SetColor("_SkyColor2", Get_HorizonColor);
             SkyMaterial.SetColor("_SkyColor3", Get_BottonColor);
+
+            Shader.SetGlobalColor("FrenelColor", Get_HorizonColor);
+
+            Shader.SetGlobalFloat("GlobalLightLevel", Mathf.Clamp01(timeOfDay));
         }
 
         DataTime.SetTimeData((int)timeOfDay);

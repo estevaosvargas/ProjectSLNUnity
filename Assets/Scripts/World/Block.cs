@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Unity.Mathematics;
+using System;
 
 [System.Serializable]
 public class Block
 {
     public int x;
-    public float h;//height
+    public float hight;
     public int z;
 
     public TypeBlock Type;
@@ -14,111 +16,76 @@ public class Block
     public Placer PLACER_DATA;
     public TakeGO typego;
 
-    public int HP = 100;
+    public byte HP = 100;//this have some limitatios because is byte a byte only support a max of 255
 
-    public int Hora;
-    public int Dia = 1;
-    public int Mes = 1;
-
-    public HeatType HeatType;
-    public MoistureType MoistureType;
-
-    public float heatValue;
-    public float MoistureValue;
-
-    ///Configs Values
-    [System.NonSerialized]
-    float ColdestValue = 0.05f;
-    [System.NonSerialized]
-    float ColderValue = 0.18f;
-    [System.NonSerialized]
-    float ColdValue = 0.4f;
-    [System.NonSerialized]
-    float WarmValue = 0.6f;
-    [System.NonSerialized]
-    float WarmerValue = 0.8f;
-    [System.NonSerialized]
-    float DryerValue = 0.27f;
-    [System.NonSerialized]
-    float DryValue = 0.4f;
-    [System.NonSerialized]
-    float WetValue = 0.6f;
-    [System.NonSerialized]
-    float WetterValue = 0.8f;
-    [System.NonSerialized]
-    float WettestValue = 0.9f;
-    ///
+    public byte Hora;
+    public byte Dia = 1;
+    public byte Mes = 1;
 
     [System.NonSerialized]
-    public bool OcupedByOther = false;
-    [System.NonSerialized]
-    public DataVector3 CityPoint;
-    /// <summary>
-    /// If AI Can Walk.
-    /// </summary>
-    [System.NonSerialized]
-    public bool CanWalk = false;
-    [System.NonSerialized]
-    public bool IsServerTile = false;
-    [System.NonSerialized]
-    public int MaxHP = 100;
-    [System.NonSerialized]
-    public Vector3 CurrentChunk;
-    [System.NonSerialized]
-    public GameObject BlockObject;
+    public VoxelVector3 _blockChunk;
 
-    BiomeType[,] BiomeTable = new BiomeType[6, 6] {   
-    //COLDEST        //COLDER          //COLD                  //HOT                          //HOTTER                       //HOTTEST
-    { BiomeType.Ice, BiomeType.Tundra, BiomeType.Grassland,    BiomeType.Desert,              BiomeType.Desert,              BiomeType.Desert },              //DRYEST
-    { BiomeType.Ice, BiomeType.Tundra, BiomeType.Grassland,    BiomeType.Desert,              BiomeType.Desert,              BiomeType.Desert },              //DRYER
-    { BiomeType.Ice, BiomeType.Tundra, BiomeType.Woodland,     BiomeType.Woodland,            BiomeType.Savanna,             BiomeType.Savanna },             //DRY
-    { BiomeType.Ice, BiomeType.Tundra, BiomeType.BorealForest, BiomeType.Woodland,            BiomeType.Savanna,             BiomeType.Savanna },             //WET
-    { BiomeType.Ice, BiomeType.Tundra, BiomeType.BorealForest, BiomeType.SeasonalForest,      BiomeType.TropicalRainforest,  BiomeType.TropicalRainforest },  //WETTER
-    { BiomeType.Ice, BiomeType.Tundra, BiomeType.BorealForest, BiomeType.TemperateRainforest, BiomeType.TropicalRainforest,  BiomeType.TropicalRainforest }   //WETTEST
-};
-
-    public Block(int _x, int _z, Vector3 _chunkPosition)
+    public Block(int _x, int _z, VoxelVector3 chunkPosition, float _density)
     {
         x = _x;
         z = _z;
 
-        CurrentChunk = _chunkPosition;
+        hight = _density;
+        _blockChunk = chunkPosition;
 
-        FastNoise heatNoise = new FastNoise(GameManager.Seed);
-        FastNoise moistureNoise = new FastNoise(GameManager.Seed);
+        if (hight <= 0 && hight >= -2f)
+        {
+            TileBiome = BiomeType.Bench;
+            Type = Biome.GetDensity(x, z, 0, this);
+        }
+        else if (hight < -2f)
+        {
+            TileBiome = BiomeType.Bench;
+            Type = TypeBlock.WaterFloor;
+        }
+        else
+        {
+            GenerateBiome();
+            Type = Biome.GetDensity(x, z, 0, this);
+        }
+    }
+
+    public void GenerateBiome()
+    {
+        HeatType HeatType;
+        MoistureType MoistureType;
+
+        float heatValue;
+        float MoistureValue;
 
         float XX = x;
         float ZZ = z;
 
-        heatNoise.SetFrequency(0.05f);
+        lock (Game.World.GetheatNoise)
+        {
+            Game.World.GetheatNoise.GradientPerturbFractal(ref XX, ref ZZ);
+        }
 
-        heatNoise.SetGradientPerturbAmp(30f);
-        heatNoise.GradientPerturbFractal(ref XX, ref ZZ);
-        heatNoise.SetCellularNoiseLookup(new FastNoise());
-        heatNoise.SetCellularDistanceFunction(FastNoise.CellularDistanceFunction.Manhattan);
-        heatNoise.SetCellularReturnType(FastNoise.CellularReturnType.NoiseLookup);
+        heatValue = Mathf.Abs(Game.World.GetheatNoise.GetCellular(XX, ZZ));
+        MoistureValue = Mathf.Abs(Game.World.GetheatNoise.GetCellular(XX, ZZ));
 
-        heatValue = Mathf.Abs(heatNoise.GetCellular(XX, ZZ));
-        
-        MoistureValue = Mathf.Abs(heatNoise.GetCellular(XX, ZZ));
-
-        if (heatValue < ColdestValue)
+        if (heatValue < Get.ColdestValue)
         {
             HeatType = HeatType.Coldest;
         }
-        else if (heatValue < ColderValue)
+        else if (heatValue < Get.ColderValue)
         {
             HeatType = HeatType.Colder;
         }
-        else if (heatValue < ColdValue)
+        else if (heatValue < Get.ColdValue)
         {
             HeatType = HeatType.Cold;
         }
-        else if (heatValue < WarmValue)
+        else if (heatValue < Get.WarmValue)
         {
             HeatType = HeatType.Warm;
         }
-        else if (heatValue < WarmerValue)
+        else if (heatValue < Get.WarmerValue)
         {
             HeatType = HeatType.Warmer;
         }
@@ -127,23 +94,23 @@ public class Block
             HeatType = HeatType.Warmest;
         }
         ///
-        if (MoistureValue < DryerValue)
+        if (MoistureValue < Get.DryerValue)
         {
             MoistureType = MoistureType.Dryer;
         }
-        else if (MoistureValue < DryValue)
+        else if (MoistureValue < Get.DryValue)
         {
             MoistureType = MoistureType.Dry;
         }
-        else if (MoistureValue < WetValue)
+        else if (MoistureValue < Get.WetValue)
         {
             MoistureType = MoistureType.Wet;
         }
-        else if (MoistureValue < WetterValue)
+        else if (MoistureValue < Get.WetterValue)
         {
             MoistureType = MoistureType.Wetter;
         }
-        else if (MoistureValue < WettestValue)
+        else if (MoistureValue < Get.WettestValue)
         {
             MoistureType = MoistureType.Wettest;
         }
@@ -152,40 +119,32 @@ public class Block
             MoistureType = MoistureType.Wettest;
         }
 
-        TileBiome = GetBiomeType(this);
-        float sample = (float)new LibNoise.Unity.Generator.Perlin(0.31f, 0.6f, 2.15f, 10, GameManager.Seed, LibNoise.Unity.QualityMode.Low).GetValue(x, z, 0);
-
-        if (sample >= 50f)
-        {
-            Type = Biome.GetDensity(x, z, sample, this);
-        }
-        else
-        {
-            TileBiome = BiomeType.Bench;
-            Type = Biome.GetDensity(x, z, sample, this);
-        }
-    }
-
-    public BiomeType GetBiomeType(Block tile)
-    {
-        return BiomeTable[(int)tile.MoistureType, (int)tile.HeatType];
+        TileBiome = Get.BiomeTable[(int)MoistureType, (int)HeatType];
     }
 
     public void RemoveBlock()
     {
         SetBlock(TypeBlock.Air);
-        Game.World.GetChunk(CurrentChunk).UpdateMeshChunk();
+        RefreshBlock();
     }
 
-    public void PlaceBlock(TypeBlock blockType)
+    public void PlaceBlock()
     {
-        SetBlock(blockType);
-        Game.World.GetChunk(CurrentChunk).UpdateMeshChunk();
+        //SetBlock(blockType);
+        RefreshBlock();
     }
 
     public void DamageBloco(float damage)
     {
 
+    }
+
+    /// <summary>
+    /// refresh all data in this block
+    /// </summary>
+    public void RefreshBlock()
+    {
+        Game.World.GetChunk(_blockChunk).UpdateChunksSurround();
     }
 
     public Block[] GetNeighboors(bool diagonals = false)
@@ -198,7 +157,7 @@ public class Block
 
             neighbors[0] = Game.World.GetTileAt(x, z + 1);//cima
             neighbors[1] = Game.World.GetTileAt(x + 1, z);//direita
-            neighbors[2] = Game.World.GetTileAt(x,  z - 1);//baixo
+            neighbors[2] = Game.World.GetTileAt(x, z - 1);//baixo
             neighbors[3] = Game.World.GetTileAt(x - 1, z);//esquerda
 
             neighbors[4] = Game.World.GetTileAt(x + 1, z - 1);//corn baixo direita
@@ -211,18 +170,13 @@ public class Block
         {
             neighbors = new Block[4];
 
-            neighbors[0] = Game.World.GetTileAt(x, z + 1);//cima
-            neighbors[1] = Game.World.GetTileAt(x + 1, z);//direita
-            neighbors[2] = Game.World.GetTileAt(x, z - 1);//baixo
-            neighbors[3] = Game.World.GetTileAt(x - 1, z);//esquerda
+            neighbors[0] = Game.World.GetTileAt(x, z - 1);//Atras
+            neighbors[1] = Game.World.GetTileAt(x, z + 1);//Frente
+            neighbors[4] = Game.World.GetTileAt(x - 1,  z);//esquerda
+            neighbors[5] = Game.World.GetTileAt(x + 1,  z);//direita
         }
 
         return neighbors;
-    }
-
-    public void RefreshTile()
-    {
-
     }
 
     public void SaveChunk()
@@ -237,17 +191,11 @@ public class Block
 
     public override string ToString()
     {
-        string tostringReturn = "(Type: " + Type + "), (heatValue: " + heatValue + "), (MoistureType: " + MoistureType + "), (TileBiome: " + TileBiome
-            + "), (typeVariante: " + typeVariante + "), (PLACER_DATA: " + PLACER_DATA + "), (TileBiome: " + typego + "), (HP: " + HP + "), DATA(H:"+Hora+", Day: "+ Dia + "Mes: " + Mes+ ")";
+        string tostringReturn = "(Type: " + Type + "), (TileBiome: " + TileBiome
+            + "), (typeVariante: " + typeVariante + "), (PLACER_DATA: " + PLACER_DATA + "), (TileBiome: " + typego + "), (Dendity: " + hight + ")";
 
         return tostringReturn;
     }
-}
-
-public struct VoxelBlock
-{
-    public int x, y, z;
-    public TypeBlock type;
 }
 
 public enum HeatType

@@ -5,11 +5,13 @@ using LibNoise.Unity.Generator;
 
 public class NoisePreview : MonoBehaviour
 {
-    public enum PerlinTypes { Billow, BrownianMotion , Checker, Const, Cylinders, HeterogeneousMultiFractal, HybridMulti, Perlin, RiggedMultifractal, Spheres, Voronoi, UnityPerlin, turbulence, Terrace, SimplexNoise }
+    public enum PerlinTypes { Billow, BrownianMotion , Checker, Const, Cylinders, HeterogeneousMultiFractal, HybridMulti, Perlin, RiggedMultifractal, Spheres, Voronoi, UnityPerlin, turbulence, Terrace, SimplexNoise, NewVoronoi }
 
     public PerlinTypes Types;
     public FilterMode FildterMode = FilterMode.Bilinear;
     public LibNoise.Unity.QualityMode Quality;
+    public FastNoise.CellularDistanceFunction cellularDistance;
+    public FastNoise.CellularReturnType returnType;
 
     public int width = 256;
     public int height = 256;
@@ -31,10 +33,10 @@ public class NoisePreview : MonoBehaviour
 
     public float mean, standard_deviation, min, max;
 
-    Renderer render;
+    public MeshRenderer render;
     void Start()
     {
-        render = GetComponent<Renderer>();
+        render = GetComponent<MeshRenderer>();
     }
 
     void Update()
@@ -42,6 +44,7 @@ public class NoisePreview : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             render.material.mainTexture = GenerateTexture();
+            render.material.mainTexture.filterMode = FildterMode;
         }
         float mouseX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
         float mouseY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y;
@@ -55,7 +58,7 @@ public class NoisePreview : MonoBehaviour
             }
         }
 
-        render.material.mainTexture.filterMode = FildterMode;
+        //render.material.mainTexture.filterMode = FildterMode;
     }
 
     Texture2D GenerateTexture()
@@ -144,6 +147,13 @@ public class NoisePreview : MonoBehaviour
                 break;
             case PerlinTypes.SimplexNoise:
                 
+                break;
+            case PerlinTypes.NewVoronoi:
+                FastNoise noisenew = new FastNoise(randomSeed);
+                noisenew.SetFrequency(frequency);
+                noisenew.SetCellularDistanceFunction(cellularDistance);
+                noisenew.SetCellularReturnType(returnType);
+                sample = noisenew.GetCellular(x,y);
                 break;
             default:
                 sample = (float)new Perlin(frequency, lacunarit, persistence, octaves, randomSeed, Quality).GetValue(x, y, 0);

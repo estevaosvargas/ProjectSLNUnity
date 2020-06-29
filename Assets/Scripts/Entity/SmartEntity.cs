@@ -94,7 +94,7 @@ public class SmartEntity : Pathfindingentity
                     }
                 }
 
-                Chunk chunk = Game.World.GetChunkAt((int)transform.position.x, (int)transform.position.y, (int)transform.position.z);
+                Chunk chunk = Game.World.GetChunkAt((int)transform.position.x, (int)transform.position.z);
 
                 //Game.CityManager.UpdatePositionStaus(transform.position, CurrentCity, ID);
 

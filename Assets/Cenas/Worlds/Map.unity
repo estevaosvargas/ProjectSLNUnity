@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.7393326, g: 0.8486375, b: 0.89825374, a: 1}
   m_AmbientGroundColor: {r: 0.36862746, g: 0.34901962, b: 0.34117648, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 3
+  m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 2d5d6f0f6fc06064a87b6354d148b10a, type: 2}
   m_HaloStrength: 0.5
@@ -166,8 +166,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ChunkGO: {fileID: 1728794627388856, guid: 30810d7135128834fbab67c15393ed24, type: 3}
-  renderDistance: 50
-  ThickRate: 15
+  renderDistance: 5
+  ThickRate: 100
+  MeshThickRate: 100
+  globalLightLevel: 0
+  distanceview: 100
+  _WaveSpeed: 0.1
 --- !u!114 &1440289441
 MonoBehaviour:
   m_ObjectHideFlags: 0

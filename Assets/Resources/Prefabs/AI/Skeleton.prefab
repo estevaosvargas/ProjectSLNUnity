@@ -79,7 +79,7 @@ MonoBehaviour:
   IsAlive: 0
   LastAttacker: 
   target: {fileID: 0}
-  damping: 1.5
+  damping: 2
   Distance: 10
   RunAway: 0
   body: {fileID: 2134211578835243305}

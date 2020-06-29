@@ -46,7 +46,7 @@ public class Vilanger : Pathfindingentity
         Anim = GetComponent<Animator>();
 
         Net = GetComponent<NetWorkView>();
-        Cuerrent_Chunk = Game.World.GetChunkAt((int)transform.position.x, (int)transform.position.y, (int)transform.position.z);
+        Cuerrent_Chunk = Game.World.GetChunkAt((int)transform.position.x, (int)transform.position.z);
         Cuerrent_Chunk.AddEntity(this);
 
         meshRenderer.material.color = new Color(Random.value, Random.value, Random.value, 1);
@@ -95,7 +95,7 @@ public class Vilanger : Pathfindingentity
                     }
                 }
 
-                Chunk chunk = Game.World.GetChunkAt((int)transform.position.x, (int)transform.position.y, (int)transform.position.z);
+                Chunk chunk = Game.World.GetChunkAt((int)transform.position.x, (int)transform.position.z);
 
                 //Game.CityManager.UpdatePositionStaus(transform.position, CurrentCity, ID);
 

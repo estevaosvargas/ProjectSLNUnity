@@ -51,9 +51,10 @@ MonoBehaviour:
   meshRenderer: {fileID: 2759499135099512380}
   meshCollider: {fileID: 5164710375439433996}
   QueeTime: 5
-  m_Grass: {fileID: 2100000, guid: 043170319843d8445983b4dcebd92201, type: 2}
-  subdivisionLevel: 2
-  timesToSubdivide: 2
+  WaterMaterial: {fileID: 2100000, guid: 03d567e911e7c8a4d954b44bd15f4898, type: 2}
+  Ready: 0
+  _WaveSpeed: 0.1
+  _WaveFrequency: 5
 --- !u!33 &-1315176593803180141
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -80,7 +81,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 043170319843d8445983b4dcebd92201, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -111,7 +112,7 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}

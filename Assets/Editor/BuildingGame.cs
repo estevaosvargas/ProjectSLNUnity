@@ -5,7 +5,6 @@ using System.IO;
 using UnityEditor.Build.Reporting;
 
 public class BuildingGame : MonoBehaviour {
-
     #region ClientBuild
     [MenuItem("BuildClient/ClientWin-64b", false, 1)]
     private static void NewMenuOption()

@@ -13,6 +13,7 @@ using darckcomsoft.itch;
 using System.Threading;
 using System.Collections;
 using UnityEngine.Profiling;
+using UnityEditor;
 
 public class UIElements : DarckNet.DarckMonoBehaviour
 {
@@ -47,37 +48,41 @@ public class GameManager : UIElements
     public static bool Playing = false;
     public bool SinglePlayer = false;
     public bool MultiPlayer = false;
+    private bool isDevBuild = false;
 
     public CustomizationCharacter charcustom;
 
     public static MouseType Mtype = MouseType.none;
     public GameObject DMPOP;
+    public Transform blockHightLight;
     public bool SHOWDEBUG = false;
     public ClientConnect Client;
     public NetWorkView Net;
     public static List<DCallBack> CallBacks = new List<DCallBack>();
     public static AudioSource AudioSourceGlobal;
     public float SaveUpdateTime = 5;
-    public Block t;
-    public Ray ray;
-    public RaycastHit hit;
-    public float mouseX;
-    public float mouseY;
-    public float mouseZ;
-    public float mouseplus = 1;
-    private int LastMouseX;
-    private int LastMouseY;
     private float timetemp;
 
     private GUIStyle BigText = new GUIStyle();
 
     void Awake()
     {
+        Application.targetFrameRate = 60;
+
         Game.GameManager = this;
         DontDestroyOnLoad(this.gameObject);
         Client.IP = "127.0.0.1";
         Client.Port = 25000;
         Client.Password = "";
+
+        if (Application.isEditor)
+        {
+            isDevBuild = Application.isEditor;
+        }
+        else
+        {
+            isDevBuild = Debug.isDebugBuild;
+        }
     }
 
 #if UNITY_EDITOR
@@ -86,13 +91,63 @@ public class GameManager : UIElements
 
     void Start()
     {
-        Application.targetFrameRate = 60;
+        //blocksteste = new VoxelBlock[16,250,16];
 #if UNITY_EDITOR
         if (!Game.ConsoleInGame)
         {
             Instantiate(Console);
         }
 #endif
+
+        /*for (int x = 0; x < 16; x++)
+        {
+            for (int y = 0; y < 250; y++)
+            {
+                for (int z = 0; z < 16; z++)
+                {
+                    blocksteste[x, y, z] = new VoxelBlock();
+
+                    if (UnityEngine.Random.Range(0,10) == 5)
+                    {
+                        blocksteste[x, y, z].Type = TypeBlock.Grass;
+                        blocksteste[x, y, z].TileBiome = BiomeType.Desert;
+                        blocksteste[x, y, z].typeVariante = TypeVariante.GrassFL2;
+                        blocksteste[x, y, z].PLACER_DATA = Placer.BauDark;
+                        blocksteste[x, y, z].typego = TakeGO.Grass;
+
+                        blocksteste[x, y, z].HP = 100;
+                        blocksteste[x, y, z].Hora = 0;
+                        blocksteste[x, y, z].Mes = 1;
+                        blocksteste[x, y, z].Dia = 1;
+                        blocksteste[x, y, z].LayerLevel = 10;
+                        blocksteste[x, y, z].LightLevel = 1;
+
+                        blocksteste[x, y, z].x = Convert.ToByte(x + (int)transform.position.x);
+                        blocksteste[x, y, z].y = Convert.ToByte(y + (int)transform.position.y);
+                        blocksteste[x, y, z].x = Convert.ToByte(z + (int)transform.position.z);
+                    }
+                    else
+                    {
+                        blocksteste[x, y, z].Type = TypeBlock.Air;
+                        blocksteste[x, y, z].TileBiome = BiomeType.None;
+                        blocksteste[x, y, z].typeVariante = TypeVariante.none;
+                        blocksteste[x, y, z].PLACER_DATA = Placer.empty;
+                        blocksteste[x, y, z].typego = TakeGO.empty;
+
+                        blocksteste[x, y, z].HP = 0;
+                        blocksteste[x, y, z].Hora = 0;
+                        blocksteste[x, y, z].Mes = 0;
+                        blocksteste[x, y, z].Dia = 0;
+                        blocksteste[x, y, z].LayerLevel = 0;
+                        blocksteste[x, y, z].LightLevel = 0;
+
+                        blocksteste[x, y, z].x =0;
+                        blocksteste[x, y, z].y =0;
+                        blocksteste[x, y, z].x =0;
+                    }
+                }
+            }
+        }*/
 
         AudioSourceGlobal = GetComponent<AudioSource>();
         Game.AudioManager.LoadAudio();
@@ -134,7 +189,7 @@ public class GameManager : UIElements
         {
             Seed = int.Parse(seed);
         }
-
+        
         System.Random randvilla = new System.Random(GameManager.Seed);
 
          Small_Seed = randvilla.Next(-9999, 9999);
@@ -150,7 +205,7 @@ public class GameManager : UIElements
         }
         else
         {
-            WorldInfo newinfo = new WorldInfo(12, 1, 1, 0.5f, Seed);
+            WorldInfo newinfo = new WorldInfo(12, 1, 1, 0.5f, UnityEngine.Random.Range(-9999, 9999).GetHashCode());
             Seed = newinfo.Seed;
             DataTime.Hora = newinfo.h;
             DataTime.Dia = newinfo.d;
@@ -253,43 +308,6 @@ public class GameManager : UIElements
             timetemp = Time.time;
         }
 
-        if (Playing)
-        {
-            Ray rayy = Camera.main.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y + mouseplus, Input.mousePosition.z));
-
-            if (Physics.Raycast(rayy, out hit, 50, 9))
-            {
-                mouseX = hit.point.x;
-                mouseY = hit.point.y;
-                mouseZ = hit.point.z;
-
-                if (Game.World)
-                {
-                    t = Game.World.GetTileAt(hit.point.x, hit.point.z);
-                }
-
-                if (Input.GetKeyDown(KeyCode.Mouse1))
-                {
-                    if (hit.collider.tag == "Interact")
-                    {
-                        ChangeWorld("Inside", 1 ,0);
-                    }
-                    else if (hit.collider.tag == "Interact2")
-                    {
-                        ChangeWorld("Map", 1, 0);
-                    }
-                }
-            }
-
-            if (LastMouseX != (int)Input.mousePosition.x || LastMouseY != (int)Input.mousePosition.y)
-            {
-                
-            }
-
-            LastMouseX = (int)Input.mousePosition.x;
-            LastMouseY = (int)Input.mousePosition.y;
-        }
-
         if (results.Count > 0)
         {
             int itemsInQueue = results.Count;
@@ -303,6 +321,7 @@ public class GameManager : UIElements
             }
         }
     }
+
     StringBuilder tx;
     private void OnGUI()
     {
@@ -322,10 +341,12 @@ public class GameManager : UIElements
                 GUI.Label(new Rect(10, 150, 500, 20), "Player Position: " + Game.World.PlayerPos.ToString());
                 GUI.Label(new Rect(10, 170, 500, 20), "VideoCard: " + SystemInfo.graphicsDeviceName + " Runing on " + SystemInfo.graphicsShaderLevel + " OS: " + SystemInfo.operatingSystem);
                 GUI.Label(new Rect(10, 190, 600, 20), "renderDistance: " + Game.World.renderDistance);
-                GUI.Label(new Rect(10, 210, 600, 20), "FootBlock: " + Player.PlayerObj.block.ToString());
+                GUI.Label(new Rect(10, 210, 1000, 20), "FootBlock: " + Player.PlayerObj.block.ToString());
             }
         }
     }
+
+    public bool Get_isDevBuild { get { return isDevBuild; } }
 
     private void OnDestroy()
     {
@@ -1559,6 +1580,19 @@ public static class Game
     {
         ColorUtility.TryParseHtmlString("#" + Hex, out Color color);
         return color;
+    }
+
+    public static Color ColorOutUnity(string hexBackgroundColor)
+    {
+        int rgb = Convert.ToInt32("#" + hexBackgroundColor, 16);
+
+        int r = (rgb & 0xff0000) >> 16;
+        int g = (rgb & 0xff00) >> 8;
+        int b = (rgb & 0xff);
+
+        var a = (r * 0.299f + g * 0.587f + b * 0.114f) / 256;
+
+        return new Color(r / 20,g / 20, b / 20, a / 20);
     }
 
     public static int UniqueID(int Length)

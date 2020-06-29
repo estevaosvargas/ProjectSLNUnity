@@ -58,7 +58,6 @@ public class SpriteManager : MonoBehaviour
 
         if (tileUVMap.ContainsKey(key) == true)
         {
-
             return tileUVMap[key];
         }
         else

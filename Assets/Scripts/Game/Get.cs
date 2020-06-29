@@ -4,6 +4,27 @@ using UnityEngine;
 
 public static class Get
 {
+    public static BiomeType[,] BiomeTable = new BiomeType[6, 6] {   
+    //COLDEST        //COLDER          //COLD                  //HOT                          //HOTTER                       //HOTTEST
+    { BiomeType.Ice, BiomeType.Tundra, BiomeType.Grassland,    BiomeType.Desert,              BiomeType.Desert,              BiomeType.Desert },              //DRYEST
+    { BiomeType.Ice, BiomeType.Tundra, BiomeType.Grassland,    BiomeType.Desert,              BiomeType.Desert,              BiomeType.Desert },              //DRYER
+    { BiomeType.Ice, BiomeType.Tundra, BiomeType.Woodland,     BiomeType.Woodland,            BiomeType.Savanna,             BiomeType.Savanna },             //DRY
+    { BiomeType.Ice, BiomeType.Tundra, BiomeType.BorealForest, BiomeType.Woodland,            BiomeType.Savanna,             BiomeType.Savanna },             //WET
+    { BiomeType.Ice, BiomeType.Tundra, BiomeType.BorealForest, BiomeType.SeasonalForest,      BiomeType.TropicalRainforest,  BiomeType.TropicalRainforest },  //WETTER
+    { BiomeType.Ice, BiomeType.Tundra, BiomeType.BorealForest, BiomeType.TemperateRainforest, BiomeType.TropicalRainforest,  BiomeType.TropicalRainforest }   //WETTEST
+    };
+
+    public static float ColdestValue = 0.05f;
+    public static float ColderValue = 0.18f;
+    public static float ColdValue = 0.4f;
+    public static float WarmValue = 0.6f;
+    public static float WarmerValue = 0.8f;
+    public static float DryerValue = 0.27f;
+    public static float DryValue = 0.4f;
+    public static float WetValue = 0.6f;
+    public static float WetterValue = 0.8f;
+    public static float WettestValue = 0.9f;
+
     public static bool GetMouseIteract(Block t)
     {
         if (t.Type == TypeBlock.LightBlockON)
@@ -19,6 +40,153 @@ public static class Get
             return false;
         }
     }
+
+    public static Color GetColorTile(Block block)
+    {
+        switch (block.Type)
+        {
+            case TypeBlock.RockGround:
+                return Color.white;
+            case TypeBlock.RockHole:
+                return Color.white;
+            case TypeBlock.Grass:
+                return Color.white;
+            case TypeBlock.GoldStone:
+                return Color.white;
+            case TypeBlock.IronStone:
+                return Color.white;
+            case TypeBlock.Rock:
+                return Color.white;
+            case TypeBlock.Sand:
+                return Color.white;
+            case TypeBlock.Dirt:
+                return Color.white;
+            case TypeBlock.DirtRoad:
+                return Color.white;
+            case TypeBlock.IceWater:
+                return Color.white;
+            case TypeBlock.Snow:
+                return Color.white;
+            case TypeBlock.BeachSand:
+                return Color.white;
+            case TypeBlock.WaterFloor:
+                return new Color(1,1,1,0);
+            case TypeBlock.JungleGrass:
+                return Color.white;
+            default:
+                return Color.white;
+        }
+    }
+
+    public static Vector3 GetLayerVerticesPlus(int index, int layer)
+    {
+        switch (layer)
+        {
+            case 0:
+                return GetVert(index, 0.1f);
+            case 1:
+                return GetVert(index, 0.1f);
+            case 2:
+                return GetVert(index, 0.2f);
+            case 3:
+                return GetVert(index, 0.3f);
+            case 4:
+                return GetVert(index, 0.4f);
+            case 5:
+                return GetVert(index, 0.5f);
+            case 6:
+                return GetVert(index, 0.6f);
+            case 7:
+                return GetVert(index, 0.7f);
+            case 8:
+                return GetVert(index, 0.8f);
+            case 9:
+                return GetVert(index, 0.9f);
+            case 10:
+                return GetVert(index, 1.0f);
+            default:
+                return GetVert(index, 1.0f);
+        }
+    }
+
+    public static float GetLayerVerticesPlusY(int layer)
+    {
+        switch (layer)
+        {
+            case 0:
+                return 0.1f;
+            case 1:
+                return 0.1f;
+            case 2:
+                return 0.2f;
+            case 3:
+                return 0.3f;
+            case 4:
+                return 0.4f;
+            case 5:
+                return 0.5f;
+            case 6:
+                return 0.6f;
+            case 7:
+                return 0.7f;
+            case 8:
+                return 0.8f;
+            case 9:
+                return 0.9f;
+            case 10:
+                return 1.0f;
+            default:
+                return 1.0f;
+        }
+    }
+
+    public static bool CanPlaceTreeBiome(float noise)
+    {
+        if (noise >= -1.0f && noise < 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public static Vector3 GetVert(int index, float y)
+    {
+        Vector3[] Verts = new Vector3[8]
+        {
+            new Vector3(0.0f,0.0f,0.0f),
+            new Vector3(1.0f,0.0f,0.0f),
+            new Vector3(1.0f,y,0.0f),
+            new Vector3(0.0f,y,0.0f),
+            new Vector3(0.0f,0.0f,1.0f),
+            new Vector3(1.0f,0.0f,1.0f),
+            new Vector3(1.0f,y,1.0f),
+            new Vector3(0.0f,y,1.0f)
+        };
+
+        return Verts[index];
+    }
+
+    public static readonly Vector3[] Verts = new Vector3[8]
+    {
+        new Vector3(0.0f,0.0f,0.0f),
+        new Vector3(1.0f,0.0f,0.0f),
+        new Vector3(1.0f,1.0f,0.0f),
+        new Vector3(0.0f,1.0f,0.0f),
+        new Vector3(0.0f,0.0f,1.0f),
+        new Vector3(1.0f,0.0f,1.0f),
+        new Vector3(1.0f,1.0f,1.0f),
+        new Vector3(0.0f,1.0f,1.0f)
+    };
+
+    public static readonly int[,] Tris = new int[6, 4]
+    {
+        {0,3,1,2}, //Back Face 0
+        {5,6,4,7},  //Front Face 1
+        {3,7,2,6},  //Top Face 2
+        {1,5,0,4},  //Bottom Face 3 
+        {4,7,0,3},  //Left Face 4
+        {1,2,5,6}   //Right Face 5
+    };
 
     public static bool OpenInveTile(Block t)
     {
@@ -151,6 +319,54 @@ public static class Get
         }
     }
 
+    public static bool HaveCollision(Block block)
+    {
+        if (block == null)
+        {
+            return true;
+        }
+
+        switch (block.Type)
+        {
+            case TypeBlock.Air:
+                return false;
+            case TypeBlock.RockGround:
+                return true;
+            case TypeBlock.Grass:
+                return true;
+            case TypeBlock.Water:
+                return true;
+            case TypeBlock.GoldStone:
+                return true;
+            case TypeBlock.IronStone:
+                return true;
+            case TypeBlock.Rock:
+                return true;
+            case TypeBlock.Sand:
+                return true;
+            case TypeBlock.Bloco:
+                return true;
+            case TypeBlock.Dirt:
+                return true;
+            case TypeBlock.DirtRoad:
+                return true;
+            case TypeBlock.IceWater:
+                return true;
+            case TypeBlock.Snow:
+                return true;
+            case TypeBlock.LightBlockON:
+                return true;
+            case TypeBlock.BeachSand:
+                return true;
+            case TypeBlock.WaterFloor:
+                return true;
+            case TypeBlock.JungleGrass:
+                return true;
+            default:
+                return true;
+        }
+    }
+
     /// <summary>
     /// Check if the Neighboors tile, can be tarsition by the main tile
     /// </summary>
@@ -218,7 +434,7 @@ public static class Get
     }
 }
 
-public enum BiomeType
+public enum BiomeType : byte
 {
     None,
     Bench,
@@ -258,7 +474,7 @@ public enum TakeGO : byte
     Pine_Tall, PineSnow_Tall
 }
 
-public enum WorldType
+public enum WorldType : byte
 {
     none, Procedural, Plain, Dev, DevProcedural
 }

@@ -42,7 +42,7 @@ public class Trees : StaticLife
         Destroy(obj, 5);
 
         ThisTreeTile.typego = TakeGO.empty;
-        ThisTreeTile.RefreshTile();
+        ThisTreeTile.RefreshBlock();
         ThisTreeTile.SaveChunk();
 
         ItemManager.Instance.SpawnItem(ItemDrop, DropQuanty, transform.position);

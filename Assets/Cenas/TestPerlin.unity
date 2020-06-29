@@ -213,6 +213,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &2055142714 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 23207133383215616, guid: b4f968adb33864c43ba46118349a7f02,
+    type: 3}
+  m_PrefabInstance: {fileID: 2133678910}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2133678910
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -269,7 +275,7 @@ PrefabInstance:
     - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
         type: 3}
       propertyPath: Types
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
         type: 3}
@@ -336,5 +342,10 @@ PrefabInstance:
       propertyPath: PosX
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114813859619663278, guid: b4f968adb33864c43ba46118349a7f02,
+        type: 3}
+      propertyPath: render
+      value: 
+      objectReference: {fileID: 2055142714}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4f968adb33864c43ba46118349a7f02, type: 3}

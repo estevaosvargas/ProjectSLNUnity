@@ -61,6 +61,8 @@ public class ConsoleInGame : MonoBehaviour
         CommandsData.Add("console.collapse");
         CommandsData.Add("loadingscreen.show");
         CommandsData.Add("discordmsg");
+        CommandsData.Add("tpp");
+        CommandsData.Add("tp");
 
         AddInRoolGUI("Commands Loaded", true, Color.yellow);
     }
@@ -320,6 +322,23 @@ public class ConsoleInGame : MonoBehaviour
                 Game.MenuManager.PopUpName(value[1]);
             }
         }
+        else if (string.Equals(value[0], "tpp", StringComparison.OrdinalIgnoreCase))
+        {
+            if (value.Length == 4)
+            {
+                Game.GameManager.Player.PlayerObj.transform.position = new Vector3(float.Parse(value[1]), float.Parse(value[2]), float.Parse(value[3]));
+                AddInRoolGUI("Teleported you to : " + Game.GameManager.Player.PlayerObj.transform.position.ToString(), true, Color.white);
+            }
+            else
+            {
+                AddInRoolGUI("Dont have all vector axis", true, Color.red);
+                Game.MenuManager.PopUpName("Dont have all vector axis");
+            }
+        }
+        else if (string.Equals(value[0], "tp", StringComparison.OrdinalIgnoreCase))
+        {
+            AddInRoolGUI("Coming Soon", true, Color.yellow);
+        }
         else if (string.Equals(value[0], "say", StringComparison.OrdinalIgnoreCase))
         {
             if (value.Length >= 2)
@@ -444,6 +463,14 @@ public class ConsoleInGame : MonoBehaviour
             else if (string.Equals(commands[i], "discordmsg", StringComparison.OrdinalIgnoreCase))
             {
                 commands[i] += " Hello from console in game to discord (:";
+            }
+            else if (string.Equals(commands[i], "tpp", StringComparison.OrdinalIgnoreCase))
+            {
+                commands[i] += " 0 50 0";
+            }
+            else if (string.Equals(commands[i], "tp", StringComparison.OrdinalIgnoreCase))
+            {
+                commands[i] += " playername";
             }
         }
 
