@@ -10,6 +10,7 @@ public class EntityPlayer : EntityLife
     public Animator AnimBob;
     public Animator AnimHand;
     public Camera camera;
+    public CharacterController characterController;
     public AudioSource audioSource;
     public Inventory Inve;
     public LifeStatus Status;
@@ -22,28 +23,7 @@ public class EntityPlayer : EntityLife
     public Transform Vector;
     public Animator AttackSword;
     public Block block;
-    [Space(4)]
-    [Header("Player Movement")]
-    public bool enableGravity = true;
-    public float shellOffset = 0.1f;
-    public bool isGrounded;
-    private bool m_PreviouslyGrounded;
-    public float groundCheckDistance = 0.01f;
-    public bool Jump;
-    [Header("Walk / Run Setting")] public float walkSpeed;
-    public float runSpeed;
 
-    [Header("Jump Settings")] public float playerJumpForce;
-    public ForceMode appliedForceMode;
-
-    [Header("Jumping State")] public bool playerIsJumping;
-
-    [Header("Current Player Speed")] public float currentSpeed;
-
-    private float _xAxis;
-    private float _zAxis;
-    private Rigidbody _rb;
-    private CapsuleCollider capsuleCollider;
     [Space(4)]
     public bool IsVisible = false;
     public bool IsMe = false;
@@ -68,8 +48,7 @@ public class EntityPlayer : EntityLife
         Net = GetComponent<NetWorkView>();
         Anim = GetComponent<Animator>();
         Inve = GetComponent<Inventory>();
-        capsuleCollider = GetComponent<CapsuleCollider>();
-        _rb = GetComponent<Rigidbody>();
+        characterController = GetComponent<CharacterController>();
 
         IsMe = Net.isMine;
         if (Net.isMine)
@@ -174,57 +153,14 @@ public class EntityPlayer : EntityLife
     {
         velocity = (transform.position - prevPos) / Time.deltaTime;
         prevPos = transform.position;
-
-        m_PreviouslyGrounded = isGrounded;
-        RaycastHit hitInfo;
-        if (Physics.SphereCast(transform.position, capsuleCollider.radius * (1.0f - shellOffset), Vector3.down, out hitInfo,
-                               ((capsuleCollider.height / 2f) - capsuleCollider.radius) + groundCheckDistance, Physics.AllLayers, QueryTriggerInteraction.Ignore))
-        {
-            isGrounded = true;
-        }
-        else
-        {
-            isGrounded = false;
-        }
-        if (isGrounded && playerIsJumping)
-        {
-            playerIsJumping = false;
-        }
-
-        if (isGrounded)
-        {
-            _rb.drag = 5f;
-            _rb.MovePosition(transform.position + Time.deltaTime * currentSpeed * transform.TransformDirection(_xAxis, 0f, _zAxis));
-            if (Jump)
-            {
-                _rb.drag = 0f;
-                PlayerJump(playerJumpForce, appliedForceMode);
-                playerIsJumping = true;
-            }
-        }
-        else
-        {
-            _rb.MovePosition(transform.position + Time.deltaTime * currentSpeed * transform.TransformDirection(_xAxis, 0f, _zAxis));
-        }
-        Jump = false;
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            _rb.isKinematic = false;
-            //charbody.enabled = true;
+            characterController.enabled = true;
         }
-
-        _xAxis = Input.GetAxis("Horizontal");
-        _zAxis = Input.GetAxis("Vertical");
-        currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
-        if (isGrounded && !Jump)
-        {
-            Jump = Input.GetKeyDown(KeyCode.Space);
-        }
-
 
         if (IsVisible)//Do the Client Update, and Server.
         {
@@ -489,11 +425,6 @@ public class EntityPlayer : EntityLife
     public Vector3 GetVelocity()
     {
         return velocity;
-    }
-
-    private void PlayerJump(float jumpForce, ForceMode forceMode)
-    {
-        _rb.AddForce(new Vector3(0, jumpForce, 0), forceMode);
     }
 
 #region RPCs
